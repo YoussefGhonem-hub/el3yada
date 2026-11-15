@@ -428,7 +428,13 @@ public sealed class PatientsController(
                 }
             }
 
-            db.PatientMedicalProfileItems.RemoveRange(unused);
+            // BR-P8: soft delete; the query filter hides them from now on.
+            foreach (var item in unused)
+            {
+                item.DeletedAt = now;
+                item.DeletedBy = caller.UserId;
+            }
+
             removed += unused.Count;
         }
 

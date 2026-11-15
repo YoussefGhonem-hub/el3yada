@@ -19,6 +19,11 @@ public partial class PatientMedicalProfileItem
 
     public DateTime CreatedAt { get; set; }
 
+    /// <summary>Removed from the profile (BR-P8: medical data is never hard-deleted). Hidden by a query filter.</summary>
+    public DateTime? DeletedAt { get; set; }
+
+    public Guid? DeletedBy { get; set; }
+
     public virtual User CreatedByNavigation { get; set; } = null!;
 
     public virtual DoctorPatient Link { get; set; } = null!;

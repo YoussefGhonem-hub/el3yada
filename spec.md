@@ -1146,6 +1146,8 @@ The names below are **logical collections**. In the API they map to SQL Server t
 
 > **The real tables** are created by the EF Core migrations in [`backend/src/El3yada.Data`](backend/README.md) (55 tables plus starting data). Their original design, with comments, is [`database/schema.sql`](database/schema.sql). When this section and the migrations differ, the migrations win. It adds what this logical model leaves out: password and token tables, child tables for nested lists, and the `revenueView` and `pricesManage` assistant permissions from section 6.10.
 >
+> Medical profile items (Phase 2): an item removed from a patient's medical profile is kept with `PatientMedicalProfileItems.DeletedAt` and `DeletedBy` (migration `SoftDeleteMedicalProfileItems`, BR-P8) and hidden from every query. The Phase 2 contract is [`backend/docs/api-phase-2.md`](backend/docs/api-phase-2.md).
+>
 > Sign-in sessions (Phase 1): each signed-in device is one **refresh-token family** (`RefreshTokens.FamilyId`, migration `AddRefreshTokenFamily`). Every refresh replaces the token inside its family, and sending a used token again revokes the whole family. The contract the app uses is [`backend/docs/api-phase-1.md`](backend/docs/api-phase-1.md).
 
 Conventions:

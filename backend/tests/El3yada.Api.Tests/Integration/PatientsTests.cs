@@ -453,6 +453,13 @@ public sealed class PatientsTests(IntegrationHost host)
         var (_, other) = await clientB.GetJsonAsync($"/api/patients/{patientId}/medicalProfile");
         Assert.Empty(other.Items("chronicDiseases"));
 
+        // BR-P8: the removed items (two allergies, «سكر» and Metformin) are kept, marked deleted.
+        var removed = await TestData.WithDbAsync(Factory, db => db.PatientMedicalProfileItems.IgnoreQueryFilters()
+            .Where(i => i.Link.PatientId == patientId && i.DeletedAt != null)
+            .Select(i => i.Text).ToListAsync());
+        Assert.Equal(4, removed.Count);
+        Assert.Contains("سكر", removed);
+
         var audit = await TestData.WithDbAsync(Factory, db => db.AuditLogs
             .Where(a => a.PatientId == patientId && a.Action == AuditActions.PatientMedicalProfileUpdated)
             .OrderBy(a => a.Id).Select(a => a.DetailsJson!).ToListAsync());

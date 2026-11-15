@@ -605,6 +605,7 @@ namespace El3yada.Data.Migrations
             modelBuilder.Entity("El3yada.Data.Entities.AuditLog", b =>
                 {
                     b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
@@ -2597,6 +2598,13 @@ namespace El3yada.Data.Migrations
                         .HasDefaultValueSql("(sysutcdatetime())");
 
                     b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Kind")

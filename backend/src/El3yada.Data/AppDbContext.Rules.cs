@@ -27,6 +27,13 @@ public partial class AppDbContext
             .HasIndex(e => new { e.DoctorId, e.MonthKey, e.Deleted }, "IX_Sessions_Doctor_Month")
             .IncludeProperties(e => new { e.Type, e.FeePiasters, e.BranchId });
 
+        // BR-P8: an item removed from a medical profile is kept, and every query skips it.
+        modelBuilder.Entity<PatientMedicalProfileItem>(entity =>
+        {
+            entity.Property(e => e.DeletedAt).HasPrecision(3);
+            entity.HasQueryFilter(e => e.DeletedAt == null);
+        });
+
         // CHECK constraints (enums, ranges, permission dependencies). See CheckConstraints.cs.
         foreach (var (table, name, sql) in CheckConstraints.All)
         {

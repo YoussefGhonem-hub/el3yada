@@ -670,7 +670,7 @@ New in this part. The shared clinic codes (`PERMISSION_DENIED`, `BRANCH_NOT_ALLO
 - **Shared identity.** Name, phone, gender and date of birth are one `Patients` row that every linked clinic sees and edits (BR-P3). The optional D5 details live on the same row but belong to the clinic that created the account (`Patients.CreatedByDoctorId`): only it sees and edits them (`ownsDetails`).
 - **Linking** keeps the existing account's identity and ignores the typed fields. It needs the phone alone.
 - **Age instead of a date of birth** is stored as today minus that many years, flagged as estimated.
-- **The medical profile** is replaced per call. Items that stay keep their row; removed items are deleted (the table has no soft delete; the lists are a current summary, not records). The audit row counts what was added and removed, without the text.
+- **The medical profile** is replaced per call. Items that stay keep their row. Removed items are soft-deleted (`DeletedAt`, BR-P8) and never shown again. The audit row counts what was added and removed, without the text.
 - **The register's branch filter** means "has visited that branch"; `newThisMonth` means "linked this Cairo month"; `thisWeek` starts on Saturday; "not seen for N months" leaves out never-visited patients (they have their own filter).
 - **Session details** need `sessionsCreate`, `clinicalView` or `billingView`, because D2 (`sessionsCreate` or `billingView`) and the Sessions tab open them.
 - **Amounts** are visible to `revenueView` and to whoever recorded the session, in details and lists alike. An assistant edits only the amounts they recorded, and needs `sessionsCreate`.

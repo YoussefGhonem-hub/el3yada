@@ -110,4 +110,13 @@ abstract final class ApiCodes {
   static const sessionRevoked = 'SESSION_REVOKED';
   static const verificationEmailCooldown = 'VERIFICATION_EMAIL_COOLDOWN';
   static const emailAlreadyVerified = 'EMAIL_ALREADY_VERIFIED';
+  static const forbidden = 'FORBIDDEN';
+  static const notFound = 'NOT_FOUND';
+
+  // Clinic endpoints (backend/docs/api-phase-2.md).
+  static const permissionDenied = 'PERMISSION_DENIED';
+  static const branchNotAllowed = 'BRANCH_NOT_ALLOWED';
+  static const doctorPendingApproval = 'DOCTOR_PENDING_APPROVAL';
+  static const doctorRejected = 'DOCTOR_REJECTED';
+  static const doctorSuspended = 'DOCTOR_SUSPENDED';
 }

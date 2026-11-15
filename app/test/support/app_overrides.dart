@@ -3,7 +3,9 @@ import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/platform/device_identity.dart';
 import 'package:el3yada/core/settings/app_settings.dart';
 import 'package:el3yada/core/storage/token_store.dart';
+import 'package:el3yada/features/auth/application/auth_controller.dart';
 import 'package:el3yada/features/auth/data/auth_repository.dart';
+import 'package:el3yada/features/clinic/data/clinic_repository.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// without a server, a device or plugins:
 /// - preferences in memory (English, language already chosen, unless [prefs]
 ///   says otherwise),
-/// - the offline accounts of [FakeAuthRepository] with no delay,
+/// - the offline accounts of [FakeAuthRepository] with no delay, and their
+///   clinic from [FakeClinicRepository] (or [clinic]),
 /// - public settings from [settings] (or [publicSettings] for more control),
 /// - a fixed device on [platform] with [appVersion].
 Future<List<Override>> appOverrides({
@@ -22,6 +25,7 @@ Future<List<Override>> appOverrides({
   FakePublicSettingsRepository? publicSettings,
   TokenStore? store,
   AuthRepository? auth,
+  ClinicRepository? clinic,
   String appVersion = '1.0.0',
   List<Override> extra = const [],
 }) async {
@@ -32,6 +36,9 @@ Future<List<Override>> appOverrides({
     appPlatformProvider.overrideWithValue(platform),
     tokenStoreProvider.overrideWithValue(store ?? MemoryTokenStore()),
     authRepositoryProvider.overrideWithValue(auth ?? FakeAuthRepository(delay: Duration.zero)),
+    clinicRepositoryProvider.overrideWith(
+      (ref) => clinic ?? FakeClinicRepository(ref.watch(authControllerProvider).value, delay: Duration.zero),
+    ),
     publicSettingsRepositoryProvider.overrideWithValue(publicSettings ?? FakePublicSettingsRepository(settings)),
     deviceIdentityProvider.overrideWith(
       (ref) async => DeviceIdentity(

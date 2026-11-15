@@ -19,6 +19,11 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.accountDisabled => accountDisabledBody,
       ApiCodes.clinicNotActive => clinicNotActiveBody,
       ApiCodes.patientDesktopNotSupported => patientDesktopTitle,
+      // Clinic endpoints (backend/docs/api-phase-2.md).
+      // FORBIDDEN and NOT_FOUND use the shared texts in fieldError.
+      ApiCodes.permissionDenied => errorPermissionDenied,
+      ApiCodes.doctorSuspended => errorDoctorSuspended,
+      ApiCodes.branchNotAllowed => errorBranchNotAllowed,
       ApiCodes.selectionTokenInvalid ||
       ApiCodes.refreshTokenInvalid ||
       ApiCodes.refreshTokenReused ||

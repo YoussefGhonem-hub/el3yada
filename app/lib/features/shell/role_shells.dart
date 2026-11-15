@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../auth/domain/auth_session.dart';
 import '../auth/domain/user_role.dart';
+import '../clinic/domain/clinic_context.dart';
+import '../clinic/domain/clinic_permissions.dart';
 
 typedef L10nLabel = String Function(AppLocalizations l10n);
 
@@ -17,6 +19,7 @@ class NavDestinationSpec {
     this.primary = false,
     this.barLabel,
     this.visibleTo,
+    this.visibleInClinic,
   });
 
   final String path;
@@ -39,7 +42,17 @@ class NavDestinationSpec {
   /// address directly.
   final bool Function(AuthSession session)? visibleTo;
 
-  bool isVisibleTo(AuthSession? session) => visibleTo == null || session != null && visibleTo!(session);
+  /// For doctor and assistant items: who sees it, by the clinic's
+  /// permissions (spec 6.10, 7.6: "hidden, not just disabled"). Hidden until
+  /// the clinic has loaded.
+  final bool Function(ClinicContext clinic)? visibleInClinic;
+
+  bool isVisibleTo(AuthSession? session, {ClinicContext? clinic}) =>
+      (visibleTo == null || session != null && visibleTo!(session)) &&
+      (visibleInClinic == null || clinic != null && visibleInClinic!(clinic));
+
+  /// The address is this item or one of its detail screens.
+  bool covers(String location) => location == path || location.startsWith('$path/');
 }
 
 /// The area each role lands in after sign-in (spec section 7.1).
@@ -60,9 +73,18 @@ class RoleShell {
   List<NavDestinationSpec> get primary => destinations.where((d) => d.primary).toList();
   List<NavDestinationSpec> get secondary => destinations.where((d) => !d.primary).toList();
 
-  /// The items [session] may see (see [NavDestinationSpec.visibleTo]).
-  List<NavDestinationSpec> visibleTo(AuthSession? session) =>
-      destinations.where((d) => d.isVisibleTo(session)).toList();
+  /// The items [session] may see (see [NavDestinationSpec.visibleTo] and
+  /// [NavDestinationSpec.visibleInClinic]).
+  List<NavDestinationSpec> visibleTo(AuthSession? session, {ClinicContext? clinic}) =>
+      destinations.where((d) => d.isVisibleTo(session, clinic: clinic)).toList();
+
+  /// The menu item [location] belongs to, or null (More, or outside the shell).
+  NavDestinationSpec? destinationAt(String location) {
+    for (final d in destinations) {
+      if (d.covers(location)) return d;
+    }
+    return null;
+  }
 
   static RoleShell forRole(UserRole role) => all.firstWhere((shell) => shell.role == role);
 
@@ -81,21 +103,23 @@ class RoleShell {
       NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'D18'),
       NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, selectedIcon: Icons.store_mall_directory, label: (l) => l.navBranches, screenId: 'D28'),
       NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, selectedIcon: Icons.badge, label: (l) => l.navAssistants, screenId: 'D25'),
+      NavDestinationSpec(path: '/doctor/activity', icon: Icons.manage_history_outlined, selectedIcon: Icons.manage_history, label: (l) => l.navActivityLog, screenId: 'D27'),
       NavDestinationSpec(path: '/doctor/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'D24'),
     ],
   );
 
-  // TODO(Phase 2): hide items the assistant has no permission for (section 6.10).
+  /// Items the assistant has no permission for are hidden (spec 7.1, 7.6).
+  /// Home (AS1) shows the live board or today's sessions by permission.
   static final assistant = RoleShell(
     role: UserRole.assistant,
     basePath: '/assistant',
     destinations: [
       NavDestinationSpec(path: '/assistant/live', icon: Icons.monitor_heart_outlined, selectedIcon: Icons.monitor_heart, label: (l) => l.navLive, barLabel: (l) => l.navLiveShort, screenId: 'AS1', primary: true),
       NavDestinationSpec(path: '/assistant/patients', icon: Icons.people_alt_outlined, selectedIcon: Icons.people_alt, label: (l) => l.navPatients, screenId: 'AS2', primary: true),
-      NavDestinationSpec(path: '/assistant/chats', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'AS9', primary: true),
-      NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'AS13'),
-      NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AS18'),
-      NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'AS10'),
+      NavDestinationSpec(path: '/assistant/chats', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'AS9', primary: true, visibleInClinic: (c) => c.can(ClinicPermission.chat)),
+      NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'AS13', visibleInClinic: (c) => c.can(ClinicPermission.appointmentsView)),
+      NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AS18', visibleInClinic: (c) => c.can(ClinicPermission.billingView) || c.can(ClinicPermission.revenueView) || c.can(ClinicPermission.appointmentsView)),
+      NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'AS10', visibleInClinic: (c) => c.can(ClinicPermission.billingView)),
       NavDestinationSpec(path: '/assistant/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AS12'),
     ],
   );

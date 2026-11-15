@@ -3643,6 +3643,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out of el3yada on this device.'**
   String get adminLogoutBody;
+
+  /// No description provided for @navActivityLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity log'**
+  String get navActivityLog;
+
+  /// Top bar title for assistants (spec 7.6).
+  ///
+  /// In en, this message translates to:
+  /// **'Dr {name}\'s clinic'**
+  String clinicOfDoctor(String name);
+
+  /// No description provided for @clinicCurrentBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Current branch'**
+  String get clinicCurrentBranch;
+
+  /// No description provided for @clinicBranchTemporarilyClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily closed'**
+  String get clinicBranchTemporarilyClosed;
+
+  /// No description provided for @clinicSuspendedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Service is suspended because an invoice is unpaid. Pay it to reactivate.'**
+  String get clinicSuspendedBanner;
+
+  /// No description provided for @clinicPayNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay now'**
+  String get clinicPayNow;
+
+  /// No description provided for @clinicLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the clinic details.'**
+  String get clinicLoadFailed;
+
+  /// No description provided for @errorPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to do this. Ask the doctor.'**
+  String get errorPermissionDenied;
+
+  /// No description provided for @errorDoctorSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available while the service is suspended.'**
+  String get errorDoctorSuspended;
+
+  /// No description provided for @errorBranchNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch isn\'t one of yours.'**
+  String get errorBranchNotAllowed;
+
+  /// No description provided for @tempPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary password'**
+  String get tempPasswordTitle;
+
+  /// Temporary password dialog (BR-P4, BR-AS2).
+  ///
+  /// In en, this message translates to:
+  /// **'Give it to {name}. It\'s shown only this once, and they\'ll choose their own password when they sign in.'**
+  String tempPasswordBody(String name);
+
+  /// No description provided for @tempPasswordCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get tempPasswordCopy;
+
+  /// No description provided for @tempPasswordCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get tempPasswordCopied;
+
+  /// No description provided for @tempPasswordShareWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get tempPasswordShareWhatsApp;
+
+  /// No description provided for @tempPasswordShareSms.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS'**
+  String get tempPasswordShareSms;
+
+  /// The text shared by WhatsApp or SMS.
+  ///
+  /// In en, this message translates to:
+  /// **'Your el3yada account: {phone}\nTemporary password: {password}\nYou\'ll choose a new password when you sign in.'**
+  String tempPasswordMessage(String phone, String password);
+
+  /// No description provided for @tempPasswordMessageCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'No messaging app found. The message is copied; paste it where you like.'**
+  String get tempPasswordMessageCopied;
 }
 
 class _AppLocalizationsDelegate

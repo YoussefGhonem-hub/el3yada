@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+export '../../../core/data/paged.dart';
+
 /// Models for the Phase 1 admin endpoints (AD2, AD3, AD13–AD15, AD18).
 /// The contract is backend/docs/api-phase-1.md, section "Admin"; the
 /// controllers in backend/src/El3yada.Api/Controllers are the source of truth.
@@ -11,31 +13,6 @@ DateTime _time(Object? value) => DateTime.parse(value! as String).toUtc();
 DateTime? _timeOrNull(Object? value) => value == null ? null : _time(value);
 String? _text(Object? value) => value is String && value.isNotEmpty ? value : null;
 Map<String, dynamic> _map(Object? value) => (value as Map).cast<String, dynamic>();
-
-/// A page of a list (`?page=1&pageSize=25`).
-class Paged<T> {
-  const Paged({
-    required this.items,
-    required this.page,
-    required this.pageSize,
-    required this.totalCount,
-    required this.totalPages,
-  });
-
-  factory Paged.fromJson(Map<String, dynamic> json, T Function(Map<String, dynamic> json) item) => Paged(
-        items: [for (final row in json['items'] as List) item(_map(row))],
-        page: json['page'] as int,
-        pageSize: json['pageSize'] as int,
-        totalCount: json['totalCount'] as int,
-        totalPages: json['totalPages'] as int,
-      );
-
-  final List<T> items;
-  final int page;
-  final int pageSize;
-  final int totalCount;
-  final int totalPages;
-}
 
 /// `{ id, nameAr, nameEn }`.
 class SpecialtyRef {

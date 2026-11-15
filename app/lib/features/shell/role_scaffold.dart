@@ -11,6 +11,9 @@ import '../../core/widgets/navigation/side_menu.dart';
 import '../../core/widgets/settings_actions.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
+import '../auth/domain/user_role.dart';
+import '../clinic/application/clinic_providers.dart';
+import '../clinic/presentation/clinic_shell_parts.dart';
 import 'role_shells.dart';
 
 /// Badge on a destination, by its path (null for none). Nothing sets one yet;
@@ -45,6 +48,20 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
   /// [S] The phone bar slides away while content scrolls down.
   final _barHidden = ValueNotifier<bool>(false);
 
+  /// Doctors and assistants: the clinic is read again on resume, since the
+  /// doctor can change an assistant's permissions at any time (BR-AS4).
+  AppLifecycleListener? _lifecycle;
+
+  bool get _isClinic => widget.shell.role == UserRole.doctor || widget.shell.role == UserRole.assistant;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isClinic) {
+      _lifecycle = AppLifecycleListener(onResume: () => ref.read(clinicContextProvider.notifier).reload());
+    }
+  }
+
   @override
   void didUpdateWidget(RoleScaffold oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -53,6 +70,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
 
   @override
   void dispose() {
+    _lifecycle?.dispose();
     _barHidden.dispose();
     super.dispose();
   }
@@ -78,13 +96,17 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
     final location = widget.location;
     final width = MediaQuery.sizeOf(context).width;
     final session = ref.watch(authControllerProvider).value;
+    final clinic = _isClinic ? ref.watch(clinicContextProvider).value : null;
     final displayName = session?.displayName ?? '';
-    // Items the user may not use (AD14 for a plain admin) aren't shown.
-    final visible = shell.visibleTo(session);
+    // Items the user may not use (AD14 for a plain admin, an assistant's
+    // items without the permission) aren't shown.
+    final visible = shell.visibleTo(session, clinic: clinic);
     final profilePath = shell.profilePath;
+    final languageCode = Localizations.localeOf(context).languageCode;
     final appBar = AppBar(
-      title: Text('${l10n.appTitle} · ${shell.role.label(l10n)}'),
+      title: Text(clinicTitle(l10n, languageCode, clinic) ?? '${l10n.appTitle} · ${shell.role.label(l10n)}'),
       actions: [
+        if (_isClinic) BranchPicker(compact: width < Breakpoints.tablet),
         if (profilePath != null && session != null)
           IconButton(
             tooltip: l10n.adminMyProfile,
@@ -94,6 +116,18 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
         const SettingsActions(),
       ],
     );
+
+    // The suspension banner (BR-G5, BR-G8) and the offline notice sit above
+    // every clinic screen.
+    final content = !_isClinic
+        ? widget.child
+        : Column(
+            children: [
+              SuspensionBanner(billingPath: '${shell.basePath}/billing'),
+              const ClinicLoadError(),
+              Expanded(child: widget.child),
+            ],
+          );
 
     NavItem itemFor(NavDestinationSpec d, {bool bar = false}) => NavItem(
           icon: d.icon,
@@ -121,7 +155,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
                     ),
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: widget.child),
+            Expanded(child: content),
           ],
         ),
       );
@@ -155,7 +189,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
         extendBody: true,
         body: NotificationListener<UserScrollNotification>(
           onNotification: _onUserScroll,
-          child: widget.child,
+          child: content,
         ),
         bottomNavigationBar: ValueListenableBuilder<bool>(
           valueListenable: _barHidden,
@@ -176,7 +210,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
         children: [
           AppNavRail(items: items(bar: false), selectedIndex: index, onSelected: onSelected),
           const VerticalDivider(width: 1),
-          Expanded(child: widget.child),
+          Expanded(child: content),
         ],
       ),
     );

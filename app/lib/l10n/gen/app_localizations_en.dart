@@ -2067,4 +2067,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminLogoutBody => 'Sign out of el3yada on this device.';
+
+  @override
+  String get navActivityLog => 'Activity log';
+
+  @override
+  String clinicOfDoctor(String name) {
+    return 'Dr $name\'s clinic';
+  }
+
+  @override
+  String get clinicCurrentBranch => 'Current branch';
+
+  @override
+  String get clinicBranchTemporarilyClosed => 'Temporarily closed';
+
+  @override
+  String get clinicSuspendedBanner =>
+      'Service is suspended because an invoice is unpaid. Pay it to reactivate.';
+
+  @override
+  String get clinicPayNow => 'Pay now';
+
+  @override
+  String get clinicLoadFailed => 'Couldn\'t load the clinic details.';
+
+  @override
+  String get errorPermissionDenied =>
+      'You don\'t have permission to do this. Ask the doctor.';
+
+  @override
+  String get errorDoctorSuspended =>
+      'Not available while the service is suspended.';
+
+  @override
+  String get errorBranchNotAllowed => 'This branch isn\'t one of yours.';
+
+  @override
+  String get tempPasswordTitle => 'Temporary password';
+
+  @override
+  String tempPasswordBody(String name) {
+    return 'Give it to $name. It\'s shown only this once, and they\'ll choose their own password when they sign in.';
+  }
+
+  @override
+  String get tempPasswordCopy => 'Copy';
+
+  @override
+  String get tempPasswordCopied => 'Copied';
+
+  @override
+  String get tempPasswordShareWhatsApp => 'WhatsApp';
+
+  @override
+  String get tempPasswordShareSms => 'SMS';
+
+  @override
+  String tempPasswordMessage(String phone, String password) {
+    return 'Your el3yada account: $phone\nTemporary password: $password\nYou\'ll choose a new password when you sign in.';
+  }
+
+  @override
+  String get tempPasswordMessageCopied =>
+      'No messaging app found. The message is copied; paste it where you like.';
 }

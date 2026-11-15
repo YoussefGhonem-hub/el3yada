@@ -191,7 +191,12 @@ class FakeAuthRepository implements AuthRepository {
     'rejected@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. مرفوض',
         doctorStatus: DoctorStatus.rejected, reason: 'صورة الكارنيه غير واضحة، ارفع صورة أوضح.'),
     'disabled@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. موقوف', blockCode: ApiCodes.accountDisabled),
+    // Suspended for an overdue invoice: signs in, sees the banner (BR-G5).
+    'suspended@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. متأخر في السداد', doctorStatus: DoctorStatus.suspended),
+    // Reception preset, one branch (FakeClinicRepository).
     '+201000000001': const FakeAccount(UserRole.assistant, 'مساعد تجريبي', doctorStatus: DoctorStatus.active),
+    // Office manager preset, every branch.
+    '+201000000005': const FakeAccount(UserRole.assistant, 'مدير العيادة', doctorStatus: DoctorStatus.active),
     '+201000000002': const FakeAccount(UserRole.patient, 'مريض تجريبي'),
     '+201000000003': const FakeAccount(UserRole.patient, 'مريض بحسابين', alsoAssistant: true),
     '+201000000004': const FakeAccount(UserRole.patient, 'مريض جديد', mustChangePassword: true, mustAcceptTerms: true),

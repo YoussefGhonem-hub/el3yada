@@ -2064,4 +2064,67 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminLogoutBody => 'تسجيل الخروج من «العيادة» على هذا الجهاز.';
+
+  @override
+  String get navActivityLog => 'سجل النشاط';
+
+  @override
+  String clinicOfDoctor(String name) {
+    return 'عيادة د. $name';
+  }
+
+  @override
+  String get clinicCurrentBranch => 'الفرع الحالي';
+
+  @override
+  String get clinicBranchTemporarilyClosed => 'مغلق مؤقتاً';
+
+  @override
+  String get clinicSuspendedBanner =>
+      'تم إيقاف الخدمة لعدم سداد الفاتورة. برجاء السداد لإعادة التفعيل.';
+
+  @override
+  String get clinicPayNow => 'ادفع الآن';
+
+  @override
+  String get clinicLoadFailed => 'تعذّر تحميل بيانات العيادة.';
+
+  @override
+  String get errorPermissionDenied =>
+      'ليست لديك صلاحية لهذا الإجراء. تواصل مع الطبيب.';
+
+  @override
+  String get errorDoctorSuspended => 'غير متاح أثناء إيقاف الخدمة.';
+
+  @override
+  String get errorBranchNotAllowed => 'هذا الفرع ليس من فروعك.';
+
+  @override
+  String get tempPasswordTitle => 'كلمة المرور المؤقتة';
+
+  @override
+  String tempPasswordBody(String name) {
+    return 'أعطها لـ $name. لن تظهر مرة أخرى، وسيختار كلمة مرور جديدة عند تسجيل الدخول.';
+  }
+
+  @override
+  String get tempPasswordCopy => 'نسخ';
+
+  @override
+  String get tempPasswordCopied => 'تم النسخ';
+
+  @override
+  String get tempPasswordShareWhatsApp => 'واتساب';
+
+  @override
+  String get tempPasswordShareSms => 'رسالة SMS';
+
+  @override
+  String tempPasswordMessage(String phone, String password) {
+    return 'حسابك على تطبيق «العيادة»: $phone\nكلمة المرور المؤقتة: $password\nستختار كلمة مرور جديدة عند تسجيل الدخول.';
+  }
+
+  @override
+  String get tempPasswordMessageCopied =>
+      'لا يوجد تطبيق رسائل. تم نسخ الرسالة، الصقها حيث تريد.';
 }

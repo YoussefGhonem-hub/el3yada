@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/admin_repository.dart';
 import '../domain/admin_models.dart';
-import 'paged_controller.dart';
+import '../../../core/data/paged_controller.dart';
 
 // -----------------------------------------------------------------------------
 // AD2, AD3

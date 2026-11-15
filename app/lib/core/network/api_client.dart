@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/auth/application/auth_controller.dart';
+import '../../features/clinic/application/clinic_providers.dart';
 import '../config/env.dart';
 import '../settings/app_settings.dart';
 import 'api_exception.dart';
@@ -47,7 +48,8 @@ Dio _newDio() => Dio(
 /// - If the refresh is refused, `AuthController` signs the user out (or shows
 ///   A10 for a disabled account), and the router moves to the right screen.
 /// - On 403 `PASSWORD_CHANGE_REQUIRED`, reloads the account so the router
-///   opens A9.
+///   opens A9. On 403 `PERMISSION_DENIED` or `DOCTOR_SUSPENDED`, reloads the
+///   clinic (`clinicContextProvider`).
 class AuthInterceptor extends Interceptor {
   AuthInterceptor(this._ref, this._dio);
 
@@ -86,6 +88,13 @@ class AuthInterceptor extends Interceptor {
     if (status == 403 && sentToken != null) {
       final code = ApiException.fromDio(error).code;
       if (code == ApiCodes.passwordChangeRequired) _auth.reloadAccount().ignore();
+      // The clinic changed under us: permissions or the doctor's status. Read
+      // it again so the screens hide what's no longer allowed (BR-AS4).
+      if (code == ApiCodes.permissionDenied || code == ApiCodes.doctorSuspended) {
+        _ref.read(clinicContextProvider.notifier).reload().ignore();
+      }
+      // The doctor's status changed (rare: an approval was reversed): the router follows the account.
+      if (code == ApiCodes.doctorPendingApproval || code == ApiCodes.doctorRejected) _auth.reloadAccount().ignore();
       // Disabled while signed in, or the clinic closed: sign out and show A10.
       if (AuthBlock.codes.contains(code)) _auth.signOutBlocked(code!).ignore();
       return handler.next(error);

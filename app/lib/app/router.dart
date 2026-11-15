@@ -12,6 +12,7 @@ import '../features/auth/presentation/forgot_password_screen.dart';
 import '../features/auth/presentation/language_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/set_password_screen.dart';
+import '../features/clinic/application/clinic_providers.dart';
 import '../features/doctor_registration/presentation/registration_status_screens.dart';
 import '../features/shell/fade_through_branches.dart';
 import '../features/shell/placeholder_pages.dart';
@@ -133,7 +134,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 /// 7. Signed out → the login and its sub-screens (A3, A4, A8).
 /// 8. `mustChangePassword` → A9.
 /// 9. Doctor waiting for approval → A6 (and A5); rejected → A7 (and A4 to resubmit).
-/// 10. Otherwise the role's area.
+/// 10. Otherwise the role's area,
+/// 11. except an assistant's menu items without the permission.
 String? appRedirect(Ref ref, String location) {
   bool at(String path) => location == path || location.startsWith('$path/');
   String? go(String path) => location == path ? null : path;
@@ -176,6 +178,15 @@ String? appRedirect(Ref ref, String location) {
 
   final shell = RoleShell.forRole(session.role);
   if (!location.startsWith(shell.basePath)) return shell.homePath;
+
+  // 11. An assistant's menu item without the permission can't be opened by
+  //     its address either (spec 7.6), once the clinic has loaded. (Items
+  //     hidden by `visibleTo`, like AD14, explain themselves on their screen.)
+  final destination = shell.destinationAt(location);
+  final clinic = ref.read(clinicContextProvider).value;
+  if (destination?.visibleInClinic case final visible? when clinic != null && !visible(clinic)) {
+    return shell.homePath;
+  }
   return null;
 }
 
@@ -201,5 +212,6 @@ class _RouterRefresh extends ChangeNotifier {
     ref.listen<String?>(authBlockProvider, notify);
     ref.listen<bool>(splashGateProvider, notify);
     ref.listen<bool>(appSettingsProvider.select((s) => s.languageChosen), notify);
+    ref.listen<Set<String>?>(clinicContextProvider.select((c) => c.value?.permissions), notify);
   }
 }

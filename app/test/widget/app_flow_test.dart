@@ -1,59 +1,11 @@
-import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/widgets/navigation/floating_nav_bar.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/app_flow.dart';
 import '../support/app_overrides.dart';
-
-Future<void> pumpApp(
-  WidgetTester tester, {
-  AppPlatform platform = AppPlatform.mobile,
-  Size size = const Size(1400, 900),
-  Map<String, Object> prefs = const {'settings.locale': 'en'},
-  PublicSettings settings = const PublicSettings(),
-  FakePublicSettingsRepository? publicSettings,
-  String appVersion = '1.0.0',
-  List<Override> extra = const [],
-}) async {
-  tester.view.physicalSize = size;
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.reset);
-
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: await appOverrides(
-        platform: platform,
-        prefs: prefs,
-        settings: settings,
-        publicSettings: publicSettings,
-        appVersion: appVersion,
-        extra: extra,
-      ),
-      child: const El3yadaApp(),
-    ),
-  );
-  await settle(tester);
-}
-
-/// Fills the login form and taps Sign in, then waits for the check mark and
-/// the next screen.
-Future<void> signIn(WidgetTester tester, String identifier, {String password = 'dev'}) async {
-  await tester.enterText(find.byType(TextFormField).at(0), identifier);
-  await tester.enterText(find.byType(TextFormField).at(1), password);
-  await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
-  await settle(tester);
-}
-
-/// pumpAndSettle, plus the short timers (the check mark's hold) it skips.
-Future<void> settle(WidgetTester tester) async {
-  await tester.pumpAndSettle();
-  await tester.pump(const Duration(seconds: 1));
-  await tester.pumpAndSettle();
-}
 
 void main() {
   testWidgets('opens on the login screen', (tester) async {
@@ -102,7 +54,8 @@ void main() {
     await tester.tap(find.text('Assistant'));
     await settle(tester);
 
-    expect(find.text('el3yada · Assistant'), findsOneWidget);
+    // Assistants see their doctor's clinic in the top bar (spec 7.6).
+    expect(find.text("Dr تجريبي's clinic"), findsOneWidget);
   });
 
   testWidgets('first launch asks for the language (A2), then shows the login', (tester) async {

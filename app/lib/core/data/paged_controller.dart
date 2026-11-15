@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/widgets/state_switcher.dart';
-import '../domain/admin_models.dart';
+import '../widgets/state_switcher.dart';
+import 'paged.dart';
 
-/// Admin lists show their own error state with a Retry button, so a failed
+/// Lists show their own error state with a Retry button, so a failed
 /// request isn't retried in the background (Riverpod 3 retries by default).
 Duration? noRetry(int retryCount, Object error) => null;
 

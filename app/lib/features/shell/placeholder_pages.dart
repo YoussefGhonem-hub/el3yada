@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/widgets/staggered_entrance.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
+import '../clinic/application/clinic_providers.dart';
 import 'role_shells.dart';
 
 /// Stands in for a screen until it is built. Shows the screen ID from spec.md.
@@ -69,7 +70,8 @@ class MorePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final session = ref.watch(authControllerProvider).value;
-    final items = shell.secondary.where((d) => d.isVisibleTo(session)).toList();
+    final clinic = ref.watch(clinicContextProvider).value;
+    final items = shell.secondary.where((d) => d.isVisibleTo(session, clinic: clinic)).toList();
     return StaggerGroup(
       child: ListView.builder(
         // The bottom padding includes the floating bar on phones.

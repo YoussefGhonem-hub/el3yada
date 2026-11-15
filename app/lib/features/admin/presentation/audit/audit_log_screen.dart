@@ -15,7 +15,7 @@ import '../../../../core/widgets/state_switcher.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../admin_routes.dart';
 import '../../application/admin_controllers.dart';
-import '../../application/paged_controller.dart';
+import '../../../../core/data/paged_controller.dart';
 import '../../domain/admin_models.dart';
 import '../widgets/admin_widgets.dart';
 import 'audit_text.dart';

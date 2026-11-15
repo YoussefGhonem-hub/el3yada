@@ -209,7 +209,8 @@ public sealed class SessionsController(
         var patientUserId = await db.Patients.Where(p => p.Id == patientId).Select(p => p.UserId).SingleAsync(cancellationToken);
         notifications.Add(
             patientUserId,
-            NotificationTexts.VisitRecorded(type == SessionTypes.Examination, doctor.FullName, branch.NameAr, branch.NameEn ?? branch.NameAr),
+            NotificationTexts.VisitRecorded(
+                type == SessionTypes.Examination, doctor.FullName, doctor.FullNameEn ?? doctor.FullName, branch.NameAr, branch.NameEn ?? branch.NameAr),
             $"/visits/{session.Id}",
             new { sessionId = session.Id, doctorId = caller.DoctorId });
         auditor.AddClinic(
@@ -498,7 +499,7 @@ public sealed class SessionsController(
     private sealed record BranchForSession(
         Guid Id, string NameAr, string? NameEn, string Status, int? ExaminationPricePiasters, int? ConsultationPricePiasters);
 
-    private sealed record DoctorPrices(string FullName, int? ExaminationPricePiasters, int? ConsultationPricePiasters);
+    private sealed record DoctorPrices(string FullName, string? FullNameEn, int? ExaminationPricePiasters, int? ConsultationPricePiasters);
 
     /// <summary>
     /// The branch of a new session: one of the doctor's branches (404 otherwise) that isn't archived. Callers
@@ -524,7 +525,7 @@ public sealed class SessionsController(
     private Task<DoctorPrices> DoctorPricesAsync(Guid doctorId, CancellationToken cancellationToken) =>
         db.Doctors.AsNoTracking()
             .Where(d => d.UserId == doctorId)
-            .Select(d => new DoctorPrices(d.FullName, d.ExaminationPricePiasters, d.ConsultationPricePiasters))
+            .Select(d => new DoctorPrices(d.FullName, d.FullNameEn, d.ExaminationPricePiasters, d.ConsultationPricePiasters))
             .SingleAsync(cancellationToken);
 
     /// <summary>Vitals as sent (all cleared when <paramref name="vitals"/> is null), rounded to the columns' decimals.</summary>

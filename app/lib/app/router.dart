@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/splash_screen.dart';
+import '../features/shell/fade_through_branches.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_scaffold.dart';
 import '../features/shell/role_shells.dart';
@@ -15,6 +16,17 @@ abstract final class AppRoutes {
 }
 
 /// Routes by session and role (spec A1). Each role only reaches its own area.
+///
+/// Transitions (spec section 12):
+/// - Pages built with `builder:` (a `MaterialPage`) slide along the
+///   horizontal shared axis forward and back, mirrored in Arabic. That comes
+///   from `AppPageTransitionsBuilder` in the theme; nothing to add per route.
+/// - Each menu destination is its own branch of the role's
+///   `StatefulShellRoute`, so switching tabs fades through
+///   (`FadeThroughBranches`) and every tab keeps its state. Tab roots use
+///   `NoTransitionPage`, because the branch container animates them.
+/// - Detail screens go under their tab's `GoRoute` (`routes: [...]`) with
+///   `builder:`; list → detail can also use `ContainerTransform`.
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _AuthRefresh(ref);
   ref.onDispose(refresh.dispose);
@@ -44,23 +56,41 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: AppRoutes.splash, builder: (context, state) => const SplashScreen()),
       GoRoute(path: AppRoutes.login, builder: (context, state) => const LoginScreen()),
       for (final shell in RoleShell.all)
-        ShellRoute(
-          builder: (context, state, child) => RoleScaffold(
+        StatefulShellRoute(
+          builder: (context, state, navigationShell) => RoleScaffold(
             shell: shell,
-            location: state.matchedLocation,
-            child: child,
+            location: state.uri.path,
+            child: navigationShell,
           ),
-          routes: [
+          navigatorContainerBuilder: (context, navigationShell, children) => FadeThroughBranches(
+            currentIndex: navigationShell.currentIndex,
+            children: children,
+          ),
+          branches: [
             for (final destination in shell.destinations)
-              GoRoute(
-                path: destination.path,
-                pageBuilder: (context, state) =>
-                    NoTransitionPage(child: PlaceholderPage(destination: destination)),
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: destination.path,
+                    pageBuilder: (context, state) => NoTransitionPage(
+                      key: state.pageKey,
+                      child: PlaceholderPage(destination: destination),
+                    ),
+                  ),
+                ],
               ),
-            GoRoute(
-              path: shell.morePath,
-              pageBuilder: (context, state) => NoTransitionPage(child: MorePage(shell: shell)),
-            ),
+            if (shell.secondary.isNotEmpty)
+              StatefulShellBranch(
+                routes: [
+                  GoRoute(
+                    path: shell.morePath,
+                    pageBuilder: (context, state) => NoTransitionPage(
+                      key: state.pageKey,
+                      child: MorePage(shell: shell),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
     ],

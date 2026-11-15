@@ -123,6 +123,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navLive => 'اللوحة المباشرة';
 
   @override
+  String get navLiveShort => 'المباشر';
+
+  @override
   String get navDashboard => 'لوحة التحكم';
 
   @override
@@ -187,4 +190,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navAuditLog => 'سجل العمليات';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get navBadgeNew => 'جديد';
+
+  @override
+  String navBadgeUnread(int count) {
+    return '$count غير مقروءة';
+  }
+
+  @override
+  String navItemWithBadge(String label, String badge) {
+    return '$label، $badge';
+  }
 }

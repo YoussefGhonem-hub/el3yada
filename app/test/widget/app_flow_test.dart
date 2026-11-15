@@ -2,6 +2,7 @@ import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/settings/app_settings.dart';
 import 'package:el3yada/core/storage/token_store.dart';
+import 'package:el3yada/core/widgets/navigation/floating_nav_bar.dart';
 import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +65,7 @@ void main() {
     await pumpApp(tester, platform: AppPlatform.mobile, size: const Size(400, 800));
     await signIn(tester, '01000000002');
 
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(FloatingNavBar), findsOneWidget);
     expect(find.text('Screen P1 in spec.md'), findsOneWidget);
   });
 }

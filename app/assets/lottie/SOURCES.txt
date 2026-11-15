@@ -1,0 +1,11 @@
+Lottie animations bundled with the app (spec section 12: 1.5 s or less, 100 KB or less each).
+
+success_check.json
+  Source:  written by hand for el3yada (Phase 0, November 2026). No third-party art.
+  Licence: owned by the el3yada project, same terms as the app code.
+  Content: a disc pops in, a ring ripples out, then a check draws itself. 1.1 s, about 2.5 KB.
+  Colours: the placeholder colours in the file are replaced at run time with theme colours
+           (layers "disc", "ring" and "check"), see lib/core/widgets/success_check.dart.
+
+Adding a file from elsewhere: only use art with a clearly free licence, and record its source
+URL, author and licence here next to the file name.

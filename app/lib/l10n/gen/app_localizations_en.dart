@@ -122,6 +122,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navLive => 'Live board';
 
   @override
+  String get navLiveShort => 'Live';
+
+  @override
   String get navDashboard => 'Dashboard';
 
   @override
@@ -186,4 +189,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navAuditLog => 'Audit log';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get navBadgeNew => 'New';
+
+  @override
+  String navBadgeUnread(int count) {
+    return '$count unread';
+  }
+
+  @override
+  String navItemWithBadge(String label, String badge) {
+    return '$label, $badge';
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'page_transitions.dart';
+
 /// Brand colours from the chosen design ("queue ticket": pine and mint).
 /// Widgets never use these directly: they read `Theme.of(context).colorScheme`
 /// or [El3yadaColors], so light and dark come from one set of tokens
@@ -32,7 +34,14 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
     required this.allergy,
     required this.onAllergy,
     required this.attention,
+    required this.onAttention,
     required this.brandAccent,
+    required this.navBar,
+    required this.onNavBar,
+    required this.navIndicator,
+    required this.onNavIndicator,
+    required this.skeleton,
+    required this.skeletonHighlight,
   });
 
   /// Examination badge (كشف): always blue (spec section 12).
@@ -50,8 +59,27 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
   /// Dot for unread or new items. Pair it with a label or count, never alone.
   final Color attention;
 
+  /// Count text on an [attention] badge (5:1 or better).
+  final Color onAttention;
+
   /// The plus in the logo (AppLogoMark).
   final Color brandAccent;
+
+  /// The floating bottom bar: pine in light mode, an elevated surface in dark.
+  final Color navBar;
+
+  /// Unselected icons and labels on [navBar] (7:1 light, 5.9:1 dark).
+  final Color onNavBar;
+
+  /// The sliding pill behind the selected item (bar, rail and side menu).
+  final Color navIndicator;
+
+  /// Icon and label on [navIndicator] (6.2:1).
+  final Color onNavIndicator;
+
+  /// Skeleton placeholders and the highlight that sweeps across them.
+  final Color skeleton;
+  final Color skeletonHighlight;
 
   static const light = El3yadaColors(
     examination: Color(0xFFD6E4FF),
@@ -61,7 +89,14 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
     allergy: Color(0xFFFFDAD6),
     onAllergy: Color(0xFF8C1D18),
     attention: AppColors.coral,
+    onAttention: AppColors.ink,
     brandAccent: Color(0xFF2BB594),
+    navBar: AppColors.pine,
+    onNavBar: Color(0xFFBFE3D8),
+    navIndicator: AppColors.mint,
+    onNavIndicator: AppColors.pine,
+    skeleton: Color(0xFFDCEBE4),
+    skeletonHighlight: Color(0xFFF2F8F5),
   );
 
   static const dark = El3yadaColors(
@@ -72,7 +107,14 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
     allergy: Color(0xFF5C1712),
     onAllergy: Color(0xFFFFDAD6),
     attention: Color(0xFFFF8A7D),
+    onAttention: AppColors.ink,
     brandAccent: Color(0xFFE3F1EC),
+    navBar: Color(0xFF22423C),
+    onNavBar: Color(0xFFA5C4BC),
+    navIndicator: AppColors.mint,
+    onNavIndicator: AppColors.pine,
+    skeleton: Color(0xFF1A3833),
+    skeletonHighlight: Color(0xFF2A4842),
   );
 
   @override
@@ -84,7 +126,14 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
     Color? allergy,
     Color? onAllergy,
     Color? attention,
+    Color? onAttention,
     Color? brandAccent,
+    Color? navBar,
+    Color? onNavBar,
+    Color? navIndicator,
+    Color? onNavIndicator,
+    Color? skeleton,
+    Color? skeletonHighlight,
   }) =>
       El3yadaColors(
         examination: examination ?? this.examination,
@@ -94,21 +143,36 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
         allergy: allergy ?? this.allergy,
         onAllergy: onAllergy ?? this.onAllergy,
         attention: attention ?? this.attention,
+        onAttention: onAttention ?? this.onAttention,
         brandAccent: brandAccent ?? this.brandAccent,
+        navBar: navBar ?? this.navBar,
+        onNavBar: onNavBar ?? this.onNavBar,
+        navIndicator: navIndicator ?? this.navIndicator,
+        onNavIndicator: onNavIndicator ?? this.onNavIndicator,
+        skeleton: skeleton ?? this.skeleton,
+        skeletonHighlight: skeletonHighlight ?? this.skeletonHighlight,
       );
 
   @override
   El3yadaColors lerp(El3yadaColors? other, double t) {
     if (other == null) return this;
+    Color mix(Color a, Color b) => Color.lerp(a, b, t)!;
     return El3yadaColors(
-      examination: Color.lerp(examination, other.examination, t)!,
-      onExamination: Color.lerp(onExamination, other.onExamination, t)!,
-      consultation: Color.lerp(consultation, other.consultation, t)!,
-      onConsultation: Color.lerp(onConsultation, other.onConsultation, t)!,
-      allergy: Color.lerp(allergy, other.allergy, t)!,
-      onAllergy: Color.lerp(onAllergy, other.onAllergy, t)!,
-      attention: Color.lerp(attention, other.attention, t)!,
-      brandAccent: Color.lerp(brandAccent, other.brandAccent, t)!,
+      examination: mix(examination, other.examination),
+      onExamination: mix(onExamination, other.onExamination),
+      consultation: mix(consultation, other.consultation),
+      onConsultation: mix(onConsultation, other.onConsultation),
+      allergy: mix(allergy, other.allergy),
+      onAllergy: mix(onAllergy, other.onAllergy),
+      attention: mix(attention, other.attention),
+      onAttention: mix(onAttention, other.onAttention),
+      brandAccent: mix(brandAccent, other.brandAccent),
+      navBar: mix(navBar, other.navBar),
+      onNavBar: mix(onNavBar, other.onNavBar),
+      navIndicator: mix(navIndicator, other.navIndicator),
+      onNavIndicator: mix(onNavIndicator, other.onNavIndicator),
+      skeleton: mix(skeleton, other.skeleton),
+      skeletonHighlight: mix(skeletonHighlight, other.skeletonHighlight),
     );
   }
 }
@@ -243,15 +307,13 @@ abstract final class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(shape: const StadiumBorder(), side: BorderSide.none),
-      navigationBarTheme: NavigationBarThemeData(
-        indicatorColor: scheme.secondaryContainer,
-        backgroundColor: scheme.surfaceContainerLow,
-      ),
-      navigationRailTheme: NavigationRailThemeData(
-        indicatorColor: scheme.secondaryContainer,
-        backgroundColor: scheme.surfaceContainerLow,
-      ),
       dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1),
+      // Forward and back: horizontal shared axis, mirrored in Arabic.
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          for (final platform in TargetPlatform.values) platform: const AppPageTransitionsBuilder(),
+        },
+      ),
     );
   }
 }

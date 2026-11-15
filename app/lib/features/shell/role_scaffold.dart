@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/navigation/floating_nav_bar.dart';
+import '../../core/widgets/navigation/nav_item.dart';
+import '../../core/widgets/navigation/nav_rail.dart';
+import '../../core/widgets/navigation/side_menu.dart';
 import '../../core/widgets/settings_actions.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
 import 'role_shells.dart';
 
+/// Badge on a destination, by its path (null for none). Nothing sets one yet;
+/// the chats phase overrides it with the unread count, for example
+/// `'/doctor/chats' => NavBadge.count(unread)`.
+final navBadgeProvider = Provider.family<NavBadge?, String>((ref, path) => null);
+
 /// Adaptive frame around every signed-in screen (spec section 4):
-/// - phone (< 600): bottom bar with the primary items + More
+/// - phone (< 600): floating bottom bar with the primary items + More
 /// - tablet (600–1024): navigation rail with the same items
 /// - desktop (≥ 1024): side menu with every item
-class RoleScaffold extends ConsumerWidget {
+///
+/// All three share the sliding mint indicator. On phones the bar hides while
+/// the keyboard is open and while the content scrolls down.
+class RoleScaffold extends ConsumerStatefulWidget {
   const RoleScaffold({
     super.key,
     required this.shell,
@@ -25,107 +38,133 @@ class RoleScaffold extends ConsumerWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RoleScaffold> createState() => _RoleScaffoldState();
+}
+
+class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
+  /// [S] The phone bar slides away while content scrolls down.
+  final _barHidden = ValueNotifier<bool>(false);
+
+  @override
+  void didUpdateWidget(RoleScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.location != widget.location) _barHidden.value = false;
+  }
+
+  @override
+  void dispose() {
+    _barHidden.dispose();
+    super.dispose();
+  }
+
+  bool _onUserScroll(UserScrollNotification notification) {
+    if (notification.depth == 0 && notification.metrics.axis == Axis.vertical) {
+      switch (notification.direction) {
+        case ScrollDirection.reverse:
+          _barHidden.value = true;
+        case ScrollDirection.forward:
+          _barHidden.value = false;
+        case ScrollDirection.idle:
+          break;
+      }
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final shell = widget.shell;
+    final location = widget.location;
     final width = MediaQuery.sizeOf(context).width;
     final displayName = ref.watch(authControllerProvider).value?.displayName ?? '';
-    final title = '${l10n.appTitle} · ${shell.role.label(l10n)}';
+    final appBar = AppBar(
+      title: Text('${l10n.appTitle} · ${shell.role.label(l10n)}'),
+      actions: const [SettingsActions()],
+    );
+
+    NavItem itemFor(NavDestinationSpec d, {bool bar = false}) => NavItem(
+          icon: d.icon,
+          selectedIcon: d.selectedIcon,
+          label: (bar ? d.barLabel : null)?.call(l10n) ?? d.label(l10n),
+          badge: ref.watch(navBadgeProvider(d.path)),
+        );
 
     if (width >= Breakpoints.desktop) {
+      final all = shell.destinations;
       return Scaffold(
-        appBar: AppBar(title: Text(title), actions: const [SettingsActions()]),
+        appBar: appBar,
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              width: 256,
-              child: _SideMenu(shell: shell, location: location, displayName: displayName),
+            AppSideMenu(
+              items: [for (final d in all) itemFor(d)],
+              selectedIndex: all.indexWhere((d) => location.startsWith(d.path)),
+              onSelected: (i) => context.go(all[i].path),
+              header: displayName.isEmpty
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 16, bottom: 12),
+                      child: Text(displayName, style: Theme.of(context).textTheme.titleSmall),
+                    ),
             ),
             const VerticalDivider(width: 1),
-            Expanded(child: child),
+            Expanded(child: widget.child),
           ],
         ),
       );
     }
 
-    final items = shell.primary;
-    final hasMore = shell.secondary.isNotEmpty;
-    var index = items.indexWhere((d) => location.startsWith(d.path));
-    if (index < 0) index = hasMore ? items.length : 0;
+    final primary = shell.primary;
+    final secondary = shell.secondary;
+    final hasMore = secondary.isNotEmpty;
+    var index = primary.indexWhere((d) => location.startsWith(d.path));
+    if (index < 0) index = hasMore ? primary.length : 0;
 
-    void onSelected(int i) => context.go(i < items.length ? items[i].path : shell.morePath);
+    // "More" shows a dot when something inside it has a badge.
+    final moreHasBadge = secondary.any((d) => NavBadgeView.isVisible(ref.watch(navBadgeProvider(d.path))));
+    List<NavItem> items({required bool bar}) => [
+          for (final d in primary) itemFor(d, bar: bar),
+          if (hasMore)
+            NavItem(
+              icon: Icons.more_horiz,
+              selectedIcon: Icons.more_horiz,
+              label: l10n.navMore,
+              badge: moreHasBadge ? const NavBadge.dot() : null,
+            ),
+        ];
+    void onSelected(int i) => context.go(i < primary.length ? primary[i].path : shell.morePath);
 
     if (width < Breakpoints.tablet) {
       return Scaffold(
-        appBar: AppBar(title: Text(title), actions: const [SettingsActions()]),
-        body: child,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: index,
-          onDestinationSelected: onSelected,
-          destinations: [
-            for (final d in items) NavigationDestination(icon: Icon(d.icon), label: d.label(l10n)),
-            if (hasMore) NavigationDestination(icon: const Icon(Icons.more_horiz), label: l10n.navMore),
-          ],
+        appBar: appBar,
+        // Content scrolls behind the floating bar; lists get its height as
+        // bottom padding from MediaQuery.
+        extendBody: true,
+        body: NotificationListener<UserScrollNotification>(
+          onNotification: _onUserScroll,
+          child: widget.child,
+        ),
+        bottomNavigationBar: ValueListenableBuilder<bool>(
+          valueListenable: _barHidden,
+          builder: (context, hidden, _) => FloatingNavBar(
+            items: items(bar: true),
+            selectedIndex: index,
+            onSelected: onSelected,
+            hidden: hidden,
+          ),
         ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(title), actions: const [SettingsActions()]),
+      appBar: appBar,
       body: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          NavigationRail(
-            selectedIndex: index,
-            onDestinationSelected: onSelected,
-            labelType: NavigationRailLabelType.all,
-            destinations: [
-              for (final d in items)
-                NavigationRailDestination(icon: Icon(d.icon), label: Text(d.label(l10n))),
-              if (hasMore)
-                NavigationRailDestination(icon: const Icon(Icons.more_horiz), label: Text(l10n.navMore)),
-            ],
-          ),
+          AppNavRail(items: items(bar: false), selectedIndex: index, onSelected: onSelected),
           const VerticalDivider(width: 1),
-          Expanded(child: child),
-        ],
-      ),
-    );
-  }
-}
-
-class _SideMenu extends StatelessWidget {
-  const _SideMenu({required this.shell, required this.location, required this.displayName});
-
-  final RoleShell shell;
-  final String location;
-  final String displayName;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    return Material(
-      color: scheme.surfaceContainerLow,
-      child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-        children: [
-          if (displayName.isNotEmpty)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(start: 12, bottom: 12),
-              child: Text(displayName, style: Theme.of(context).textTheme.titleSmall),
-            ),
-          for (final d in shell.destinations)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: ListTile(
-                leading: Icon(d.icon),
-                title: Text(d.label(l10n)),
-                selected: location.startsWith(d.path),
-                selectedTileColor: scheme.secondaryContainer,
-                selectedColor: scheme.onSecondaryContainer,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                onTap: () => context.go(d.path),
-              ),
-            ),
+          Expanded(child: widget.child),
         ],
       ),
     );

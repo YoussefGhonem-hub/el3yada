@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/widgets/staggered_entrance.dart';
 import '../../l10n/gen/app_localizations.dart';
 import 'role_shells.dart';
 
@@ -14,30 +15,40 @@ class PlaceholderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(destination.icon, size: 48, color: theme.colorScheme.primary),
-              const SizedBox(height: 16),
-              Text(
-                destination.label(l10n),
-                style: theme.textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(l10n.underConstructionTitle, textAlign: TextAlign.center),
-              const SizedBox(height: 4),
-              Text(
-                l10n.underConstructionBody(destination.screenId),
-                style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                textAlign: TextAlign.center,
-              ),
-            ],
+    final parts = [
+      Icon(destination.icon, size: 48, color: theme.colorScheme.primary),
+      Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 8),
+        child: Text(
+          destination.label(l10n),
+          style: theme.textTheme.headlineSmall,
+          textAlign: TextAlign.center,
+        ),
+      ),
+      Text(l10n.underConstructionTitle, textAlign: TextAlign.center),
+      Padding(
+        padding: const EdgeInsets.only(top: 4),
+        child: Text(
+          l10n.underConstructionBody(destination.screenId),
+          style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    ];
+    // SafeArea keeps the text clear of the floating bottom bar.
+    return SafeArea(
+      top: false,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < parts.length; i++) StaggeredEntrance(index: i, child: parts[i]),
+              ],
+            ),
           ),
         ),
       ),
@@ -54,17 +65,22 @@ class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      children: [
-        for (final d in shell.secondary)
-          ListTile(
-            leading: Icon(d.icon),
-            title: Text(d.label(l10n)),
+    final items = shell.secondary;
+    return StaggerGroup(
+      child: ListView.builder(
+        // The bottom padding includes the floating bar on phones.
+        padding: EdgeInsets.only(top: 8, bottom: 8 + MediaQuery.paddingOf(context).bottom),
+        itemCount: items.length,
+        itemBuilder: (context, i) => StaggeredEntrance(
+          index: i,
+          child: ListTile(
+            leading: Icon(items[i].icon),
+            title: Text(items[i].label(l10n)),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.go(d.path),
+            onTap: () => context.go(items[i].path),
           ),
-      ],
+        ),
+      ),
     );
   }
 }

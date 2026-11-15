@@ -93,8 +93,34 @@ Each feature follows the same layers: `domain/` (models), `data/` (API), `applic
 - **Colours:** never hard-code colours. Use `Theme.of(context).colorScheme` or `context.el3yadaColors` (examination, consultation, allergy, attention). The palette comes from the chosen design: pine `#0F4C45`, mint ground `#E6F2EC`, mint `#7CE0C3`, coral `#FF6B5A` for "new" dots, ink `#12312C`. Dark mode has its own tokens in `AppTheme.darkScheme`.
 - **Font:** Alexandria, bundled in `assets/fonts/` (Arabic and Latin). Arabic text in PDFs uses Noto Sans Arabic instead, because the PDF library needs glyphs Alexandria lacks (see `test/prototypes/font_coverage_test.dart`).
 - **API models:** freezed + json_serializable, like `AuthSession`. After changing a model, run `dart run build_runner build` and commit the generated `*.freezed.dart` and `*.g.dart` files. CI fails if they are out of date.
-- **Layout:** below 600 px wide is phone (bottom bar), 600–1024 is tablet (rail), and 1024+ is desktop (side menu). See `RoleScaffold`.
+- **Layout:** below 600 px wide is phone (floating bottom bar), 600–1024 is tablet (rail), and 1024+ is desktop (side menu). See `RoleScaffold`. On phones the body runs behind the bar (`extendBody`): lists get the bar's height from `MediaQuery` padding, so don't set a fixed bottom padding on a list without adding `MediaQuery.paddingOf(context).bottom`.
 - **Screens:** every screen has an ID in `spec.md` (D34, AS1, P1, AD1 …). Placeholder pages show it until the screen is built.
+
+### Motion
+
+- **Tokens:** every duration and curve comes from `Motion` in `lib/core/theme/motion.dart`: `fast` 150 ms (press, toggles), `normal` 250 ms (state changes, nav bar), `slow` 400 ms (screen entrances, signature moments), `fastExit` / `normalExit` / `slowExit` (about 65%), `enterCurve`, `exitCurve`, `exitCurveReversed` (for `switchOutCurve` and `reverseCurve`), `standardCurve`, `spring`, `springBouncy`. Never type a `Duration` or a curve in a widget.
+- **Reduced motion:** read `Motion.of(context).reduced` (it comes from `MediaQuery.disableAnimations`). When it is on, entrances and decoration become a plain fade or nothing; state changes still crossfade. The shared widgets below already do this.
+- **Performance:** animate transform and opacity only, and put a `RepaintBoundary` around anything that animates continuously (shimmer, spinners, Lottie).
+- **Page transitions:** nothing to add per route. A `GoRoute` with `builder:` slides on the horizontal shared axis (mirrored in Arabic) through `AppPageTransitionsBuilder` in the theme. Each menu destination is a branch of its role's `StatefulShellRoute`, so tabs fade through and keep their state. Put detail screens under their tab's `GoRoute` (`routes: [...]`).
+- **Nav badges:** override `navBadgeProvider` (in `role_scaffold.dart`) to return `NavBadge.count(n)` or `NavBadge.dot()` for a destination path; the bar, rail and side menu show it, and "More" gets a dot when something inside it has one.
+
+| Widget (`lib/core/widgets/`) | Use it for |
+|---|---|
+| `Pressable(onTap:, child:)` | Custom tappable cards and tiles: scales to 0.97 on press. Buttons and `InkWell` already ripple. |
+| `StaggerGroup` + `StaggeredEntrance(index:, child:)` | List and grid items that fade and rise in, 40 ms apart (first 8 only). |
+| `SkeletonLoading(loading:, child:)` | Loading lists and cards: wrap the real widget built with placeholder data. No centred spinners. |
+| `EmptyState(title:, message:, actionLabel:, onAction:)` | Empty lists: illustration, message and the action that fills it. |
+| `SuccessCheck(onCompleted:)` | The success moment (P15, D15, D20): the Lottie check, 1.1 s. |
+| `StateSwitcher(state:, …)` / `AsyncStateSwitcher(value:, …)` | Crossfading loading, content, empty and error. |
+| `SubmitButton(label:, status:, onPressed:)` | Form submit: label → progress (after 300 ms) → check. |
+| `ShakeOnError(trigger:, child:)` | Shake a form once when `trigger` changes (pass an error counter). |
+| `ContainerTransform(closedBuilder:, openBuilder:)` | List → detail: the card grows into the screen. |
+| `AppLogoMark(animate: true, hero: true)` | The logo drawing itself (splash), with `AppLogoMark.heroTag` for the splash → login flight. |
+| `navigation/`: `FloatingNavBar`, `AppNavRail`, `AppSideMenu` | Used by `RoleScaffold`; the same sliding indicator in all three. |
+
+- **Lottie:** files live in `assets/lottie/`, 100 KB and 1.5 s at most. Record the source and licence of each in `assets/lottie/SOURCES.txt`, and replace its colours with theme colours through `LottieDelegates` (see `SuccessCheck`).
+- **flutter_animate:** fine for one-off effects, but its `Animate` widget starts a timer even with no delay, so a widget test that builds it must end with `pumpAndSettle()` or a timed `pump`. The shared widgets above use Flutter's own animations and don't have this catch.
+- **Tests:** `test/support/harness.dart` pumps a widget in the app theme, in Arabic (`rtl: true`) or with reduced motion (`reduced: true`).
 
 ## Not set up yet
 

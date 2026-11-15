@@ -314,6 +314,12 @@ abstract class AppLocalizations {
   /// **'Live board'**
   String get navLive;
 
+  /// Short name of the live board for the phone bottom bar, where the full name does not fit.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get navLiveShort;
+
   /// No description provided for @navDashboard.
   ///
   /// In en, this message translates to:
@@ -445,6 +451,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Audit log'**
   String get navAuditLog;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @navBadgeNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get navBadgeNew;
+
+  /// Unread count on a navigation item, read by screen readers. count is a whole number.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} unread'**
+  String navBadgeUnread(int count);
+
+  /// Screen-reader label of a navigation item that has a badge, e.g. "Chats, 3 unread".
+  ///
+  /// In en, this message translates to:
+  /// **'{label}, {badge}'**
+  String navItemWithBadge(String label, String badge);
 }
 
 class _AppLocalizationsDelegate

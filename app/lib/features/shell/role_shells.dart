@@ -10,15 +10,23 @@ class NavDestinationSpec {
   NavDestinationSpec({
     required this.path,
     required this.icon,
+    required this.selectedIcon,
     required this.label,
     required this.screenId,
     this.primary = false,
+    this.barLabel,
   });
 
   final String path;
+
+  /// Outline icon; [selectedIcon] is the filled one shown when selected.
   final IconData icon;
+  final IconData selectedIcon;
   final L10nLabel label;
   final String screenId;
+
+  /// Shorter label for the phone bottom bar, when [label] doesn't fit there.
+  final L10nLabel? barLabel;
 
   /// Shown in the phone's bottom bar. Others go under "More" on phones and
   /// tablets. Desktop shows every item in the side menu.
@@ -47,16 +55,16 @@ class RoleShell {
     role: UserRole.doctor,
     basePath: '/doctor',
     destinations: [
-      NavDestinationSpec(path: '/doctor/live', icon: Icons.monitor_heart_outlined, label: (l) => l.navLive, screenId: 'D34', primary: true),
-      NavDestinationSpec(path: '/doctor/patients', icon: Icons.people_alt_outlined, label: (l) => l.navPatients, screenId: 'D4', primary: true),
-      NavDestinationSpec(path: '/doctor/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'D1', primary: true),
-      NavDestinationSpec(path: '/doctor/chats', icon: Icons.chat_bubble_outline, label: (l) => l.navChats, screenId: 'D16', primary: true),
-      NavDestinationSpec(path: '/doctor/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'D30'),
-      NavDestinationSpec(path: '/doctor/revenue', icon: Icons.trending_up, label: (l) => l.navRevenue, screenId: 'D35'),
-      NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, label: (l) => l.navBilling, screenId: 'D18'),
-      NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, label: (l) => l.navBranches, screenId: 'D28'),
-      NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, label: (l) => l.navAssistants, screenId: 'D25'),
-      NavDestinationSpec(path: '/doctor/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'D24'),
+      NavDestinationSpec(path: '/doctor/live', icon: Icons.monitor_heart_outlined, selectedIcon: Icons.monitor_heart, label: (l) => l.navLive, barLabel: (l) => l.navLiveShort, screenId: 'D34', primary: true),
+      NavDestinationSpec(path: '/doctor/patients', icon: Icons.people_alt_outlined, selectedIcon: Icons.people_alt, label: (l) => l.navPatients, screenId: 'D4', primary: true),
+      NavDestinationSpec(path: '/doctor/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'D1', primary: true),
+      NavDestinationSpec(path: '/doctor/chats', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'D16', primary: true),
+      NavDestinationSpec(path: '/doctor/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'D30'),
+      NavDestinationSpec(path: '/doctor/revenue', icon: Icons.trending_up, selectedIcon: Icons.trending_up, label: (l) => l.navRevenue, screenId: 'D35'),
+      NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'D18'),
+      NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, selectedIcon: Icons.store_mall_directory, label: (l) => l.navBranches, screenId: 'D28'),
+      NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, selectedIcon: Icons.badge, label: (l) => l.navAssistants, screenId: 'D25'),
+      NavDestinationSpec(path: '/doctor/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'D24'),
     ],
   );
 
@@ -65,13 +73,13 @@ class RoleShell {
     role: UserRole.assistant,
     basePath: '/assistant',
     destinations: [
-      NavDestinationSpec(path: '/assistant/live', icon: Icons.monitor_heart_outlined, label: (l) => l.navLive, screenId: 'AS1', primary: true),
-      NavDestinationSpec(path: '/assistant/patients', icon: Icons.people_alt_outlined, label: (l) => l.navPatients, screenId: 'AS2', primary: true),
-      NavDestinationSpec(path: '/assistant/chats', icon: Icons.chat_bubble_outline, label: (l) => l.navChats, screenId: 'AS9', primary: true),
-      NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'AS13'),
-      NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'AS18'),
-      NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, label: (l) => l.navBilling, screenId: 'AS10'),
-      NavDestinationSpec(path: '/assistant/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'AS12'),
+      NavDestinationSpec(path: '/assistant/live', icon: Icons.monitor_heart_outlined, selectedIcon: Icons.monitor_heart, label: (l) => l.navLive, barLabel: (l) => l.navLiveShort, screenId: 'AS1', primary: true),
+      NavDestinationSpec(path: '/assistant/patients', icon: Icons.people_alt_outlined, selectedIcon: Icons.people_alt, label: (l) => l.navPatients, screenId: 'AS2', primary: true),
+      NavDestinationSpec(path: '/assistant/chats', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'AS9', primary: true),
+      NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'AS13'),
+      NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AS18'),
+      NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'AS10'),
+      NavDestinationSpec(path: '/assistant/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AS12'),
     ],
   );
 
@@ -79,11 +87,11 @@ class RoleShell {
     role: UserRole.patient,
     basePath: '/patient',
     destinations: [
-      NavDestinationSpec(path: '/patient/home', icon: Icons.home_outlined, label: (l) => l.navHome, screenId: 'P1', primary: true),
-      NavDestinationSpec(path: '/patient/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'P16', primary: true),
-      NavDestinationSpec(path: '/patient/file', icon: Icons.folder_shared_outlined, label: (l) => l.navMedicalFile, screenId: 'P4', primary: true),
-      NavDestinationSpec(path: '/patient/chat', icon: Icons.chat_bubble_outline, label: (l) => l.navChats, screenId: 'P11', primary: true),
-      NavDestinationSpec(path: '/patient/account', icon: Icons.person_outline, label: (l) => l.navAccount, screenId: 'P14', primary: true),
+      NavDestinationSpec(path: '/patient/home', icon: Icons.home_outlined, selectedIcon: Icons.home, label: (l) => l.navHome, screenId: 'P1', primary: true),
+      NavDestinationSpec(path: '/patient/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'P16', primary: true),
+      NavDestinationSpec(path: '/patient/file', icon: Icons.folder_shared_outlined, selectedIcon: Icons.folder_shared, label: (l) => l.navMedicalFile, screenId: 'P4', primary: true),
+      NavDestinationSpec(path: '/patient/chat', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'P11', primary: true),
+      NavDestinationSpec(path: '/patient/account', icon: Icons.person_outline, selectedIcon: Icons.person, label: (l) => l.navAccount, screenId: 'P14', primary: true),
     ],
   );
 
@@ -91,17 +99,17 @@ class RoleShell {
     role: UserRole.admin,
     basePath: '/admin',
     destinations: [
-      NavDestinationSpec(path: '/admin/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'AD1', primary: true),
-      NavDestinationSpec(path: '/admin/doctors', icon: Icons.medical_services_outlined, label: (l) => l.navDoctors, screenId: 'AD4', primary: true),
-      NavDestinationSpec(path: '/admin/payments', icon: Icons.payments_outlined, label: (l) => l.navPayments, screenId: 'AD7', primary: true),
-      NavDestinationSpec(path: '/admin/invoices', icon: Icons.receipt_long_outlined, label: (l) => l.navInvoices, screenId: 'AD9', primary: true),
-      NavDestinationSpec(path: '/admin/signups', icon: Icons.how_to_reg_outlined, label: (l) => l.navSignups, screenId: 'AD2'),
-      NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
-      NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, label: (l) => l.navSpecialties, screenId: 'AD19'),
-      NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, label: (l) => l.navCatalogs, screenId: 'AD20'),
-      NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, label: (l) => l.navAdmins, screenId: 'AD14'),
-      NavDestinationSpec(path: '/admin/audit', icon: Icons.history, label: (l) => l.navAuditLog, screenId: 'AD15'),
-      NavDestinationSpec(path: '/admin/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'AD13'),
+      NavDestinationSpec(path: '/admin/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AD1', primary: true),
+      NavDestinationSpec(path: '/admin/doctors', icon: Icons.medical_services_outlined, selectedIcon: Icons.medical_services, label: (l) => l.navDoctors, screenId: 'AD4', primary: true),
+      NavDestinationSpec(path: '/admin/payments', icon: Icons.payments_outlined, selectedIcon: Icons.payments, label: (l) => l.navPayments, screenId: 'AD7', primary: true),
+      NavDestinationSpec(path: '/admin/invoices', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navInvoices, screenId: 'AD9', primary: true),
+      NavDestinationSpec(path: '/admin/signups', icon: Icons.how_to_reg_outlined, selectedIcon: Icons.how_to_reg, label: (l) => l.navSignups, screenId: 'AD2'),
+      NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, selectedIcon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
+      NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, selectedIcon: Icons.category, label: (l) => l.navSpecialties, screenId: 'AD19'),
+      NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, selectedIcon: Icons.library_books, label: (l) => l.navCatalogs, screenId: 'AD20'),
+      NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, selectedIcon: Icons.admin_panel_settings, label: (l) => l.navAdmins, screenId: 'AD14'),
+      NavDestinationSpec(path: '/admin/audit', icon: Icons.history, selectedIcon: Icons.history, label: (l) => l.navAuditLog, screenId: 'AD15'),
+      NavDestinationSpec(path: '/admin/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AD13'),
     ],
   );
 }

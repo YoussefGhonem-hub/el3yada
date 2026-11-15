@@ -8,6 +8,7 @@ import '../features/admin/presentation/profile/admin_profile_screen.dart';
 import '../features/admin/presentation/settings/admin_settings_screen.dart';
 import '../features/admin/presentation/signups/signup_requests_screen.dart';
 import '../features/admin/presentation/signups/signup_review.dart';
+import '../features/patients/clinic_routes.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_shells.dart';
 
@@ -25,6 +26,8 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   AdminRoutes.settings: (_) => const AdminSettingsScreen(),
   AdminRoutes.admins: (_) => const AdminUsersScreen(),
   AdminRoutes.audit: (_) => const AuditLogScreen(),
+  // D1–D9, AS1–AS5 (patients, sessions, fees).
+  ...clinicDestinationScreens,
 };
 
 /// Detail routes under a destination, relative to it, for example
@@ -41,6 +44,7 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
   AdminRoutes.settings: [
     GoRoute(path: 'profile', builder: (context, state) => const AdminProfileScreen()),
   ],
+  ...clinicDestinationRoutes,
 };
 
 Widget destinationPage(BuildContext context, NavDestinationSpec destination) =>

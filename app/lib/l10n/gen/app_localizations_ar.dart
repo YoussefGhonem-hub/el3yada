@@ -2127,4 +2127,1064 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get tempPasswordMessageCopied =>
       'لا يوجد تطبيق رسائل. تم نسخ الرسالة، الصقها حيث تريد.';
+
+  @override
+  String get sessionToday => 'اليوم';
+
+  @override
+  String get sessionYesterday => 'أمس';
+
+  @override
+  String sessionDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'منذ $count يوم',
+      many: 'منذ $count يوماً',
+      few: 'منذ $count أيام',
+      two: 'منذ يومين',
+      one: 'منذ يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionTypeExamination => 'كشف';
+
+  @override
+  String get sessionTypeConsultation => 'استشارة';
+
+  @override
+  String get sessionPaymentCash => 'نقداً';
+
+  @override
+  String get sessionPaymentCard => 'بطاقة';
+
+  @override
+  String get sessionPaymentInstapay => 'إنستاباي';
+
+  @override
+  String get sessionPaymentWallet => 'محفظة إلكترونية';
+
+  @override
+  String get sessionAwaitingDoctor => 'بانتظار الطبيب';
+
+  @override
+  String get patientHasAllergies => 'لديه حساسية';
+
+  @override
+  String get patientAllergyFlag => 'حساسية';
+
+  @override
+  String patientFileNumber(String number) {
+    return 'ملف $number';
+  }
+
+  @override
+  String feesEquation(String examinations, String consultations, String total) {
+    return '$examinations + $consultations = $total';
+  }
+
+  @override
+  String feesExaminationCount(int count) {
+    return '$count كشف';
+  }
+
+  @override
+  String feesConsultationCount(int count) {
+    return '$count استشارة';
+  }
+
+  @override
+  String get patientAdd => 'إضافة مريض';
+
+  @override
+  String patientRegisterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مريض',
+      many: '$count مريضاً',
+      few: '$count مرضى',
+      two: 'مريضان',
+      one: 'مريض واحد',
+      zero: 'لا يوجد مرضى',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientSearchHint => 'ابحث بالاسم أو رقم الموبايل أو رقم الملف';
+
+  @override
+  String get patientNoMatchTitle => 'لا يوجد مرضى مطابقون';
+
+  @override
+  String get patientNoMatchBody => 'جرّب اسماً أو رقماً أو فلتراً آخر.';
+
+  @override
+  String get patientFilterClear => 'مسح الفلاتر';
+
+  @override
+  String get patientEmptyTitle => 'لا يوجد مرضى بعد';
+
+  @override
+  String get patientEmptyBody => 'أضف أول مريض لفتح ملفه.';
+
+  @override
+  String get patientFilterLastVisit => 'آخر زيارة';
+
+  @override
+  String get patientFilterAny => 'الكل';
+
+  @override
+  String get patientFilterBranch => 'الفرع';
+
+  @override
+  String get patientFilterAllBranches => 'كل الفروع';
+
+  @override
+  String get patientFilterVisits => 'عدد الزيارات';
+
+  @override
+  String get patientFilterNewThisMonth => 'جدد هذا الشهر';
+
+  @override
+  String get patientFilterChronic => 'مرض مزمن';
+
+  @override
+  String get patientFilterArchived => 'المؤرشفون';
+
+  @override
+  String get patientVisitsOne => 'زيارة واحدة';
+
+  @override
+  String get patientVisitsFew => 'من 2 إلى 4 زيارات';
+
+  @override
+  String get patientVisitsMany => '5 زيارات أو أكثر';
+
+  @override
+  String get patientLastVisitThisWeek => 'هذا الأسبوع';
+
+  @override
+  String get patientLastVisitThisMonth => 'هذا الشهر';
+
+  @override
+  String get patientLastVisitNotSeen3m => 'لم يزر منذ 3 أشهر';
+
+  @override
+  String get patientLastVisitNotSeen6m => 'لم يزر منذ 6 أشهر';
+
+  @override
+  String get patientLastVisitNotSeen12m => 'لم يزر منذ سنة';
+
+  @override
+  String get patientLastVisitNever => 'لم يزر بعد';
+
+  @override
+  String get patientArchived => 'مؤرشف';
+
+  @override
+  String get patientNoVisits => 'لا توجد زيارات بعد';
+
+  @override
+  String get patientColumnFile => 'الملف';
+
+  @override
+  String get patientColumnName => 'الاسم';
+
+  @override
+  String get patientColumnPhone => 'الموبايل';
+
+  @override
+  String get patientColumnAge => 'السن';
+
+  @override
+  String get patientColumnFirstVisit => 'أول زيارة';
+
+  @override
+  String get patientColumnLastVisit => 'آخر زيارة';
+
+  @override
+  String get patientColumnVisits => 'الزيارات';
+
+  @override
+  String get patientColumnPaid => 'المدفوع';
+
+  @override
+  String get patientColumnAllergies => 'الحساسية';
+
+  @override
+  String patientVisitsSplit(int examinations, int consultations) {
+    return '$examinations كشف، $consultations استشارة';
+  }
+
+  @override
+  String get patientGenderMale => 'ذكر';
+
+  @override
+  String get patientGenderFemale => 'أنثى';
+
+  @override
+  String patientAgeYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years سنة',
+      many: '$years سنة',
+      few: '$years سنوات',
+      two: 'سنتان',
+      one: 'سنة واحدة',
+      zero: 'أقل من سنة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientAgeGender(String age, String gender) {
+    return '$age، $gender';
+  }
+
+  @override
+  String patientVisitsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count زيارة',
+      many: '$count زيارة',
+      few: '$count زيارات',
+      two: 'زيارتان',
+      one: 'زيارة واحدة',
+      zero: 'لا زيارات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientVisitsSummary(
+    String visits,
+    String examinations,
+    String consultations,
+  ) {
+    return '$visits: $examinations، $consultations';
+  }
+
+  @override
+  String get patientSortFileNumber => 'رقم الملف';
+
+  @override
+  String get patientSortGender => 'النوع';
+
+  @override
+  String get patientSortExaminations => 'عدد الكشوف';
+
+  @override
+  String get patientSortConsultations => 'عدد الاستشارات';
+
+  @override
+  String get patientSortFiles => 'الملفات';
+
+  @override
+  String get patientSortLinkedAt => 'تاريخ الإضافة';
+
+  @override
+  String get patientTotalPaid => 'إجمالي المدفوع';
+
+  @override
+  String patientLastVisitSemantics(String type, String date, String ago) {
+    return 'آخر زيارة: $type، $date، $ago';
+  }
+
+  @override
+  String get patientResetPasswordTitle => 'إعادة تعيين كلمة المرور؟';
+
+  @override
+  String patientResetPasswordBody(String name) {
+    return 'سيحصل $name على كلمة مرور مؤقتة جديدة، ويُسجَّل خروجه من كل الأجهزة، ثم يختار كلمة مرور جديدة عند تسجيل الدخول.';
+  }
+
+  @override
+  String get patientResetPassword => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get patientNewTemporaryPassword => 'كلمة مرور مؤقتة جديدة';
+
+  @override
+  String get patientArchiveTitle => 'أرشفة هذا المريض؟';
+
+  @override
+  String get patientUnarchiveTitle => 'إعادة هذا المريض إلى القائمة؟';
+
+  @override
+  String get patientArchiveBody =>
+      'سيختفي من قائمة المرضى دون حذف أي بيانات، وتعيده أي زيارة جديدة.';
+
+  @override
+  String get patientUnarchiveBody => 'سيظهر في قائمة المرضى مرة أخرى.';
+
+  @override
+  String get patientArchive => 'أرشفة';
+
+  @override
+  String get patientUnarchive => 'إلغاء الأرشفة';
+
+  @override
+  String get patientArchivedDone => 'تمت أرشفة المريض';
+
+  @override
+  String get patientUnarchivedDone => 'عاد المريض إلى القائمة';
+
+  @override
+  String get patientMoreActions => 'إجراءات أخرى';
+
+  @override
+  String get sessionNew => 'زيارة جديدة';
+
+  @override
+  String get patientEdit => 'تعديل';
+
+  @override
+  String get patientLinkedNote =>
+      'أنشأت عيادة أخرى حساب هذا المريض، لذلك ترى اسمه ورقم موبايله ونوعه وتاريخ ميلاده، والسجلات التي تضيفها عيادتك فقط.';
+
+  @override
+  String get patientDetails => 'البيانات الشخصية';
+
+  @override
+  String get patientBloodType => 'فصيلة الدم';
+
+  @override
+  String get patientNationalId => 'الرقم القومي';
+
+  @override
+  String get patientAddress => 'العنوان';
+
+  @override
+  String get patientEmergencyContact => 'جهة اتصال للطوارئ';
+
+  @override
+  String get patientNoTabs => 'صلاحياتك لا تشمل الملف الطبي لهذا المريض.';
+
+  @override
+  String get patientTabOverview => 'نظرة عامة';
+
+  @override
+  String get patientTabSessions => 'الزيارات';
+
+  @override
+  String get patientCantOpenApp => 'لا يوجد تطبيق على هذا الجهاز يمكنه فتحه.';
+
+  @override
+  String get patientCall => 'اتصال';
+
+  @override
+  String get patientWhatsApp => 'واتساب';
+
+  @override
+  String get patientFileSummary => 'ملخص الملف';
+
+  @override
+  String get patientConsultationsSinceExam => 'منذ آخر كشف';
+
+  @override
+  String sessionConsultationCount(int count, int max) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'استشارة $count من $max منذ آخر كشف',
+      zero: 'لا استشارات منذ آخر كشف (الحد $max)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientProfileEmptyTitle => 'لا يوجد ملف طبي بعد';
+
+  @override
+  String get patientProfileEmptyBody =>
+      'سجّل الحساسية والأمراض المزمنة والأدوية الحالية.';
+
+  @override
+  String get patientEditMedicalProfile => 'تعديل الملف الطبي';
+
+  @override
+  String get patientAllergies => 'الحساسية';
+
+  @override
+  String get patientChronicDiseases => 'الأمراض المزمنة';
+
+  @override
+  String get patientCurrentMedications => 'الأدوية الحالية';
+
+  @override
+  String get patientSurgeries => 'العمليات السابقة';
+
+  @override
+  String get patientFamilyHistory => 'التاريخ العائلي';
+
+  @override
+  String get patientGeneralNotes => 'ملاحظات';
+
+  @override
+  String get patientNoAllergies => 'لا توجد حساسية معروفة';
+
+  @override
+  String get patientNothingRecorded => 'لا يوجد شيء مسجل';
+
+  @override
+  String get patientSessionsEmptyTitle => 'لا توجد زيارات بعد';
+
+  @override
+  String get patientSessionsEmptyBody => 'الزيارة الأولى تكون كشفاً دائماً.';
+
+  @override
+  String get patientLoadMore => 'عرض المزيد';
+
+  @override
+  String sessionPlatformFeeShort(String amount) {
+    return 'الرسوم $amount';
+  }
+
+  @override
+  String sessionRecordedBy(String name) {
+    return 'سجّلها $name';
+  }
+
+  @override
+  String get patientCheckFields => 'راجع الحقول المحددة.';
+
+  @override
+  String get patientAddSubtitle =>
+      'سيحصل المريض على حساب ورقم ملف، وتظهر كلمة المرور المؤقتة مرة واحدة فقط.';
+
+  @override
+  String get patientMobile => 'رقم الموبايل';
+
+  @override
+  String get patientMobileHint => 'يسجّل المريض الدخول به.';
+
+  @override
+  String get patientMobileLabel => 'الموبايل';
+
+  @override
+  String get patientPhoneChecking => 'جارٍ التحقق من الرقم…';
+
+  @override
+  String get patientPhoneNew => 'رقم جديد. أكمل بيانات المريض.';
+
+  @override
+  String get patientPhoneOurs => 'هذا الرقم لمريض مسجل لديك بالفعل';
+
+  @override
+  String get patientPhoneElsewhere => 'هذا الرقم له حساب على «العيادة» بالفعل';
+
+  @override
+  String get patientPhoneElsewhereBody =>
+      'اربط المريض لإضافته إلى قائمتك دون إنشاء حساب جديد.';
+
+  @override
+  String get patientLinkTitle => 'هذا المريض لديه حساب بالفعل';
+
+  @override
+  String patientLinkBody(String phone) {
+    return 'الرقم $phone لمريض مسجل في عيادة أخرى. الربط يضيفه إلى قائمتك برقم ملف جديد.';
+  }
+
+  @override
+  String get patientLinkPrivacy =>
+      'ستظهر لك بياناته الأساسية فقط (الاسم والموبايل والنوع وتاريخ الميلاد)، والسجلات التي تنشئها عيادتك.';
+
+  @override
+  String get patientLinkConfirm => 'ربط المريض';
+
+  @override
+  String get patientLinkedTitle => 'تمت إضافة المريض';
+
+  @override
+  String get patientLinkedBody =>
+      'هذا المريض لديه حساب بالفعل، وتمت إضافته إلى قائمتك.';
+
+  @override
+  String get patientOpenFile => 'فتح الملف';
+
+  @override
+  String get patientErrorName => 'اكتب الاسم ثنائي على الأقل';
+
+  @override
+  String get patientErrorAge => 'اكتب سناً من 0 إلى 120';
+
+  @override
+  String get patientErrorDateOfBirth => 'تاريخ الميلاد غير صحيح';
+
+  @override
+  String get patientErrorNationalId => 'الرقم القومي يجب أن يكون 14 رقم';
+
+  @override
+  String get patientIdentity => 'البيانات الأساسية';
+
+  @override
+  String get patientFullName => 'الاسم بالكامل';
+
+  @override
+  String get patientFullNameHint => 'اسمان على الأقل';
+
+  @override
+  String get patientGender => 'النوع';
+
+  @override
+  String get patientDateOfBirth => 'تاريخ الميلاد أو السن';
+
+  @override
+  String get patientUseDate => 'تاريخ';
+
+  @override
+  String get patientUseAge => 'سن';
+
+  @override
+  String get patientAgeLabel => 'السن بالسنوات';
+
+  @override
+  String get patientYearsSuffix => 'سنة';
+
+  @override
+  String get patientDateOfBirthLabel => 'تاريخ الميلاد';
+
+  @override
+  String get patientMoreDetails => 'بيانات إضافية';
+
+  @override
+  String get patientOptional => 'اختيارية';
+
+  @override
+  String get patientNationalIdHint => '14 رقماً';
+
+  @override
+  String get patientNotSet => 'غير محددة';
+
+  @override
+  String get patientEmergencyName => 'اسم جهة الاتصال للطوارئ';
+
+  @override
+  String get patientEmergencyPhone => 'رقم جهة الاتصال للطوارئ';
+
+  @override
+  String get patientEditTitle => 'تعديل بيانات المريض';
+
+  @override
+  String get patientMedicalProfile => 'الملف الطبي';
+
+  @override
+  String get patientDiscardBody => 'لم تُحفظ تعديلاتك وستضيع.';
+
+  @override
+  String get patientSaved => 'تم الحفظ';
+
+  @override
+  String get patientNoChanges => 'لا توجد تعديلات';
+
+  @override
+  String get patientUnsaved => 'توجد تعديلات لم تُحفظ';
+
+  @override
+  String get patientPhoneChangeHint =>
+      'رقم دخول المريض، ويُغيَّر وحده بعد التأكيد.';
+
+  @override
+  String get patientChangePhone => 'تغيير الرقم';
+
+  @override
+  String patientChangePhoneBody(String name) {
+    return 'سيسجّل $name الدخول بالرقم الجديد، وتبقى الأجهزة المسجلة حالياً كما هي.';
+  }
+
+  @override
+  String get patientNewMobile => 'رقم الموبايل الجديد';
+
+  @override
+  String get patientChangePhoneConfirm => 'تغيير الرقم';
+
+  @override
+  String get patientPhoneSame => 'هذا هو الرقم الحالي.';
+
+  @override
+  String get patientPhoneChanged =>
+      'تم تغيير رقم الموبايل، وسيسجّل المريض الدخول بالرقم الجديد.';
+
+  @override
+  String get patientFamilyHistoryHint => 'مثال: الأب: سكر';
+
+  @override
+  String patientListCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عنصر',
+      many: '$count عنصراً',
+      few: '$count عناصر',
+      two: 'عنصران',
+      one: 'عنصر واحد',
+      zero: 'لا يوجد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientListFull => 'القائمة تتسع لـ 50 عنصراً كحد أقصى.';
+
+  @override
+  String get patientListDuplicate => 'موجود في القائمة بالفعل.';
+
+  @override
+  String get patientMoveUp => 'نقل لأعلى';
+
+  @override
+  String get patientMoveDown => 'نقل لأسفل';
+
+  @override
+  String patientRemoveItem(String item) {
+    return 'حذف $item';
+  }
+
+  @override
+  String get patientAddItemHint => 'أضف عنصراً';
+
+  @override
+  String get patientAddItem => 'إضافة';
+
+  @override
+  String sessionConsultationLimit(int max) {
+    String _temp0 = intl.Intl.pluralLogic(
+      max,
+      locale: localeName,
+      other: 'لا يمكن تسجيل أكثر من $max استشارة متتالية. يجب تسجيل كشف أولاً.',
+      few: 'لا يمكن تسجيل أكثر من $max استشارات متتالية. يجب تسجيل كشف أولاً.',
+      two: 'لا يمكن تسجيل أكثر من استشارتين متتاليتين. يجب تسجيل كشف أولاً.',
+      one: 'لا يمكن تسجيل أكثر من استشارة واحدة متتالية. يجب تسجيل كشف أولاً.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionRuleFirstVisit =>
+      'هذه أول زيارة للمريض لديك، لذلك يجب أن تكون كشفاً.';
+
+  @override
+  String sessionRuleChanged(String message) {
+    return 'سُجّلت زيارة لهذا المريض الآن من جهاز آخر. $message';
+  }
+
+  @override
+  String get sessionStepType => 'نوع الزيارة';
+
+  @override
+  String get sessionStepDetails => 'التفاصيل والمبلغ';
+
+  @override
+  String get sessionPickType => 'اختر نوع الزيارة.';
+
+  @override
+  String sessionPicked(String type) {
+    return 'تم اختيار $type';
+  }
+
+  @override
+  String get sessionNext => 'التالي';
+
+  @override
+  String get sessionSave => 'حفظ الزيارة';
+
+  @override
+  String get sessionAmountRequired => 'أدخل المبلغ المحصّل';
+
+  @override
+  String get sessionClinical => 'البيانات الطبية';
+
+  @override
+  String get sessionChiefComplaint => 'الشكوى الرئيسية';
+
+  @override
+  String get sessionFindings => 'نتائج الفحص';
+
+  @override
+  String get sessionDiagnosis => 'التشخيص';
+
+  @override
+  String get sessionPatientNotes => 'ملاحظات للمريض';
+
+  @override
+  String get sessionPatientNotesHint => 'يراها المريض في تطبيقه.';
+
+  @override
+  String get sessionAmountCharged => 'المبلغ المحصّل';
+
+  @override
+  String get sessionNoPrice =>
+      'لا يوجد سعر محدد لهذا الفرع. أدخل ما دفعه المريض.';
+
+  @override
+  String sessionVisitPrice(String amount) {
+    return 'سعر الزيارة $amount';
+  }
+
+  @override
+  String get sessionFree => 'مجاناً';
+
+  @override
+  String get sessionAmountLabel => 'المبلغ';
+
+  @override
+  String get sessionCurrency => 'ج.م';
+
+  @override
+  String get sessionAmountHint => 'يمكن تخفيضه كخصم، ولا يغيّر رسوم المنصة.';
+
+  @override
+  String get sessionFreeVisit => 'زيارة مجانية';
+
+  @override
+  String get sessionPaymentMethod => 'طريقة الدفع (اختيارية)';
+
+  @override
+  String sessionBranch(String name) {
+    return 'الفرع: $name';
+  }
+
+  @override
+  String get sessionChangeBranch => 'تغيير الفرع';
+
+  @override
+  String get sessionFirstVisit => 'أول زيارة لديك: كشف فقط';
+
+  @override
+  String sessionLastSession(String type, String date) {
+    return 'آخر زيارة: $type، $date';
+  }
+
+  @override
+  String get sessionNoPriceShort => 'لا يوجد سعر';
+
+  @override
+  String get sessionNoPriceHint => 'اكتب المبلغ في الخطوة التالية';
+
+  @override
+  String get sessionVisitPriceLabel => 'سعر الزيارة';
+
+  @override
+  String sessionPlatformFee(String amount) {
+    return 'رسوم المنصة $amount';
+  }
+
+  @override
+  String get sessionPrivateNote => 'ملاحظة خاصة';
+
+  @override
+  String get sessionPrivateNoteHint => 'لا تظهر للمريض';
+
+  @override
+  String get sessionPrivateNotePlaceholder => 'لا يقرؤها أحد غيرك.';
+
+  @override
+  String get sessionFollowUp => 'موعد المتابعة';
+
+  @override
+  String get sessionClearFollowUp => 'مسح موعد المتابعة';
+
+  @override
+  String sessionConfirmTitle(String type) {
+    return 'حفظ كـ $type؟';
+  }
+
+  @override
+  String sessionConfirmFee(String amount) {
+    return 'ستُضاف رسوم قدرها $amount.';
+  }
+
+  @override
+  String get sessionConfirmPatient => 'المريض';
+
+  @override
+  String get sessionConfirmBranch => 'الفرع';
+
+  @override
+  String get sessionConfirmLocked => 'لا يمكن تغيير النوع والوقت بعد الحفظ.';
+
+  @override
+  String get sessionConfirmSave => 'حفظ';
+
+  @override
+  String get sessionLater => 'قريباً';
+
+  @override
+  String get sessionSaved => 'تم حفظ الزيارة';
+
+  @override
+  String sessionSavedBody(String type, String patient, String fee) {
+    return '$type للمريض $patient، وأُضيفت رسوم $fee.';
+  }
+
+  @override
+  String get sessionWritePrescription => 'كتابة روشتة';
+
+  @override
+  String get sessionLabRequest => 'طلب تحاليل أو أشعة';
+
+  @override
+  String get sessionAttachFiles => 'إرفاق ملفات';
+
+  @override
+  String get sessionView => 'عرض الزيارة';
+
+  @override
+  String get sessionPickPatient => 'اختر المريض';
+
+  @override
+  String get sessionRecentPatients => 'المرضى الأحدث زيارة';
+
+  @override
+  String get sessionSearchResults => 'النتائج';
+
+  @override
+  String get sessionVitals => 'العلامات الحيوية';
+
+  @override
+  String get sessionVitalsHint => 'الضغط والنبض والحرارة والوزن والطول والسكر';
+
+  @override
+  String get sessionVitalBp => 'ضغط الدم';
+
+  @override
+  String get sessionVitalBpSys => 'الانقباضي';
+
+  @override
+  String get sessionVitalBpDia => 'الانبساطي';
+
+  @override
+  String get sessionVitalPulse => 'النبض';
+
+  @override
+  String get sessionVitalTemp => 'الحرارة';
+
+  @override
+  String get sessionVitalWeight => 'الوزن';
+
+  @override
+  String get sessionVitalHeight => 'الطول';
+
+  @override
+  String get sessionVitalGlucose => 'السكر';
+
+  @override
+  String get sessionVitalBpPair => 'أدخل قيمتي الضغط معاً.';
+
+  @override
+  String get sessionVitalUnusual => 'القيمة غير معتادة، تأكد منها';
+
+  @override
+  String get sessionNoVitals => 'لم تُسجَّل علامات حيوية';
+
+  @override
+  String get sessionRecordedByDoctor => 'الطبيب';
+
+  @override
+  String feesExaminationsFee(String amount) {
+    return 'الكشوف $amount';
+  }
+
+  @override
+  String feesConsultationsFee(String amount) {
+    return 'الاستشارات $amount';
+  }
+
+  @override
+  String get sessionDetailsTitle => 'تفاصيل الزيارة';
+
+  @override
+  String get sessionLocked => 'لا يمكن تغييره بعد الحفظ';
+
+  @override
+  String get sessionSummary => 'الزيارة';
+
+  @override
+  String get sessionTime => 'الوقت';
+
+  @override
+  String get sessionType => 'النوع';
+
+  @override
+  String get sessionBranchLabel => 'الفرع';
+
+  @override
+  String get sessionPlatformFeeLabel => 'رسوم المنصة';
+
+  @override
+  String get sessionRecordedByLabel => 'سجّلها';
+
+  @override
+  String sessionRecordedByAssistant(String name) {
+    return '$name (مساعد)';
+  }
+
+  @override
+  String get sessionEditAmount => 'تعديل المبلغ';
+
+  @override
+  String get sessionAmountSaved => 'تم حفظ المبلغ';
+
+  @override
+  String get sessionAmountLogged => 'يُسجَّل كل تعديل في سجل النشاط.';
+
+  @override
+  String get sessionNotRecorded => 'غير مسجل';
+
+  @override
+  String get sessionAwaitingHint =>
+      'سجّلها مساعد. أضف البيانات الطبية لإزالة «بانتظار الطبيب».';
+
+  @override
+  String get sessionNoPrivateNote => 'لا توجد ملاحظة خاصة';
+
+  @override
+  String get sessionDelete => 'حذف الزيارة';
+
+  @override
+  String get sessionDeleted => 'تم حذف الزيارة';
+
+  @override
+  String get sessionNotDeletableLatest => 'لا يمكن حذف إلا آخر زيارة للمريض.';
+
+  @override
+  String get sessionNotDeletableDay =>
+      'لا يمكن حذف الزيارة إلا في يوم تسجيلها.';
+
+  @override
+  String get sessionDeleteTitle => 'حذف هذه الزيارة؟';
+
+  @override
+  String get sessionDeleteBody =>
+      'ستُخصم رسومها من إجمالي اليوم والشهر، ويُسجَّل الحذف مع السبب.';
+
+  @override
+  String get sessionDeleteReason => 'السبب';
+
+  @override
+  String get sessionDeleteReasonRequired => 'اكتب السبب (3 أحرف على الأقل).';
+
+  @override
+  String get sessionDeleteConfirm => 'حذف';
+
+  @override
+  String get sessionTodayTitle => 'زيارات اليوم';
+
+  @override
+  String get sessionDayTitle => 'الزيارات';
+
+  @override
+  String get sessionRecordedByAll => 'الجميع';
+
+  @override
+  String get sessionDayNoMatch => 'لا توجد زيارات مطابقة';
+
+  @override
+  String get sessionDayEmptyTitle => 'لا توجد زيارات في هذا اليوم';
+
+  @override
+  String get sessionDayEmptyBody => 'تظهر هنا الزيارات التي تسجلها مع رسومها.';
+
+  @override
+  String get sessionPreviousDay => 'اليوم السابق';
+
+  @override
+  String get sessionNextDay => 'اليوم التالي';
+
+  @override
+  String get sessionBackToToday => 'اليوم';
+
+  @override
+  String get feesPlatformFees => 'رسوم المنصة';
+
+  @override
+  String get feesCollected => 'المحصّل';
+
+  @override
+  String get feesMonthTitle => 'ملخص الشهر';
+
+  @override
+  String get feesMonthSubtitle => 'رسوم المنصة والكشوف والاستشارات';
+
+  @override
+  String get feesPreviousMonth => 'الشهر السابق';
+
+  @override
+  String get feesNextMonth => 'الشهر التالي';
+
+  @override
+  String get feesMonthTotals => 'إجمالي الشهر';
+
+  @override
+  String get feesPerBranch => 'حسب الفرع';
+
+  @override
+  String get feesMonthNoDays => 'لا توجد أيام في هذا الشهر بعد.';
+
+  @override
+  String get feesColumnDay => 'اليوم';
+
+  @override
+  String get feesColumnExaminations => 'كشف';
+
+  @override
+  String get feesColumnConsultations => 'استشارة';
+
+  @override
+  String get feesColumnAmount => 'الرسوم';
+
+  @override
+  String get feesToday => 'اليوم';
+
+  @override
+  String get feesThisMonth => 'هذا الشهر';
+
+  @override
+  String get homeAnalyticsLaterTitle => 'الرسوم البيانية والتحليلات قادمة';
+
+  @override
+  String get homeAnalyticsLaterBody =>
+      'ستصل الإيرادات وتطور الزيارات والحجوزات في تحديث قادم.';
+
+  @override
+  String get homeToday => 'اليوم';
+
+  @override
+  String get homeSearchPatient => 'بحث عن مريض';
+
+  @override
+  String get homeTodaySessions => 'زيارات اليوم';
+
+  @override
+  String homeTodaySessionsIn(String branch) {
+    return 'زيارات اليوم في $branch';
+  }
+
+  @override
+  String get homeNoSessionsTitle => 'لا توجد زيارات اليوم بعد';
+
+  @override
+  String get homeNoSessionsBody => 'سجّل أول زيارة اليوم.';
+
+  @override
+  String get sessionErrorNotLinked => 'هذا المريض ليس ضمن قائمتك.';
+
+  @override
+  String get patientErrorAlreadyLinked => 'هذا الرقم لمريض مسجل لديك بالفعل.';
+
+  @override
+  String get patientErrorPhoneTaken => 'هذا الرقم مستخدم لحساب مريض آخر.';
+
+  @override
+  String get sessionErrorBranchArchived => 'هذا الفرع مؤرشف. اختر فرعاً آخر.';
+
+  @override
+  String get sessionErrorAmountNotEditable =>
+      'لا يمكن تعديل المبلغ إلا في يوم الزيارة.';
 }

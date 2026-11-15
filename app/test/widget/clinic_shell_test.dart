@@ -22,7 +22,7 @@ void main() {
     expect(find.text('Billing'), findsNothing);
     // One branch: no picker.
     expect(find.byType(BranchPicker), findsOneWidget);
-    expect(find.text('Maadi'), findsNothing);
+    expect(find.descendant(of: find.byType(BranchPicker), matching: find.text('Maadi')), findsNothing);
   });
 
   testWidgets("an assistant can't open a hidden item by its address", (tester) async {
@@ -33,7 +33,8 @@ void main() {
     await settle(tester);
 
     expect(find.textContaining('AS10'), findsNothing);
-    expect(find.textContaining('AS1 '), findsOneWidget);
+    // Back on AS1, the home.
+    expect(find.text('Search patient'), findsOneWidget);
   });
 
   testWidgets('an office manager sees billing, the dashboard and chats', (tester) async {
@@ -49,13 +50,14 @@ void main() {
     await pumpApp(tester);
     await signIn(tester, 'doctor@el3yada.dev');
 
-    expect(find.text('Maadi'), findsOneWidget);
-    await tester.tap(find.text('Maadi'));
+    Finder inPicker(String name) => find.descendant(of: find.byType(BranchPicker), matching: find.text(name));
+    expect(inPicker('Maadi'), findsOneWidget);
+    await tester.tap(inPicker('Maadi'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Nasr City').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Nasr City'), findsOneWidget);
+    expect(inPicker('Nasr City'), findsOneWidget);
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getKeys().where((k) => k.startsWith('clinic.currentBranch.')), isNotEmpty);
   });

@@ -3751,6 +3751,1828 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No messaging app found. The message is copied; paste it where you like.'**
   String get tempPasswordMessageCopied;
+
+  /// No description provided for @sessionToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get sessionToday;
+
+  /// No description provided for @sessionYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get sessionYesterday;
+
+  /// "x days ago" for a last visit (D4, D6).
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String sessionDaysAgo(int count);
+
+  /// No description provided for @sessionTypeExamination.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination'**
+  String get sessionTypeExamination;
+
+  /// No description provided for @sessionTypeConsultation.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get sessionTypeConsultation;
+
+  /// No description provided for @sessionPaymentCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get sessionPaymentCash;
+
+  /// No description provided for @sessionPaymentCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get sessionPaymentCard;
+
+  /// No description provided for @sessionPaymentInstapay.
+  ///
+  /// In en, this message translates to:
+  /// **'InstaPay'**
+  String get sessionPaymentInstapay;
+
+  /// No description provided for @sessionPaymentWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile wallet'**
+  String get sessionPaymentWallet;
+
+  /// No description provided for @sessionAwaitingDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the doctor'**
+  String get sessionAwaitingDoctor;
+
+  /// No description provided for @patientHasAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Has allergies'**
+  String get patientHasAllergies;
+
+  /// No description provided for @patientAllergyFlag.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get patientAllergyFlag;
+
+  /// The per-doctor file number (BR-P6).
+  ///
+  /// In en, this message translates to:
+  /// **'File {number}'**
+  String patientFileNumber(String number);
+
+  /// The fee card line (BR-B2, AC-4): «2 كشف + 3 استشارة = 105 ج.م».
+  ///
+  /// In en, this message translates to:
+  /// **'{examinations} + {consultations} = {total}'**
+  String feesEquation(String examinations, String consultations, String total);
+
+  /// Part of feesEquation.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 examination} other{{count} examinations}}'**
+  String feesExaminationCount(int count);
+
+  /// Part of feesEquation.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 consultation} other{{count} consultations}}'**
+  String feesConsultationCount(int count);
+
+  /// No description provided for @patientAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add patient'**
+  String get patientAdd;
+
+  /// D4 header.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No patients} =1{1 patient} other{{count} patients}}'**
+  String patientRegisterCount(int count);
+
+  /// No description provided for @patientSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, mobile or file number'**
+  String get patientSearchHint;
+
+  /// No description provided for @patientNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No patients match'**
+  String get patientNoMatchTitle;
+
+  /// No description provided for @patientNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name, number or filter.'**
+  String get patientNoMatchBody;
+
+  /// No description provided for @patientFilterClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get patientFilterClear;
+
+  /// No description provided for @patientEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No patients yet'**
+  String get patientEmptyTitle;
+
+  /// No description provided for @patientEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first patient to open their file.'**
+  String get patientEmptyBody;
+
+  /// No description provided for @patientFilterLastVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit'**
+  String get patientFilterLastVisit;
+
+  /// No description provided for @patientFilterAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get patientFilterAny;
+
+  /// No description provided for @patientFilterBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get patientFilterBranch;
+
+  /// No description provided for @patientFilterAllBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'All branches'**
+  String get patientFilterAllBranches;
+
+  /// No description provided for @patientFilterVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get patientFilterVisits;
+
+  /// No description provided for @patientFilterNewThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'New this month'**
+  String get patientFilterNewThisMonth;
+
+  /// No description provided for @patientFilterChronic.
+  ///
+  /// In en, this message translates to:
+  /// **'Chronic disease'**
+  String get patientFilterChronic;
+
+  /// No description provided for @patientFilterArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get patientFilterArchived;
+
+  /// No description provided for @patientVisitsOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1 visit'**
+  String get patientVisitsOne;
+
+  /// No description provided for @patientVisitsFew.
+  ///
+  /// In en, this message translates to:
+  /// **'2 to 4 visits'**
+  String get patientVisitsFew;
+
+  /// No description provided for @patientVisitsMany.
+  ///
+  /// In en, this message translates to:
+  /// **'5 visits or more'**
+  String get patientVisitsMany;
+
+  /// No description provided for @patientLastVisitThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get patientLastVisitThisWeek;
+
+  /// No description provided for @patientLastVisitThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get patientLastVisitThisMonth;
+
+  /// No description provided for @patientLastVisitNotSeen3m.
+  ///
+  /// In en, this message translates to:
+  /// **'Not seen for 3 months'**
+  String get patientLastVisitNotSeen3m;
+
+  /// No description provided for @patientLastVisitNotSeen6m.
+  ///
+  /// In en, this message translates to:
+  /// **'Not seen for 6 months'**
+  String get patientLastVisitNotSeen6m;
+
+  /// No description provided for @patientLastVisitNotSeen12m.
+  ///
+  /// In en, this message translates to:
+  /// **'Not seen for a year'**
+  String get patientLastVisitNotSeen12m;
+
+  /// No description provided for @patientLastVisitNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never visited'**
+  String get patientLastVisitNever;
+
+  /// No description provided for @patientArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get patientArchived;
+
+  /// No description provided for @patientNoVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'No visits yet'**
+  String get patientNoVisits;
+
+  /// No description provided for @patientColumnFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get patientColumnFile;
+
+  /// No description provided for @patientColumnName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get patientColumnName;
+
+  /// No description provided for @patientColumnPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get patientColumnPhone;
+
+  /// No description provided for @patientColumnAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get patientColumnAge;
+
+  /// No description provided for @patientColumnFirstVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'First visit'**
+  String get patientColumnFirstVisit;
+
+  /// No description provided for @patientColumnLastVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit'**
+  String get patientColumnLastVisit;
+
+  /// No description provided for @patientColumnVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get patientColumnVisits;
+
+  /// No description provided for @patientColumnPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get patientColumnPaid;
+
+  /// No description provided for @patientColumnAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get patientColumnAllergies;
+
+  /// Visits column: examinations and consultations.
+  ///
+  /// In en, this message translates to:
+  /// **'{examinations} exam., {consultations} consult.'**
+  String patientVisitsSplit(int examinations, int consultations);
+
+  /// No description provided for @patientGenderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get patientGenderMale;
+
+  /// No description provided for @patientGenderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get patientGenderFemale;
+
+  /// A patient's age.
+  ///
+  /// In en, this message translates to:
+  /// **'{years, plural, =0{Under 1 year} =1{1 year} other{{years} years}}'**
+  String patientAgeYears(int years);
+
+  /// Age and gender under a name.
+  ///
+  /// In en, this message translates to:
+  /// **'{age}, {gender}'**
+  String patientAgeGender(String age, String gender);
+
+  /// Number of visits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No visits} =1{1 visit} other{{count} visits}}'**
+  String patientVisitsCount(int count);
+
+  /// "3 visits: 1 examination, 2 consultations".
+  ///
+  /// In en, this message translates to:
+  /// **'{visits}: {examinations}, {consultations}'**
+  String patientVisitsSummary(
+    String visits,
+    String examinations,
+    String consultations,
+  );
+
+  /// No description provided for @patientSortFileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'File number'**
+  String get patientSortFileNumber;
+
+  /// No description provided for @patientSortGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get patientSortGender;
+
+  /// No description provided for @patientSortExaminations.
+  ///
+  /// In en, this message translates to:
+  /// **'Examinations'**
+  String get patientSortExaminations;
+
+  /// No description provided for @patientSortConsultations.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultations'**
+  String get patientSortConsultations;
+
+  /// No description provided for @patientSortFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get patientSortFiles;
+
+  /// No description provided for @patientSortLinkedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Date added'**
+  String get patientSortLinkedAt;
+
+  /// No description provided for @patientTotalPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Total paid'**
+  String get patientTotalPaid;
+
+  /// Screen reader text for a register row.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit: {type}, {date}, {ago}'**
+  String patientLastVisitSemantics(String type, String date, String ago);
+
+  /// No description provided for @patientResetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset the password?'**
+  String get patientResetPasswordTitle;
+
+  /// BR-P5 confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} gets a new temporary password and is signed out on every device. They choose their own at the next sign-in.'**
+  String patientResetPasswordBody(String name);
+
+  /// No description provided for @patientResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get patientResetPassword;
+
+  /// No description provided for @patientNewTemporaryPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New temporary password'**
+  String get patientNewTemporaryPassword;
+
+  /// No description provided for @patientArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive this patient?'**
+  String get patientArchiveTitle;
+
+  /// No description provided for @patientUnarchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring this patient back?'**
+  String get patientUnarchiveTitle;
+
+  /// No description provided for @patientArchiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They leave the patients list. Nothing is deleted, and a new session brings them back.'**
+  String get patientArchiveBody;
+
+  /// No description provided for @patientUnarchiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They appear in the patients list again.'**
+  String get patientUnarchiveBody;
+
+  /// No description provided for @patientArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get patientArchive;
+
+  /// No description provided for @patientUnarchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get patientUnarchive;
+
+  /// No description provided for @patientArchivedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient archived'**
+  String get patientArchivedDone;
+
+  /// No description provided for @patientUnarchivedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient back in the list'**
+  String get patientUnarchivedDone;
+
+  /// No description provided for @patientMoreActions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get patientMoreActions;
+
+  /// No description provided for @sessionNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New session'**
+  String get sessionNew;
+
+  /// No description provided for @patientEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get patientEdit;
+
+  /// No description provided for @patientLinkedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This patient\'s account was created by another clinic. You see their name, mobile, gender and date of birth, and only the records your clinic adds.'**
+  String get patientLinkedNote;
+
+  /// No description provided for @patientDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal details'**
+  String get patientDetails;
+
+  /// No description provided for @patientBloodType.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood type'**
+  String get patientBloodType;
+
+  /// No description provided for @patientNationalId.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID'**
+  String get patientNationalId;
+
+  /// No description provided for @patientAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get patientAddress;
+
+  /// No description provided for @patientEmergencyContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact'**
+  String get patientEmergencyContact;
+
+  /// No description provided for @patientNoTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Your permissions don\'t include this patient\'s medical file.'**
+  String get patientNoTabs;
+
+  /// No description provided for @patientTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get patientTabOverview;
+
+  /// No description provided for @patientTabSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get patientTabSessions;
+
+  /// No description provided for @patientCantOpenApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this device can open it.'**
+  String get patientCantOpenApp;
+
+  /// No description provided for @patientCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get patientCall;
+
+  /// No description provided for @patientWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get patientWhatsApp;
+
+  /// No description provided for @patientFileSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'File summary'**
+  String get patientFileSummary;
+
+  /// No description provided for @patientConsultationsSinceExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Since the last examination'**
+  String get patientConsultationsSinceExam;
+
+  /// BR-S4 count: «استشارة 1 من 2 منذ آخر كشف».
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No consultations since the last examination (up to {max})} other{Consultation {count} of {max} since the last examination}}'**
+  String sessionConsultationCount(int count, int max);
+
+  /// No description provided for @patientProfileEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No medical profile yet'**
+  String get patientProfileEmptyTitle;
+
+  /// No description provided for @patientProfileEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Record allergies, chronic diseases and current medications.'**
+  String get patientProfileEmptyBody;
+
+  /// No description provided for @patientEditMedicalProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit medical profile'**
+  String get patientEditMedicalProfile;
+
+  /// No description provided for @patientAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get patientAllergies;
+
+  /// No description provided for @patientChronicDiseases.
+  ///
+  /// In en, this message translates to:
+  /// **'Chronic diseases'**
+  String get patientChronicDiseases;
+
+  /// No description provided for @patientCurrentMedications.
+  ///
+  /// In en, this message translates to:
+  /// **'Current medications'**
+  String get patientCurrentMedications;
+
+  /// No description provided for @patientSurgeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Past surgeries'**
+  String get patientSurgeries;
+
+  /// No description provided for @patientFamilyHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Family history'**
+  String get patientFamilyHistory;
+
+  /// No description provided for @patientGeneralNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get patientGeneralNotes;
+
+  /// No description provided for @patientNoAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'No known allergies'**
+  String get patientNoAllergies;
+
+  /// No description provided for @patientNothingRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded'**
+  String get patientNothingRecorded;
+
+  /// No description provided for @patientSessionsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions yet'**
+  String get patientSessionsEmptyTitle;
+
+  /// No description provided for @patientSessionsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A first visit is always an examination.'**
+  String get patientSessionsEmptyBody;
+
+  /// No description provided for @patientLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get patientLoadMore;
+
+  /// The platform fee on a session row.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee {amount}'**
+  String sessionPlatformFeeShort(String amount);
+
+  /// BR-AS6, shown to the doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded by {name}'**
+  String sessionRecordedBy(String name);
+
+  /// No description provided for @patientCheckFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the highlighted fields.'**
+  String get patientCheckFields;
+
+  /// No description provided for @patientAddSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient gets an account and a file number. Their temporary password is shown once.'**
+  String get patientAddSubtitle;
+
+  /// No description provided for @patientMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number'**
+  String get patientMobile;
+
+  /// No description provided for @patientMobileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient signs in with it.'**
+  String get patientMobileHint;
+
+  /// No description provided for @patientMobileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get patientMobileLabel;
+
+  /// No description provided for @patientPhoneChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the number…'**
+  String get patientPhoneChecking;
+
+  /// No description provided for @patientPhoneNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New number. Fill in the patient’s details.'**
+  String get patientPhoneNew;
+
+  /// No description provided for @patientPhoneOurs.
+  ///
+  /// In en, this message translates to:
+  /// **'This number is already one of your patients'**
+  String get patientPhoneOurs;
+
+  /// No description provided for @patientPhoneElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'This number already has an el3yada account'**
+  String get patientPhoneElsewhere;
+
+  /// No description provided for @patientPhoneElsewhereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Link the patient to add them to your list. No new account is created.'**
+  String get patientPhoneElsewhereBody;
+
+  /// No description provided for @patientLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This patient already has an account'**
+  String get patientLinkTitle;
+
+  /// BR-P3 dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'The number {phone} belongs to a patient of another clinic. Linking adds them to your list with a new file number.'**
+  String patientLinkBody(String phone);
+
+  /// No description provided for @patientLinkPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'You will see their name, mobile, gender and date of birth, and only the records your clinic creates.'**
+  String get patientLinkPrivacy;
+
+  /// No description provided for @patientLinkConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Link patient'**
+  String get patientLinkConfirm;
+
+  /// No description provided for @patientLinkedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient added'**
+  String get patientLinkedTitle;
+
+  /// No description provided for @patientLinkedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This patient already has an account and has been added to your list.'**
+  String get patientLinkedBody;
+
+  /// No description provided for @patientOpenFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Open file'**
+  String get patientOpenFile;
+
+  /// No description provided for @patientErrorName.
+  ///
+  /// In en, this message translates to:
+  /// **'Write at least two names, in letters only.'**
+  String get patientErrorName;
+
+  /// No description provided for @patientErrorAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an age from 0 to 120.'**
+  String get patientErrorAge;
+
+  /// No description provided for @patientErrorDateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'The date of birth isn’t valid.'**
+  String get patientErrorDateOfBirth;
+
+  /// No description provided for @patientErrorNationalId.
+  ///
+  /// In en, this message translates to:
+  /// **'The national ID must be 14 digits.'**
+  String get patientErrorNationalId;
+
+  /// No description provided for @patientIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get patientIdentity;
+
+  /// No description provided for @patientFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get patientFullName;
+
+  /// No description provided for @patientFullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least two names'**
+  String get patientFullNameHint;
+
+  /// No description provided for @patientGender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get patientGender;
+
+  /// No description provided for @patientDateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth or age'**
+  String get patientDateOfBirth;
+
+  /// No description provided for @patientUseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get patientUseDate;
+
+  /// No description provided for @patientUseAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get patientUseAge;
+
+  /// No description provided for @patientAgeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Age in years'**
+  String get patientAgeLabel;
+
+  /// No description provided for @patientYearsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get patientYearsSuffix;
+
+  /// No description provided for @patientDateOfBirthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get patientDateOfBirthLabel;
+
+  /// No description provided for @patientMoreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'More details'**
+  String get patientMoreDetails;
+
+  /// No description provided for @patientOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get patientOptional;
+
+  /// No description provided for @patientNationalIdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'14 digits'**
+  String get patientNationalIdHint;
+
+  /// No description provided for @patientNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get patientNotSet;
+
+  /// No description provided for @patientEmergencyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact name'**
+  String get patientEmergencyName;
+
+  /// No description provided for @patientEmergencyPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact number'**
+  String get patientEmergencyPhone;
+
+  /// No description provided for @patientEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit patient'**
+  String get patientEditTitle;
+
+  /// No description provided for @patientMedicalProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical profile'**
+  String get patientMedicalProfile;
+
+  /// No description provided for @patientDiscardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your changes haven’t been saved and will be lost.'**
+  String get patientDiscardBody;
+
+  /// No description provided for @patientSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get patientSaved;
+
+  /// No description provided for @patientNoChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes'**
+  String get patientNoChanges;
+
+  /// No description provided for @patientUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes not saved'**
+  String get patientUnsaved;
+
+  /// No description provided for @patientPhoneChangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient’s login. It changes on its own, with a confirmation.'**
+  String get patientPhoneChangeHint;
+
+  /// No description provided for @patientChangePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Change number'**
+  String get patientChangePhone;
+
+  /// Phone change dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will sign in with the new number. Devices already signed in stay signed in.'**
+  String patientChangePhoneBody(String name);
+
+  /// No description provided for @patientNewMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'New mobile number'**
+  String get patientNewMobile;
+
+  /// No description provided for @patientChangePhoneConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Change number'**
+  String get patientChangePhoneConfirm;
+
+  /// No description provided for @patientPhoneSame.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the current number.'**
+  String get patientPhoneSame;
+
+  /// No description provided for @patientPhoneChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number changed. The patient signs in with the new one.'**
+  String get patientPhoneChanged;
+
+  /// No description provided for @patientFamilyHistoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: father, diabetes'**
+  String get patientFamilyHistoryHint;
+
+  /// Items in a medical profile list.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{None} =1{1 item} other{{count} items}}'**
+  String patientListCount(int count);
+
+  /// No description provided for @patientListFull.
+  ///
+  /// In en, this message translates to:
+  /// **'A list holds 50 items at most.'**
+  String get patientListFull;
+
+  /// No description provided for @patientListDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in the list.'**
+  String get patientListDuplicate;
+
+  /// No description provided for @patientMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get patientMoveUp;
+
+  /// No description provided for @patientMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get patientMoveDown;
+
+  /// Remove a medical profile item.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {item}'**
+  String patientRemoveItem(String item);
+
+  /// No description provided for @patientAddItemHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an item'**
+  String get patientAddItemHint;
+
+  /// No description provided for @patientAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get patientAddItem;
+
+  /// BR-S4. The number follows maxConsecutiveConsultations.
+  ///
+  /// In en, this message translates to:
+  /// **'{max, plural, =1{This patient has had 1 consultation in a row. Record an examination first.} other{This patient has had {max} consultations in a row. Record an examination first.}}'**
+  String sessionConsultationLimit(int max);
+
+  /// No description provided for @sessionRuleFirstVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the patient\'s first visit with you, so it must be an examination.'**
+  String get sessionRuleFirstVisit;
+
+  /// AC-2: someone saved first.
+  ///
+  /// In en, this message translates to:
+  /// **'A session was just recorded for this patient on another device. {message}'**
+  String sessionRuleChanged(String message);
+
+  /// No description provided for @sessionStepType.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit type'**
+  String get sessionStepType;
+
+  /// No description provided for @sessionStepDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details and amount'**
+  String get sessionStepDetails;
+
+  /// No description provided for @sessionPickType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the visit type.'**
+  String get sessionPickType;
+
+  /// D8 step 1 footer.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} selected'**
+  String sessionPicked(String type);
+
+  /// No description provided for @sessionNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get sessionNext;
+
+  /// No description provided for @sessionSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save session'**
+  String get sessionSave;
+
+  /// No description provided for @sessionAmountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the amount charged.'**
+  String get sessionAmountRequired;
+
+  /// No description provided for @sessionClinical.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinical notes'**
+  String get sessionClinical;
+
+  /// No description provided for @sessionChiefComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Chief complaint'**
+  String get sessionChiefComplaint;
+
+  /// No description provided for @sessionFindings.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination findings'**
+  String get sessionFindings;
+
+  /// No description provided for @sessionDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnosis'**
+  String get sessionDiagnosis;
+
+  /// No description provided for @sessionPatientNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes for the patient'**
+  String get sessionPatientNotes;
+
+  /// No description provided for @sessionPatientNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient sees these in their app.'**
+  String get sessionPatientNotesHint;
+
+  /// No description provided for @sessionAmountCharged.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount charged'**
+  String get sessionAmountCharged;
+
+  /// No description provided for @sessionNoPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'No visit price is set for this branch. Enter what the patient paid.'**
+  String get sessionNoPrice;
+
+  /// The clinic visit price (6.15).
+  ///
+  /// In en, this message translates to:
+  /// **'Visit price {amount}'**
+  String sessionVisitPrice(String amount);
+
+  /// No description provided for @sessionFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get sessionFree;
+
+  /// No description provided for @sessionAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get sessionAmountLabel;
+
+  /// No description provided for @sessionCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get sessionCurrency;
+
+  /// No description provided for @sessionAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower it for a discount. It never changes the platform fee.'**
+  String get sessionAmountHint;
+
+  /// No description provided for @sessionFreeVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Free visit'**
+  String get sessionFreeVisit;
+
+  /// No description provided for @sessionPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method (optional)'**
+  String get sessionPaymentMethod;
+
+  /// D8 branch chip.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch: {name}'**
+  String sessionBranch(String name);
+
+  /// No description provided for @sessionChangeBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Change branch'**
+  String get sessionChangeBranch;
+
+  /// No description provided for @sessionFirstVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'First visit with you: examination only'**
+  String get sessionFirstVisit;
+
+  /// "Last session: Examination, 3 Nov".
+  ///
+  /// In en, this message translates to:
+  /// **'Last session: {type}, {date}'**
+  String sessionLastSession(String type, String date);
+
+  /// No description provided for @sessionNoPriceShort.
+  ///
+  /// In en, this message translates to:
+  /// **'No price set'**
+  String get sessionNoPriceShort;
+
+  /// No description provided for @sessionNoPriceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the amount in the next step'**
+  String get sessionNoPriceHint;
+
+  /// No description provided for @sessionVisitPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit price'**
+  String get sessionVisitPriceLabel;
+
+  /// BR-S5 fee on a type card.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform fee {amount}'**
+  String sessionPlatformFee(String amount);
+
+  /// No description provided for @sessionPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Private note'**
+  String get sessionPrivateNote;
+
+  /// No description provided for @sessionPrivateNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Not visible to the patient'**
+  String get sessionPrivateNoteHint;
+
+  /// No description provided for @sessionPrivateNotePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can read this.'**
+  String get sessionPrivateNotePlaceholder;
+
+  /// No description provided for @sessionFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up date'**
+  String get sessionFollowUp;
+
+  /// No description provided for @sessionClearFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the follow-up date'**
+  String get sessionClearFollowUp;
+
+  /// BR-S6. The type is shown in bold.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as {type}?'**
+  String sessionConfirmTitle(String type);
+
+  /// BR-S6.
+  ///
+  /// In en, this message translates to:
+  /// **'A fee of {amount} will be added.'**
+  String sessionConfirmFee(String amount);
+
+  /// No description provided for @sessionConfirmPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get sessionConfirmPatient;
+
+  /// No description provided for @sessionConfirmBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get sessionConfirmBranch;
+
+  /// No description provided for @sessionConfirmLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The type and time can\'t be changed after saving.'**
+  String get sessionConfirmLocked;
+
+  /// No description provided for @sessionConfirmSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get sessionConfirmSave;
+
+  /// No description provided for @sessionLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get sessionLater;
+
+  /// No description provided for @sessionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Session saved'**
+  String get sessionSaved;
+
+  /// After-save sheet.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} for {patient}. A fee of {fee} was added.'**
+  String sessionSavedBody(String type, String patient, String fee);
+
+  /// No description provided for @sessionWritePrescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Write prescription'**
+  String get sessionWritePrescription;
+
+  /// No description provided for @sessionLabRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab or radiology request'**
+  String get sessionLabRequest;
+
+  /// No description provided for @sessionAttachFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach files'**
+  String get sessionAttachFiles;
+
+  /// No description provided for @sessionView.
+  ///
+  /// In en, this message translates to:
+  /// **'View session'**
+  String get sessionView;
+
+  /// No description provided for @sessionPickPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the patient'**
+  String get sessionPickPatient;
+
+  /// No description provided for @sessionRecentPatients.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent patients'**
+  String get sessionRecentPatients;
+
+  /// No description provided for @sessionSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get sessionSearchResults;
+
+  /// No description provided for @sessionVitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Vitals'**
+  String get sessionVitals;
+
+  /// No description provided for @sessionVitalsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood pressure, pulse, temperature, weight, height, blood sugar'**
+  String get sessionVitalsHint;
+
+  /// No description provided for @sessionVitalBp.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood pressure'**
+  String get sessionVitalBp;
+
+  /// No description provided for @sessionVitalBpSys.
+  ///
+  /// In en, this message translates to:
+  /// **'Systolic'**
+  String get sessionVitalBpSys;
+
+  /// No description provided for @sessionVitalBpDia.
+  ///
+  /// In en, this message translates to:
+  /// **'Diastolic'**
+  String get sessionVitalBpDia;
+
+  /// No description provided for @sessionVitalPulse.
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse'**
+  String get sessionVitalPulse;
+
+  /// No description provided for @sessionVitalTemp.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get sessionVitalTemp;
+
+  /// No description provided for @sessionVitalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get sessionVitalWeight;
+
+  /// No description provided for @sessionVitalHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get sessionVitalHeight;
+
+  /// No description provided for @sessionVitalGlucose.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood sugar'**
+  String get sessionVitalGlucose;
+
+  /// No description provided for @sessionVitalBpPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter both blood pressure values.'**
+  String get sessionVitalBpPair;
+
+  /// No description provided for @sessionVitalUnusual.
+  ///
+  /// In en, this message translates to:
+  /// **'Unusual value, check it.'**
+  String get sessionVitalUnusual;
+
+  /// No description provided for @sessionNoVitals.
+  ///
+  /// In en, this message translates to:
+  /// **'No vitals recorded'**
+  String get sessionNoVitals;
+
+  /// No description provided for @sessionRecordedByDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor'**
+  String get sessionRecordedByDoctor;
+
+  /// Fee card part.
+  ///
+  /// In en, this message translates to:
+  /// **'Examinations {amount}'**
+  String feesExaminationsFee(String amount);
+
+  /// Fee card part.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultations {amount}'**
+  String feesConsultationsFee(String amount);
+
+  /// No description provided for @sessionDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session details'**
+  String get sessionDetailsTitle;
+
+  /// No description provided for @sessionLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t be changed after saving'**
+  String get sessionLocked;
+
+  /// No description provided for @sessionSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Session'**
+  String get sessionSummary;
+
+  /// No description provided for @sessionTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get sessionTime;
+
+  /// No description provided for @sessionType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get sessionType;
+
+  /// No description provided for @sessionBranchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get sessionBranchLabel;
+
+  /// No description provided for @sessionPlatformFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform fee'**
+  String get sessionPlatformFeeLabel;
+
+  /// No description provided for @sessionRecordedByLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded by'**
+  String get sessionRecordedByLabel;
+
+  /// BR-AS6.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (assistant)'**
+  String sessionRecordedByAssistant(String name);
+
+  /// No description provided for @sessionEditAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the amount'**
+  String get sessionEditAmount;
+
+  /// No description provided for @sessionAmountSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount saved'**
+  String get sessionAmountSaved;
+
+  /// No description provided for @sessionAmountLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change is recorded in the activity log.'**
+  String get sessionAmountLogged;
+
+  /// No description provided for @sessionNotRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not recorded'**
+  String get sessionNotRecorded;
+
+  /// No description provided for @sessionAwaitingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded by an assistant. Add the clinical notes to clear «Waiting for the doctor».'**
+  String get sessionAwaitingHint;
+
+  /// No description provided for @sessionNoPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No private note'**
+  String get sessionNoPrivateNote;
+
+  /// No description provided for @sessionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete session'**
+  String get sessionDelete;
+
+  /// No description provided for @sessionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Session deleted'**
+  String get sessionDeleted;
+
+  /// No description provided for @sessionNotDeletableLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the patient\'s latest session can be deleted.'**
+  String get sessionNotDeletableLatest;
+
+  /// No description provided for @sessionNotDeletableDay.
+  ///
+  /// In en, this message translates to:
+  /// **'A session can be deleted only on the day it was recorded.'**
+  String get sessionNotDeletableDay;
+
+  /// No description provided for @sessionDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this session?'**
+  String get sessionDeleteTitle;
+
+  /// No description provided for @sessionDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its fee comes off today’s and this month’s totals, and the deletion is recorded with your reason.'**
+  String get sessionDeleteBody;
+
+  /// No description provided for @sessionDeleteReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get sessionDeleteReason;
+
+  /// No description provided for @sessionDeleteReasonRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the reason (3 characters or more).'**
+  String get sessionDeleteReasonRequired;
+
+  /// No description provided for @sessionDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get sessionDeleteConfirm;
+
+  /// No description provided for @sessionTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s sessions'**
+  String get sessionTodayTitle;
+
+  /// No description provided for @sessionDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get sessionDayTitle;
+
+  /// No description provided for @sessionRecordedByAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone'**
+  String get sessionRecordedByAll;
+
+  /// No description provided for @sessionDayNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions match'**
+  String get sessionDayNoMatch;
+
+  /// No description provided for @sessionDayEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions on this day'**
+  String get sessionDayEmptyTitle;
+
+  /// No description provided for @sessionDayEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions you record appear here with their fees.'**
+  String get sessionDayEmptyBody;
+
+  /// No description provided for @sessionPreviousDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get sessionPreviousDay;
+
+  /// No description provided for @sessionNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get sessionNextDay;
+
+  /// No description provided for @sessionBackToToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get sessionBackToToday;
+
+  /// No description provided for @feesPlatformFees.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform fees'**
+  String get feesPlatformFees;
+
+  /// No description provided for @feesCollected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected'**
+  String get feesCollected;
+
+  /// No description provided for @feesMonthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly summary'**
+  String get feesMonthTitle;
+
+  /// No description provided for @feesMonthSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform fees, examinations and consultations'**
+  String get feesMonthSubtitle;
+
+  /// No description provided for @feesPreviousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get feesPreviousMonth;
+
+  /// No description provided for @feesNextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get feesNextMonth;
+
+  /// No description provided for @feesMonthTotals.
+  ///
+  /// In en, this message translates to:
+  /// **'Month to date'**
+  String get feesMonthTotals;
+
+  /// No description provided for @feesPerBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Per branch'**
+  String get feesPerBranch;
+
+  /// No description provided for @feesMonthNoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'This month has no days yet.'**
+  String get feesMonthNoDays;
+
+  /// No description provided for @feesColumnDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get feesColumnDay;
+
+  /// No description provided for @feesColumnExaminations.
+  ///
+  /// In en, this message translates to:
+  /// **'Exam.'**
+  String get feesColumnExaminations;
+
+  /// No description provided for @feesColumnConsultations.
+  ///
+  /// In en, this message translates to:
+  /// **'Consult.'**
+  String get feesColumnConsultations;
+
+  /// No description provided for @feesColumnAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Fees'**
+  String get feesColumnAmount;
+
+  /// No description provided for @feesToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get feesToday;
+
+  /// No description provided for @feesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get feesThisMonth;
+
+  /// No description provided for @homeAnalyticsLaterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Charts and insights are coming'**
+  String get homeAnalyticsLaterTitle;
+
+  /// No description provided for @homeAnalyticsLaterBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue, visits and booking trends arrive in a later update.'**
+  String get homeAnalyticsLaterBody;
+
+  /// No description provided for @homeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get homeToday;
+
+  /// No description provided for @homeSearchPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Search patient'**
+  String get homeSearchPatient;
+
+  /// No description provided for @homeTodaySessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s sessions'**
+  String get homeTodaySessions;
+
+  /// Home list title (current branch).
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s sessions in {branch}'**
+  String homeTodaySessionsIn(String branch);
+
+  /// No description provided for @homeNoSessionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions yet today'**
+  String get homeNoSessionsTitle;
+
+  /// No description provided for @homeNoSessionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Record the first visit of the day.'**
+  String get homeNoSessionsBody;
+
+  /// No description provided for @sessionErrorNotLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'This patient isn\'t on your list.'**
+  String get sessionErrorNotLinked;
+
+  /// No description provided for @patientErrorAlreadyLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'This number is already one of your patients.'**
+  String get patientErrorAlreadyLinked;
+
+  /// No description provided for @patientErrorPhoneTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Another patient account uses this number.'**
+  String get patientErrorPhoneTaken;
+
+  /// No description provided for @sessionErrorBranchArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch is archived. Choose another branch.'**
+  String get sessionErrorBranchArchived;
+
+  /// No description provided for @sessionErrorAmountNotEditable.
+  ///
+  /// In en, this message translates to:
+  /// **'The amount can be changed only on the day of the session.'**
+  String get sessionErrorAmountNotEditable;
 }
 
 class _AppLocalizationsDelegate

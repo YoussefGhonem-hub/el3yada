@@ -24,6 +24,18 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.permissionDenied => errorPermissionDenied,
       ApiCodes.doctorSuspended => errorDoctorSuspended,
       ApiCodes.branchNotAllowed => errorBranchNotAllowed,
+      // Patients and sessions (backend/docs/api-phase-2-patients.md).
+      ApiCodes.notLinked => sessionErrorNotLinked,
+      ApiCodes.patientAlreadyLinked => patientErrorAlreadyLinked,
+      ApiCodes.patientPhoneTaken => patientErrorPhoneTaken,
+      // BR-S4: the number follows the admin's setting, sent with the error.
+      ApiCodes.consultationRequiresExam => error.details['reason'] == 'firstVisit'
+          ? sessionRuleFirstVisit
+          : sessionConsultationLimit((error.details['maxConsecutiveConsultations'] as num?)?.toInt() ?? 2),
+      ApiCodes.branchArchived => sessionErrorBranchArchived,
+      ApiCodes.amountNotEditable => sessionErrorAmountNotEditable,
+      ApiCodes.sessionNotDeletable =>
+        error.details['reason'] == 'notSameDay' ? sessionNotDeletableDay : sessionNotDeletableLatest,
       ApiCodes.selectionTokenInvalid ||
       ApiCodes.refreshTokenInvalid ||
       ApiCodes.refreshTokenReused ||
@@ -39,6 +51,10 @@ extension ApiErrorText on AppLocalizations {
   String? fieldError(String? code) => switch (code) {
         'REQUIRED' => errorRequired,
         'TOO_LONG' => errorTooLong,
+        // Patients and sessions.
+        'INVALID_DATE_OF_BIRTH' => patientErrorDateOfBirth,
+        'INVALID_NATIONAL_ID' => patientErrorNationalId,
+        'AMOUNT_REQUIRED' => sessionAmountRequired,
         'INVALID_EMAIL' => errorInvalidEmail,
         'INVALID_MOBILE' => errorInvalidMobile,
         // Branch and support phones: landlines and hotlines are allowed too.

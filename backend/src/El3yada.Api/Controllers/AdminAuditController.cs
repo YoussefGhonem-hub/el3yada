@@ -1,4 +1,5 @@
 using System.Text.Json;
+using El3yada.Api.Audit;
 using El3yada.Api.Auth;
 using El3yada.Api.Common;
 using El3yada.Api.Validation;
@@ -107,9 +108,12 @@ public sealed class AdminAuditController(AppDbContext db) : ControllerBase
                 a.Action, a.TargetType, a.TargetId, a.DoctorId, a.DetailsJson,
             })
             .ToPageAsync(query, cancellationToken);
+        // Admins never see a clinic's revenue (BR-REV1), so those rows come without their details.
         var items = page.Items.Select(a => new AuditLogItem(
             a.Id, a.At, a.ActorUserId, a.ActorRole, a.ActorName, a.Action, a.TargetType, a.TargetId, a.DoctorId,
-            a.DetailsJson is null ? null : JsonDocument.Parse(a.DetailsJson).RootElement.Clone())).ToList();
+            a.DetailsJson is null || AuditActions.ClinicRevenueDetails.Contains(a.Action)
+                ? null
+                : JsonDocument.Parse(a.DetailsJson).RootElement.Clone())).ToList();
         return Ok(new PagedResult<AuditLogItem>(items, page.Page, page.PageSize, page.TotalCount));
     }
 }

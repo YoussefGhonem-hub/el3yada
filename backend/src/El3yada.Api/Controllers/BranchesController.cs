@@ -154,7 +154,7 @@ public sealed class BranchesController(AppDbContext db, Auditor auditor, TimePro
         var branchId = request.BranchId!.Value;
         if (!caller.CanUseBranch(branchId))
         {
-            return BranchNotAllowed();
+            return this.BranchNotAllowed();
         }
 
         var branch = await db.Branches.Include(b => b.BranchPeriods)
@@ -311,7 +311,4 @@ public sealed class BranchesController(AppDbContext db, Auditor auditor, TimePro
         var limit = await db.AppSettings.AsNoTracking().Select(s => s.MaxBranchesPerDoctor).SingleAsync(cancellationToken);
         return await BranchQueries.CountTowardLimitAsync(db, doctorId, cancellationToken) >= limit;
     }
-
-    private ObjectResult BranchNotAllowed() =>
-        this.ForbiddenProblem(ErrorCodes.BranchNotAllowed, "This branch is not one of your branches.");
 }

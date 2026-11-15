@@ -243,4 +243,27 @@ public sealed class AdminTests(IntegrationHost host)
         Assert.Equal(ErrorCodes.OutOfRange, bad.FieldCode("pageSize"));
     }
 
+    [Fact]
+    public async Task Admins_never_see_amounts_charged_in_the_audit_log()
+    {
+        var doctor = await TestData.CreateDoctorAsync(Factory);
+        await TestData.WithDbAsync(Factory, async db =>
+        {
+            db.AuditLogs.Add(new Data.Entities.AuditLog
+            {
+                ActorUserId = doctor.Id, ActorRole = "doctor", DoctorId = doctor.Id,
+                Action = Audit.AuditActions.SessionAmountChanged, TargetType = "session", TargetId = Guid.NewGuid().ToString(),
+                DetailsJson = """{"before":20000,"after":15000}""", At = DateTime.UtcNow,
+            });
+            await db.SaveChangesAsync();
+        });
+        var admin = await TestData.CreateAdminAsync(Factory);
+        using var client = await Factory.SignedInClientAsync(admin);
+
+        var (status, page) = await client.GetJsonAsync($"/api/admin/auditLogs?actorUserId={doctor.Id}&action=sessionAmountChanged");
+
+        Assert.Equal(HttpStatusCode.OK, status);
+        var item = Assert.Single(page.GetProperty("items").EnumerateArray());
+        Assert.Equal(System.Text.Json.JsonValueKind.Null, item.GetProperty("details").ValueKind);
+    }
 }

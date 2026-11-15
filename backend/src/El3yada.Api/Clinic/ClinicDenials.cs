@@ -1,8 +1,7 @@
-using El3yada.Api.Clinic;
 using El3yada.Api.Common;
 using Microsoft.AspNetCore.Mvc;
 
-namespace El3yada.Api.Patients;
+namespace El3yada.Api.Clinic;
 
 /// <summary>
 /// Clinic refusals that depend on the request or the data, in the same shape as <see cref="ClinicAttribute"/>'s

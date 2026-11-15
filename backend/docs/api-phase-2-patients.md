@@ -641,7 +641,7 @@ Every write adds an `AuditLogs` row with the clinic's `doctorId`, the actor (doc
 | `sessionCreated` | session | `type`, `branchId`, `feePiasters`, `awaitingDoctor` |
 | `sessionClinicalUpdated` | session | `fields` (names, `vitals.tempC` …) |
 | `sessionPrivateNoteUpdated` | session | `cleared` |
-| `sessionAmountChanged` | session | `before`, `after` (piasters), `paymentMethodBefore`, `paymentMethodAfter` |
+| `sessionAmountChanged` | session | `before`, `after` (piasters), `paymentMethodBefore`, `paymentMethodAfter`. The admin audit log (AD15) lists this row with `details: null` (BR-REV1). |
 | `sessionDeleted` | session | `reason`, `type`, `feePiasters`, `day`. AD5's per-doctor deletion count counts these. |
 
 ## Error codes

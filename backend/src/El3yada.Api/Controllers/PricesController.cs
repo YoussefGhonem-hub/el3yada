@@ -78,7 +78,7 @@ public sealed class PricesController(AppDbContext db, Auditor auditor, TimeProvi
         var caller = HttpContext.Clinic();
         if (request.BranchId is { } id && !caller.CanUseBranch(id))
         {
-            return this.ForbiddenProblem(ErrorCodes.BranchNotAllowed, "This branch is not one of your branches.");
+            return this.BranchNotAllowed();
         }
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);

@@ -38,6 +38,12 @@ public static partial class AuditActions
     /// <summary>BR-S10. Details: before, after (piasters), paymentMethodBefore, paymentMethodAfter.</summary>
     public const string SessionAmountChanged = "sessionAmountChanged";
 
+    /// <summary>
+    /// Actions whose details hold the clinic's revenue (amounts charged to patients). The doctor's activity log
+    /// (D27) shows them; the admin audit log (AD15) lists the row without its details (BR-REV1).
+    /// </summary>
+    public static readonly IReadOnlySet<string> ClinicRevenueDetails = new HashSet<string> { SessionAmountChanged };
+
     /// <summary>BR-S7, shown in the admin audit log (AD15). Details: reason, type, feePiasters, day.</summary>
     public const string SessionDeleted = "sessionDeleted";
 }

@@ -5,7 +5,7 @@ namespace El3yada.Api;
 /// A problem+json response carries one top-level <c>code</c>; a validation problem (400) has
 /// <c>code = VALIDATION_FAILED</c> plus <c>errorCodes</c> per field. backend/docs/api-phase-1.md lists them all.
 /// </summary>
-public static class ErrorCodes
+public static partial class ErrorCodes
 {
     // ---- General -------------------------------------------------------------------------------------
 

@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using El3yada.Api.Auth;
+using El3yada.Api.Clinic;
 using El3yada.Data;
 using El3yada.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -117,22 +118,83 @@ public static partial class TestData
         await db.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// An assistant of <paramref name="doctorId"/>. <paramref name="permissions"/> are <c>ClinicPermissions</c>
+    /// keys, used as given (no dependencies added). <paramref name="branchIds"/> null means all branches.
+    /// </summary>
     public static async Task<TestUser> CreateAssistantAsync(
         IntegrationFactory factory, Guid doctorId, string? phone = null, string password = Password,
-        bool patientsResetPassword = false, string status = "active")
+        bool patientsResetPassword = false, string status = "active",
+        IEnumerable<string>? permissions = null, IEnumerable<Guid>? branchIds = null, string name = "سارة محمود")
     {
         phone ??= Mobile();
-        var id = await AddUserAsync(factory, new User { Role = Roles.Assistant, DisplayName = "سارة محمود", Phone = phone }, (db, userId) =>
+        var keys = new HashSet<string>(permissions ?? []);
+        if (patientsResetPassword)
         {
-            db.Assistants.Add(new Assistant
+            keys.Add(ClinicPermissions.PatientsResetPassword);
+        }
+
+        var id = await AddUserAsync(factory, new User { Role = Roles.Assistant, DisplayName = name, Phone = phone }, async (db, userId) =>
+        {
+            var assistant = new Assistant
             {
-                UserId = userId, DoctorId = doctorId, FullName = "سارة محمود", Phone = phone, CreatedBy = doctorId,
-                PatientsResetPassword = patientsResetPassword, Status = status,
-            });
-            return Task.CompletedTask;
+                UserId = userId, DoctorId = doctorId, FullName = name, Phone = phone, CreatedBy = doctorId,
+                Status = status, AllBranches = branchIds is null, Preset = AssistantPresets.Match(keys),
+            };
+            ClinicPermissions.Apply(assistant, keys);
+            if (branchIds is not null)
+            {
+                var ids = branchIds.ToList();
+                foreach (var branch in await db.Branches.Where(b => ids.Contains(b.Id)).ToListAsync())
+                {
+                    assistant.Branches.Add(branch);
+                }
+            }
+
+            db.Assistants.Add(assistant);
         }, password);
         return new TestUser(id, phone, password, phone);
     }
+
+    /// <summary>An assistant with one of the spec's presets (reception, clinical, officeManager).</summary>
+    public static Task<TestUser> CreateAssistantWithPresetAsync(
+        IntegrationFactory factory, Guid doctorId, string preset, IEnumerable<Guid>? branchIds = null) =>
+        CreateAssistantAsync(factory, doctorId, permissions: AssistantPresets.Permissions[preset], branchIds: branchIds);
+
+    /// <summary>The doctor's default branch (every test doctor has one).</summary>
+    public static Task<Guid> DefaultBranchAsync(IntegrationFactory factory, Guid doctorId) =>
+        WithDbAsync(factory, db => db.Doctors.Where(d => d.UserId == doctorId).Select(d => d.DefaultBranchId!.Value).SingleAsync());
+
+    /// <summary>Adds another active branch to the doctor.</summary>
+    public static async Task<Guid> AddBranchAsync(IntegrationFactory factory, Guid doctorId, string name = "فرع مدينة نصر")
+    {
+        var branchId = Guid.NewGuid();
+        await WithDbAsync(factory, async db =>
+        {
+            db.Branches.Add(new Branch
+            {
+                Id = branchId, DoctorId = doctorId, NameAr = name, Governorate = "القاهرة", City = "مدينة نصر",
+                Street = "شارع عباس العقاد",
+                BranchPhones = { new BranchPhone { Id = Guid.NewGuid(), Number = Mobile(), Label = "reception" } },
+            });
+            await db.SaveChangesAsync();
+        });
+        return branchId;
+    }
+
+    /// <summary>Changes Doctors.Status straight in the database (suspension comes with billing in Phase 7).</summary>
+    public static Task SetDoctorStatusAsync(IntegrationFactory factory, Guid doctorId, string status) =>
+        WithDbAsync(factory, db => db.Doctors.Where(d => d.UserId == doctorId)
+            .ExecuteUpdateAsync(set => set.SetProperty(d => d.Status, status)));
+
+    /// <summary>Sets the assistant's permissions straight in the database (what the doctor does in D26).</summary>
+    public static Task SetAssistantPermissionsAsync(IntegrationFactory factory, Guid assistantUserId, IEnumerable<string> permissions) =>
+        WithDbAsync(factory, async db =>
+        {
+            var assistant = await db.Assistants.SingleAsync(a => a.UserId == assistantUserId);
+            ClinicPermissions.Apply(assistant, permissions.ToHashSet());
+            await db.SaveChangesAsync();
+        });
 
     public static async Task<T> WithDbAsync<T>(IntegrationFactory factory, Func<AppDbContext, Task<T>> action)
     {

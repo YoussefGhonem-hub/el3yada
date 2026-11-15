@@ -113,8 +113,8 @@ public sealed class Auditor(AppDbContext db, IHttpContextAccessor httpContextAcc
     }
 }
 
-/// <summary>AuditLogs.Action values written in Phase 1 (AD15 filters by these).</summary>
-public static class AuditActions
+/// <summary>AuditLogs.Action values (AD15 filters by these). Phase 1 here; later phases add theirs in their own files.</summary>
+public static partial class AuditActions
 {
     public const string DoctorRegistrationSubmitted = "doctorRegistrationSubmitted";
     public const string DoctorRegistrationResubmitted = "doctorRegistrationResubmitted";
@@ -138,7 +138,7 @@ public static class AuditActions
 }
 
 /// <summary>AuditLogs.TargetType values.</summary>
-public static class AuditTargets
+public static partial class AuditTargets
 {
     public const string User = "user";
     public const string Doctor = "doctor";

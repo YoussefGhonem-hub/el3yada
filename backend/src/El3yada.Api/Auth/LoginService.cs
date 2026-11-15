@@ -69,7 +69,7 @@ public sealed class LoginService(
     IOptions<AuthOptions> authOptions,
     ILogger<LoginService> logger)
 {
-    private const string ThrottlePurpose = "login";
+    private const string ThrottlePurpose = IdentifierThrottle.LoginPurpose;
 
     private AuthOptions Options => authOptions.Value;
 

@@ -86,6 +86,15 @@ public sealed class IdentifierThrottle(IMemoryCache cache, TimeProvider time)
 
     public void Reset(string purpose, string identifier) => cache.Remove(Key(purpose, identifier));
 
+    /// <summary>The purpose of failed-login counts (LoginService).</summary>
+    public const string LoginPurpose = "login";
+
+    /// <summary>
+    /// Lifts the failed-login block on a mobile number or email after a doctor sets a new temporary password
+    /// (BR-P5, BR-AS8), so the new password works at once instead of after the 15-minute block.
+    /// </summary>
+    public void ClearLoginBlock(string identifier) => Reset(LoginPurpose, identifier);
+
     private static string Key(string purpose, string identifier) =>
         $"throttle:{purpose}:{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(identifier)))}";
 }

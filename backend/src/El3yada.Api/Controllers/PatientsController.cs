@@ -26,6 +26,7 @@ public sealed class PatientsController(
     SessionService sessions,
     Auditor auditor,
     AccountStateCache stateCache,
+    IdentifierThrottle throttle,
     TimeProvider time) : ControllerBase
 {
     private DateTime Now => time.GetUtcNow().UtcDateTime;
@@ -315,6 +316,7 @@ public sealed class PatientsController(
         await transaction.CommitAsync(cancellationToken);
         // Again after the commit, so a request in between can't cache the old security stamp.
         stateCache.Invalidate(user.Id);
+        throttle.ClearLoginBlock(user.Phone!);
 
         Response.Headers.CacheControl = "no-store";
         return Ok(new PatientPasswordResetResponse(patientId, temporaryPassword));

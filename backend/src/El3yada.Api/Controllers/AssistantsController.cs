@@ -22,7 +22,7 @@ namespace El3yada.Api.Controllers;
 [Clinic(DoctorOnly = true)]
 public sealed class AssistantsController(
     AppDbContext db, Passwords passwords, SessionService sessions, Auditor auditor, AccountStateCache stateCache,
-    TimeProvider time) : ControllerBase
+    IdentifierThrottle throttle, TimeProvider time) : ControllerBase
 {
     private DateTime Now => time.GetUtcNow().UtcDateTime;
 
@@ -283,6 +283,7 @@ public sealed class AssistantsController(
         await sessions.SignOutEverywhereAsync(user, cancellationToken);
         await transaction.CommitAsync(cancellationToken);
         stateCache.Invalidate(user.Id);
+        throttle.ClearLoginBlock(user.Phone!);
 
         Response.Headers.CacheControl = "no-store";
         return Ok(new AssistantWithPasswordView(AssistantView.Of(assistant, true), temporaryPassword));

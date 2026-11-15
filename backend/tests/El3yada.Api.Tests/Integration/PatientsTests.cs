@@ -369,6 +369,25 @@ public sealed class PatientsTests(IntegrationHost host)
     }
 
     [Fact]
+    public async Task A_password_reset_lifts_a_lockout_so_the_new_password_works_at_once()
+    {
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var phone = TestData.Mobile();
+        var (_, created) = await client.PostAsync("/api/patients/createPatient", TestData.PatientBody(phone));
+        using var anonymous = Factory.Client();
+        for (var i = 0; i < 5; i++)
+        {
+            await anonymous.PostAsync("/api/auth/login", new { identifier = phone, password = "Wrong1234" });
+        }
+
+        var (lockedStatus, _) = await anonymous.PostAsync("/api/auth/login", new { identifier = phone, password = created.Str("temporaryPassword") });
+        var (_, reset) = await client.PostAsync("/api/patients/resetPatientPassword", new { patientId = created.StrAt("patient.patientId") });
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, lockedStatus);
+        Assert.True((await Factory.LoginAsync(phone, reset.Str("temporaryPassword"))).BoolAt("mustChangePassword"));
+    }
+
+    [Fact]
     public async Task Archiving_hides_the_patient_from_the_default_register_and_keeps_everything()
     {
         var scene = await PatientScene.CreateAsync(Factory);

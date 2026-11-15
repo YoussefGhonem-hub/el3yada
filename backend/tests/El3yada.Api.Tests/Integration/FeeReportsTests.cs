@@ -17,7 +17,7 @@ public sealed class FeeReportsTests(IntegrationHost host)
     public async Task AC4_two_examinations_and_three_consultations_today_are_105_pounds_and_yesterday_in_cairo_is_not_counted()
     {
         await using var settings = await TestData.UseFeeSettingsAsync(Factory, 3000, 1500, 2);
-        var (_, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var first = await TestData.AddPatientViaApiAsync(client);
         var second = await TestData.AddPatientViaApiAsync(client);
         await TestData.RecordSessionAsync(client, first, branchId);
@@ -86,7 +86,7 @@ public sealed class FeeReportsTests(IntegrationHost host)
     [Fact]
     public async Task An_assistant_sees_only_their_branches_sessions_and_amounts_need_revenue_view()
     {
-        var (doctor, client, branchA) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, branchA) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var branchB = await TestData.AddBranchAsync(Factory, doctor.Id);
         var patient = await TestData.AddPatientViaApiAsync(client);
         var other = await TestData.AddPatientViaApiAsync(client);
@@ -113,7 +113,7 @@ public sealed class FeeReportsTests(IntegrationHost host)
     public async Task The_month_has_totals_per_branch_that_add_up_and_one_row_per_day()
     {
         await using var settings = await TestData.UseFeeSettingsAsync(Factory, 3000, 1500, 2);
-        var (doctor, client, branchA) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, branchA) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var branchB = await TestData.AddBranchAsync(Factory, doctor.Id);
         var p1 = await TestData.AddPatientViaApiAsync(client);
         var p2 = await TestData.AddPatientViaApiAsync(client);
@@ -159,7 +159,7 @@ public sealed class FeeReportsTests(IntegrationHost host)
     public async Task Fee_totals_are_per_clinic()
     {
         var a = await PatientScene.CreateAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
 
         var (_, summaryB) = await clientB.GetJsonAsync("/api/sessions/feeSummary");
         var (_, dayB) = await clientB.GetJsonAsync("/api/sessions/day");

@@ -63,7 +63,7 @@ public static partial class TestData
     }
 
     /// <summary>A doctor, signed in, with their default branch.</summary>
-    public static async Task<(TestUser Doctor, HttpClient Client, Guid BranchId)> SignedInDoctorAsync(
+    public static async Task<(TestUser Doctor, HttpClient Client, Guid BranchId)> SignedInDoctorWithBranchAsync(
         IntegrationFactory factory, string status = Auth.DoctorStatuses.Active)
     {
         var doctor = await CreateDoctorAsync(factory, status);
@@ -82,17 +82,17 @@ public static partial class TestData
             await db.DoctorPatients.Where(l => l.LastSessionId == sessionId).ExecuteUpdateAsync(set => set.SetProperty(l => l.LastSessionAt, at));
         });
 
-    public static Task SetDoctorPricesAsync(IntegrationFactory factory, Guid doctorId, int? examination, int? consultation) =>
+    public static Task SetDoctorPricesInDbAsync(IntegrationFactory factory, Guid doctorId, int? examination, int? consultation) =>
         WithDbAsync(factory, db => db.Doctors.Where(d => d.UserId == doctorId).ExecuteUpdateAsync(set => set
             .SetProperty(d => d.ExaminationPricePiasters, examination)
             .SetProperty(d => d.ConsultationPricePiasters, consultation)));
 
-    public static Task SetBranchPricesAsync(IntegrationFactory factory, Guid branchId, int? examination, int? consultation) =>
+    public static Task SetBranchPricesInDbAsync(IntegrationFactory factory, Guid branchId, int? examination, int? consultation) =>
         WithDbAsync(factory, db => db.Branches.Where(b => b.Id == branchId).ExecuteUpdateAsync(set => set
             .SetProperty(b => b.ExaminationPricePiasters, examination)
             .SetProperty(b => b.ConsultationPricePiasters, consultation)));
 
-    public static Task SetBranchStatusAsync(IntegrationFactory factory, Guid branchId, string status) =>
+    public static Task SetBranchStatusInDbAsync(IntegrationFactory factory, Guid branchId, string status) =>
         WithDbAsync(factory, db => db.Branches.Where(b => b.Id == branchId).ExecuteUpdateAsync(set => set.SetProperty(b => b.Status, status)));
 
     private sealed class Restore(Func<Task> restore) : IAsyncDisposable
@@ -130,7 +130,7 @@ public sealed record PatientScene(TestUser Doctor, HttpClient Client, Guid Branc
 {
     public static async Task<PatientScene> CreateAsync(IntegrationFactory factory)
     {
-        var (doctor, client, branchId) = await TestData.SignedInDoctorAsync(factory);
+        var (doctor, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(factory);
         var patientId = await TestData.AddPatientViaApiAsync(client);
         var sessionId = await TestData.RecordSessionAsync(client, patientId, branchId);
         return new PatientScene(doctor, client, branchId, patientId, sessionId);

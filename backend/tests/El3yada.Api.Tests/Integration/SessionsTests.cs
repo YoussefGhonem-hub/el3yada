@@ -57,7 +57,7 @@ public sealed class SessionsTests(IntegrationHost host)
     [Fact]
     public async Task AC1_a_new_patients_first_session_cannot_be_a_consultation()
     {
-        var (_, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var patientId = await TestData.AddPatientViaApiAsync(client);
 
         var (_, info) = await client.GetJsonAsync($"/api/sessions/newSessionInfo?patientId={patientId}&branchId={branchId}");
@@ -90,8 +90,8 @@ public sealed class SessionsTests(IntegrationHost host)
     public async Task AC1_the_rule_with_one_doctor_ignores_the_patients_sessions_with_another()
     {
         await using var settings = await TestData.UseFeeSettingsAsync(Factory, maxConsecutiveConsultations: 2);
-        var (_, clientA, branchA) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, branchB) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, branchA) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, branchB) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(clientB, phone);
         await TestData.AddPatientViaApiAsync(clientA, phone);
@@ -159,11 +159,11 @@ public sealed class SessionsTests(IntegrationHost host)
     public async Task A_session_keeps_the_fee_the_price_the_cairo_day_and_updates_the_link_stats_notification_and_audit()
     {
         await using var settings = await TestData.UseFeeSettingsAsync(Factory, 3000, 1500, 2);
-        var (doctor, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(client, phone);
-        await TestData.SetDoctorPricesAsync(Factory, doctor.Id, 30_000, 15_000);
-        await TestData.SetBranchPricesAsync(Factory, branchId, 25_000, null);
+        await TestData.SetDoctorPricesInDbAsync(Factory, doctor.Id, 30_000, 15_000);
+        await TestData.SetBranchPricesInDbAsync(Factory, branchId, 25_000, null);
 
         var (_, info) = await client.GetJsonAsync($"/api/sessions/newSessionInfo?patientId={patientId}&branchId={branchId}");
         Assert.Equal(25_000, info.IntAt("examination.visitPricePiasters"));
@@ -224,7 +224,7 @@ public sealed class SessionsTests(IntegrationHost host)
     [Fact]
     public async Task The_amount_charged_can_be_lowered_to_zero_and_is_required_when_there_is_no_price()
     {
-        var (_, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var patientId = await TestData.AddPatientViaApiAsync(client);
 
         var (missingStatus, missing) = await client.PostAsync("/api/sessions/createSession", TestData.SessionBody(patientId, branchId, amountChargedPiasters: null));
@@ -242,7 +242,7 @@ public sealed class SessionsTests(IntegrationHost host)
     [Fact]
     public async Task Session_input_is_checked()
     {
-        var (_, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var patientId = await TestData.AddPatientViaApiAsync(client);
 
         async Task<string?> FieldError(string field, object body)
@@ -271,11 +271,11 @@ public sealed class SessionsTests(IntegrationHost host)
     public async Task Patients_branches_and_archived_branches_of_other_clinics_are_refused()
     {
         var scene = await PatientScene.CreateAsync(Factory);
-        var (otherDoctor, otherClient, otherBranch) = await TestData.SignedInDoctorAsync(Factory);
+        var (otherDoctor, otherClient, otherBranch) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var archived = await TestData.AddBranchAsync(Factory, scene.Doctor.Id, "فرع قديم");
-        await TestData.SetBranchStatusAsync(Factory, archived, "archived");
+        await TestData.SetBranchStatusInDbAsync(Factory, archived, "archived");
         var closed = await TestData.AddBranchAsync(Factory, scene.Doctor.Id, "فرع مغلق");
-        await TestData.SetBranchStatusAsync(Factory, closed, "temporarilyClosed");
+        await TestData.SetBranchStatusInDbAsync(Factory, closed, "temporarilyClosed");
 
         var (notLinkedStatus, notLinked) = await Record(otherClient, scene.PatientId, otherBranch, "examination");
         var (foreignBranchStatus, foreignBranch) = await Record(scene.Client, scene.PatientId, otherBranch, "examination");
@@ -397,7 +397,7 @@ public sealed class SessionsTests(IntegrationHost host)
     [Fact]
     public async Task AC11_private_notes_are_for_the_doctor_only()
     {
-        var (doctor, doctorClient, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, doctorClient, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var (patient, patientId) = await TestData.CreatePatientAsync(Factory);
         await TestData.LinkAsync(Factory, doctor.Id, patientId);
         var scene = new PatientScene(doctor, doctorClient, branchId, patientId, await TestData.RecordSessionAsync(doctorClient, patientId, branchId));

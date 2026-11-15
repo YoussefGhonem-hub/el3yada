@@ -13,7 +13,7 @@ public sealed class AssistantSessionTests(IntegrationHost host)
     [Fact]
     public async Task Reception_adds_a_patient_and_records_an_examination_but_sees_no_diagnosis_or_notes_and_no_private_notes()
     {
-        var (doctor, doctorClient, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, doctorClient, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var reception = await TestData.CreateAssistantWithPresetAsync(Factory, doctor.Id, AssistantPresets.Reception);
         using var client = await Factory.SignedInClientAsync(reception);
 
@@ -88,7 +88,7 @@ public sealed class AssistantSessionTests(IntegrationHost host)
     public async Task Assistant_sessions_count_in_the_doctors_totals_show_who_recorded_them_and_wait_for_the_doctor()
     {
         await using var settings = await TestData.UseFeeSettingsAsync(Factory, 3000, 1500, 2);
-        var (doctor, doctorClient, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, doctorClient, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var assistant = await TestData.CreateAssistantWithPresetAsync(Factory, doctor.Id, AssistantPresets.Reception);
         using var client = await Factory.SignedInClientAsync(assistant);
         var patientId = await TestData.AddPatientViaApiAsync(client);
@@ -117,7 +117,7 @@ public sealed class AssistantSessionTests(IntegrationHost host)
     public async Task The_consultation_rule_applies_to_assistants()
     {
         await using var settings = await TestData.UseFeeSettingsAsync(Factory, maxConsecutiveConsultations: 2);
-        var (doctor, _, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, _, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var assistant = await TestData.CreateAssistantWithPresetAsync(Factory, doctor.Id, AssistantPresets.Reception);
         using var client = await Factory.SignedInClientAsync(assistant);
         var patientId = await TestData.AddPatientViaApiAsync(client);
@@ -134,7 +134,7 @@ public sealed class AssistantSessionTests(IntegrationHost host)
     [Fact]
     public async Task Turning_off_sessions_create_refuses_the_next_request_without_signing_in_again()
     {
-        var (doctor, _, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, _, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var assistant = await TestData.CreateAssistantWithPresetAsync(Factory, doctor.Id, AssistantPresets.Reception);
         using var client = await Factory.SignedInClientAsync(assistant);
         var patientId = await TestData.AddPatientViaApiAsync(client);
@@ -154,7 +154,7 @@ public sealed class AssistantSessionTests(IntegrationHost host)
     [Fact]
     public async Task A_session_in_a_branch_the_assistant_does_not_work_in_is_refused()
     {
-        var (doctor, client, branchA) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, branchA) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var branchB = await TestData.AddBranchAsync(Factory, doctor.Id);
         var patientId = await TestData.AddPatientViaApiAsync(client);
         var assistant = await TestData.CreateAssistantWithPresetAsync(Factory, doctor.Id, AssistantPresets.Reception, [branchA]);

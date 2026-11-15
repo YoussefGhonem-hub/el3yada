@@ -14,7 +14,7 @@ public sealed class PatientsRegisterTests(IntegrationHost host)
     [Fact]
     public async Task Search_finds_names_ignoring_arabic_letter_variants_and_phones_and_file_numbers()
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var ahmedPhone = TestData.Mobile();
         var ahmed = await TestData.AddPatientViaApiAsync(client, ahmedPhone, "أحمد مصطفى");
         var menna = await TestData.AddPatientViaApiAsync(client, name: "منة الله علي");
@@ -41,7 +41,7 @@ public sealed class PatientsRegisterTests(IntegrationHost host)
     [Fact]
     public async Task Last_visit_filters_use_cairo_dates()
     {
-        var (_, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var never = await TestData.AddPatientViaApiAsync(client);
         var today = await TestData.AddPatientViaApiAsync(client);
         await TestData.RecordSessionAsync(client, today, branchId);
@@ -68,7 +68,7 @@ public sealed class PatientsRegisterTests(IntegrationHost host)
     [Fact]
     public async Task Rows_show_the_last_visit_and_sort_and_page()
     {
-        var (_, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var first = await TestData.AddPatientViaApiAsync(client, name: "باسم علي");
         var second = await TestData.AddPatientViaApiAsync(client, name: "أمل سعيد");
         var third = await TestData.AddPatientViaApiAsync(client, name: "تامر حسن");
@@ -102,14 +102,14 @@ public sealed class PatientsRegisterTests(IntegrationHost host)
     [Fact]
     public async Task Branch_visit_count_and_new_this_month_filters()
     {
-        var (doctor, client, branchA) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, branchA) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var branchB = await TestData.AddBranchAsync(Factory, doctor.Id);
         var inA = await TestData.AddPatientViaApiAsync(client);
         var inB = await TestData.AddPatientViaApiAsync(client);
         await TestData.RecordSessionAsync(client, inA, branchA);
         await TestData.RecordSessionAsync(client, inB, branchB);
         await TestData.RecordSessionAsync(client, inB, branchB, "consultation");
-        var (_, other, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, other, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
 
         var (_, onlyB) = await client.GetJsonAsync($"/api/patients/register?branchId={branchB}");
         var (_, twoPlus) = await client.GetJsonAsync("/api/patients/register?minVisits=2");
@@ -127,7 +127,7 @@ public sealed class PatientsRegisterTests(IntegrationHost host)
     [Fact]
     public async Task Money_and_clinical_columns_are_null_without_the_permission_and_their_filters_are_refused()
     {
-        var (doctor, client, branchId) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, branchId) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var diabetic = await TestData.AddPatientViaApiAsync(client);
         var healthy = await TestData.AddPatientViaApiAsync(client);
         await TestData.RecordSessionAsync(client, diabetic, branchId, amountChargedPiasters: 30_000);
@@ -176,8 +176,8 @@ public sealed class PatientsRegisterTests(IntegrationHost host)
     [Fact]
     public async Task The_register_lists_only_the_callers_clinic()
     {
-        var (_, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var mine = await TestData.AddPatientViaApiAsync(clientA);
         await TestData.AddPatientViaApiAsync(clientB);
 

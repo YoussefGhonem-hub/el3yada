@@ -15,7 +15,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task A_new_number_gets_an_account_a_temporary_password_shown_once_and_file_number_one()
     {
-        var (doctor, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
 
         using var response = await client.PostAsJsonAsync("/api/patients/createPatient", new
@@ -62,7 +62,7 @@ public sealed class PatientsTests(IntegrationHost host)
         var a = await PatientScene.CreateAsync(Factory);
         var phone = await TestData.WithDbAsync(Factory, db => db.Patients.Where(p => p.Id == a.PatientId).Select(p => p.Phone).SingleAsync());
         await a.Client.PostAsync("/api/sessions/setPrivateNote", new { sessionId = a.SessionId, text = "ملاحظة سرية" });
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
 
         var (status, body) = await clientB.PostAsync("/api/patients/createPatient", TestData.PatientBody(phone, "اسم آخر", "male"));
 
@@ -91,8 +91,8 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task An_existing_number_is_linked_with_the_phone_alone_but_a_new_one_needs_the_identity()
     {
-        var (_, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(clientA, phone);
 
@@ -111,7 +111,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Adding_your_own_patient_again_is_a_conflict_that_names_the_patient()
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(client, phone);
 
@@ -126,8 +126,8 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Lookup_phone_says_new_yours_or_elsewhere_and_nothing_about_another_clinics_patient()
     {
-        var (_, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(clientA, phone, "منى حسن");
 
@@ -152,7 +152,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task An_age_instead_of_a_date_of_birth_is_stored_as_an_estimate()
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
 
         var (status, body) = await client.PostAsync("/api/patients/createPatient", new
         {
@@ -184,7 +184,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [InlineData("emergencyContactPhone", "12", ErrorCodes.InvalidPhone)]
     public async Task Fields_follow_the_validation_rules(string field, string value, string code)
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var body = new Dictionary<string, object?>
         {
             ["fullName"] = "منى حسن", ["phone"] = TestData.Mobile(), ["gender"] = "female", ["dateOfBirth"] = "1990-05-01",
@@ -200,7 +200,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Date_of_birth_or_age_is_required_but_not_both()
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
 
         var (_, neither) = await client.PostAsync("/api/patients/createPatient", new { fullName = "منى حسن", phone = TestData.Mobile(), gender = "female" });
         var (_, both) = await client.PostAsync("/api/patients/createPatient", new
@@ -217,7 +217,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Patients_added_at_the_same_moment_get_different_file_numbers()
     {
-        var (doctor, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctor, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
 
         var results = await Task.WhenAll(Enumerable.Range(0, 6).Select(_ =>
             client.PostAsync("/api/patients/createPatient", TestData.PatientBody(TestData.Mobile()))));
@@ -232,8 +232,8 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Two_clinics_adding_one_new_number_at_the_same_moment_make_one_account()
     {
-        var (_, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
 
         var results = await Task.WhenAll(
@@ -249,8 +249,8 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Updating_the_identity_changes_the_name_on_every_clinics_link()
     {
-        var (doctorA, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (doctorA, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(clientA, phone);
         await TestData.AddPatientViaApiAsync(clientB, phone);
@@ -282,8 +282,8 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task A_phone_change_checks_other_patients_and_updates_the_login_and_every_link()
     {
-        var (_, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var (_, notLinked) = await TestData.CreatePatientAsync(Factory);
         var phoneOfA = TestData.Mobile();
         var patientA = await TestData.AddPatientViaApiAsync(clientA, phoneOfA);
@@ -313,7 +313,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task A_password_reset_gives_a_new_temporary_password_and_signs_the_patient_out()
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var (_, created) = await client.PostAsync("/api/patients/createPatient", TestData.PatientBody(phone));
         var patientId = created.StrAt("patient.patientId");
@@ -359,8 +359,8 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task The_medical_profile_is_replaced_in_order_and_kept_per_clinic()
     {
-        var (_, clientA, _) = await TestData.SignedInDoctorAsync(Factory);
-        var (_, clientB, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var phone = TestData.Mobile();
         var patientId = await TestData.AddPatientViaApiAsync(clientA, phone);
         await TestData.AddPatientViaApiAsync(clientB, phone);
@@ -411,7 +411,7 @@ public sealed class PatientsTests(IntegrationHost host)
     [Fact]
     public async Task Profile_items_are_checked()
     {
-        var (_, client, _) = await TestData.SignedInDoctorAsync(Factory);
+        var (_, client, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
         var patientId = await TestData.AddPatientViaApiAsync(client);
 
         var (_, empty) = await client.PostAsync("/api/patients/updateMedicalProfile", new { patientId, allergies = new[] { " " } });

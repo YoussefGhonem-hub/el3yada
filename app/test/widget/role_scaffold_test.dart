@@ -1,33 +1,19 @@
 import 'package:el3yada/app/app.dart';
-import 'package:el3yada/core/platform/app_platform.dart';
-import 'package:el3yada/core/settings/app_settings.dart';
-import 'package:el3yada/core/storage/token_store.dart';
 import 'package:el3yada/core/theme/motion.dart';
 import 'package:el3yada/core/widgets/navigation/floating_nav_bar.dart';
 import 'package:el3yada/core/widgets/navigation/nav_item.dart';
 import 'package:el3yada/core/widgets/navigation/nav_rail.dart';
-import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:el3yada/features/shell/role_scaffold.dart';
 import 'package:el3yada/features/shell/role_shells.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../support/app_overrides.dart';
 import '../support/harness.dart';
 
-Future<List<Override>> _overrides({List<Override> extra = const []}) async {
-  SharedPreferences.setMockInitialValues({'settings.locale': 'en'});
-  final prefs = await SharedPreferences.getInstance();
-  return [
-    sharedPreferencesProvider.overrideWithValue(prefs),
-    appPlatformProvider.overrideWithValue(AppPlatform.mobile),
-    tokenStoreProvider.overrideWithValue(MemoryTokenStore()),
-    authRepositoryProvider.overrideWithValue(FakeAuthRepository(delay: Duration.zero)),
-    ...extra,
-  ];
-}
+Future<List<Override>> _overrides({List<Override> extra = const []}) => appOverrides(extra: extra);
 
 Future<void> _pumpScaffold(
   WidgetTester tester, {
@@ -121,9 +107,13 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(ProviderScope(overrides: await _overrides(), child: const El3yadaApp()));
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).at(0), '01000000002');
     await tester.enterText(find.byType(TextFormField).at(1), 'dev');
     await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     expect(find.text('Screen P1 in spec.md'), findsOneWidget);
 

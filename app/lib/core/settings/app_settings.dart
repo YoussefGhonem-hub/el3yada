@@ -9,19 +9,23 @@ final sharedPreferencesProvider = Provider<SharedPreferences>(
   (ref) => throw UnimplementedError('Override sharedPreferencesProvider in main()'),
 );
 
-/// Language and appearance, saved on the device (spec section 12).
-/// TODO(Phase 1): also sync them to `users.locale` and `users.themeMode`.
+/// Language and appearance, saved on the device (spec section 12). While
+/// signed in, changes are also saved on the account (`AuthController`).
 class AppSettings {
-  const AppSettings({required this.locale, required this.themeMode});
+  const AppSettings({required this.locale, required this.themeMode, this.languageChosen = true});
 
   final Locale locale;
   final ThemeMode themeMode;
 
+  /// False until the user picks a language on A2 (first launch).
+  final bool languageChosen;
+
   bool get isArabic => locale.languageCode == 'ar';
 
-  AppSettings copyWith({Locale? locale, ThemeMode? themeMode}) => AppSettings(
+  AppSettings copyWith({Locale? locale, ThemeMode? themeMode, bool? languageChosen}) => AppSettings(
         locale: locale ?? this.locale,
         themeMode: themeMode ?? this.themeMode,
+        languageChosen: languageChosen ?? this.languageChosen,
       );
 }
 
@@ -32,6 +36,7 @@ class AppSettingsController extends Notifier<AppSettings> {
   static const supportedLanguageCodes = {'ar', 'en'};
   static const _localeKey = 'settings.locale';
   static const _themeKey = 'settings.themeMode';
+  static const _languageChosenKey = 'settings.languageChosen';
 
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
@@ -39,13 +44,26 @@ class AppSettingsController extends Notifier<AppSettings> {
   AppSettings build() {
     final prefs = ref.watch(sharedPreferencesProvider);
     final savedTheme = prefs.getString(_themeKey);
+    final savedLocale = prefs.getString(_localeKey);
     return AppSettings(
-      locale: Locale(prefs.getString(_localeKey) ?? _deviceLanguage()),
+      locale: Locale(savedLocale ?? _deviceLanguage()),
       themeMode: ThemeMode.values.firstWhere(
         (mode) => mode.name == savedTheme,
         orElse: () => ThemeMode.system,
       ),
+      // Installs from before A2 already saved a language: don't ask again.
+      languageChosen: (prefs.getBool(_languageChosenKey) ?? false) || savedLocale != null,
     );
+  }
+
+  /// A2: shows the app in [locale] without saving it yet.
+  void setLocaleForPreview(Locale locale) => state = state.copyWith(locale: locale);
+
+  /// A2: the first-launch choice.
+  Future<void> chooseLanguage(Locale locale) async {
+    state = state.copyWith(locale: locale, languageChosen: true);
+    await _prefs.setString(_localeKey, locale.languageCode);
+    await _prefs.setBool(_languageChosenKey, true);
   }
 
   /// The device language if it is Arabic or English, otherwise Arabic.

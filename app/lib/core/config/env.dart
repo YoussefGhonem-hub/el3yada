@@ -29,6 +29,16 @@ abstract final class Env {
 
   static bool get isProd => name == 'prod';
 
+  /// A11 "Update": the store page, download page or installer for each
+  /// platform. Empty until the apps are published; A11 then tells the user to
+  /// update from where they installed the app.
+  static const Map<String, String> updateUrls = {
+    'android': String.fromEnvironment('UPDATE_URL_ANDROID'),
+    'ios': String.fromEnvironment('UPDATE_URL_IOS'),
+    'windows': String.fromEnvironment('UPDATE_URL_WINDOWS'),
+    'macos': String.fromEnvironment('UPDATE_URL_MACOS'),
+  };
+
   static bool get useFakeAuth => _useFakeAuth && !isProd;
 
   /// Stops a build that mixes a native flavor with the other environment's

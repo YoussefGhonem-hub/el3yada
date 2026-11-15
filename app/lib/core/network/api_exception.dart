@@ -1,0 +1,113 @@
+import 'package:dio/dio.dart';
+
+/// Every failed API call, read from the API's `application/problem+json`
+/// answer (backend/README.md, "Validation").
+///
+/// [code] is the stable error code (`INVALID_CREDENTIALS`, `ACCOUNT_DISABLED`,
+/// ...). [fieldCodes] holds the first code for each invalid field, keyed by the
+/// JSON field name (`phone`, `newPassword`, ...). Screens turn both into ARB
+/// messages with `ApiErrorText` (core/network/api_error_text.dart).
+class ApiException implements Exception {
+  const ApiException({
+    required this.kind,
+    this.status,
+    this.code,
+    this.fieldCodes = const {},
+    this.retryAfter,
+    this.cause,
+  });
+
+  /// Not from the API: used by the app itself (for example a patient on desktop).
+  const ApiException.local(String this.code)
+      : kind = ApiErrorKind.http,
+        status = null,
+        fieldCodes = const {},
+        retryAfter = null,
+        cause = null;
+
+  factory ApiException.fromDio(DioException error) {
+    if (error.error is ApiException) return error.error! as ApiException;
+    switch (error.type) {
+      case DioExceptionType.connectionError:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.transformTimeout:
+        return ApiException(kind: ApiErrorKind.network, cause: error);
+      case DioExceptionType.cancel:
+        return ApiException(kind: ApiErrorKind.cancelled, cause: error);
+      case DioExceptionType.badCertificate:
+      case DioExceptionType.unknown:
+        // On mobile a dropped connection often arrives as `unknown` with a
+        // SocketException inside.
+        if (error.response == null) return ApiException(kind: ApiErrorKind.network, cause: error);
+      case DioExceptionType.badResponse:
+        break;
+    }
+
+    final response = error.response;
+    final status = response?.statusCode;
+    final body = response?.data;
+    String? code;
+    final fieldCodes = <String, String>{};
+    if (body is Map) {
+      code = body['code'] as String?;
+      final errorCodes = body['errorCodes'];
+      if (errorCodes is Map) {
+        for (final entry in errorCodes.entries) {
+          final codes = entry.value;
+          if (codes is List && codes.isNotEmpty) fieldCodes['${entry.key}'] = '${codes.first}';
+        }
+      }
+      if (code == null && fieldCodes.isNotEmpty) code = 'VALIDATION_FAILED';
+    }
+
+    Duration? retryAfter;
+    final retryHeader = response?.headers.value('retry-after');
+    final seconds = retryHeader == null ? null : int.tryParse(retryHeader);
+    if (seconds != null) retryAfter = Duration(seconds: seconds);
+
+    return ApiException(
+      kind: status != null && status >= 500 ? ApiErrorKind.server : ApiErrorKind.http,
+      status: status,
+      code: code,
+      fieldCodes: fieldCodes,
+      retryAfter: retryAfter,
+      cause: error,
+    );
+  }
+
+  final ApiErrorKind kind;
+  final int? status;
+  final String? code;
+  final Map<String, String> fieldCodes;
+  final Duration? retryAfter;
+  final Object? cause;
+
+  bool get isNetwork => kind == ApiErrorKind.network;
+
+  bool hasCode(String value) => code == value;
+
+  @override
+  String toString() => 'ApiException($kind, $status, $code, $fieldCodes)';
+}
+
+enum ApiErrorKind { network, cancelled, server, http }
+
+/// The codes the app reacts to. The full list is backend/src/El3yada.Api/ErrorCodes.cs.
+abstract final class ApiCodes {
+  static const validationFailed = 'VALIDATION_FAILED';
+  static const invalidCredentials = 'INVALID_CREDENTIALS';
+  static const tooManyAttempts = 'TOO_MANY_ATTEMPTS';
+  static const accountDisabled = 'ACCOUNT_DISABLED';
+  static const clinicNotActive = 'CLINIC_NOT_ACTIVE';
+  static const patientDesktopNotSupported = 'PATIENT_DESKTOP_NOT_SUPPORTED';
+  static const refreshTokenInvalid = 'REFRESH_TOKEN_INVALID';
+  static const refreshTokenReused = 'REFRESH_TOKEN_REUSED';
+  static const selectionTokenInvalid = 'SELECTION_TOKEN_INVALID';
+  static const passwordChangeRequired = 'PASSWORD_CHANGE_REQUIRED';
+  static const tokenOutdated = 'TOKEN_OUTDATED';
+  static const sessionRevoked = 'SESSION_REVOKED';
+  static const verificationEmailCooldown = 'VERIFICATION_EMAIL_COOLDOWN';
+  static const emailAlreadyVerified = 'EMAIL_ALREADY_VERIFIED';
+}

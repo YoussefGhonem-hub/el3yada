@@ -45,3 +45,20 @@ abstract final class Validators {
     return normalizeEgyptianMobile(value);
   }
 }
+
+/// The password policy (spec section 11), the same as the API's
+/// `Passwords.MeetsPolicy`: 8 to 128 characters, at least one letter (any
+/// script) and one digit. Arabic-Indic digits count as digits.
+abstract final class PasswordRules {
+  static const minLength = 8;
+  static const maxLength = 128;
+  static final _letter = RegExp(r'\p{L}', unicode: true);
+  static final _digit = RegExp('[0-9]');
+
+  static bool hasLength(String value) => value.length >= minLength;
+  static bool hasLetter(String value) => _letter.hasMatch(value);
+  static bool hasNumber(String value) => _digit.hasMatch(Validators.normalizeDigits(value));
+
+  static bool isStrong(String value) =>
+      hasLength(value) && value.length <= maxLength && hasLetter(value) && hasNumber(value);
+}

@@ -475,6 +475,420 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{label}, {badge}'**
   String navItemWithBadge(String label, String badge);
+
+  /// A1: shown under the logo when start-up takes more than a few seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting…'**
+  String get splashSlow;
+
+  /// No description provided for @languageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your language'**
+  String get languageTitle;
+
+  /// No description provided for @languageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change it later in Settings.'**
+  String get languageBody;
+
+  /// No description provided for @languageArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get languageArabic;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continueButton;
+
+  /// No description provided for @chooseAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in as'**
+  String get chooseAccountTitle;
+
+  /// No description provided for @chooseAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This number has two accounts. Choose one.'**
+  String get chooseAccountBody;
+
+  /// No description provided for @assistantAtClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant at {doctorName}\'s clinic'**
+  String assistantAtClinic(String doctorName);
+
+  /// No description provided for @errorSignInAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sign-in timed out. Sign in again.'**
+  String get errorSignInAgain;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong on our side. Try again in a moment.'**
+  String get errorServer;
+
+  /// No description provided for @errorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address.'**
+  String get errorInvalidEmail;
+
+  /// No description provided for @errorInvalidMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid Egyptian mobile number.'**
+  String get errorInvalidMobile;
+
+  /// No description provided for @errorTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'This is too long.'**
+  String get errorTooLong;
+
+  /// No description provided for @errorRetryInMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Try again in {minutes} min.'**
+  String errorRetryInMinutes(int minutes);
+
+  /// No description provided for @forgotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password'**
+  String get forgotTitle;
+
+  /// No description provided for @forgotBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the email or mobile number you sign in with.'**
+  String get forgotBody;
+
+  /// No description provided for @forgotSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get forgotSubmit;
+
+  /// No description provided for @forgotEmailSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get forgotEmailSentTitle;
+
+  /// No description provided for @forgotEmailSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If this email belongs to an account, a link to set a new password is on its way. Check your spam folder too.'**
+  String get forgotEmailSentBody;
+
+  /// No description provided for @forgotPhoneSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent'**
+  String get forgotPhoneSentTitle;
+
+  /// No description provided for @forgotPhoneSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A request will be sent to your doctor to reset your password. They will give you a temporary password.'**
+  String get forgotPhoneSentBody;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get backToLogin;
+
+  /// No description provided for @setPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a new password'**
+  String get setPasswordTitle;
+
+  /// No description provided for @setPasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a password only you know. You\'ll use it from now on.'**
+  String get setPasswordBody;
+
+  /// No description provided for @newPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPasswordLabel;
+
+  /// No description provided for @confirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPasswordLabel;
+
+  /// No description provided for @passwordRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password needs'**
+  String get passwordRulesTitle;
+
+  /// No description provided for @passwordRuleLength.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get passwordRuleLength;
+
+  /// No description provided for @passwordRuleLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'A letter'**
+  String get passwordRuleLetter;
+
+  /// No description provided for @passwordRuleNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'A number'**
+  String get passwordRuleNumber;
+
+  /// Screen reader text for a met password rule.
+  ///
+  /// In en, this message translates to:
+  /// **'Done: {rule}'**
+  String passwordRuleMet(String rule);
+
+  /// No description provided for @passwordRuleNotMet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet: {rule}'**
+  String passwordRuleNotMet(String rule);
+
+  /// No description provided for @acceptTermsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the Terms of use and the Privacy Policy'**
+  String get acceptTermsLabel;
+
+  /// No description provided for @savePasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save password'**
+  String get savePasswordButton;
+
+  /// No description provided for @errorPasswordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The passwords don\'t match.'**
+  String get errorPasswordsDontMatch;
+
+  /// No description provided for @errorWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 8 characters with a letter and a number.'**
+  String get errorWeakPassword;
+
+  /// No description provided for @errorPasswordSameAsOld.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a password you haven\'t used here.'**
+  String get errorPasswordSameAsOld;
+
+  /// No description provided for @errorCurrentPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'The current password is wrong.'**
+  String get errorCurrentPasswordIncorrect;
+
+  /// No description provided for @errorTermsNotAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept the Terms and the Privacy Policy to continue.'**
+  String get errorTermsNotAccepted;
+
+  /// No description provided for @termsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use'**
+  String get termsTitle;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyTitle;
+
+  /// No description provided for @legalEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This text isn\'t available yet.'**
+  String get legalEmpty;
+
+  /// No description provided for @legalUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated {date}'**
+  String legalUpdated(String date);
+
+  /// No description provided for @accountDisabledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account disabled'**
+  String get accountDisabledTitle;
+
+  /// No description provided for @accountDisabledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been disabled. Contact support.'**
+  String get accountDisabledBody;
+
+  /// No description provided for @clinicNotActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic account not active'**
+  String get clinicNotActiveTitle;
+
+  /// No description provided for @clinicNotActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The clinic account is not active. Contact the doctor.'**
+  String get clinicNotActiveBody;
+
+  /// No description provided for @supportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support'**
+  String get supportTitle;
+
+  /// No description provided for @supportWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get supportWhatsapp;
+
+  /// No description provided for @supportCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get supportCall;
+
+  /// No description provided for @supportEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get supportEmail;
+
+  /// No description provided for @updateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update required'**
+  String get updateTitle;
+
+  /// No description provided for @updateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This version of el3yada is no longer supported. Update the app to keep using it.'**
+  String get updateBody;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateButton;
+
+  /// No description provided for @updateNoLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the latest version from where you installed the app.'**
+  String get updateNoLink;
+
+  /// No description provided for @appVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String appVersionLabel(String version);
+
+  /// No description provided for @maintenanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll be right back'**
+  String get maintenanceTitle;
+
+  /// No description provided for @maintenanceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'el3yada is under maintenance. Try again in a little while.'**
+  String get maintenanceBody;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retryButton;
+
+  /// No description provided for @adminSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin sign in'**
+  String get adminSignIn;
+
+  /// No description provided for @forgotHaveCode.
+  ///
+  /// In en, this message translates to:
+  /// **'I have a code'**
+  String get forgotHaveCode;
+
+  /// No description provided for @resetCodeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code from the email and choose a new password.'**
+  String get resetCodeBody;
+
+  /// No description provided for @resetCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code from the email'**
+  String get resetCodeLabel;
+
+  /// No description provided for @resetDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed'**
+  String get resetDoneTitle;
+
+  /// No description provided for @resetDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your new password. Other devices were signed out.'**
+  String get resetDoneBody;
+
+  /// No description provided for @errorEmailTokenInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This code isn\'t valid. Check it and try again.'**
+  String get errorEmailTokenInvalid;
+
+  /// No description provided for @errorEmailTokenExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has expired. Ask for a new email.'**
+  String get errorEmailTokenExpired;
+
+  /// No description provided for @errorEmailTokenUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This code was already used. Ask for a new email.'**
+  String get errorEmailTokenUsed;
 }
 
 class _AppLocalizationsDelegate

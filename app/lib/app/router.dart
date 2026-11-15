@@ -1,60 +1,83 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/settings/app_settings.dart';
+import '../core/theme/motion.dart';
 import '../features/auth/application/auth_controller.dart';
+import '../features/auth/domain/auth_session.dart';
+import '../features/auth/domain/user_role.dart';
+import '../features/auth/presentation/blocked_screen.dart';
+import '../features/auth/presentation/forgot_password_screen.dart';
+import '../features/auth/presentation/language_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
-import '../features/auth/presentation/splash_screen.dart';
+import '../features/auth/presentation/set_password_screen.dart';
+import '../features/doctor_registration/presentation/registration_status_screens.dart';
 import '../features/shell/fade_through_branches.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_scaffold.dart';
 import '../features/shell/role_shells.dart';
+import '../features/startup/presentation/legal_screen.dart';
+import '../features/startup/presentation/maintenance_screen.dart';
+import '../features/startup/presentation/update_screen.dart';
+import '../features/startup/startup.dart';
+import 'destination_pages.dart';
+import 'routes.dart';
 
-abstract final class AppRoutes {
-  static const splash = '/splash';
-  static const login = '/login';
-}
+export 'routes.dart';
 
-/// Routes by session and role (spec A1). Each role only reaches its own area.
+/// Routes by start-up checks, session, role and status (spec A1). Each role
+/// only reaches its own area. The order of the checks is in [appRedirect].
 ///
 /// Transitions (spec section 12):
 /// - Pages built with `builder:` (a `MaterialPage`) slide along the
 ///   horizontal shared axis forward and back, mirrored in Arabic. That comes
 ///   from `AppPageTransitionsBuilder` in the theme; nothing to add per route.
+/// - The splash and the login share one page (see `EntranceScreen`), so the
+///   logo can rise from the splash into the login header.
 /// - Each menu destination is its own branch of the role's
 ///   `StatefulShellRoute`, so switching tabs fades through
 ///   (`FadeThroughBranches`) and every tab keeps its state. Tab roots use
 ///   `NoTransitionPage`, because the branch container animates them.
-/// - Detail screens go under their tab's `GoRoute` (`routes: [...]`) with
+/// - Detail screens go under their tab (destination_pages.dart) with
 ///   `builder:`; list → detail can also use `ContainerTransform`.
 final routerProvider = Provider<GoRouter>((ref) {
-  final refresh = _AuthRefresh(ref);
+  final refresh = _RouterRefresh(ref);
   ref.onDispose(refresh.dispose);
 
   return GoRouter(
     initialLocation: AppRoutes.splash,
     refreshListenable: refresh,
-    redirect: (context, state) {
-      final auth = ref.read(authControllerProvider);
-      final location = state.matchedLocation;
-
-      if (auth.isLoading && !auth.hasValue) {
-        return location == AppRoutes.splash ? null : AppRoutes.splash;
-      }
-
-      final session = auth.value;
-      if (session == null) {
-        return location == AppRoutes.login ? null : AppRoutes.login;
-      }
-
-      // TODO(A9): send users with mustChangePassword to "Set new password".
-      final shell = RoleShell.forRole(session.role);
-      if (!location.startsWith(shell.basePath)) return shell.homePath;
-      return null;
-    },
+    redirect: (context, state) => appRedirect(ref, state.matchedLocation),
     routes: [
-      GoRoute(path: AppRoutes.splash, builder: (context, state) => const SplashScreen()),
-      GoRoute(path: AppRoutes.login, builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: AppRoutes.splash,
+        pageBuilder: (context, state) => _entrancePage(showForm: false),
+      ),
+      GoRoute(
+        path: AppRoutes.login,
+        pageBuilder: (context, state) => _entrancePage(showForm: true),
+        routes: [
+          GoRoute(path: 'forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
+          GoRoute(path: 'register', builder: (context, state) => const RegistrationScreen()),
+        ],
+      ),
+      GoRoute(path: AppRoutes.language, builder: (context, state) => const LanguageScreen()),
+      GoRoute(path: AppRoutes.setPassword, builder: (context, state) => const SetPasswordScreen()),
+      GoRoute(path: AppRoutes.verifyEmail, builder: (context, state) => const VerifyEmailScreen()),
+      GoRoute(path: AppRoutes.pending, builder: (context, state) => const PendingApprovalScreen()),
+      GoRoute(
+        path: AppRoutes.rejected,
+        builder: (context, state) => const RegistrationRejectedScreen(),
+        routes: [
+          GoRoute(path: 'edit', builder: (context, state) => const RegistrationScreen(resubmit: true)),
+        ],
+      ),
+      GoRoute(path: AppRoutes.blocked, builder: (context, state) => const BlockedScreen()),
+      GoRoute(path: AppRoutes.update, builder: (context, state) => const UpdateScreen()),
+      GoRoute(path: AppRoutes.maintenance, builder: (context, state) => const MaintenanceScreen()),
+      GoRoute(path: AppRoutes.terms, builder: (context, state) => const LegalScreen(document: LegalDocument.terms)),
+      GoRoute(path: AppRoutes.privacy, builder: (context, state) => const LegalScreen(document: LegalDocument.privacy)),
       for (final shell in RoleShell.all)
         StatefulShellRoute(
           builder: (context, state, navigationShell) => RoleScaffold(
@@ -74,8 +97,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: destination.path,
                     pageBuilder: (context, state) => NoTransitionPage(
                       key: state.pageKey,
-                      child: PlaceholderPage(destination: destination),
+                      child: destinationPage(context, destination),
                     ),
+                    routes: destinationRoutes(destination),
                   ),
                 ],
               ),
@@ -97,9 +121,85 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-/// Re-runs the router's redirect whenever the session changes.
-class _AuthRefresh extends ChangeNotifier {
-  _AuthRefresh(Ref ref) {
-    ref.listen(authControllerProvider, (previous, next) => notifyListeners());
+/// Where [location] must go instead, or null to stay (spec A1). In order:
+///
+/// 1. Start-up still running, or the splash logo still drawing → splash.
+/// 2. App too old → A11 (nothing else opens).
+/// 3. Terms and Privacy (A12) open from anywhere.
+/// 4. First launch → A2.
+/// 5. Maintenance → A13, except for signed-in admins (and the login, so an
+///    admin can sign in to turn it off).
+/// 6. Sign-in refused (disabled account, inactive clinic) → A10.
+/// 7. Signed out → the login and its sub-screens (A3, A4, A8).
+/// 8. `mustChangePassword` → A9.
+/// 9. Doctor waiting for approval → A6 (and A5); rejected → A7 (and A4 to resubmit).
+/// 10. Otherwise the role's area.
+String? appRedirect(Ref ref, String location) {
+  bool at(String path) => location == path || location.startsWith('$path/');
+  String? go(String path) => location == path ? null : path;
+
+  final startup = ref.read(startupProvider);
+  final auth = ref.read(authControllerProvider);
+  if (!startup.hasValue && !startup.hasError || auth.isLoading && !auth.hasValue || !ref.read(splashGateProvider)) {
+    return go(AppRoutes.splash);
+  }
+
+  final checks = startup.value ?? const StartupState();
+  final session = auth.value;
+
+  if (checks.updateRequired) return go(AppRoutes.update);
+  if (at(AppRoutes.legal)) return null;
+  if (session == null && !ref.read(appSettingsProvider).languageChosen) return go(AppRoutes.language);
+
+  if (checks.maintenance && session?.role != UserRole.admin) {
+    if (at(AppRoutes.maintenance) || session == null && at(AppRoutes.login)) return null;
+    return AppRoutes.maintenance;
+  }
+
+  if (session == null) {
+    if (ref.read(authBlockProvider) != null) return go(AppRoutes.blocked);
+    return at(AppRoutes.login) ? null : AppRoutes.login;
+  }
+
+  if (session.mustChangePassword) return go(AppRoutes.setPassword);
+
+  if (session.role == UserRole.doctor) {
+    switch (session.doctorStatus) {
+      case DoctorStatus.pendingApproval:
+        return at(AppRoutes.pending) || at(AppRoutes.verifyEmail) ? null : AppRoutes.pending;
+      case DoctorStatus.rejected:
+        return at(AppRoutes.rejected) ? null : AppRoutes.rejected;
+      case _:
+        break;
+    }
+  }
+
+  final shell = RoleShell.forRole(session.role);
+  if (!location.startsWith(shell.basePath)) return shell.homePath;
+  return null;
+}
+
+/// The splash and the login page. Same class and same key for both, so the
+/// Navigator updates the page in place when the splash becomes the login,
+/// and `EntranceScreen` keeps its state to play the rise. Reached from
+/// anywhere else (after logging out), it fades in.
+Page<void> _entrancePage({required bool showForm}) => CustomTransitionPage<void>(
+      key: EntranceScreen.pageKey,
+      transitionDuration: Motion.normal,
+      reverseTransitionDuration: Motion.normalExit,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          FadeTransition(opacity: animation, child: child),
+      child: EntranceScreen(showForm: showForm),
+    );
+
+/// Re-runs the router's redirect whenever anything it reads changes.
+class _RouterRefresh extends ChangeNotifier {
+  _RouterRefresh(Ref ref) {
+    void notify(Object? previous, Object? next) => notifyListeners();
+    ref.listen<AsyncValue<StartupState>>(startupProvider, notify);
+    ref.listen<AsyncValue<AuthSession?>>(authControllerProvider, notify);
+    ref.listen<String?>(authBlockProvider, notify);
+    ref.listen<bool>(splashGateProvider, notify);
+    ref.listen<bool>(appSettingsProvider.select((s) => s.languageChosen), notify);
   }
 }

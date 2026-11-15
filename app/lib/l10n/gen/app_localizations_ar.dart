@@ -206,4 +206,237 @@ class AppLocalizationsAr extends AppLocalizations {
   String navItemWithBadge(String label, String badge) {
     return '$label، $badge';
   }
+
+  @override
+  String get splashSlow => 'جارٍ الاتصال…';
+
+  @override
+  String get languageTitle => 'اختر اللغة';
+
+  @override
+  String get languageBody => 'يمكنك تغييرها لاحقاً من الإعدادات.';
+
+  @override
+  String get languageArabic => 'العربية';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get continueButton => 'متابعة';
+
+  @override
+  String get chooseAccountTitle => 'الدخول كـ';
+
+  @override
+  String get chooseAccountBody => 'هذا الرقم له حسابان. اختر أحدهما.';
+
+  @override
+  String assistantAtClinic(String doctorName) {
+    return 'مساعد في عيادة $doctorName';
+  }
+
+  @override
+  String get errorSignInAgain =>
+      'انتهت مهلة تسجيل الدخول. سجّل الدخول مرة أخرى.';
+
+  @override
+  String get errorServer => 'حدثت مشكلة لدينا. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get errorInvalidEmail => 'أدخل بريداً إلكترونياً صحيحاً.';
+
+  @override
+  String get errorInvalidMobile => 'أدخل رقم موبايل مصرياً صحيحاً.';
+
+  @override
+  String get errorTooLong => 'النص طويل جداً.';
+
+  @override
+  String errorRetryInMinutes(int minutes) {
+    return 'محاولات كثيرة، حاول بعد $minutes دقيقة.';
+  }
+
+  @override
+  String get forgotTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get forgotBody =>
+      'أدخل البريد الإلكتروني أو رقم الموبايل الذي تسجّل الدخول به.';
+
+  @override
+  String get forgotSubmit => 'إرسال';
+
+  @override
+  String get forgotEmailSentTitle => 'راجع بريدك';
+
+  @override
+  String get forgotEmailSentBody =>
+      'إذا كان هذا البريد مسجّلاً لدينا فسيصله رابط لتعيين كلمة مرور جديدة. راجع مجلد الرسائل غير المرغوبة أيضاً.';
+
+  @override
+  String get forgotPhoneSentTitle => 'تم إرسال الطلب';
+
+  @override
+  String get forgotPhoneSentBody =>
+      'سيتم إرسال طلب لطبيبك لإعادة تعيين كلمة المرور، وسيعطيك كلمة مرور مؤقتة.';
+
+  @override
+  String get backToLogin => 'العودة لتسجيل الدخول';
+
+  @override
+  String get setPasswordTitle => 'عيّن كلمة مرور جديدة';
+
+  @override
+  String get setPasswordBody =>
+      'اختر كلمة مرور لا يعرفها غيرك، وستستخدمها من الآن.';
+
+  @override
+  String get newPasswordLabel => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
+  String get passwordRulesTitle => 'كلمة المرور تحتاج إلى';
+
+  @override
+  String get passwordRuleLength => '8 أحرف على الأقل';
+
+  @override
+  String get passwordRuleLetter => 'حرف';
+
+  @override
+  String get passwordRuleNumber => 'رقم';
+
+  @override
+  String passwordRuleMet(String rule) {
+    return 'تم: $rule';
+  }
+
+  @override
+  String passwordRuleNotMet(String rule) {
+    return 'لم يتحقق بعد: $rule';
+  }
+
+  @override
+  String get acceptTermsLabel => 'أوافق على الشروط والأحكام وسياسة الخصوصية';
+
+  @override
+  String get savePasswordButton => 'حفظ كلمة المرور';
+
+  @override
+  String get errorPasswordsDontMatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get errorWeakPassword => 'استخدم 8 أحرف على الأقل تشمل حرفاً ورقماً.';
+
+  @override
+  String get errorPasswordSameAsOld => 'اختر كلمة مرور لم تستخدمها هنا من قبل.';
+
+  @override
+  String get errorCurrentPasswordIncorrect => 'كلمة المرور الحالية غير صحيحة.';
+
+  @override
+  String get errorTermsNotAccepted =>
+      'وافق على الشروط وسياسة الخصوصية للمتابعة.';
+
+  @override
+  String get termsTitle => 'الشروط والأحكام';
+
+  @override
+  String get privacyTitle => 'سياسة الخصوصية';
+
+  @override
+  String get legalEmpty => 'هذا النص غير متاح بعد.';
+
+  @override
+  String legalUpdated(String date) {
+    return 'آخر تحديث $date';
+  }
+
+  @override
+  String get accountDisabledTitle => 'الحساب موقوف';
+
+  @override
+  String get accountDisabledBody => 'تم إيقاف حسابك. تواصل مع الدعم.';
+
+  @override
+  String get clinicNotActiveTitle => 'حساب العيادة غير مفعّل';
+
+  @override
+  String get clinicNotActiveBody => 'حساب العيادة غير مفعّل، تواصل مع الطبيب.';
+
+  @override
+  String get supportTitle => 'تواصل مع الدعم';
+
+  @override
+  String get supportWhatsapp => 'واتساب';
+
+  @override
+  String get supportCall => 'اتصال';
+
+  @override
+  String get supportEmail => 'البريد';
+
+  @override
+  String get updateTitle => 'يلزم تحديث التطبيق';
+
+  @override
+  String get updateBody =>
+      'هذا الإصدار من «العيادة» لم يعد مدعوماً. حدّث التطبيق لتواصل استخدامه.';
+
+  @override
+  String get updateButton => 'تحديث';
+
+  @override
+  String get updateNoLink =>
+      'نزّل أحدث إصدار من المكان الذي ثبّتّ منه التطبيق.';
+
+  @override
+  String appVersionLabel(String version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get maintenanceTitle => 'سنعود قريباً';
+
+  @override
+  String get maintenanceBody =>
+      '«العيادة» تحت الصيانة الآن. حاول مرة أخرى بعد قليل.';
+
+  @override
+  String get retryButton => 'حاول مرة أخرى';
+
+  @override
+  String get adminSignIn => 'دخول الإدارة';
+
+  @override
+  String get forgotHaveCode => 'معي رمز';
+
+  @override
+  String get resetCodeBody =>
+      'أدخل الرمز الموجود في البريد واختر كلمة مرور جديدة.';
+
+  @override
+  String get resetCodeLabel => 'الرمز من البريد';
+
+  @override
+  String get resetDoneTitle => 'تم تغيير كلمة المرور';
+
+  @override
+  String get resetDoneBody =>
+      'سجّل الدخول بكلمة المرور الجديدة. تم تسجيل الخروج من الأجهزة الأخرى.';
+
+  @override
+  String get errorEmailTokenInvalid =>
+      'هذا الرمز غير صحيح. راجعه وحاول مرة أخرى.';
+
+  @override
+  String get errorEmailTokenExpired =>
+      'انتهت صلاحية هذا الرمز. اطلب بريداً جديداً.';
+
+  @override
+  String get errorEmailTokenUsed =>
+      'تم استخدام هذا الرمز من قبل. اطلب بريداً جديداً.';
 }

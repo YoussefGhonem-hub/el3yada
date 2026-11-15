@@ -578,11 +578,13 @@ class _Summary extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           TypeBadge(last!.type),
-                          const SizedBox(width: 8),
-                          Flexible(child: Text(ClinicFormat.dayAuto(context, last.day), style: theme.textTheme.bodyLarge)),
+                          Text(ClinicFormat.dayAuto(context, last.day), style: theme.textTheme.bodyLarge),
                         ],
                       ),
                       const SizedBox(height: 4),

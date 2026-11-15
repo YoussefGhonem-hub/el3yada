@@ -844,6 +844,12 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
   /// A patient by name (tests).
   String patientIdByName(String fullName) => _accounts.values.firstWhere((a) => a.fullName == fullName).id;
 
+  /// A patient's live sessions, newest first (tests).
+  List<String> sessionIdsOf(String patientId) {
+    final sessions = _live().where((s) => s.patientId == patientId).toList()..sort((a, b) => b.at.compareTo(a.at));
+    return [for (final s in sessions) s.id];
+  }
+
   /// The offline reception assistant (`+201000000001`) as a recorder.
   static RecordedBy get receptionAssistant {
     final session = FakeAuthRepository.accounts['+201000000001']!.session('+201000000001');

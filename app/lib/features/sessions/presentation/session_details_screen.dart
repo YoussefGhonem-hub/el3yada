@@ -54,12 +54,22 @@ class SessionDetailsPage extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsetsDirectional.only(start: 8, top: 8),
-                child: Align(alignment: AlignmentDirectional.centerStart, child: ClinicBackButton(fallback: paths.home)),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: ClinicBackButton(fallback: paths.home),
+                ),
               ),
-              Expanded(child: AdminErrorView(error: error, onRetry: () => ref.invalidate(sessionProvider(sessionId)))),
+              Expanded(
+                child: AdminErrorView(error: error, onRetry: () => ref.invalidate(sessionProvider(sessionId))),
+              ),
             ],
           ),
-          data: (context, session) => _Details(key: ValueKey(session.sessionId), session: session, clinic: clinic, showPatientLink: showPatientLink),
+          data: (context, session) => _Details(
+            key: ValueKey(session.sessionId),
+            session: session,
+            clinic: clinic,
+            showPatientLink: showPatientLink,
+          ),
         ),
       ),
     );
@@ -90,7 +100,10 @@ class _DetailsState extends ConsumerState<_Details> {
   }
 
   Future<void> _editAmount() async {
-    final updated = await showDialog<SessionView>(context: context, builder: (context) => _AmountDialog(session: _session));
+    final updated = await showDialog<SessionView>(
+      context: context,
+      builder: (context) => _AmountDialog(session: _session),
+    );
     if (updated == null || !mounted) return;
     _updated(updated);
     showAdminSnack(context, AppLocalizations.of(context).sessionAmountSaved);
@@ -133,21 +146,29 @@ class _DetailsState extends ConsumerState<_Details> {
         var index = 0;
         Widget enter(Widget child) => StaggeredEntrance(index: index++, child: child);
 
-        final header = enter(ClinicHeader(
-          title: l10n.sessionDetailsTitle,
-          subtitle: session.patientName,
-          backFallback: paths.patient(session.patientId),
-          trailingTitle: TypeBadge(session.type, large: true, locked: true),
-          actions: [
-            if (widget.showPatientLink)
-              TextButton.icon(
-                onPressed: () => context.push(paths.patient(session.patientId)),
-                icon: const Icon(Icons.folder_shared_outlined),
-                label: Text(l10n.patientOpenFile),
-              ),
-          ],
-        ));
-        final summary = enter(_SummaryCard(session: session, clinic: widget.clinic, onEditAmount: session.can.editAmount ? _editAmount : null));
+        final header = enter(
+          ClinicHeader(
+            title: l10n.sessionDetailsTitle,
+            subtitle: session.patientName,
+            backFallback: paths.patient(session.patientId),
+            trailingTitle: TypeBadge(session.type, large: true, locked: true),
+            actions: [
+              if (widget.showPatientLink)
+                TextButton.icon(
+                  onPressed: () => context.push(paths.patient(session.patientId)),
+                  icon: const Icon(Icons.folder_shared_outlined),
+                  label: Text(l10n.patientOpenFile),
+                ),
+            ],
+          ),
+        );
+        final summary = enter(
+          _SummaryCard(
+            session: session,
+            clinic: widget.clinic,
+            onEditAmount: session.can.editAmount ? _editAmount : null,
+          ),
+        );
         final clinical = session.clinical == null ? null : enter(_ClinicalCard(session: session, onSaved: _updated));
         final note = session.can.privateNote ? enter(_PrivateNoteCard(sessionId: session.sessionId)) : null;
         final delete = enter(_DeleteArea(session: session, clinic: widget.clinic, busy: _deleting, onDelete: _delete));
@@ -164,7 +185,12 @@ class _DetailsState extends ConsumerState<_Details> {
                   width: 380,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [summary, if (note != null) ...[const SizedBox(height: 16), note], const SizedBox(height: 16), delete],
+                    children: [
+                      summary,
+                      if (note != null) ...[const SizedBox(height: 16), note],
+                      const SizedBox(height: 16),
+                      delete,
+                    ],
                   ),
                 ),
                 const SizedBox(width: 20),
@@ -220,68 +246,87 @@ class _SummaryCard extends StatelessWidget {
 
     // BR-S6: the lock sits at the start of the value and stays on its first line.
     Widget locked(String text) => Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 3),
-              child: Tooltip(
-                message: l10n.sessionLocked,
-                child: Icon(Icons.lock_outline, size: 16, color: scheme.onSurfaceVariant, semanticLabel: l10n.sessionLocked),
-              ),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 3),
+          child: Tooltip(
+            message: l10n.sessionLocked,
+            child: Icon(
+              Icons.lock_outline,
+              size: 16,
+              color: scheme.onSurfaceVariant,
+              semanticLabel: l10n.sessionLocked,
             ),
-            const SizedBox(width: 6),
-            Flexible(child: Text(text, style: theme.textTheme.bodyLarge)),
-          ],
-        );
+          ),
+        ),
+        const SizedBox(width: 6),
+        Flexible(child: Text(text, style: theme.textTheme.bodyLarge)),
+      ],
+    );
 
     return SectionCard(
       title: l10n.sessionSummary,
       icon: Icons.event_note_outlined,
-      trailing: session.awaitingDoctor ? const AwaitingDoctorBadge() : null,
-      child: ResponsiveGrid(
-        minColumnWidth: 150,
-        runSpacing: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InfoRow(label: l10n.sessionTime, child: locked(AppFormat.dateTime(context, session.at))),
-          InfoRow(label: l10n.sessionType, child: locked(sessionTypeLabel(l10n, session.type))),
-          InfoRow(label: l10n.sessionBranchLabel, value: session.branch.name(language)),
-          InfoRow(label: l10n.sessionPlatformFeeLabel, value: AppFormat.egp(context, session.platformFeePiasters)),
-          // BR-AS6: the doctor sees who recorded it.
-          if (clinic.isDoctor)
-            InfoRow(
-              label: l10n.sessionRecordedByLabel,
-              value: recorder.isAssistant ? l10n.sessionRecordedByAssistant(recorder.name) : l10n.sessionRecordedByDoctor,
-            ),
-          if (amount != null)
-            InfoRow(
-              label: l10n.sessionAmountCharged,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(amount == 0 ? l10n.sessionFree : AppFormat.egp(context, amount), style: theme.textTheme.titleMedium),
-                        if (session.listPricePiasters != null && session.listPricePiasters != amount)
-                          Text(
-                            l10n.sessionVisitPrice(AppFormat.egp(context, session.listPricePiasters!)),
-                            style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-                          ),
-                        if (session.paymentMethod != null)
-                          Text(
-                            paymentMethodLabel(l10n, session.paymentMethod!),
-                            style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-                          ),
-                      ],
-                    ),
+          if (session.awaitingDoctor) ...[const AwaitingDoctorBadge(), const SizedBox(height: 16)],
+          ResponsiveGrid(
+            minColumnWidth: 150,
+            runSpacing: 16,
+            children: [
+              InfoRow(label: l10n.sessionTime, child: locked(AppFormat.dateTime(context, session.at))),
+              InfoRow(label: l10n.sessionType, child: locked(sessionTypeLabel(l10n, session.type))),
+              InfoRow(label: l10n.sessionBranchLabel, value: session.branch.name(language)),
+              InfoRow(label: l10n.sessionPlatformFeeLabel, value: AppFormat.egp(context, session.platformFeePiasters)),
+              // BR-AS6: the doctor sees who recorded it.
+              if (clinic.isDoctor)
+                InfoRow(
+                  label: l10n.sessionRecordedByLabel,
+                  value: recorder.isAssistant
+                      ? l10n.sessionRecordedByAssistant(recorder.name)
+                      : l10n.sessionRecordedByDoctor,
+                ),
+              if (amount != null)
+                InfoRow(
+                  label: l10n.sessionAmountCharged,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              amount == 0 ? l10n.sessionFree : AppFormat.egp(context, amount),
+                              style: theme.textTheme.titleMedium,
+                            ),
+                            if (session.listPricePiasters != null && session.listPricePiasters != amount)
+                              Text(
+                                l10n.sessionVisitPrice(AppFormat.egp(context, session.listPricePiasters!)),
+                                style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                            if (session.paymentMethod != null)
+                              Text(
+                                paymentMethodLabel(l10n, session.paymentMethod!),
+                                style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                          ],
+                        ),
+                      ),
+                      if (onEditAmount != null)
+                        IconButton(
+                          tooltip: l10n.sessionEditAmount,
+                          onPressed: onEditAmount,
+                          icon: const Icon(Icons.edit_outlined),
+                        ),
+                    ],
                   ),
-                  if (onEditAmount != null)
-                    IconButton(tooltip: l10n.sessionEditAmount, onPressed: onEditAmount, icon: const Icon(Icons.edit_outlined)),
-                ],
-              ),
-            ),
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -349,7 +394,9 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
       _error = null;
     });
     try {
-      final updated = await ref.read(sessionsRepositoryProvider).updateClinical(
+      final updated = await ref
+          .read(sessionsRepositoryProvider)
+          .updateClinical(
             widget.session.sessionId,
             ClinicalDraft(
               chiefComplaint: _complaint.text,
@@ -387,15 +434,22 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
       title: l10n.sessionClinical,
       icon: Icons.medical_services_outlined,
       trailing: canEdit && !_editing
-          ? TextButton.icon(onPressed: _startEditing, icon: const Icon(Icons.edit_outlined), label: Text(l10n.patientEdit))
+          ? TextButton.icon(
+              onPressed: _startEditing,
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(l10n.patientEdit),
+            )
           : null,
       child: AnimatedSwitcher(
         duration: Motion.normal,
         reverseDuration: Motion.normalExit,
         switchInCurve: Motion.enterCurve,
         switchOutCurve: Motion.exitCurveReversed,
-        layoutBuilder: (current, previous) => Stack(alignment: AlignmentDirectional.topStart, children: [...previous, ?current]),
-        child: _editing ? KeyedSubtree(key: const ValueKey('edit'), child: _form(context)) : KeyedSubtree(key: const ValueKey('view'), child: _view(context)),
+        layoutBuilder: (current, previous) =>
+            Stack(alignment: AlignmentDirectional.topStart, children: [...previous, ?current]),
+        child: _editing
+            ? KeyedSubtree(key: const ValueKey('edit'), child: _form(context))
+            : KeyedSubtree(key: const ValueKey('view'), child: _view(context)),
       ),
     );
   }
@@ -406,16 +460,16 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
     final clinical = _clinical;
     final muted = theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant);
     Widget block(String label, String? text) => Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-              const SizedBox(height: 4),
-              Text(text ?? l10n.sessionNotRecorded, style: text == null ? muted : theme.textTheme.bodyLarge),
-            ],
-          ),
-        );
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          const SizedBox(height: 4),
+          Text(text ?? l10n.sessionNotRecorded, style: text == null ? muted : theme.textTheme.bodyLarge),
+        ],
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -429,7 +483,10 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
           // The complaint and the diagnosis always show; the rest only when recorded.
           block(l10n.sessionChiefComplaint, clinical.chiefComplaint),
           if (!clinical.vitals.isEmpty) ...[
-            Text(l10n.sessionVitals, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            Text(
+              l10n.sessionVitals,
+              style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
             const SizedBox(height: 8),
             VitalsView(vitals: clinical.vitals),
             const SizedBox(height: 16),
@@ -447,12 +504,16 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
   Widget _form(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final busy = _status != SubmitStatus.idle;
-    String? server(String field) => _fieldErrors[field] == null ? null : (l10n.fieldError(_fieldErrors[field]) ?? l10n.adminErrorInvalidValue);
+    String? server(String field) =>
+        _fieldErrors[field] == null ? null : (l10n.fieldError(_fieldErrors[field]) ?? l10n.adminErrorInvalidValue);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (_error != null) ...[
-          Text(_error!, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error)),
+          Text(
+            _error!,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error),
+          ),
           const SizedBox(height: 12),
         ],
         TextField(
@@ -508,7 +569,10 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
           children: [
             TextButton(onPressed: busy ? null : () => setState(() => _editing = false), child: Text(l10n.adminCancel)),
             const SizedBox(width: 8),
-            SizedBox(width: 140, child: SubmitButton(label: l10n.adminSave, status: _status, onPressed: _save)),
+            SizedBox(
+              width: 140,
+              child: SubmitButton(label: l10n.adminSave, status: _status, onPressed: _save),
+            ),
           ],
         ),
       ],
@@ -585,7 +649,10 @@ class _PrivateNoteCardState extends ConsumerState<_PrivateNoteCard> {
                 child: Text(l10n.adminCancel),
               ),
               const SizedBox(width: 8),
-              SizedBox(width: 140, child: SubmitButton(label: l10n.adminSave, status: _status, onPressed: _save)),
+              SizedBox(
+                width: 140,
+                child: SubmitButton(label: l10n.adminSave, status: _status, onPressed: _save),
+              ),
             ],
           ),
         ],
@@ -608,7 +675,11 @@ class _PrivateNoteCardState extends ConsumerState<_PrivateNoteCard> {
       child: AsyncStateSwitcher(
         value: note,
         loading: (context) => const SkeletonLoading(loading: true, child: Text('———————————————')),
-        error: (context, error) => AdminErrorView(error: error, compact: true, onRetry: () => ref.invalidate(privateNoteProvider(widget.sessionId))),
+        error: (context, error) => AdminErrorView(
+          error: error,
+          compact: true,
+          onRetry: () => ref.invalidate(privateNoteProvider(widget.sessionId)),
+        ),
         data: (context, note) => Text(
           note.text ?? l10n.sessionNoPrivateNote,
           style: note.text == null
@@ -636,7 +707,10 @@ class _DeleteArea extends StatelessWidget {
     final scheme = theme.colorScheme;
     if (session.can.delete) {
       return OutlinedButton.icon(
-        style: OutlinedButton.styleFrom(foregroundColor: scheme.error, side: BorderSide(color: scheme.error, width: 1.5)),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: scheme.error,
+          side: BorderSide(color: scheme.error, width: 1.5),
+        ),
         onPressed: busy ? null : onDelete,
         icon: const Icon(Icons.delete_outline),
         label: Text(l10n.sessionDelete),
@@ -754,11 +828,13 @@ class _AmountDialogState extends ConsumerState<_AmountDialog> {
     final l10n = AppLocalizations.of(context);
     final parsed = _free ? (piasters: 0, problem: null) : AmountRules.parse(_amount.text, required: true);
     if (parsed.problem != null) {
-      setState(() => _error = switch (parsed.problem!) {
-            AmountProblem.required => l10n.sessionAmountRequired,
-            AmountProblem.invalid => l10n.adminErrorInvalidValue,
-            AmountProblem.outOfRange => l10n.adminErrorOutOfRange,
-          });
+      setState(
+        () => _error = switch (parsed.problem!) {
+          AmountProblem.required => l10n.sessionAmountRequired,
+          AmountProblem.invalid => l10n.adminErrorInvalidValue,
+          AmountProblem.outOfRange => l10n.adminErrorOutOfRange,
+        },
+      );
       return;
     }
     setState(() {
@@ -766,7 +842,9 @@ class _AmountDialogState extends ConsumerState<_AmountDialog> {
       _error = null;
     });
     try {
-      final updated = await ref.read(sessionsRepositoryProvider).updateAmountCharged(
+      final updated = await ref
+          .read(sessionsRepositoryProvider)
+          .updateAmountCharged(
             widget.session.sessionId,
             amountChargedPiasters: parsed.piasters!,
             paymentMethod: _method,
@@ -802,8 +880,15 @@ class _AmountDialogState extends ConsumerState<_AmountDialog> {
                 autofocus: true,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 textDirection: TextDirection.ltr,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩.,٫]')), LengthLimitingTextInputFormatter(10)],
-                decoration: InputDecoration(labelText: l10n.sessionAmountLabel, suffixText: l10n.sessionCurrency, errorText: _error),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩.,٫]')),
+                  LengthLimitingTextInputFormatter(10),
+                ],
+                decoration: InputDecoration(
+                  labelText: l10n.sessionAmountLabel,
+                  suffixText: l10n.sessionCurrency,
+                  errorText: _error,
+                ),
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
@@ -811,9 +896,9 @@ class _AmountDialogState extends ConsumerState<_AmountDialog> {
                 onChanged: _busy
                     ? null
                     : (on) => setState(() {
-                          _free = on;
-                          if (on) _amount.text = '0';
-                        }),
+                        _free = on;
+                        if (on) _amount.text = '0';
+                      }),
                 title: Text(l10n.sessionFreeVisit),
               ),
               Wrap(
@@ -847,14 +932,18 @@ class _DetailsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text('—————————', style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 16),
-          const Card(child: SizedBox(height: 180, child: Center(child: Text('————————————')))),
-          const SizedBox(height: 16),
-          const Card(child: SizedBox(height: 240, child: Center(child: Text('————————————')))),
-        ],
-      );
+    physics: const NeverScrollableScrollPhysics(),
+    padding: const EdgeInsets.all(16),
+    children: [
+      Text('—————————', style: Theme.of(context).textTheme.headlineSmall),
+      const SizedBox(height: 16),
+      const Card(
+        child: SizedBox(height: 180, child: Center(child: Text('————————————'))),
+      ),
+      const SizedBox(height: 16),
+      const Card(
+        child: SizedBox(height: 240, child: Center(child: Text('————————————'))),
+      ),
+    ],
+  );
 }

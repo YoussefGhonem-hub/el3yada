@@ -10,21 +10,44 @@ import 'package:el3yada/features/auth/domain/user_role.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'phase2_clinic_day.dart';
+
 /// Runs the app's real repositories against a running API, to check that the
 /// app reads every answer the way the API sends it. Off by default.
 ///
-/// Use a throwaway database: the test changes the admin's password.
+/// Phase 1 (sign-in and tokens) is below. Phase 2 (one clinic day: sign-up
+/// and approval, branches, prices, patients, sessions, fees, an assistant,
+/// the activity log) is in `phase2_clinic_day.dart`. It runs after Phase 1 in
+/// this isolate, because both sign in as the seeded admin and the files of a
+/// directory run at the same time.
+///
+/// Use a throwaway database: the test changes the admin's password. Phase 2
+/// makes new accounts on every run. To run Phase 1 again on the same
+/// database, give the admin a new temporary password (`seed-admin … --reset`).
 ///
 /// ```
-/// # backend/: a fresh database, an admin, and the API on http://localhost:5001
-/// dotnet ef database update ... --connection "<throwaway db>"
-/// dotnet run --project src/El3yada.Api -- seed-admin contract-admin@el3yada.dev
-/// dotnet run --project src/El3yada.Api --launch-profile http   (with ConnectionStrings__Default set)
+/// # backend/, with the throwaway database in the variable for every command
+/// # (`dotnet ef database drop` has no --connection option)
+/// export ConnectionStrings__Default="Server=(localdb)\MSSQLLocalDB;Database=el3yada_contract_<random>;Trusted_Connection=True;TrustServerCertificate=True"
+/// dotnet ef database update --project src/El3yada.Data --startup-project src/El3yada.Api
+/// dotnet run --project src/El3yada.Api -- seed-admin contract-admin@el3yada.dev   (prints the temporary password)
+/// RateLimits__LoginPerMinute=200 RateLimits__RegistrationPerHour=200 Auth__UserStateCacheSeconds=0 \
+///   dotnet run --project src/El3yada.Api --launch-profile http
 ///
 /// # app/
 /// EL3YADA_API_URL=http://localhost:5001 EL3YADA_ADMIN_EMAIL=contract-admin@el3yada.dev \
 /// EL3YADA_ADMIN_PASSWORD=<temporary password> flutter test test/contract
+///
+/// # backend/ afterwards: stop the API, then (same variable)
+/// dotnet ef database drop --force --project src/El3yada.Data --startup-project src/El3yada.Api
 /// ```
+///
+/// The settings on the API's command line make runs repeatable:
+/// - One run signs in ten times and registers once from one IP: the default
+///   limits are ten sign-ins a minute and ten registrations an hour.
+/// - `seed-admin --reset` changes the admin's security stamp from another
+///   process, which the API sees only after `Auth:UserStateCacheSeconds`
+///   (30 s by default; until then the new token answers `SESSION_REVOKED`).
 void main() {
   final env = Platform.environment;
   final baseUrl = env['EL3YADA_API_URL'];
@@ -57,8 +80,13 @@ void main() {
   }, skip: skip);
 
   test('a wrong password answers INVALID_CREDENTIALS', () async {
+    // A new identifier each run: five misses in 15 minutes lock one (TOO_MANY_ATTEMPTS).
     await expectLater(
-      auth.login(identifier: 'nobody@el3yada.dev', password: 'Wrong12345', device: device),
+      auth.login(
+        identifier: 'nobody-${DateTime.now().microsecondsSinceEpoch}@el3yada.dev',
+        password: 'Wrong12345',
+        device: device,
+      ),
       throwsA(isA<ApiException>().having((e) => e.code, 'code', ApiCodes.invalidCredentials)),
     );
   }, skip: skip);
@@ -114,6 +142,16 @@ void main() {
     final saved = jsonDecode(jsonEncode(session.toJson())) as Map<String, dynamic>;
     expect(AuthSession.fromJson(saved), session);
   }, skip: skip);
+
+  group('Phase 2, one clinic day:', () {
+    phase2ClinicDay(
+      baseUrl: baseUrl,
+      adminEmail: email,
+      adminTemporaryPassword: temporaryPassword,
+      adminPassword: newPassword,
+      skip: skip,
+    );
+  });
 }
 
 class _MemoryPrefs implements SharedPreferencesLike {

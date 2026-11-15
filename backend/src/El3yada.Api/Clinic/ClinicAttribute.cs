@@ -24,7 +24,7 @@ namespace El3yada.Api.Clinic;
 /// <see cref="ClinicCaller.CanUseBranch"/> and answer <c>BRANCH_NOT_ALLOWED</c>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-public sealed class ClinicAttribute(string? permission = null) : Attribute, IAsyncActionFilter
+public sealed class ClinicAttribute(string? permission = null) : Attribute, IAsyncActionFilter, IOrderedFilter
 {
     /// <summary>The assistant permission the endpoint needs (a <see cref="ClinicPermissions"/> key), or null.</summary>
     public string? Permission { get; } = permission is null || ClinicPermissions.IsKnown(permission)
@@ -36,6 +36,12 @@ public sealed class ClinicAttribute(string? permission = null) : Attribute, IAsy
 
     /// <summary>Refused while the doctor is suspended (the "Blocked" column of BR-G5).</summary>
     public bool BlockedWhileSuspended { get; set; }
+
+    /// <summary>
+    /// Runs before the global ValidationFilter (order 0), so a caller who may not use the endpoint gets 403 for
+    /// any body, never a 400 that describes the endpoint's fields.
+    /// </summary>
+    public int Order => -1000;
 
     /// <summary>An assistant is "last active" at most this often (D25), to avoid a write on every request.</summary>
     private static readonly TimeSpan LastActiveResolution = TimeSpan.FromMinutes(5);

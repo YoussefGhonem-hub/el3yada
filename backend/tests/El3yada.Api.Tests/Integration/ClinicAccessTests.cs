@@ -136,6 +136,24 @@ public sealed class ClinicAccessTests(IntegrationHost host)
     }
 
     [Fact]
+    public async Task The_access_check_runs_before_body_validation()
+    {
+        var (patient, _) = await TestData.CreatePatientAsync(Factory);
+        var doctor = await TestData.CreateDoctorAsync(Factory);
+        var assistant = await TestData.CreateAssistantWithPresetAsync(Factory, doctor.Id, AssistantPresets.Reception);
+        using var asPatient = await Factory.SignedInClientAsync(patient);
+        using var asAssistant = await Factory.SignedInClientAsync(assistant);
+
+        var (patientStatus, patientBody) = await asPatient.PostAsync("/api/assistants/createAssistant", new { });
+        var (assistantStatus, assistantBody) = await asAssistant.PostAsync("/api/assistants/createAssistant", new { });
+
+        Assert.Equal(HttpStatusCode.Forbidden, patientStatus);
+        Assert.Equal(ErrorCodes.Forbidden, patientBody.Code());
+        Assert.Equal(HttpStatusCode.Forbidden, assistantStatus);
+        Assert.Equal(ErrorCodes.PermissionDenied, assistantBody.Code());
+    }
+
+    [Fact]
     public async Task An_assistant_of_a_doctor_who_is_suspended_later_still_opens_the_clinic()
     {
         var doctor = await TestData.CreateDoctorAsync(Factory);

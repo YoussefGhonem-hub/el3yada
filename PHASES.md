@@ -27,7 +27,7 @@ These rules keep three people's code consistent. Change them only by agreement.
 
 **Code and branches**
 - Everyone works on the **`dev`** branch directly, with no pull requests. Pull before you start (`git pull --rebase`), commit small, and push often so the others see your work.
-- Before every push: `flutter analyze` is clean, `flutter test` passes, and the API tests pass. CI runs the same checks on every push to `dev`. If it goes red, fixing it comes before anything else.
+- Before every push: `flutter analyze` is clean, `flutter test` passes, and the API tests pass, all run locally. CI runs the same checks, but only when started by hand (Actions tab → CI → Run workflow), to save GitHub Actions minutes. Run it before merging `dev` into `main`. If it goes red, fixing it comes before anything else.
 - `main` gets `dev` when a phase is done and CI is green.
 - One Flutter codebase for every platform. **Each screen is built once** and adapts to phone (< 600 px), tablet (600–1024) and desktop (> 1024), as in spec section 4. Don't make separate phone and desktop copies of a screen.
 - App structure follows [app/README.md](app/README.md): each feature has `domain/`, `data/`, `application/` and `presentation/`. No hard-coded text (ARB files, both languages) and no hard-coded colours (theme tokens).
@@ -79,8 +79,10 @@ These rules keep three people's code consistent. Change them only by agreement.
 - [x] File storage service behind the API: save, read, delete and image thumbnails (SkiaSharp), using the spec section 8 paths, which are now built from IDs only.
   - **Files:** only JPEG, PNG, WebP and PDF are accepted, and the file's first bytes must match its type. Size limits are enforced, and path traversal is rejected.
   - **Endpoints:** none yet, because files need sign-in. Upload and download endpoints come in Phase 3.
-- [ ] CI: build and test the API and the app on every push to `dev` (and `main`).
+- [ ] CI: build and test the API and the app.
   - Written in [.github/workflows/ci.yml](.github/workflows/ci.yml): the API runs against a SQL Server container, and the app runs `flutter analyze`, `flutter test` and a check that generated code is up to date.
+  - It runs only when started by hand, to save Actions minutes. Youssef runs it once after Phase 2.
+  - The first automatic run (15 Nov) never started: GitHub reported a billing problem on the account, so no minutes were used. Fix billing before the first manual run.
 
 API checks (15 Nov): `dotnet build` gives 0 warnings. `dotnet test` passes 74 of 74 (69 API tests and 5 data tests), five runs in a row.
 

@@ -1,11 +1,11 @@
-# Builds and tests the API and the app on every push to dev and main
-# (PHASES.md, "How we work": a red build is fixed before anything else).
+# Builds and tests the API and the app.
+# Manual only, to save GitHub Actions minutes: run it from the Actions tab
+# ("Run workflow") or with `gh workflow run CI --ref dev`. To run it on every
+# push again, add `push: { branches: [dev, main] }` under `on:`.
 name: CI
 
 on:
-  push:
-    branches: [dev, main]
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}

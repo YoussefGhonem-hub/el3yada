@@ -35,7 +35,9 @@ extension ApiErrorText on AppLocalizations {
         'REQUIRED' => errorRequired,
         'TOO_LONG' => errorTooLong,
         'INVALID_EMAIL' => errorInvalidEmail,
-        'INVALID_MOBILE' || 'INVALID_PHONE' => errorInvalidMobile,
+        'INVALID_MOBILE' => errorInvalidMobile,
+        // Branch and support phones: landlines and hotlines are allowed too.
+        'INVALID_PHONE' => regErrorInvalidPhone,
         'INVALID_IDENTIFIER' => errorInvalidIdentifier,
         'WEAK_PASSWORD' => errorWeakPassword,
         'PASSWORD_SAME_AS_OLD' => errorPasswordSameAsOld,
@@ -44,6 +46,18 @@ extension ApiErrorText on AppLocalizations {
         'EMAIL_TOKEN_INVALID' => errorEmailTokenInvalid,
         'EMAIL_TOKEN_EXPIRED' => errorEmailTokenExpired,
         'EMAIL_TOKEN_USED' => errorEmailTokenUsed,
+        // Doctor registration (A4–A7).
+        'INVALID_NAME' => regErrorInvalidName,
+        'INVALID_LICENSE_NUMBER' => regErrorInvalidLicenseNumber,
+        'INVALID_SPECIALTY' => regErrorInvalidSpecialty,
+        'EMAIL_ALREADY_REGISTERED' => regErrorEmailTaken,
+        'PHONE_REQUIRED' => regErrorPhoneRequired,
+        'OUT_OF_RANGE' || 'INVALID_VALUE' => regErrorInvalidValue,
+        'FILE_TOO_LARGE' || 'REQUEST_TOO_LARGE' => regErrorFileTooLarge,
+        'FILE_TYPE_NOT_ALLOWED' => regErrorFileType,
+        'FILE_CONTENT_INVALID' => regErrorFileContent,
+        'REGISTRATION_NOT_EDITABLE' => regErrorNotEditable,
+        'VERIFICATION_EMAIL_COOLDOWN' => regErrorResendCooldown,
         _ => null,
       };
 

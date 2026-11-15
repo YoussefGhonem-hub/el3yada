@@ -439,4 +439,464 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get errorEmailTokenUsed =>
       'تم استخدام هذا الرمز من قبل. اطلب بريداً جديداً.';
+
+  @override
+  String get regTitle => 'تسجيل طبيب';
+
+  @override
+  String get regResubmitTitle => 'تعديل الطلب';
+
+  @override
+  String get regStepAccount => 'الحساب';
+
+  @override
+  String get regStepProfessional => 'البيانات المهنية';
+
+  @override
+  String get regStepBranch => 'الفرع الأول';
+
+  @override
+  String get regStepReview => 'المراجعة والإرسال';
+
+  @override
+  String regStepOf(int step, int count) {
+    return 'الخطوة $step من $count';
+  }
+
+  @override
+  String regStepSemantics(int step, int count, String name) {
+    return 'الخطوة $step من $count: $name';
+  }
+
+  @override
+  String get regNext => 'التالي';
+
+  @override
+  String get regBack => 'السابق';
+
+  @override
+  String get regSubmit => 'إرسال للمراجعة';
+
+  @override
+  String get regResubmit => 'إعادة الإرسال للمراجعة';
+
+  @override
+  String get regFixErrors => 'راجع الحقول المحددة.';
+
+  @override
+  String get regAccountSection => 'حسابك';
+
+  @override
+  String get regAccountIntro => 'ستسجّل الدخول بهذا البريد أو رقم الموبايل.';
+
+  @override
+  String get regPasswordSection => 'اختر كلمة مرور';
+
+  @override
+  String get regFullNameLabel => 'الاسم بالكامل';
+
+  @override
+  String get regFullNameHint => 'كما في كارنيه النقابة، اسمان على الأقل';
+
+  @override
+  String get regEmailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get regMobileLabel => 'رقم الموبايل';
+
+  @override
+  String get regProfessionalSection => 'ممارستك المهنية';
+
+  @override
+  String get regTitleLabel => 'اللقب المهني';
+
+  @override
+  String get regTitleOther => 'أخرى';
+
+  @override
+  String get regTitleOtherLabel => 'اكتب لقبك';
+
+  @override
+  String get regSpecialtyLabel => 'التخصص الأساسي';
+
+  @override
+  String get regSpecialtyChoose => 'اختر تخصصك';
+
+  @override
+  String get regSpecialtyHint => 'ستظهر أدوية تخصصك وتحاليله أولاً عند البحث.';
+
+  @override
+  String get regSpecialtiesError => 'تعذّر تحميل التخصصات.';
+
+  @override
+  String get regExtraSpecialtiesLabel => 'تخصصات أخرى (اختياري، حتى 2)';
+
+  @override
+  String get regExtraSpecialtiesShort => 'تخصصات أخرى';
+
+  @override
+  String get regAddSpecialty => 'إضافة تخصص';
+
+  @override
+  String regRemoveSpecialty(String name) {
+    return 'إزالة $name';
+  }
+
+  @override
+  String get regSearchHint => 'بحث';
+
+  @override
+  String get regClearSearch => 'مسح البحث';
+
+  @override
+  String get regNoResults => 'لا توجد نتائج مطابقة.';
+
+  @override
+  String get regSyndicateSection => 'نقابة الأطباء';
+
+  @override
+  String get regLicenseNumberLabel => 'رقم النقابة';
+
+  @override
+  String get regLicenseFileLabel => 'كارنيه النقابة أو ترخيص المزاولة';
+
+  @override
+  String get regLicenseFileShort => 'كارنيه النقابة';
+
+  @override
+  String get regLicenseFileHint => 'صورة واضحة أو ملف PDF، حتى 10 ميجا';
+
+  @override
+  String get regLicenseReplace => 'تغيير';
+
+  @override
+  String get regLicenseUndo => 'الإبقاء على الملف الحالي';
+
+  @override
+  String get regLicenseCurrent => 'الملف الحالي';
+
+  @override
+  String get regLicenseKept => 'يبقى ما لم تغيّره';
+
+  @override
+  String get regLicenseImage => 'صورة';
+
+  @override
+  String get regLicensePdf => 'PDF';
+
+  @override
+  String get regLicenseOpen => 'فتح صورة كارنيه النقابة';
+
+  @override
+  String get regSourceCamera => 'التقاط صورة';
+
+  @override
+  String get regSourceGallery => 'اختيار من الصور';
+
+  @override
+  String get regSourceFiles => 'اختيار ملف (صورة أو PDF)';
+
+  @override
+  String regFileSizeKb(int size) {
+    return '$size كيلوبايت';
+  }
+
+  @override
+  String regFileSizeMb(String size) {
+    return '$size ميجا';
+  }
+
+  @override
+  String get regBranchSection => 'بيانات الفرع';
+
+  @override
+  String get regBranchIntro =>
+      'سيظهر هذا الفرع للمرضى، ويمكنك إضافة فروع أخرى بعد تفعيل الحساب.';
+
+  @override
+  String get regBranchNameLabel => 'اسم الفرع';
+
+  @override
+  String get regBranchNameHint => 'مثال: فرع المعادي';
+
+  @override
+  String get regGovernorateLabel => 'المحافظة';
+
+  @override
+  String get regGovernorateChoose => 'اختر المحافظة';
+
+  @override
+  String get regCityLabel => 'المدينة أو الحي';
+
+  @override
+  String get regStreetLabel => 'الشارع والعنوان';
+
+  @override
+  String get regBuildingLabel => 'العمارة';
+
+  @override
+  String get regFloorLabel => 'الدور';
+
+  @override
+  String get regApartmentLabel => 'الشقة';
+
+  @override
+  String get regLandmarkLabel => 'علامة مميزة (اختياري)';
+
+  @override
+  String get regLandmarkHint => 'مثال: بجوار محطة المترو';
+
+  @override
+  String get regPhonesSection => 'أرقام تليفون العيادة';
+
+  @override
+  String get regPhonesHint =>
+      'من رقم واحد إلى 5 أرقام: موبايل أو أرضي أو خط ساخن.';
+
+  @override
+  String regPhoneLabel(int index) {
+    return 'الرقم $index';
+  }
+
+  @override
+  String get regPhoneType => 'نوع الرقم';
+
+  @override
+  String get regPhoneTypeReception => 'الاستقبال';
+
+  @override
+  String get regPhoneTypeMobile => 'موبايل';
+
+  @override
+  String get regPhoneTypeLandline => 'أرضي';
+
+  @override
+  String get regPhoneWhatsapp => 'واتساب';
+
+  @override
+  String get regAddPhone => 'إضافة رقم';
+
+  @override
+  String get regRemovePhone => 'حذف هذا الرقم';
+
+  @override
+  String get regPricesSection => 'أسعار الكشف والاستشارة (اختياري)';
+
+  @override
+  String get regPricesHint =>
+      'يرى المرضى هذه الأسعار، ويمكنك تغييرها لاحقاً من الإعدادات.';
+
+  @override
+  String get regExaminationPrice => 'الكشف';
+
+  @override
+  String get regConsultationPrice => 'الاستشارة';
+
+  @override
+  String get regCurrency => 'ج.م';
+
+  @override
+  String regPriceValue(String amount) {
+    return '$amount ج.م';
+  }
+
+  @override
+  String get regReviewIntro => 'راجع بياناتك، ثم أرسلها للمراجعة.';
+
+  @override
+  String get regReviewIntroResubmit =>
+      'راجع تعديلاتك، ثم أعد إرسالها للمراجعة.';
+
+  @override
+  String get regEdit => 'تعديل';
+
+  @override
+  String regEditSection(String section) {
+    return 'تعديل $section';
+  }
+
+  @override
+  String get regNotSet => 'غير محدد';
+
+  @override
+  String get regAddressLabel => 'العنوان';
+
+  @override
+  String get regLandmarkShort => 'علامة مميزة';
+
+  @override
+  String get regPhonesLabel => 'أرقام التليفون';
+
+  @override
+  String regBuildingValue(String value) {
+    return 'عمارة $value';
+  }
+
+  @override
+  String regFloorValue(String value) {
+    return 'الدور $value';
+  }
+
+  @override
+  String regApartmentValue(String value) {
+    return 'شقة $value';
+  }
+
+  @override
+  String get regListSeparator => '، ';
+
+  @override
+  String get regErrorInvalidName =>
+      'اكتب الاسم ثنائياً على الأقل، بالحروف فقط.';
+
+  @override
+  String get regErrorEmailTaken =>
+      'يوجد حساب بهذا البريد. سجّل الدخول أو استخدم بريداً آخر.';
+
+  @override
+  String get regErrorTitleRequired => 'اختر لقبك أو اكتبه.';
+
+  @override
+  String get regErrorSpecialtyRequired => 'اختر تخصصك.';
+
+  @override
+  String get regErrorInvalidSpecialty => 'اختر تخصصاً من القائمة.';
+
+  @override
+  String get regErrorLicenseNumberRequired => 'رقم النقابة مطلوب.';
+
+  @override
+  String get regErrorInvalidLicenseNumber =>
+      'أدخل رقم النقابة: من 3 إلى 20 حرفاً أو رقماً.';
+
+  @override
+  String get regErrorLicenseRequired => 'أضف صورة كارنيه النقابة أو الترخيص.';
+
+  @override
+  String get regErrorFileTooLarge =>
+      'حجم الملف أكبر من 10 ميجا. اختر ملفاً أصغر.';
+
+  @override
+  String get regErrorFileType =>
+      'استخدم صورة (JPEG أو PNG أو WebP) أو ملف PDF.';
+
+  @override
+  String get regErrorFileContent => 'تعذّرت قراءة هذا الملف. جرّب ملفاً آخر.';
+
+  @override
+  String get regErrorPickFailed =>
+      'تعذّر الفتح. تحقق من أذونات التطبيق ثم حاول مرة أخرى.';
+
+  @override
+  String get regErrorGovernorateRequired => 'اختر المحافظة.';
+
+  @override
+  String get regErrorBranchName => 'استخدم من 2 إلى 60 حرفاً.';
+
+  @override
+  String get regErrorInvalidPhone =>
+      'أدخل رقماً مصرياً صحيحاً: موبايل أو أرضي أو خط ساخن.';
+
+  @override
+  String get regErrorPhoneRequired => 'أضف رقم تليفون واحداً على الأقل.';
+
+  @override
+  String get regErrorPrice =>
+      'قيمة غير صحيحة. أدخل مبلغاً من 0 إلى 100,000 برقمين عشريين على الأكثر.';
+
+  @override
+  String get regErrorInvalidValue => 'قيمة غير صحيحة.';
+
+  @override
+  String get regErrorNotEditable => 'لا يمكن تعديل هذا الطلب الآن.';
+
+  @override
+  String get regErrorResendCooldown => 'انتظر دقيقة قبل إرسال بريد آخر.';
+
+  @override
+  String get regPendingTitle => 'حسابك قيد المراجعة';
+
+  @override
+  String get regPendingBody => 'سيصلك إشعار فور تفعيله.';
+
+  @override
+  String get regRefresh => 'تحديث';
+
+  @override
+  String get regStillPending =>
+      'ما زال طلبك قيد المراجعة، وسنرسل لك إشعاراً فور تفعيله.';
+
+  @override
+  String get regSubmittedData => 'البيانات المرسلة';
+
+  @override
+  String regSubmittedOn(String date) {
+    return 'أُرسلت في $date';
+  }
+
+  @override
+  String get regDataError => 'تعذّر تحميل بياناتك.';
+
+  @override
+  String get regVerifyCardTitle => 'أكّد بريدك الإلكتروني';
+
+  @override
+  String regVerifyCardBody(String email) {
+    return 'أرسلنا رابطاً إلى $email.';
+  }
+
+  @override
+  String get regRejectedTitle => 'لم تتم الموافقة على طلبك';
+
+  @override
+  String get regRejectedBody =>
+      'عدّل ما طلبه فريق المراجعة، ثم أرسل طلبك مرة أخرى.';
+
+  @override
+  String get regRejectedReason => 'سبب الرفض';
+
+  @override
+  String get regRejectedNoReason =>
+      'لم يُذكر سبب. تواصل مع الدعم لمعرفة المزيد.';
+
+  @override
+  String get regEditAndResubmit => 'تعديل وإعادة الإرسال';
+
+  @override
+  String get regVerifyTitle => 'أكّد بريدك الإلكتروني';
+
+  @override
+  String get regVerifySentTo => 'أرسلنا رابط التأكيد إلى';
+
+  @override
+  String get regVerifyBody =>
+      'افتح الرابط الموجود في البريد. إذا فُتح في المتصفح بدلاً من التطبيق، فانسخ الرمز من البريد والصقه هنا.';
+
+  @override
+  String get regVerifyButton => 'تأكيد';
+
+  @override
+  String get regVerifiedCheck => 'أكّدت بريدي';
+
+  @override
+  String get regResend => 'إعادة إرسال البريد';
+
+  @override
+  String regResendIn(int seconds) {
+    return 'إعادة الإرسال بعد $seconds ث';
+  }
+
+  @override
+  String get regResent =>
+      'تم الإرسال. راجع البريد الوارد ومجلد الرسائل غير المرغوبة.';
+
+  @override
+  String get regNotVerifiedYet =>
+      'لم يتم التأكيد بعد. افتح الرابط في البريد ثم حاول مرة أخرى.';
+
+  @override
+  String get regVerifiedTitle => 'تم تأكيد البريد';
+
+  @override
+  String get regVerifiedBody => 'شكراً لك، تم تأكيد بريدك الإلكتروني.';
 }

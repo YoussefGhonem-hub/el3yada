@@ -889,6 +889,834 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This code was already used. Ask for a new email.'**
   String get errorEmailTokenUsed;
+
+  /// A4 app bar. Keys starting with reg belong to the doctor registration screens A4–A7.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor registration'**
+  String get regTitle;
+
+  /// No description provided for @regResubmitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit registration'**
+  String get regResubmitTitle;
+
+  /// No description provided for @regStepAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get regStepAccount;
+
+  /// No description provided for @regStepProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional details'**
+  String get regStepProfessional;
+
+  /// No description provided for @regStepBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'First branch'**
+  String get regStepBranch;
+
+  /// No description provided for @regStepReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review and send'**
+  String get regStepReview;
+
+  /// No description provided for @regStepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {count}'**
+  String regStepOf(int step, int count);
+
+  /// Screen reader label of the A4 progress bar.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {count}: {name}'**
+  String regStepSemantics(int step, int count, String name);
+
+  /// No description provided for @regNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get regNext;
+
+  /// No description provided for @regBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get regBack;
+
+  /// No description provided for @regSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send for review'**
+  String get regSubmit;
+
+  /// No description provided for @regResubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again for review'**
+  String get regResubmit;
+
+  /// No description provided for @regFixErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the highlighted fields.'**
+  String get regFixErrors;
+
+  /// No description provided for @regAccountSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account'**
+  String get regAccountSection;
+
+  /// No description provided for @regAccountIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll sign in with this email or mobile number.'**
+  String get regAccountIntro;
+
+  /// No description provided for @regPasswordSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a password'**
+  String get regPasswordSection;
+
+  /// No description provided for @regFullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get regFullNameLabel;
+
+  /// No description provided for @regFullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'As on your syndicate card, at least two names'**
+  String get regFullNameHint;
+
+  /// No description provided for @regEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get regEmailLabel;
+
+  /// No description provided for @regMobileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number'**
+  String get regMobileLabel;
+
+  /// No description provided for @regProfessionalSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Your practice'**
+  String get regProfessionalSection;
+
+  /// No description provided for @regTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get regTitleLabel;
+
+  /// No description provided for @regTitleOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get regTitleOther;
+
+  /// No description provided for @regTitleOtherLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your title'**
+  String get regTitleOtherLabel;
+
+  /// No description provided for @regSpecialtyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary specialty'**
+  String get regSpecialtyLabel;
+
+  /// No description provided for @regSpecialtyChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your specialty'**
+  String get regSpecialtyChoose;
+
+  /// No description provided for @regSpecialtyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your specialty\'s medicines and tests will appear first when you search.'**
+  String get regSpecialtyHint;
+
+  /// No description provided for @regSpecialtiesError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the specialties.'**
+  String get regSpecialtiesError;
+
+  /// No description provided for @regExtraSpecialtiesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Other specialties (optional, up to 2)'**
+  String get regExtraSpecialtiesLabel;
+
+  /// No description provided for @regExtraSpecialtiesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Other specialties'**
+  String get regExtraSpecialtiesShort;
+
+  /// No description provided for @regAddSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a specialty'**
+  String get regAddSpecialty;
+
+  /// No description provided for @regRemoveSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String regRemoveSpecialty(String name);
+
+  /// No description provided for @regSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get regSearchHint;
+
+  /// No description provided for @regClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get regClearSearch;
+
+  /// No description provided for @regNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches your search.'**
+  String get regNoResults;
+
+  /// No description provided for @regSyndicateSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical syndicate'**
+  String get regSyndicateSection;
+
+  /// No description provided for @regLicenseNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate number'**
+  String get regLicenseNumberLabel;
+
+  /// No description provided for @regLicenseFileLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card or license'**
+  String get regLicenseFileLabel;
+
+  /// No description provided for @regLicenseFileShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card'**
+  String get regLicenseFileShort;
+
+  /// No description provided for @regLicenseFileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A clear photo or a PDF, up to 10 MB'**
+  String get regLicenseFileHint;
+
+  /// No description provided for @regLicenseReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get regLicenseReplace;
+
+  /// No description provided for @regLicenseUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the current file'**
+  String get regLicenseUndo;
+
+  /// No description provided for @regLicenseCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current file'**
+  String get regLicenseCurrent;
+
+  /// No description provided for @regLicenseKept.
+  ///
+  /// In en, this message translates to:
+  /// **'kept unless you replace it'**
+  String get regLicenseKept;
+
+  /// No description provided for @regLicenseImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get regLicenseImage;
+
+  /// No description provided for @regLicensePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get regLicensePdf;
+
+  /// No description provided for @regLicenseOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the photo of the syndicate card'**
+  String get regLicenseOpen;
+
+  /// No description provided for @regSourceCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get regSourceCamera;
+
+  /// No description provided for @regSourceGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from your photos'**
+  String get regSourceGallery;
+
+  /// No description provided for @regSourceFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a file (photo or PDF)'**
+  String get regSourceFiles;
+
+  /// No description provided for @regFileSizeKb.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} KB'**
+  String regFileSizeKb(int size);
+
+  /// No description provided for @regFileSizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} MB'**
+  String regFileSizeMb(String size);
+
+  /// No description provided for @regBranchSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch details'**
+  String get regBranchSection;
+
+  /// No description provided for @regBranchIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients will see this branch. You can add more branches after approval.'**
+  String get regBranchIntro;
+
+  /// No description provided for @regBranchNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name'**
+  String get regBranchNameLabel;
+
+  /// No description provided for @regBranchNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: Maadi branch'**
+  String get regBranchNameHint;
+
+  /// No description provided for @regGovernorateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Governorate'**
+  String get regGovernorateLabel;
+
+  /// No description provided for @regGovernorateChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the governorate'**
+  String get regGovernorateChoose;
+
+  /// No description provided for @regCityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'City or area'**
+  String get regCityLabel;
+
+  /// No description provided for @regStreetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Street address'**
+  String get regStreetLabel;
+
+  /// No description provided for @regBuildingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get regBuildingLabel;
+
+  /// No description provided for @regFloorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor'**
+  String get regFloorLabel;
+
+  /// No description provided for @regApartmentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment'**
+  String get regApartmentLabel;
+
+  /// No description provided for @regLandmarkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Landmark (optional)'**
+  String get regLandmarkLabel;
+
+  /// No description provided for @regLandmarkHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: next to the metro station'**
+  String get regLandmarkHint;
+
+  /// No description provided for @regPhonesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic phone numbers'**
+  String get regPhonesSection;
+
+  /// No description provided for @regPhonesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1 to 5 numbers: mobile, landline or hotline.'**
+  String get regPhonesHint;
+
+  /// No description provided for @regPhoneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Number {index}'**
+  String regPhoneLabel(int index);
+
+  /// No description provided for @regPhoneType.
+  ///
+  /// In en, this message translates to:
+  /// **'Number type'**
+  String get regPhoneType;
+
+  /// No description provided for @regPhoneTypeReception.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception'**
+  String get regPhoneTypeReception;
+
+  /// No description provided for @regPhoneTypeMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get regPhoneTypeMobile;
+
+  /// No description provided for @regPhoneTypeLandline.
+  ///
+  /// In en, this message translates to:
+  /// **'Landline'**
+  String get regPhoneTypeLandline;
+
+  /// No description provided for @regPhoneWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get regPhoneWhatsapp;
+
+  /// No description provided for @regAddPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a number'**
+  String get regAddPhone;
+
+  /// No description provided for @regRemovePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this number'**
+  String get regRemovePhone;
+
+  /// No description provided for @regPricesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit prices (optional)'**
+  String get regPricesSection;
+
+  /// No description provided for @regPricesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see these prices. You can change them later in Settings.'**
+  String get regPricesHint;
+
+  /// No description provided for @regExaminationPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination'**
+  String get regExaminationPrice;
+
+  /// No description provided for @regConsultationPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get regConsultationPrice;
+
+  /// No description provided for @regCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get regCurrency;
+
+  /// A price. amount has Western digits in both languages.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP {amount}'**
+  String regPriceValue(String amount);
+
+  /// No description provided for @regReviewIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your details, then send them for review.'**
+  String get regReviewIntro;
+
+  /// No description provided for @regReviewIntroResubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your changes, then send them for review again.'**
+  String get regReviewIntroResubmit;
+
+  /// No description provided for @regEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get regEdit;
+
+  /// No description provided for @regEditSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {section}'**
+  String regEditSection(String section);
+
+  /// No description provided for @regNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get regNotSet;
+
+  /// No description provided for @regAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get regAddressLabel;
+
+  /// No description provided for @regLandmarkShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Landmark'**
+  String get regLandmarkShort;
+
+  /// No description provided for @regPhonesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone numbers'**
+  String get regPhonesLabel;
+
+  /// No description provided for @regBuildingValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Building {value}'**
+  String regBuildingValue(String value);
+
+  /// No description provided for @regFloorValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor {value}'**
+  String regFloorValue(String value);
+
+  /// No description provided for @regApartmentValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment {value}'**
+  String regApartmentValue(String value);
+
+  /// No description provided for @regListSeparator.
+  ///
+  /// In en, this message translates to:
+  /// **', '**
+  String get regListSeparator;
+
+  /// No description provided for @regErrorInvalidName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least a first and a last name, in letters only.'**
+  String get regErrorInvalidName;
+
+  /// No description provided for @regErrorEmailTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists. Sign in, or use another email.'**
+  String get regErrorEmailTaken;
+
+  /// No description provided for @regErrorTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your title, or type it.'**
+  String get regErrorTitleRequired;
+
+  /// No description provided for @regErrorSpecialtyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your specialty.'**
+  String get regErrorSpecialtyRequired;
+
+  /// No description provided for @regErrorInvalidSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a specialty from the list.'**
+  String get regErrorInvalidSpecialty;
+
+  /// No description provided for @regErrorLicenseNumberRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'The syndicate number is required.'**
+  String get regErrorLicenseNumberRequired;
+
+  /// No description provided for @regErrorInvalidLicenseNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the syndicate number: 3 to 20 letters or digits.'**
+  String get regErrorInvalidLicenseNumber;
+
+  /// No description provided for @regErrorLicenseRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo of your syndicate card or license.'**
+  String get regErrorLicenseRequired;
+
+  /// No description provided for @regErrorFileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is larger than 10 MB. Choose a smaller one.'**
+  String get regErrorFileTooLarge;
+
+  /// No description provided for @regErrorFileType.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a photo (JPEG, PNG or WebP) or a PDF.'**
+  String get regErrorFileType;
+
+  /// No description provided for @regErrorFileContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This file can\'t be read. Try another one.'**
+  String get regErrorFileContent;
+
+  /// No description provided for @regErrorPickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open it. Check the app\'s permissions and try again.'**
+  String get regErrorPickFailed;
+
+  /// No description provided for @regErrorGovernorateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the governorate.'**
+  String get regErrorGovernorateRequired;
+
+  /// No description provided for @regErrorBranchName.
+  ///
+  /// In en, this message translates to:
+  /// **'Use 2 to 60 characters.'**
+  String get regErrorBranchName;
+
+  /// No description provided for @regErrorInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid Egyptian number: mobile, landline or hotline.'**
+  String get regErrorInvalidPhone;
+
+  /// No description provided for @regErrorPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one phone number.'**
+  String get regErrorPhoneRequired;
+
+  /// No description provided for @regErrorPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount from 0 to 100,000, with at most 2 decimals.'**
+  String get regErrorPrice;
+
+  /// No description provided for @regErrorInvalidValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid value.'**
+  String get regErrorInvalidValue;
+
+  /// No description provided for @regErrorNotEditable.
+  ///
+  /// In en, this message translates to:
+  /// **'This registration can\'t be edited now.'**
+  String get regErrorNotEditable;
+
+  /// No description provided for @regErrorResendCooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait a minute before sending another email.'**
+  String get regErrorResendCooldown;
+
+  /// No description provided for @regPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is being reviewed'**
+  String get regPendingTitle;
+
+  /// No description provided for @regPendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll get a notification once it\'s approved.'**
+  String get regPendingBody;
+
+  /// No description provided for @regRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get regRefresh;
+
+  /// No description provided for @regStillPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Still under review. We\'ll notify you once it\'s approved.'**
+  String get regStillPending;
+
+  /// No description provided for @regSubmittedData.
+  ///
+  /// In en, this message translates to:
+  /// **'What you sent'**
+  String get regSubmittedData;
+
+  /// No description provided for @regSubmittedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String regSubmittedOn(String date);
+
+  /// No description provided for @regDataError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your details.'**
+  String get regDataError;
+
+  /// No description provided for @regVerifyCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email'**
+  String get regVerifyCardTitle;
+
+  /// No description provided for @regVerifyCardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a link to {email}.'**
+  String regVerifyCardBody(String email);
+
+  /// No description provided for @regRejectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your registration wasn\'t approved'**
+  String get regRejectedTitle;
+
+  /// No description provided for @regRejectedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix what the review team asked for, then send your registration again.'**
+  String get regRejectedBody;
+
+  /// No description provided for @regRejectedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason from the review team'**
+  String get regRejectedReason;
+
+  /// No description provided for @regRejectedNoReason.
+  ///
+  /// In en, this message translates to:
+  /// **'No reason was given. Contact support to find out more.'**
+  String get regRejectedNoReason;
+
+  /// No description provided for @regEditAndResubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit and resubmit'**
+  String get regEditAndResubmit;
+
+  /// No description provided for @regVerifyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email'**
+  String get regVerifyTitle;
+
+  /// No description provided for @regVerifySentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a verification link to'**
+  String get regVerifySentTo;
+
+  /// No description provided for @regVerifyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the link in the email. If it opens in a browser instead of the app, copy the code from the email and paste it here.'**
+  String get regVerifyBody;
+
+  /// No description provided for @regVerifyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get regVerifyButton;
+
+  /// No description provided for @regVerifiedCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve verified'**
+  String get regVerifiedCheck;
+
+  /// No description provided for @regResend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend the email'**
+  String get regResend;
+
+  /// No description provided for @regResendIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds} s'**
+  String regResendIn(int seconds);
+
+  /// No description provided for @regResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent. Check your inbox and your spam folder.'**
+  String get regResent;
+
+  /// No description provided for @regNotVerifiedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not verified yet. Open the link in the email, then try again.'**
+  String get regNotVerifiedYet;
+
+  /// No description provided for @regVerifiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Email verified'**
+  String get regVerifiedTitle;
+
+  /// No description provided for @regVerifiedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. Your email address is confirmed.'**
+  String get regVerifiedBody;
 }
 
 class _AppLocalizationsDelegate

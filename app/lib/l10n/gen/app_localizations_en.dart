@@ -442,4 +442,469 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorEmailTokenUsed =>
       'This code was already used. Ask for a new email.';
+
+  @override
+  String get regTitle => 'Doctor registration';
+
+  @override
+  String get regResubmitTitle => 'Edit registration';
+
+  @override
+  String get regStepAccount => 'Account';
+
+  @override
+  String get regStepProfessional => 'Professional details';
+
+  @override
+  String get regStepBranch => 'First branch';
+
+  @override
+  String get regStepReview => 'Review and send';
+
+  @override
+  String regStepOf(int step, int count) {
+    return 'Step $step of $count';
+  }
+
+  @override
+  String regStepSemantics(int step, int count, String name) {
+    return 'Step $step of $count: $name';
+  }
+
+  @override
+  String get regNext => 'Next';
+
+  @override
+  String get regBack => 'Back';
+
+  @override
+  String get regSubmit => 'Send for review';
+
+  @override
+  String get regResubmit => 'Send again for review';
+
+  @override
+  String get regFixErrors => 'Check the highlighted fields.';
+
+  @override
+  String get regAccountSection => 'Your account';
+
+  @override
+  String get regAccountIntro =>
+      'You\'ll sign in with this email or mobile number.';
+
+  @override
+  String get regPasswordSection => 'Choose a password';
+
+  @override
+  String get regFullNameLabel => 'Full name';
+
+  @override
+  String get regFullNameHint => 'As on your syndicate card, at least two names';
+
+  @override
+  String get regEmailLabel => 'Email';
+
+  @override
+  String get regMobileLabel => 'Mobile number';
+
+  @override
+  String get regProfessionalSection => 'Your practice';
+
+  @override
+  String get regTitleLabel => 'Title';
+
+  @override
+  String get regTitleOther => 'Other';
+
+  @override
+  String get regTitleOtherLabel => 'Your title';
+
+  @override
+  String get regSpecialtyLabel => 'Primary specialty';
+
+  @override
+  String get regSpecialtyChoose => 'Choose your specialty';
+
+  @override
+  String get regSpecialtyHint =>
+      'Your specialty\'s medicines and tests will appear first when you search.';
+
+  @override
+  String get regSpecialtiesError => 'Couldn\'t load the specialties.';
+
+  @override
+  String get regExtraSpecialtiesLabel =>
+      'Other specialties (optional, up to 2)';
+
+  @override
+  String get regExtraSpecialtiesShort => 'Other specialties';
+
+  @override
+  String get regAddSpecialty => 'Add a specialty';
+
+  @override
+  String regRemoveSpecialty(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String get regSearchHint => 'Search';
+
+  @override
+  String get regClearSearch => 'Clear search';
+
+  @override
+  String get regNoResults => 'Nothing matches your search.';
+
+  @override
+  String get regSyndicateSection => 'Medical syndicate';
+
+  @override
+  String get regLicenseNumberLabel => 'Syndicate number';
+
+  @override
+  String get regLicenseFileLabel => 'Syndicate card or license';
+
+  @override
+  String get regLicenseFileShort => 'Syndicate card';
+
+  @override
+  String get regLicenseFileHint => 'A clear photo or a PDF, up to 10 MB';
+
+  @override
+  String get regLicenseReplace => 'Replace';
+
+  @override
+  String get regLicenseUndo => 'Keep the current file';
+
+  @override
+  String get regLicenseCurrent => 'Current file';
+
+  @override
+  String get regLicenseKept => 'kept unless you replace it';
+
+  @override
+  String get regLicenseImage => 'Photo';
+
+  @override
+  String get regLicensePdf => 'PDF';
+
+  @override
+  String get regLicenseOpen => 'Open the photo of the syndicate card';
+
+  @override
+  String get regSourceCamera => 'Take a photo';
+
+  @override
+  String get regSourceGallery => 'Choose from your photos';
+
+  @override
+  String get regSourceFiles => 'Choose a file (photo or PDF)';
+
+  @override
+  String regFileSizeKb(int size) {
+    return '$size KB';
+  }
+
+  @override
+  String regFileSizeMb(String size) {
+    return '$size MB';
+  }
+
+  @override
+  String get regBranchSection => 'Branch details';
+
+  @override
+  String get regBranchIntro =>
+      'Patients will see this branch. You can add more branches after approval.';
+
+  @override
+  String get regBranchNameLabel => 'Branch name';
+
+  @override
+  String get regBranchNameHint => 'For example: Maadi branch';
+
+  @override
+  String get regGovernorateLabel => 'Governorate';
+
+  @override
+  String get regGovernorateChoose => 'Choose the governorate';
+
+  @override
+  String get regCityLabel => 'City or area';
+
+  @override
+  String get regStreetLabel => 'Street address';
+
+  @override
+  String get regBuildingLabel => 'Building';
+
+  @override
+  String get regFloorLabel => 'Floor';
+
+  @override
+  String get regApartmentLabel => 'Apartment';
+
+  @override
+  String get regLandmarkLabel => 'Landmark (optional)';
+
+  @override
+  String get regLandmarkHint => 'For example: next to the metro station';
+
+  @override
+  String get regPhonesSection => 'Clinic phone numbers';
+
+  @override
+  String get regPhonesHint => '1 to 5 numbers: mobile, landline or hotline.';
+
+  @override
+  String regPhoneLabel(int index) {
+    return 'Number $index';
+  }
+
+  @override
+  String get regPhoneType => 'Number type';
+
+  @override
+  String get regPhoneTypeReception => 'Reception';
+
+  @override
+  String get regPhoneTypeMobile => 'Mobile';
+
+  @override
+  String get regPhoneTypeLandline => 'Landline';
+
+  @override
+  String get regPhoneWhatsapp => 'WhatsApp';
+
+  @override
+  String get regAddPhone => 'Add a number';
+
+  @override
+  String get regRemovePhone => 'Remove this number';
+
+  @override
+  String get regPricesSection => 'Visit prices (optional)';
+
+  @override
+  String get regPricesHint =>
+      'Patients see these prices. You can change them later in Settings.';
+
+  @override
+  String get regExaminationPrice => 'Examination';
+
+  @override
+  String get regConsultationPrice => 'Consultation';
+
+  @override
+  String get regCurrency => 'EGP';
+
+  @override
+  String regPriceValue(String amount) {
+    return 'EGP $amount';
+  }
+
+  @override
+  String get regReviewIntro => 'Check your details, then send them for review.';
+
+  @override
+  String get regReviewIntroResubmit =>
+      'Check your changes, then send them for review again.';
+
+  @override
+  String get regEdit => 'Edit';
+
+  @override
+  String regEditSection(String section) {
+    return 'Edit $section';
+  }
+
+  @override
+  String get regNotSet => 'Not set';
+
+  @override
+  String get regAddressLabel => 'Address';
+
+  @override
+  String get regLandmarkShort => 'Landmark';
+
+  @override
+  String get regPhonesLabel => 'Phone numbers';
+
+  @override
+  String regBuildingValue(String value) {
+    return 'Building $value';
+  }
+
+  @override
+  String regFloorValue(String value) {
+    return 'Floor $value';
+  }
+
+  @override
+  String regApartmentValue(String value) {
+    return 'Apartment $value';
+  }
+
+  @override
+  String get regListSeparator => ', ';
+
+  @override
+  String get regErrorInvalidName =>
+      'Enter at least a first and a last name, in letters only.';
+
+  @override
+  String get regErrorEmailTaken =>
+      'An account with this email already exists. Sign in, or use another email.';
+
+  @override
+  String get regErrorTitleRequired => 'Choose your title, or type it.';
+
+  @override
+  String get regErrorSpecialtyRequired => 'Choose your specialty.';
+
+  @override
+  String get regErrorInvalidSpecialty => 'Choose a specialty from the list.';
+
+  @override
+  String get regErrorLicenseNumberRequired =>
+      'The syndicate number is required.';
+
+  @override
+  String get regErrorInvalidLicenseNumber =>
+      'Enter the syndicate number: 3 to 20 letters or digits.';
+
+  @override
+  String get regErrorLicenseRequired =>
+      'Add a photo of your syndicate card or license.';
+
+  @override
+  String get regErrorFileTooLarge =>
+      'The file is larger than 10 MB. Choose a smaller one.';
+
+  @override
+  String get regErrorFileType => 'Use a photo (JPEG, PNG or WebP) or a PDF.';
+
+  @override
+  String get regErrorFileContent =>
+      'This file can\'t be read. Try another one.';
+
+  @override
+  String get regErrorPickFailed =>
+      'Couldn\'t open it. Check the app\'s permissions and try again.';
+
+  @override
+  String get regErrorGovernorateRequired => 'Choose the governorate.';
+
+  @override
+  String get regErrorBranchName => 'Use 2 to 60 characters.';
+
+  @override
+  String get regErrorInvalidPhone =>
+      'Enter a valid Egyptian number: mobile, landline or hotline.';
+
+  @override
+  String get regErrorPhoneRequired => 'Add at least one phone number.';
+
+  @override
+  String get regErrorPrice =>
+      'Enter an amount from 0 to 100,000, with at most 2 decimals.';
+
+  @override
+  String get regErrorInvalidValue => 'Enter a valid value.';
+
+  @override
+  String get regErrorNotEditable => 'This registration can\'t be edited now.';
+
+  @override
+  String get regErrorResendCooldown =>
+      'Wait a minute before sending another email.';
+
+  @override
+  String get regPendingTitle => 'Your account is being reviewed';
+
+  @override
+  String get regPendingBody =>
+      'You\'ll get a notification once it\'s approved.';
+
+  @override
+  String get regRefresh => 'Refresh';
+
+  @override
+  String get regStillPending =>
+      'Still under review. We\'ll notify you once it\'s approved.';
+
+  @override
+  String get regSubmittedData => 'What you sent';
+
+  @override
+  String regSubmittedOn(String date) {
+    return 'Sent on $date';
+  }
+
+  @override
+  String get regDataError => 'Couldn\'t load your details.';
+
+  @override
+  String get regVerifyCardTitle => 'Verify your email';
+
+  @override
+  String regVerifyCardBody(String email) {
+    return 'We sent a link to $email.';
+  }
+
+  @override
+  String get regRejectedTitle => 'Your registration wasn\'t approved';
+
+  @override
+  String get regRejectedBody =>
+      'Fix what the review team asked for, then send your registration again.';
+
+  @override
+  String get regRejectedReason => 'Reason from the review team';
+
+  @override
+  String get regRejectedNoReason =>
+      'No reason was given. Contact support to find out more.';
+
+  @override
+  String get regEditAndResubmit => 'Edit and resubmit';
+
+  @override
+  String get regVerifyTitle => 'Verify your email';
+
+  @override
+  String get regVerifySentTo => 'We sent a verification link to';
+
+  @override
+  String get regVerifyBody =>
+      'Open the link in the email. If it opens in a browser instead of the app, copy the code from the email and paste it here.';
+
+  @override
+  String get regVerifyButton => 'Verify';
+
+  @override
+  String get regVerifiedCheck => 'I\'ve verified';
+
+  @override
+  String get regResend => 'Resend the email';
+
+  @override
+  String regResendIn(int seconds) {
+    return 'Resend in $seconds s';
+  }
+
+  @override
+  String get regResent => 'Sent. Check your inbox and your spam folder.';
+
+  @override
+  String get regNotVerifiedYet =>
+      'Not verified yet. Open the link in the email, then try again.';
+
+  @override
+  String get regVerifiedTitle => 'Email verified';
+
+  @override
+  String get regVerifiedBody => 'Thank you. Your email address is confirmed.';
 }

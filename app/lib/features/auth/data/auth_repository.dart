@@ -199,6 +199,12 @@ class FakeAuthRepository implements AuthRepository {
 
   AuthSession? _last;
 
+  /// The signed-in account, which `me` and `refresh` answer with. Other
+  /// fakes change it (doctor registration: `FakeRegistrationRepository`).
+  // ignore: unnecessary_getters_setters
+  AuthSession? get current => _last;
+  set current(AuthSession? session) => _last = session;
+
   @override
   Future<LoginResult> login({required String identifier, required String password, Map<String, dynamic>? device}) async {
     await Future<void>.delayed(delay);
@@ -300,8 +306,15 @@ class FakeAuthRepository implements AuthRepository {
     }
   }
 
+  /// Any code works except `expired`, and verifies the signed-in account.
   @override
-  Future<void> verifyEmail(String token) => Future<void>.delayed(delay);
+  Future<void> verifyEmail(String token) async {
+    await Future<void>.delayed(delay);
+    if (token.trim() == 'expired') {
+      throw const ApiException(kind: ApiErrorKind.http, status: 400, code: 'EMAIL_TOKEN_EXPIRED');
+    }
+    _last = _last?.copyWith(emailVerified: true);
+  }
 
   @override
   Future<void> resendVerificationEmail() => Future<void>.delayed(delay);

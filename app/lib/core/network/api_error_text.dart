@@ -44,6 +44,21 @@ extension ApiErrorText on AppLocalizations {
         'EMAIL_TOKEN_INVALID' => errorEmailTokenInvalid,
         'EMAIL_TOKEN_EXPIRED' => errorEmailTokenExpired,
         'EMAIL_TOKEN_USED' => errorEmailTokenUsed,
+        // Admin screens (AD2–AD18).
+        'OUT_OF_RANGE' => adminErrorOutOfRange,
+        'INVALID_VALUE' => adminErrorInvalidValue,
+        'INVALID_VERSION' => adminErrorInvalidVersion,
+        'UNKNOWN_SETTING' => adminErrorUnknownSetting,
+        'INVALID_NAME' => adminErrorInvalidName,
+        'REASON_REQUIRED' => adminErrorReasonRequired,
+        'REGISTRATION_NOT_PENDING' => adminErrorRegistrationNotPending,
+        'EMAIL_ALREADY_REGISTERED' => adminErrorEmailTaken,
+        'LICENSE_FILE_MISSING' => adminErrorLicenseMissing,
+        'CANNOT_CHANGE_OWN_ROLE' => adminErrorOwnRole,
+        'CANNOT_DISABLE_SELF' => adminErrorDisableSelf,
+        'LAST_SUPER_ADMIN' => adminErrorLastSuperAdmin,
+        'NOT_FOUND' => adminErrorNotFound,
+        'FORBIDDEN' => adminErrorForbidden,
         _ => null,
       };
 

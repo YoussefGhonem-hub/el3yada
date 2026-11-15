@@ -5059,6 +5059,598 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Working hours and prices come next, after you add the branch.'**
   String get branchNewNextSteps;
+
+  /// No description provided for @assistantsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'People who work with you, and what each one can do.'**
+  String get assistantsSubtitle;
+
+  /// No description provided for @assistantAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add assistant'**
+  String get assistantAdd;
+
+  /// D25 «2 من 5». Removed assistants don't count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {limit} assistants'**
+  String assistantCountOf(int count, int limit);
+
+  /// No description provided for @assistantsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No assistants yet'**
+  String get assistantsEmptyTitle;
+
+  /// No description provided for @assistantsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone from reception to record visits and bookings for you.'**
+  String get assistantsEmptyBody;
+
+  /// No description provided for @assistantChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an assistant to see their details'**
+  String get assistantChoose;
+
+  /// No description provided for @assistantAddBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They get a temporary password and choose their own when they first sign in.'**
+  String get assistantAddBody;
+
+  /// No description provided for @assistantNeverActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Hasn\'t used the clinic yet'**
+  String get assistantNeverActive;
+
+  /// No description provided for @assistantLastActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Last active {time}'**
+  String assistantLastActive(String time);
+
+  /// No description provided for @assistantAddedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Added on {date}'**
+  String assistantAddedOn(String date);
+
+  /// No description provided for @assistantDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get assistantDetails;
+
+  /// No description provided for @assistantPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They sign in with this number.'**
+  String get assistantPhoneHint;
+
+  /// No description provided for @assistantBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get assistantBranches;
+
+  /// No description provided for @assistantBranchesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings, today\'s board and visit lists show only these branches.'**
+  String get assistantBranchesHint;
+
+  /// No description provided for @assistantAllBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'All branches'**
+  String get assistantAllBranches;
+
+  /// No description provided for @assistantSomeBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Some branches'**
+  String get assistantSomeBranches;
+
+  /// No description provided for @assistantAllBranchesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Including branches you add later.'**
+  String get assistantAllBranchesBody;
+
+  /// No description provided for @assistantErrorBranchRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one branch.'**
+  String get assistantErrorBranchRequired;
+
+  /// No description provided for @assistantPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get assistantPermissions;
+
+  /// No description provided for @assistantPermissionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a preset, then adjust the boxes. Some need another, which is ticked for you.'**
+  String get assistantPermissionsHint;
+
+  /// No description provided for @assistantAlsoOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Also turned on: {permissions}'**
+  String assistantAlsoOn(String permissions);
+
+  /// No description provided for @assistantAlsoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Also turned off: {permissions}'**
+  String assistantAlsoOff(String permissions);
+
+  /// No description provided for @assistantSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s changes are saved. They apply on their next action.'**
+  String assistantSaved(String name);
+
+  /// No description provided for @assistantAccountActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get assistantAccountActions;
+
+  /// No description provided for @assistantResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get assistantResetPassword;
+
+  /// No description provided for @assistantResetPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A new temporary password, when they forget theirs.'**
+  String get assistantResetPasswordHint;
+
+  /// No description provided for @assistantResetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset {name}\'s password?'**
+  String assistantResetTitle(String name);
+
+  /// No description provided for @assistantResetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out on every device and sign in again with the new temporary password.'**
+  String get assistantResetBody;
+
+  /// No description provided for @assistantNewPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New temporary password'**
+  String get assistantNewPasswordTitle;
+
+  /// No description provided for @assistantDisableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops them signing in, at once. You can enable them again.'**
+  String get assistantDisableHint;
+
+  /// No description provided for @assistantEnableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They can sign in again.'**
+  String get assistantEnableHint;
+
+  /// No description provided for @assistantDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable {name}?'**
+  String assistantDisableTitle(String name);
+
+  /// No description provided for @assistantDisableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out at once and can\'t sign in until you enable them again.'**
+  String get assistantDisableBody;
+
+  /// No description provided for @assistantEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable {name}?'**
+  String assistantEnableTitle(String name);
+
+  /// No description provided for @assistantEnableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They can sign in again with their password.'**
+  String get assistantEnableBody;
+
+  /// No description provided for @assistantRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get assistantRemove;
+
+  /// No description provided for @assistantRemoveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Final. Their history stays in the activity log.'**
+  String get assistantRemoveHint;
+
+  /// No description provided for @assistantRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String assistantRemoveTitle(String name);
+
+  /// No description provided for @assistantRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out at once and can\'t come back. Their history stays in the activity log, and their number can be added again as a new assistant.'**
+  String get assistantRemoveBody;
+
+  /// No description provided for @assistantRemovedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was removed.'**
+  String assistantRemovedMessage(String name);
+
+  /// No description provided for @assistantRemovedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was removed'**
+  String assistantRemovedTitle(String name);
+
+  /// No description provided for @activityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing recorded yet} =1{1 entry} other{{count} entries}}'**
+  String activityCount(int count);
+
+  /// No description provided for @activityEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet'**
+  String get activityEmptyTitle;
+
+  /// No description provided for @activityEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What you and your assistants do in the clinic shows here.'**
+  String get activityEmptyBody;
+
+  /// No description provided for @activityToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get activityToday;
+
+  /// No description provided for @activityYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get activityYesterday;
+
+  /// No description provided for @activityWhoWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'{who}, {time}'**
+  String activityWhoWhen(String who, String time);
+
+  /// No description provided for @activityRemovedPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (removed)'**
+  String activityRemovedPerson(String name);
+
+  /// No description provided for @activityPatientFile.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, file {number}'**
+  String activityPatientFile(String name, int number);
+
+  /// No description provided for @activityPatientUnlinked.
+  ///
+  /// In en, this message translates to:
+  /// **'A patient no longer in the clinic'**
+  String get activityPatientUnlinked;
+
+  /// No description provided for @activityOnlyThisPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this patient'**
+  String get activityOnlyThisPatient;
+
+  /// No description provided for @activitySomeBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'a branch'**
+  String get activitySomeBranch;
+
+  /// No description provided for @activitySomeAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'an assistant'**
+  String get activitySomeAssistant;
+
+  /// No description provided for @activityBranchCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added the branch {branch}'**
+  String activityBranchCreated(String branch);
+
+  /// No description provided for @activityBranchUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited {branch}'**
+  String activityBranchUpdated(String branch);
+
+  /// No description provided for @activityBranchHoursUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the working hours of {branch}'**
+  String activityBranchHoursUpdated(String branch);
+
+  /// No description provided for @activityBranchStatusChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{branch}: {before} → {after}'**
+  String activityBranchStatusChanged(
+    String branch,
+    String before,
+    String after,
+  );
+
+  /// No description provided for @activityDefaultBranchChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Made {branch} the default branch'**
+  String activityDefaultBranchChanged(String branch);
+
+  /// No description provided for @activityDoctorPricesUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the doctor\'s visit prices'**
+  String get activityDoctorPricesUpdated;
+
+  /// No description provided for @activityBranchPricesUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the prices of {branch}'**
+  String activityBranchPricesUpdated(String branch);
+
+  /// No description provided for @activityProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited the profile'**
+  String get activityProfileUpdated;
+
+  /// No description provided for @activitySpecialtyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the specialty'**
+  String get activitySpecialtyChanged;
+
+  /// No description provided for @activityAssistantCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added the assistant {name} ({preset})'**
+  String activityAssistantCreated(String name, String preset);
+
+  /// No description provided for @activityAssistantUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited {name}\'s details'**
+  String activityAssistantUpdated(String name);
+
+  /// No description provided for @activityAssistantPermissionsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {name}\'s permissions'**
+  String activityAssistantPermissionsChanged(String name);
+
+  /// No description provided for @activityAssistantPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset {name}\'s password'**
+  String activityAssistantPasswordReset(String name);
+
+  /// No description provided for @activityAssistantDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled {name}'**
+  String activityAssistantDisabled(String name);
+
+  /// No description provided for @activityAssistantEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled {name}'**
+  String activityAssistantEnabled(String name);
+
+  /// No description provided for @activityAssistantRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {name}'**
+  String activityAssistantRemoved(String name);
+
+  /// No description provided for @activityPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed their password'**
+  String get activityPasswordChanged;
+
+  /// No description provided for @activityPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set their password'**
+  String get activityPasswordSet;
+
+  /// No description provided for @activityPasswordResetRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asked for a new password'**
+  String activityPasswordResetRequested(String name);
+
+  /// No description provided for @activityRegistrationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent the sign-up request'**
+  String get activityRegistrationSent;
+
+  /// No description provided for @activityEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed the email'**
+  String get activityEmailVerified;
+
+  /// No description provided for @activityOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other action: {action}'**
+  String activityOther(String action);
+
+  /// No description provided for @activityPermissionsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added: {permissions}.'**
+  String activityPermissionsAdded(String permissions);
+
+  /// No description provided for @activityPermissionsRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed: {permissions}.'**
+  String activityPermissionsRemoved(String permissions);
+
+  /// No description provided for @activityPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Closed every day} =1{1 period a week} other{{count} periods a week}}'**
+  String activityPeriods(int count);
+
+  /// No description provided for @activityActionBranchCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch added'**
+  String get activityActionBranchCreated;
+
+  /// No description provided for @activityActionBranchUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch edited'**
+  String get activityActionBranchUpdated;
+
+  /// No description provided for @activityActionBranchHoursUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours changed'**
+  String get activityActionBranchHoursUpdated;
+
+  /// No description provided for @activityActionBranchStatusChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch status changed'**
+  String get activityActionBranchStatusChanged;
+
+  /// No description provided for @activityActionDefaultBranchChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Default branch changed'**
+  String get activityActionDefaultBranchChanged;
+
+  /// No description provided for @activityActionPricesUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices changed'**
+  String get activityActionPricesUpdated;
+
+  /// No description provided for @activityActionProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile edited'**
+  String get activityActionProfileUpdated;
+
+  /// No description provided for @activityActionSpecialtyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty changed'**
+  String get activityActionSpecialtyChanged;
+
+  /// No description provided for @activityActionAssistantCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant added'**
+  String get activityActionAssistantCreated;
+
+  /// No description provided for @activityActionAssistantUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant edited'**
+  String get activityActionAssistantUpdated;
+
+  /// No description provided for @activityActionPermissionsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions changed'**
+  String get activityActionPermissionsChanged;
+
+  /// No description provided for @activityActionAssistantPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant password reset'**
+  String get activityActionAssistantPasswordReset;
+
+  /// No description provided for @activityActionAssistantDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant disabled'**
+  String get activityActionAssistantDisabled;
+
+  /// No description provided for @activityActionAssistantEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant enabled'**
+  String get activityActionAssistantEnabled;
+
+  /// No description provided for @activityActionAssistantRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant removed'**
+  String get activityActionAssistantRemoved;
+
+  /// No description provided for @activityActionPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed'**
+  String get activityActionPasswordChanged;
+
+  /// No description provided for @activityActionPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Password chosen'**
+  String get activityActionPasswordSet;
+
+  /// No description provided for @activityActionPasswordResetRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'New password requested'**
+  String get activityActionPasswordResetRequested;
+
+  /// No description provided for @activityActionRegistrationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up sent'**
+  String get activityActionRegistrationSent;
+
+  /// No description provided for @activityActionEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email confirmed'**
+  String get activityActionEmailVerified;
 }
 
 class _AppLocalizationsDelegate

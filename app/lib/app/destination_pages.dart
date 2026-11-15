@@ -12,6 +12,8 @@ import '../features/admin/presentation/signups/signup_review.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/clinic/domain/clinic_permissions.dart';
 import '../features/clinic_admin/clinic_admin_routes.dart';
+import '../features/clinic_admin/presentation/activity/activity_log_screen.dart';
+import '../features/clinic_admin/presentation/assistants/assistants_screen.dart';
 import '../features/clinic_admin/presentation/branches/branch_editor_screen.dart';
 import '../features/clinic_admin/presentation/branches/branches_screen.dart';
 import '../features/clinic_admin/presentation/prices/visit_prices_screen.dart';
@@ -38,6 +40,8 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   ClinicAdminRoutes.doctorSettings: (_) => const ClinicSettingsScreen(),
   ClinicAdminRoutes.assistantSettings: (_) => const ClinicSettingsScreen(),
   ClinicAdminRoutes.branches: (_) => const BranchesScreen(),
+  ClinicAdminRoutes.assistants: (_) => const AssistantsScreen(),
+  ClinicAdminRoutes.activity: (_) => const ActivityLogScreen(),
 };
 
 /// Detail routes under a destination, relative to it, for example
@@ -68,6 +72,14 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
         branchId: state.pathParameters['branchId']!,
         initialTab: BranchEditorScreen.tabNamed(state.uri.queryParameters['tab']),
       ),
+    ),
+  ],
+  // D26 on phones and by link (wide screens show it inside D25).
+  ClinicAdminRoutes.assistants: [
+    GoRoute(path: 'new', builder: (context, state) => const AssistantEditorPage()),
+    GoRoute(
+      path: ':assistantId',
+      builder: (context, state) => AssistantEditorPage(assistantId: state.pathParameters['assistantId']),
     ),
   ],
   // AS19, only with pricesManage (spec 7.6): hidden, and refused by address.

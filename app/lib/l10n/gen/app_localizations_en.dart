@@ -2913,4 +2913,398 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get branchNewNextSteps =>
       'Working hours and prices come next, after you add the branch.';
+
+  @override
+  String get assistantsSubtitle =>
+      'People who work with you, and what each one can do.';
+
+  @override
+  String get assistantAdd => 'Add assistant';
+
+  @override
+  String assistantCountOf(int count, int limit) {
+    return '$count of $limit assistants';
+  }
+
+  @override
+  String get assistantsEmptyTitle => 'No assistants yet';
+
+  @override
+  String get assistantsEmptyBody =>
+      'Add someone from reception to record visits and bookings for you.';
+
+  @override
+  String get assistantChoose => 'Choose an assistant to see their details';
+
+  @override
+  String get assistantAddBody =>
+      'They get a temporary password and choose their own when they first sign in.';
+
+  @override
+  String get assistantNeverActive => 'Hasn\'t used the clinic yet';
+
+  @override
+  String assistantLastActive(String time) {
+    return 'Last active $time';
+  }
+
+  @override
+  String assistantAddedOn(String date) {
+    return 'Added on $date';
+  }
+
+  @override
+  String get assistantDetails => 'Details';
+
+  @override
+  String get assistantPhoneHint => 'They sign in with this number.';
+
+  @override
+  String get assistantBranches => 'Branches';
+
+  @override
+  String get assistantBranchesHint =>
+      'Bookings, today\'s board and visit lists show only these branches.';
+
+  @override
+  String get assistantAllBranches => 'All branches';
+
+  @override
+  String get assistantSomeBranches => 'Some branches';
+
+  @override
+  String get assistantAllBranchesBody => 'Including branches you add later.';
+
+  @override
+  String get assistantErrorBranchRequired => 'Choose at least one branch.';
+
+  @override
+  String get assistantPermissions => 'Permissions';
+
+  @override
+  String get assistantPermissionsHint =>
+      'Pick a preset, then adjust the boxes. Some need another, which is ticked for you.';
+
+  @override
+  String assistantAlsoOn(String permissions) {
+    return 'Also turned on: $permissions';
+  }
+
+  @override
+  String assistantAlsoOff(String permissions) {
+    return 'Also turned off: $permissions';
+  }
+
+  @override
+  String assistantSaved(String name) {
+    return '$name\'s changes are saved. They apply on their next action.';
+  }
+
+  @override
+  String get assistantAccountActions => 'Account';
+
+  @override
+  String get assistantResetPassword => 'Reset password';
+
+  @override
+  String get assistantResetPasswordHint =>
+      'A new temporary password, when they forget theirs.';
+
+  @override
+  String assistantResetTitle(String name) {
+    return 'Reset $name\'s password?';
+  }
+
+  @override
+  String get assistantResetBody =>
+      'They\'re signed out on every device and sign in again with the new temporary password.';
+
+  @override
+  String get assistantNewPasswordTitle => 'New temporary password';
+
+  @override
+  String get assistantDisableHint =>
+      'Stops them signing in, at once. You can enable them again.';
+
+  @override
+  String get assistantEnableHint => 'They can sign in again.';
+
+  @override
+  String assistantDisableTitle(String name) {
+    return 'Disable $name?';
+  }
+
+  @override
+  String get assistantDisableBody =>
+      'They\'re signed out at once and can\'t sign in until you enable them again.';
+
+  @override
+  String assistantEnableTitle(String name) {
+    return 'Enable $name?';
+  }
+
+  @override
+  String get assistantEnableBody =>
+      'They can sign in again with their password.';
+
+  @override
+  String get assistantRemove => 'Remove';
+
+  @override
+  String get assistantRemoveHint =>
+      'Final. Their history stays in the activity log.';
+
+  @override
+  String assistantRemoveTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get assistantRemoveBody =>
+      'They\'re signed out at once and can\'t come back. Their history stays in the activity log, and their number can be added again as a new assistant.';
+
+  @override
+  String assistantRemovedMessage(String name) {
+    return '$name was removed.';
+  }
+
+  @override
+  String assistantRemovedTitle(String name) {
+    return '$name was removed';
+  }
+
+  @override
+  String activityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries',
+      one: '1 entry',
+      zero: 'Nothing recorded yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityEmptyTitle => 'Nothing recorded yet';
+
+  @override
+  String get activityEmptyBody =>
+      'What you and your assistants do in the clinic shows here.';
+
+  @override
+  String get activityToday => 'Today';
+
+  @override
+  String get activityYesterday => 'Yesterday';
+
+  @override
+  String activityWhoWhen(String who, String time) {
+    return '$who, $time';
+  }
+
+  @override
+  String activityRemovedPerson(String name) {
+    return '$name (removed)';
+  }
+
+  @override
+  String activityPatientFile(String name, int number) {
+    return '$name, file $number';
+  }
+
+  @override
+  String get activityPatientUnlinked => 'A patient no longer in the clinic';
+
+  @override
+  String get activityOnlyThisPatient => 'Only this patient';
+
+  @override
+  String get activitySomeBranch => 'a branch';
+
+  @override
+  String get activitySomeAssistant => 'an assistant';
+
+  @override
+  String activityBranchCreated(String branch) {
+    return 'Added the branch $branch';
+  }
+
+  @override
+  String activityBranchUpdated(String branch) {
+    return 'Edited $branch';
+  }
+
+  @override
+  String activityBranchHoursUpdated(String branch) {
+    return 'Changed the working hours of $branch';
+  }
+
+  @override
+  String activityBranchStatusChanged(
+    String branch,
+    String before,
+    String after,
+  ) {
+    return '$branch: $before → $after';
+  }
+
+  @override
+  String activityDefaultBranchChanged(String branch) {
+    return 'Made $branch the default branch';
+  }
+
+  @override
+  String get activityDoctorPricesUpdated =>
+      'Changed the doctor\'s visit prices';
+
+  @override
+  String activityBranchPricesUpdated(String branch) {
+    return 'Changed the prices of $branch';
+  }
+
+  @override
+  String get activityProfileUpdated => 'Edited the profile';
+
+  @override
+  String get activitySpecialtyChanged => 'Changed the specialty';
+
+  @override
+  String activityAssistantCreated(String name, String preset) {
+    return 'Added the assistant $name ($preset)';
+  }
+
+  @override
+  String activityAssistantUpdated(String name) {
+    return 'Edited $name\'s details';
+  }
+
+  @override
+  String activityAssistantPermissionsChanged(String name) {
+    return 'Changed $name\'s permissions';
+  }
+
+  @override
+  String activityAssistantPasswordReset(String name) {
+    return 'Reset $name\'s password';
+  }
+
+  @override
+  String activityAssistantDisabled(String name) {
+    return 'Disabled $name';
+  }
+
+  @override
+  String activityAssistantEnabled(String name) {
+    return 'Enabled $name';
+  }
+
+  @override
+  String activityAssistantRemoved(String name) {
+    return 'Removed $name';
+  }
+
+  @override
+  String get activityPasswordChanged => 'Changed their password';
+
+  @override
+  String get activityPasswordSet => 'Set their password';
+
+  @override
+  String activityPasswordResetRequested(String name) {
+    return '$name asked for a new password';
+  }
+
+  @override
+  String get activityRegistrationSent => 'Sent the sign-up request';
+
+  @override
+  String get activityEmailVerified => 'Confirmed the email';
+
+  @override
+  String activityOther(String action) {
+    return 'Other action: $action';
+  }
+
+  @override
+  String activityPermissionsAdded(String permissions) {
+    return 'Added: $permissions.';
+  }
+
+  @override
+  String activityPermissionsRemoved(String permissions) {
+    return 'Removed: $permissions.';
+  }
+
+  @override
+  String activityPeriods(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count periods a week',
+      one: '1 period a week',
+      zero: 'Closed every day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityActionBranchCreated => 'Branch added';
+
+  @override
+  String get activityActionBranchUpdated => 'Branch edited';
+
+  @override
+  String get activityActionBranchHoursUpdated => 'Working hours changed';
+
+  @override
+  String get activityActionBranchStatusChanged => 'Branch status changed';
+
+  @override
+  String get activityActionDefaultBranchChanged => 'Default branch changed';
+
+  @override
+  String get activityActionPricesUpdated => 'Prices changed';
+
+  @override
+  String get activityActionProfileUpdated => 'Profile edited';
+
+  @override
+  String get activityActionSpecialtyChanged => 'Specialty changed';
+
+  @override
+  String get activityActionAssistantCreated => 'Assistant added';
+
+  @override
+  String get activityActionAssistantUpdated => 'Assistant edited';
+
+  @override
+  String get activityActionPermissionsChanged => 'Permissions changed';
+
+  @override
+  String get activityActionAssistantPasswordReset => 'Assistant password reset';
+
+  @override
+  String get activityActionAssistantDisabled => 'Assistant disabled';
+
+  @override
+  String get activityActionAssistantEnabled => 'Assistant enabled';
+
+  @override
+  String get activityActionAssistantRemoved => 'Assistant removed';
+
+  @override
+  String get activityActionPasswordChanged => 'Password changed';
+
+  @override
+  String get activityActionPasswordSet => 'Password chosen';
+
+  @override
+  String get activityActionPasswordResetRequested => 'New password requested';
+
+  @override
+  String get activityActionRegistrationSent => 'Sign-up sent';
+
+  @override
+  String get activityActionEmailVerified => 'Email confirmed';
 }

@@ -2913,4 +2913,399 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get branchNewNextSteps =>
       'مواعيد العمل والأسعار في الخطوة التالية، بعد إضافة الفرع.';
+
+  @override
+  String get assistantsSubtitle => 'من يعمل معك، وما يمكن لكل منهم فعله.';
+
+  @override
+  String get assistantAdd => 'إضافة مساعد';
+
+  @override
+  String assistantCountOf(int count, int limit) {
+    return '$count من $limit مساعدين';
+  }
+
+  @override
+  String get assistantsEmptyTitle => 'لا يوجد مساعدون بعد';
+
+  @override
+  String get assistantsEmptyBody =>
+      'أضف موظف الاستقبال ليسجل الزيارات والحجوزات نيابة عنك.';
+
+  @override
+  String get assistantChoose => 'اختر مساعداً لعرض بياناته';
+
+  @override
+  String get assistantAddBody =>
+      'يحصل على كلمة مرور مؤقتة، ويختار كلمة مروره عند أول تسجيل دخول.';
+
+  @override
+  String get assistantNeverActive => 'لم يستخدم العيادة بعد';
+
+  @override
+  String assistantLastActive(String time) {
+    return 'آخر نشاط $time';
+  }
+
+  @override
+  String assistantAddedOn(String date) {
+    return 'أُضيف في $date';
+  }
+
+  @override
+  String get assistantDetails => 'البيانات';
+
+  @override
+  String get assistantPhoneHint => 'يسجّل الدخول بهذا الرقم.';
+
+  @override
+  String get assistantBranches => 'الفروع';
+
+  @override
+  String get assistantBranchesHint =>
+      'تظهر له الحجوزات ولوحة اليوم وقوائم الزيارات في هذه الفروع فقط.';
+
+  @override
+  String get assistantAllBranches => 'كل الفروع';
+
+  @override
+  String get assistantSomeBranches => 'فروع محددة';
+
+  @override
+  String get assistantAllBranchesBody => 'ومنها الفروع التي تضيفها لاحقاً.';
+
+  @override
+  String get assistantErrorBranchRequired => 'اختر فرعاً واحداً على الأقل.';
+
+  @override
+  String get assistantPermissions => 'الصلاحيات';
+
+  @override
+  String get assistantPermissionsHint =>
+      'اختر قالباً ثم عدّل الاختيارات. بعضها يحتاج غيره، فيُختار تلقائياً.';
+
+  @override
+  String assistantAlsoOn(String permissions) {
+    return 'تم تفعيل أيضاً: $permissions';
+  }
+
+  @override
+  String assistantAlsoOff(String permissions) {
+    return 'تم إيقاف أيضاً: $permissions';
+  }
+
+  @override
+  String assistantSaved(String name) {
+    return 'تم حفظ تغييرات $name، وتُطبق مع إجرائه التالي.';
+  }
+
+  @override
+  String get assistantAccountActions => 'الحساب';
+
+  @override
+  String get assistantResetPassword => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get assistantResetPasswordHint => 'كلمة مرور مؤقتة جديدة عند نسيانها.';
+
+  @override
+  String assistantResetTitle(String name) {
+    return 'إعادة تعيين كلمة مرور $name؟';
+  }
+
+  @override
+  String get assistantResetBody =>
+      'يُسجَّل خروجه من كل الأجهزة، ويدخل من جديد بكلمة المرور المؤقتة الجديدة.';
+
+  @override
+  String get assistantNewPasswordTitle => 'كلمة مرور مؤقتة جديدة';
+
+  @override
+  String get assistantDisableHint =>
+      'يمنعه من الدخول فوراً، ويمكنك تفعيله لاحقاً.';
+
+  @override
+  String get assistantEnableHint => 'يمكنه تسجيل الدخول مرة أخرى.';
+
+  @override
+  String assistantDisableTitle(String name) {
+    return 'إيقاف $name؟';
+  }
+
+  @override
+  String get assistantDisableBody =>
+      'يُسجَّل خروجه فوراً، ولا يمكنه الدخول حتى تعيد تفعيله.';
+
+  @override
+  String assistantEnableTitle(String name) {
+    return 'تفعيل $name؟';
+  }
+
+  @override
+  String get assistantEnableBody => 'يمكنه الدخول مرة أخرى بكلمة مروره.';
+
+  @override
+  String get assistantRemove => 'إزالة';
+
+  @override
+  String get assistantRemoveHint => 'نهائي. يبقى سجل نشاطه.';
+
+  @override
+  String assistantRemoveTitle(String name) {
+    return 'إزالة $name؟';
+  }
+
+  @override
+  String get assistantRemoveBody =>
+      'يُسجَّل خروجه فوراً ولا يمكن إعادته. يبقى سجل نشاطه، ويمكن إضافة رقمه من جديد كمساعد جديد.';
+
+  @override
+  String assistantRemovedMessage(String name) {
+    return 'تمت إزالة $name.';
+  }
+
+  @override
+  String assistantRemovedTitle(String name) {
+    return 'تمت إزالة $name';
+  }
+
+  @override
+  String activityCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count نشاط',
+      many: '$count نشاطاً',
+      few: '$count أنشطة',
+      two: 'نشاطان',
+      one: 'نشاط واحد',
+      zero: 'لا يوجد نشاط بعد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityEmptyTitle => 'لا يوجد نشاط بعد';
+
+  @override
+  String get activityEmptyBody => 'يظهر هنا ما تفعله أنت ومساعدوك في العيادة.';
+
+  @override
+  String get activityToday => 'اليوم';
+
+  @override
+  String get activityYesterday => 'أمس';
+
+  @override
+  String activityWhoWhen(String who, String time) {
+    return '$who، $time';
+  }
+
+  @override
+  String activityRemovedPerson(String name) {
+    return '$name (تمت إزالته)';
+  }
+
+  @override
+  String activityPatientFile(String name, int number) {
+    return '$name، ملف $number';
+  }
+
+  @override
+  String get activityPatientUnlinked => 'مريض لم يعد في العيادة';
+
+  @override
+  String get activityOnlyThisPatient => 'هذا المريض فقط';
+
+  @override
+  String get activitySomeBranch => 'فرع';
+
+  @override
+  String get activitySomeAssistant => 'مساعد';
+
+  @override
+  String activityBranchCreated(String branch) {
+    return 'أضاف $branch';
+  }
+
+  @override
+  String activityBranchUpdated(String branch) {
+    return 'عدّل بيانات $branch';
+  }
+
+  @override
+  String activityBranchHoursUpdated(String branch) {
+    return 'غيّر مواعيد العمل في $branch';
+  }
+
+  @override
+  String activityBranchStatusChanged(
+    String branch,
+    String before,
+    String after,
+  ) {
+    return 'غيّر حالة $branch: $before ← $after';
+  }
+
+  @override
+  String activityDefaultBranchChanged(String branch) {
+    return 'جعل $branch الفرع الافتراضي';
+  }
+
+  @override
+  String get activityDoctorPricesUpdated => 'غيّر أسعار الطبيب';
+
+  @override
+  String activityBranchPricesUpdated(String branch) {
+    return 'غيّر أسعار $branch';
+  }
+
+  @override
+  String get activityProfileUpdated => 'عدّل الملف الشخصي';
+
+  @override
+  String get activitySpecialtyChanged => 'غيّر التخصص';
+
+  @override
+  String activityAssistantCreated(String name, String preset) {
+    return 'أضاف المساعد $name ($preset)';
+  }
+
+  @override
+  String activityAssistantUpdated(String name) {
+    return 'عدّل بيانات $name';
+  }
+
+  @override
+  String activityAssistantPermissionsChanged(String name) {
+    return 'غيّر صلاحيات $name';
+  }
+
+  @override
+  String activityAssistantPasswordReset(String name) {
+    return 'أعاد تعيين كلمة مرور $name';
+  }
+
+  @override
+  String activityAssistantDisabled(String name) {
+    return 'أوقف $name';
+  }
+
+  @override
+  String activityAssistantEnabled(String name) {
+    return 'فعّل $name';
+  }
+
+  @override
+  String activityAssistantRemoved(String name) {
+    return 'أزال $name';
+  }
+
+  @override
+  String get activityPasswordChanged => 'غيّر كلمة المرور';
+
+  @override
+  String get activityPasswordSet => 'اختار كلمة مرور';
+
+  @override
+  String activityPasswordResetRequested(String name) {
+    return 'طلب $name كلمة مرور جديدة';
+  }
+
+  @override
+  String get activityRegistrationSent => 'أرسل طلب التسجيل';
+
+  @override
+  String get activityEmailVerified => 'أكّد البريد الإلكتروني';
+
+  @override
+  String activityOther(String action) {
+    return 'إجراء آخر: $action';
+  }
+
+  @override
+  String activityPermissionsAdded(String permissions) {
+    return 'أضاف: $permissions.';
+  }
+
+  @override
+  String activityPermissionsRemoved(String permissions) {
+    return 'أزال: $permissions.';
+  }
+
+  @override
+  String activityPeriods(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فترة في الأسبوع',
+      many: '$count فترة في الأسبوع',
+      few: '$count فترات في الأسبوع',
+      two: 'فترتان في الأسبوع',
+      one: 'فترة واحدة في الأسبوع',
+      zero: 'مغلق كل الأيام',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityActionBranchCreated => 'إضافة فرع';
+
+  @override
+  String get activityActionBranchUpdated => 'تعديل فرع';
+
+  @override
+  String get activityActionBranchHoursUpdated => 'تغيير مواعيد العمل';
+
+  @override
+  String get activityActionBranchStatusChanged => 'تغيير حالة فرع';
+
+  @override
+  String get activityActionDefaultBranchChanged => 'تغيير الفرع الافتراضي';
+
+  @override
+  String get activityActionPricesUpdated => 'تغيير الأسعار';
+
+  @override
+  String get activityActionProfileUpdated => 'تعديل الملف الشخصي';
+
+  @override
+  String get activityActionSpecialtyChanged => 'تغيير التخصص';
+
+  @override
+  String get activityActionAssistantCreated => 'إضافة مساعد';
+
+  @override
+  String get activityActionAssistantUpdated => 'تعديل مساعد';
+
+  @override
+  String get activityActionPermissionsChanged => 'تغيير الصلاحيات';
+
+  @override
+  String get activityActionAssistantPasswordReset =>
+      'إعادة تعيين كلمة مرور مساعد';
+
+  @override
+  String get activityActionAssistantDisabled => 'إيقاف مساعد';
+
+  @override
+  String get activityActionAssistantEnabled => 'تفعيل مساعد';
+
+  @override
+  String get activityActionAssistantRemoved => 'إزالة مساعد';
+
+  @override
+  String get activityActionPasswordChanged => 'تغيير كلمة المرور';
+
+  @override
+  String get activityActionPasswordSet => 'اختيار كلمة المرور';
+
+  @override
+  String get activityActionPasswordResetRequested => 'طلب كلمة مرور جديدة';
+
+  @override
+  String get activityActionRegistrationSent => 'إرسال التسجيل';
+
+  @override
+  String get activityActionEmailVerified => 'تأكيد البريد';
 }

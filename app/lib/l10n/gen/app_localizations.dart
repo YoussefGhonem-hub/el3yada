@@ -5651,6 +5651,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email confirmed'**
   String get activityActionEmailVerified;
+
+  /// No description provided for @assistantNotAddedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not added yet'**
+  String get assistantNotAddedYet;
+
+  /// No description provided for @assistantNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A first and a last name, at least'**
+  String get assistantNameHint;
 }
 
 class _AppLocalizationsDelegate

@@ -3308,4 +3308,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activityActionEmailVerified => 'تأكيد البريد';
+
+  @override
+  String get assistantNotAddedYet => 'لم يُضف بعد';
+
+  @override
+  String get assistantNameHint => 'الاسم الأول واسم العائلة على الأقل';
 }

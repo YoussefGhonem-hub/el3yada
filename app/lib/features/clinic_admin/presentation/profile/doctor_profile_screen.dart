@@ -444,9 +444,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
               ),
             ],
           ),
-          AnimatedSize(
-            duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-            curve: Motion.standardCurve,
+          MotionSize(
             alignment: AlignmentDirectional.topStart,
             child: _otherTitle
                 ? Padding(

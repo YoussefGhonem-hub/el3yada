@@ -1090,5 +1090,7 @@
   "activityActionPasswordSet": "Password chosen",
   "activityActionPasswordResetRequested": "New password requested",
   "activityActionRegistrationSent": "Sign-up sent",
-  "activityActionEmailVerified": "Email confirmed"
+  "activityActionEmailVerified": "Email confirmed",
+  "assistantNotAddedYet": "Not added yet",
+  "assistantNameHint": "A first and a last name, at least"
 }

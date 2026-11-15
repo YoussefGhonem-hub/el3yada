@@ -386,6 +386,8 @@ class _AssistantEditorState extends ConsumerState<AssistantEditor> {
                     gutter: gutter,
                     bottomInset: MediaQuery.paddingOf(context).bottom,
                     saveLabel: _isNew ? l10nOf(context).assistantAdd : null,
+                    label: _isNew ? l10nOf(context).assistantNotAddedYet : null,
+                    discardLabel: _isNew ? l10nOf(context).adminCancel : null,
                     onDiscard: _isNew ? () => Navigator.of(context).maybePop() : _confirmDiscard,
                     onSave: _save,
                   ),
@@ -436,7 +438,7 @@ class _AssistantEditorState extends ConsumerState<AssistantEditor> {
             onChanged: (_) => setState(() => _server = {..._server}..remove('fullName')),
             decoration: InputDecoration(
               labelText: l10n.adminFieldFullName,
-              helperText: l10n.regFullNameHint,
+              helperText: l10n.assistantNameHint,
               prefixIcon: const Icon(Icons.badge_outlined),
               errorText: _fieldError('fullName'),
               errorMaxLines: 2,
@@ -562,9 +564,7 @@ class _BranchesCard extends ConsumerWidget {
             selected: {form.allBranches},
             onSelectionChanged: enabled ? (s) => form.setAllBranches(s.first) : null,
           ),
-          AnimatedSize(
-            duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-            curve: Motion.standardCurve,
+          MotionSize(
             alignment: AlignmentDirectional.topStart,
             child: form.allBranches
                 ? Padding(
@@ -667,9 +667,7 @@ class _PermissionsCard extends StatelessWidget {
                 title: Text(l10n.permissionName(key)),
                 subtitle: Text(l10n.permissionHelp(key), style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
               ),
-              AnimatedSize(
-                duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-                curve: Motion.standardCurve,
+              MotionSize(
                 alignment: AlignmentDirectional.topStart,
                 child: dependency != null && dependency.$1 == key
                     ? Padding(

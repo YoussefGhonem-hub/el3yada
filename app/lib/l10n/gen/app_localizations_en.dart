@@ -3307,4 +3307,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityActionEmailVerified => 'Email confirmed';
+
+  @override
+  String get assistantNotAddedYet => 'Not added yet';
+
+  @override
+  String get assistantNameHint => 'A first and a last name, at least';
 }

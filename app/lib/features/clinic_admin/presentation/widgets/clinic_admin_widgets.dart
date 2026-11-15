@@ -481,6 +481,20 @@ class MoneyField extends StatelessWidget {
   }
 }
 
+/// Grows and shrinks with its child. With reduced motion the size simply
+/// changes (an `AnimatedSize` with a zero duration asserts).
+class MotionSize extends StatelessWidget {
+  const MotionSize({super.key, required this.child, this.alignment = AlignmentDirectional.topStart});
+
+  final Widget child;
+  final AlignmentGeometry alignment;
+
+  @override
+  Widget build(BuildContext context) => Motion.of(context).reduced
+      ? child
+      : AnimatedSize(duration: Motion.normal, curve: Motion.standardCurve, alignment: alignment, child: child);
+}
+
 /// A page of stacked sections: gutter by width, at most [maxWidth] wide,
 /// room for the phone's floating bar at the end, and the stagger.
 class ClinicPage extends StatelessWidget {

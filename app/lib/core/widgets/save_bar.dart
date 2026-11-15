@@ -22,6 +22,8 @@ class SaveBar extends StatelessWidget {
     this.gutter = 16,
     this.bottomInset = 0,
     this.saveLabel,
+    this.label,
+    this.discardLabel,
   });
 
   final bool visible;
@@ -38,6 +40,12 @@ class SaveBar extends StatelessWidget {
 
   /// Defaults to Save.
   final String? saveLabel;
+
+  /// Replaces "3 changes not saved" (a form that adds something new).
+  final String? label;
+
+  /// Defaults to Discard.
+  final String? discardLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -73,14 +81,14 @@ class SaveBar extends StatelessWidget {
                       child: Semantics(
                         liveRegion: true,
                         child: Text(
-                          status == SubmitStatus.success ? l10n.adminAllSaved : l10n.adminUnsavedChanges(dirty),
+                          status == SubmitStatus.success ? l10n.adminAllSaved : (label ?? l10n.adminUnsavedChanges(dirty)),
                           style: theme.textTheme.titleSmall,
                         ),
                       ),
                     ),
                     TextButton(
                       onPressed: status == SubmitStatus.idle ? onDiscard : null,
-                      child: Text(l10n.adminDiscard),
+                      child: Text(discardLabel ?? l10n.adminDiscard),
                     ),
                     const SizedBox(width: 8),
                     SizedBox(

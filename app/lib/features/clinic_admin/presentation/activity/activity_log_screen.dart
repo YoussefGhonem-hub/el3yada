@@ -157,7 +157,13 @@ class _ActivityLogScreenState extends ConsumerState<ActivityLogScreen> {
             padding: EdgeInsets.fromLTRB(gutter, 0, gutter, 16 + MediaQuery.paddingOf(context).bottom),
             itemCount: rows.length + 1,
             itemBuilder: (context, i) {
-              if (i == rows.length) return Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 900), child: footer()));
+              Widget frame(Widget child) => Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 900),
+                      child: SizedBox(width: double.infinity, child: child),
+                    ),
+                  );
+              if (i == rows.length) return frame(footer());
               final row = rows[i];
               final Widget child;
               if (row is DateTime) {
@@ -173,7 +179,7 @@ class _ActivityLogScreenState extends ConsumerState<ActivityLogScreen> {
                   ),
                 );
               }
-              return Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 900), child: child));
+              return frame(child);
             },
           ),
         ),

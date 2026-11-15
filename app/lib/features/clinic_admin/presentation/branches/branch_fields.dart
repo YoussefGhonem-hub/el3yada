@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/network/api_error_text.dart';
-import '../../../../core/theme/motion.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../doctor_registration/domain/reference_lists.dart';
 import '../../../doctor_registration/domain/specialty.dart' show matchesNames;
@@ -295,9 +294,7 @@ class ContactFields extends StatelessWidget {
       children: [
         Text(l10n.regPhonesHint, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
         const SizedBox(height: 12),
-        AnimatedSize(
-          duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-          curve: Motion.standardCurve,
+        MotionSize(
           alignment: AlignmentDirectional.topCenter,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -601,9 +598,7 @@ class _DayCard extends StatelessWidget {
                   ),
               ],
             ),
-            AnimatedSize(
-              duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-              curve: Motion.standardCurve,
+            MotionSize(
               alignment: AlignmentDirectional.topStart,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

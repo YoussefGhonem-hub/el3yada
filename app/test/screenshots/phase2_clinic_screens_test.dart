@@ -115,6 +115,53 @@ void main() {
         await capture(tester, 'd29_bookings_refusal_${width}_ar_$theme');
       });
 
+      testWidgets('D25 and D26 assistants ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+        await signedIn(tester, size, 'doctor@el3yada.dev');
+        goTo(tester, '/doctor/assistants');
+        await settle(tester);
+        await capture(tester, 'd25_assistants_${width}_ar_$theme');
+
+        goTo(tester, '/doctor/assistants/${FakeClinicAdminRepository.disabledAssistantId}');
+        await settle(tester);
+        await capture(tester, 'd26_edit_${width}_ar_$theme');
+
+        goTo(tester, '/doctor/assistants/new');
+        await settle(tester);
+        await tester.enterText(find.byType(TextField).at(0), 'سارة محمود');
+        await tester.enterText(find.byType(TextField).at(1), '01112223334');
+        await tester.pumpAndSettle();
+        await capture(tester, 'd26_new_${width}_ar_$theme');
+        // A box with a dependency, to show the note under it.
+        final edit = find.text('تعديل التاريخ المرضي');
+        await tester.ensureVisible(edit);
+        await tester.pumpAndSettle();
+        await tester.tap(edit);
+        await settle(tester);
+        await capture(tester, 'd26_permissions_${width}_ar_$theme');
+
+        await tester.ensureVisible(find.text('كل الفروع').first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('كل الفروع').first);
+        await settle(tester);
+        await tester.tap(find.widgetWithText(FilledButton, 'إضافة مساعد').last);
+        await settle(tester);
+        await capture(tester, 'd26_temporary_password_${width}_ar_$theme');
+      });
+
+      testWidgets('D27 activity log ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+        await signedIn(tester, size, 'doctor@el3yada.dev');
+        goTo(tester, '/doctor/activity');
+        await settle(tester);
+        await capture(tester, 'd27_activity_${width}_ar_$theme');
+      });
+
+      testWidgets('AS19 prices for an office manager ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+        await signedIn(tester, size, '01000000005');
+        goTo(tester, '/assistant/settings/prices');
+        await settle(tester);
+        await capture(tester, 'as19_prices_${width}_ar_$theme');
+      });
+
       testWidgets('D29 new branch ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/branches/new');

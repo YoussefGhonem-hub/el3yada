@@ -184,9 +184,7 @@ class _PriceEditorState extends State<PriceEditor> {
                   ),
                 ),
               ),
-            AnimatedSize(
-              duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-              curve: Motion.standardCurve,
+            MotionSize(
               alignment: AlignmentDirectional.topStart,
               child: showFields
                   ? Padding(padding: EdgeInsets.only(top: widget.isBranch ? 8 : 0), child: fields)
@@ -197,9 +195,7 @@ class _PriceEditorState extends State<PriceEditor> {
                 padding: const EdgeInsets.only(top: 8),
                 child: Semantics(liveRegion: true, child: Text(_error!, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.error))),
               ),
-            AnimatedSize(
-              duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-              curve: Motion.standardCurve,
+            MotionSize(
               alignment: AlignmentDirectional.topEnd,
               child: dirty || _status != SubmitStatus.idle
                   ? Padding(

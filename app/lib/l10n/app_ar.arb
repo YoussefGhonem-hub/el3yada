@@ -926,5 +926,7 @@
   "activityActionPasswordSet": "اختيار كلمة المرور",
   "activityActionPasswordResetRequested": "طلب كلمة مرور جديدة",
   "activityActionRegistrationSent": "إرسال التسجيل",
-  "activityActionEmailVerified": "تأكيد البريد"
+  "activityActionEmailVerified": "تأكيد البريد",
+  "assistantNotAddedYet": "لم يُضف بعد",
+  "assistantNameHint": "الاسم الأول واسم العائلة على الأقل"
 }

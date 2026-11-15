@@ -126,6 +126,11 @@ class _IdentityTicket extends StatelessWidget {
     final clinic = this.clinic;
     final onPine = scheme.onPrimary;
     final muted = onPine.withValues(alpha: 0.78);
+    // Dark mode's primary is mint itself: the avatar and icons need the dark container then.
+    final dark = theme.brightness == Brightness.dark;
+    final avatarColor = dark ? scheme.primaryContainer : colors.navIndicator;
+    final onAvatar = dark ? scheme.onPrimaryContainer : colors.onNavIndicator;
+    final accent = dark ? scheme.primaryContainer : colors.navIndicator;
 
     final String name;
     final String detail;
@@ -151,10 +156,10 @@ class _IdentityTicket extends StatelessWidget {
               width: 56,
               height: 56,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: colors.navIndicator, shape: BoxShape.circle),
+              decoration: BoxDecoration(color: avatarColor, shape: BoxShape.circle),
               child: Text(
                 InitialAvatar.initialOf(name.replaceFirst(RegExp(r'^(د\.|Dr\.)\s*'), '')),
-                style: theme.textTheme.titleLarge?.copyWith(color: colors.onNavIndicator, fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleLarge?.copyWith(color: onAvatar, fontWeight: FontWeight.w700),
               ),
             ),
           ),
@@ -183,7 +188,7 @@ class _IdentityTicket extends StatelessWidget {
         padding: const EdgeInsetsDirectional.fromSTEB(20, 6, 12, 14),
         child: Row(
           children: [
-            Icon(Icons.badge_outlined, size: 20, color: colors.navIndicator),
+            Icon(Icons.badge_outlined, size: 20, color: accent),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -239,7 +244,15 @@ class _StubFact extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ExcludeSemantics(child: Icon(icon, size: 18, color: context.el3yadaColors.navIndicator)),
+        ExcludeSemantics(
+          child: Icon(
+            icon,
+            size: 18,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).colorScheme.primaryContainer
+                : context.el3yadaColors.navIndicator,
+          ),
+        ),
         const SizedBox(width: 6),
         Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: onPine)),
       ],

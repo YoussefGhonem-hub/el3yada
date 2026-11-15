@@ -1,4 +1,4 @@
-# Doctory app (Flutter)
+# el3yada app (Flutter)
 
 One Flutter codebase for every platform. The full product spec is [`../spec.md`](../spec.md).
 
@@ -37,8 +37,8 @@ The dev login screen lists them; tap one to fill it in. Any password works excep
 
 | Role | Sign in with |
 |---|---|
-| Admin | `admin@doctory.dev` |
-| Doctor | `doctor@doctory.dev` |
+| Admin | `admin@el3yada.dev` |
+| Doctor | `doctor@el3yada.dev` |
 | Assistant | `01000000001` |
 | Patient | `01000000002` (blocked on desktop) |
 
@@ -83,7 +83,7 @@ Each feature follows the same layers: `domain/` (models), `data/` (API), `applic
 ## Conventions
 
 - **Strings:** never hard-code text. Add the key to both `app_en.arb` and `app_ar.arb`, then run `flutter gen-l10n` (it also runs on build).
-- **Colours:** never hard-code colours. Use `Theme.of(context).colorScheme` or `context.doctoryColors` (examination, consultation, allergy).
+- **Colours:** never hard-code colours. Use `Theme.of(context).colorScheme` or `context.el3yadaColors` (examination, consultation, allergy).
 - **Layout:** below 600 px wide is phone (bottom bar), 600–1024 is tablet (rail), and 1024+ is desktop (side menu). See `RoleScaffold`.
 - **Screens:** every screen has an ID in `spec.md` (D34, AS1, P1, AD1 …). Placeholder pages show it until the screen is built.
 
@@ -96,4 +96,4 @@ Each feature follows the same layers: `domain/` (models), `data/` (API), `applic
 | Token refresh on 401 | Phase 1 | TODO in `AuthInterceptor`. |
 | Assistant permissions in the menu | Phase 2 | TODO in `RoleShell.assistant`. |
 | App icons and splash | Phase 7 | e.g. `flutter_launcher_icons`, `flutter_native_splash`. |
-| Bundle IDs | Before store release | Currently `com.doctory.doctory`. Change them to the real organisation. |
+| Bundle IDs | Before store release | Set to `com.el3yada.app` on Android, iOS and macOS. Confirm it before the first upload: the stores never let it change after that. |

@@ -1,6 +1,6 @@
 {
   "@@locale": "ar",
-  "appTitle": "Doctory",
+  "appTitle": "العيادة",
   "appTagline": "عيادتك منظمة.",
   "loginTitle": "تسجيل الدخول",
   "identifierLabel": "رقم الموبايل أو البريد الإلكتروني",
@@ -18,7 +18,7 @@
   "errorNoInternet": "لا يوجد اتصال بالإنترنت",
   "errorUnknown": "حدث خطأ غير متوقع، حاول مرة أخرى",
   "patientDesktopTitle": "حساب المريض على تطبيق الموبايل فقط",
-  "patientDesktopBody": "تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق Doctory على موبايلك لمتابعة ملفك الطبي وحجوزاتك.",
+  "patientDesktopBody": "تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق «العيادة» على موبايلك لمتابعة ملفك الطبي وحجوزاتك.",
   "ok": "حسناً",
   "underConstructionTitle": "هذه الشاشة لم تُنفذ بعد",
   "underConstructionBody": "الشاشة {screenId} في spec.md",

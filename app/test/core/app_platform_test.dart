@@ -1,5 +1,5 @@
-import 'package:doctory/core/platform/app_platform.dart';
-import 'package:doctory/features/auth/domain/user_role.dart';
+import 'package:el3yada/core/platform/app_platform.dart';
+import 'package:el3yada/features/auth/domain/user_role.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.doctory" "\0"
-            VALUE "FileDescription", "doctory" "\0"
+            VALUE "CompanyName", "com.el3yada" "\0"
+            VALUE "FileDescription", "el3yada" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "doctory" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.doctory. All rights reserved." "\0"
-            VALUE "OriginalFilename", "doctory.exe" "\0"
-            VALUE "ProductName", "doctory" "\0"
+            VALUE "InternalName", "el3yada" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.el3yada. All rights reserved." "\0"
+            VALUE "OriginalFilename", "el3yada.exe" "\0"
+            VALUE "ProductName", "el3yada" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

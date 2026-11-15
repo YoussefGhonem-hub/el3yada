@@ -6,8 +6,8 @@ import '../core/theme/app_theme.dart';
 import '../l10n/gen/app_localizations.dart';
 import 'router.dart';
 
-class DoctoryApp extends ConsumerWidget {
-  const DoctoryApp({super.key});
+class El3yadaApp extends ConsumerWidget {
+  const El3yadaApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

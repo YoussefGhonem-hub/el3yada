@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Doctory (dev)",
+      "name": "el3yada (dev)",
       "type": "dart",
       "request": "launch",
       "cwd": "app",
@@ -10,7 +10,7 @@
       "args": ["--dart-define-from-file=config/dev.json"]
     },
     {
-      "name": "Doctory (dev, Windows)",
+      "name": "el3yada (dev, Windows)",
       "type": "dart",
       "request": "launch",
       "cwd": "app",
@@ -19,7 +19,7 @@
       "args": ["--dart-define-from-file=config/dev.json"]
     },
     {
-      "name": "Doctory (prod)",
+      "name": "el3yada (prod)",
       "type": "dart",
       "request": "launch",
       "cwd": "app",

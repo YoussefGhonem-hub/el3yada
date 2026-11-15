@@ -1,9 +1,9 @@
-import 'package:doctory/core/platform/app_platform.dart';
-import 'package:doctory/core/storage/token_store.dart';
-import 'package:doctory/features/auth/application/auth_controller.dart';
-import 'package:doctory/features/auth/data/auth_repository.dart';
-import 'package:doctory/features/auth/domain/auth_exceptions.dart';
-import 'package:doctory/features/auth/domain/user_role.dart';
+import 'package:el3yada/core/platform/app_platform.dart';
+import 'package:el3yada/core/storage/token_store.dart';
+import 'package:el3yada/features/auth/application/auth_controller.dart';
+import 'package:el3yada/features/auth/data/auth_repository.dart';
+import 'package:el3yada/features/auth/domain/auth_exceptions.dart';
+import 'package:el3yada/features/auth/domain/user_role.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -30,7 +30,7 @@ void main() {
     final container = makeContainer(platform: AppPlatform.desktop, store: store);
     await container.read(authControllerProvider.future);
 
-    await container.read(authControllerProvider.notifier).login('doctor@doctory.dev', 'dev');
+    await container.read(authControllerProvider.notifier).login('doctor@el3yada.dev', 'dev');
 
     expect(container.read(authControllerProvider).value?.role, UserRole.doctor);
     expect((await store.read())?.role, UserRole.doctor);
@@ -63,7 +63,7 @@ void main() {
     await container.read(authControllerProvider.future);
 
     await expectLater(
-      container.read(authControllerProvider.notifier).login('doctor@doctory.dev', 'wrong'),
+      container.read(authControllerProvider.notifier).login('doctor@el3yada.dev', 'wrong'),
       throwsA(isA<InvalidCredentialsException>()),
     );
   });

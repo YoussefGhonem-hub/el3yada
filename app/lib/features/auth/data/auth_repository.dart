@@ -73,8 +73,8 @@ class FakeAuthRepository implements AuthRepository {
 
   /// Shown on the login screen in dev builds. Keys are normalized identifiers.
   static const accounts = <String, (UserRole, String)>{
-    'admin@doctory.dev': (UserRole.admin, 'Admin'),
-    'doctor@doctory.dev': (UserRole.doctor, 'د. تجريبي'),
+    'admin@el3yada.dev': (UserRole.admin, 'Admin'),
+    'doctor@el3yada.dev': (UserRole.doctor, 'د. تجريبي'),
     '+201000000001': (UserRole.assistant, 'مساعد تجريبي'),
     '+201000000002': (UserRole.patient, 'مريض تجريبي'),
   };

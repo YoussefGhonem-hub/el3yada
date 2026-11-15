@@ -15,7 +15,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
-      child: const DoctoryApp(),
+      child: const El3yadaApp(),
     ),
   );
 }

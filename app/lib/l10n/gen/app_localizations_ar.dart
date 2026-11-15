@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'Doctory';
+  String get appTitle => 'العيادة';
 
   @override
   String get appTagline => 'عيادتك منظمة.';
@@ -66,7 +66,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get patientDesktopBody =>
-      'تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق Doctory على موبايلك لمتابعة ملفك الطبي وحجوزاتك.';
+      'تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق «العيادة» على موبايلك لمتابعة ملفك الطبي وحجوزاتك.';
 
   @override
   String get ok => 'حسناً';

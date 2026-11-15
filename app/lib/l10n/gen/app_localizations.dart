@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Doctory'**
+  /// **'el3yada'**
   String get appTitle;
 
   /// No description provided for @appTagline.
@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// No description provided for @patientDesktopBody.
   ///
   /// In en, this message translates to:
-  /// **'The desktop app is for doctors, assistants and admins. Install Doctory on your phone to see your medical file and your bookings.'**
+  /// **'The desktop app is for doctors, assistants and admins. Install el3yada on your phone to see your medical file and your bookings.'**
   String get patientDesktopBody;
 
   /// No description provided for @ok.

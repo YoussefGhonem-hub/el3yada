@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Doctory';
+  String get appTitle => 'el3yada';
 
   @override
   String get appTagline => 'Your clinic, organised.';
@@ -65,7 +65,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get patientDesktopBody =>
-      'The desktop app is for doctors, assistants and admins. Install Doctory on your phone to see your medical file and your bookings.';
+      'The desktop app is for doctors, assistants and admins. Install el3yada on your phone to see your medical file and your bookings.';
 
   @override
   String get ok => 'OK';

@@ -1,8 +1,8 @@
-import 'package:doctory/app/app.dart';
-import 'package:doctory/core/platform/app_platform.dart';
-import 'package:doctory/core/settings/app_settings.dart';
-import 'package:doctory/core/storage/token_store.dart';
-import 'package:doctory/features/auth/data/auth_repository.dart';
+import 'package:el3yada/app/app.dart';
+import 'package:el3yada/core/platform/app_platform.dart';
+import 'package:el3yada/core/settings/app_settings.dart';
+import 'package:el3yada/core/storage/token_store.dart';
+import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,7 +24,7 @@ Future<void> pumpApp(WidgetTester tester, {required AppPlatform platform, Size s
         tokenStoreProvider.overrideWithValue(MemoryTokenStore()),
         authRepositoryProvider.overrideWithValue(FakeAuthRepository(delay: Duration.zero)),
       ],
-      child: const DoctoryApp(),
+      child: const El3yadaApp(),
     ),
   );
   await tester.pumpAndSettle();
@@ -45,9 +45,9 @@ void main() {
 
   testWidgets('a doctor on desktop lands on the live board with the side menu', (tester) async {
     await pumpApp(tester, platform: AppPlatform.desktop);
-    await signIn(tester, 'doctor@doctory.dev');
+    await signIn(tester, 'doctor@el3yada.dev');
 
-    expect(find.text('Doctory · Doctor'), findsOneWidget);
+    expect(find.text('el3yada · Doctor'), findsOneWidget);
     expect(find.text('Screen D34 in spec.md'), findsOneWidget);
     expect(find.text('Branches'), findsOneWidget); // side menu shows every item
   });

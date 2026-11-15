@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 /// Colour tokens (spec section 12, Appearance). Widgets never use hard-coded
-/// colours: they read `Theme.of(context).colorScheme` or [DoctoryColors].
+/// colours: they read `Theme.of(context).colorScheme` or [El3yadaColors].
 abstract final class AppColors {
   static const brandSeed = Color(0xFF0B5C8E);
 }
 
 /// Colours that carry meaning, each with a light and a dark version.
 @immutable
-class DoctoryColors extends ThemeExtension<DoctoryColors> {
-  const DoctoryColors({
+class El3yadaColors extends ThemeExtension<El3yadaColors> {
+  const El3yadaColors({
     required this.examination,
     required this.onExamination,
     required this.consultation,
@@ -30,7 +30,7 @@ class DoctoryColors extends ThemeExtension<DoctoryColors> {
   final Color allergy;
   final Color onAllergy;
 
-  static const light = DoctoryColors(
+  static const light = El3yadaColors(
     examination: Color(0xFFD6E4FF),
     onExamination: Color(0xFF0B3D91),
     consultation: Color(0xFFD3F2E1),
@@ -39,7 +39,7 @@ class DoctoryColors extends ThemeExtension<DoctoryColors> {
     onAllergy: Color(0xFF8C1D18),
   );
 
-  static const dark = DoctoryColors(
+  static const dark = El3yadaColors(
     examination: Color(0xFF1E3A66),
     onExamination: Color(0xFFD6E4FF),
     consultation: Color(0xFF15452E),
@@ -49,7 +49,7 @@ class DoctoryColors extends ThemeExtension<DoctoryColors> {
   );
 
   @override
-  DoctoryColors copyWith({
+  El3yadaColors copyWith({
     Color? examination,
     Color? onExamination,
     Color? consultation,
@@ -57,7 +57,7 @@ class DoctoryColors extends ThemeExtension<DoctoryColors> {
     Color? allergy,
     Color? onAllergy,
   }) =>
-      DoctoryColors(
+      El3yadaColors(
         examination: examination ?? this.examination,
         onExamination: onExamination ?? this.onExamination,
         consultation: consultation ?? this.consultation,
@@ -67,9 +67,9 @@ class DoctoryColors extends ThemeExtension<DoctoryColors> {
       );
 
   @override
-  DoctoryColors lerp(DoctoryColors? other, double t) {
+  El3yadaColors lerp(El3yadaColors? other, double t) {
     if (other == null) return this;
-    return DoctoryColors(
+    return El3yadaColors(
       examination: Color.lerp(examination, other.examination, t)!,
       onExamination: Color.lerp(onExamination, other.onExamination, t)!,
       consultation: Color.lerp(consultation, other.consultation, t)!,
@@ -80,19 +80,19 @@ class DoctoryColors extends ThemeExtension<DoctoryColors> {
   }
 }
 
-extension DoctoryThemeX on BuildContext {
-  DoctoryColors get doctoryColors => Theme.of(this).extension<DoctoryColors>()!;
+extension El3yadaThemeX on BuildContext {
+  El3yadaColors get el3yadaColors => Theme.of(this).extension<El3yadaColors>()!;
 }
 
 abstract final class AppTheme {
   /// Set to 'IBM Plex Sans Arabic' once the font files are bundled (pubspec.yaml).
   static const String? fontFamily = null;
 
-  static ThemeData light() => _build(Brightness.light, DoctoryColors.light);
+  static ThemeData light() => _build(Brightness.light, El3yadaColors.light);
 
-  static ThemeData dark() => _build(Brightness.dark, DoctoryColors.dark);
+  static ThemeData dark() => _build(Brightness.dark, El3yadaColors.dark);
 
-  static ThemeData _build(Brightness brightness, DoctoryColors colors) {
+  static ThemeData _build(Brightness brightness, El3yadaColors colors) {
     final scheme = ColorScheme.fromSeed(
       seedColor: AppColors.brandSeed,
       brightness: brightness,

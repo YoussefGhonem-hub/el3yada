@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Doctory",
+  "appTitle": "el3yada",
   "appTagline": "Your clinic, organised.",
   "loginTitle": "Sign in",
   "identifierLabel": "Mobile number or email",
@@ -18,7 +18,7 @@
   "errorNoInternet": "No internet connection",
   "errorUnknown": "Something went wrong. Please try again.",
   "patientDesktopTitle": "Patient accounts use the mobile app",
-  "patientDesktopBody": "The desktop app is for doctors, assistants and admins. Install Doctory on your phone to see your medical file and your bookings.",
+  "patientDesktopBody": "The desktop app is for doctors, assistants and admins. Install el3yada on your phone to see your medical file and your bookings.",
   "ok": "OK",
   "underConstructionTitle": "This screen is not built yet",
   "underConstructionBody": "Screen {screenId} in spec.md",

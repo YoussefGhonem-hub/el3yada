@@ -1,4 +1,4 @@
-import 'package:doctory/core/validation/validators.dart';
+import 'package:el3yada/core/validation/validators.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

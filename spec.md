@@ -1,4 +1,4 @@
-# Doctory: Product & Technical Specification
+# el3yada (العيادة): Product & Technical Specification
 
 | | |
 |---|---|
@@ -38,7 +38,7 @@ Priority labels used below: **[M]** Must have for v1, **[S]** Should have, **[C]
 
 ## 1. Overview
 
-Doctory is a clinic app for doctors and their patients.
+el3yada (العيادة) is a clinic app for doctors and their patients.
 
 - **Doctors** create patient accounts, record each visit as an *examination* or a *consultation*, scan or upload medical documents, write medication prescriptions and lab/radiology requests, and chat with patients.
 - **Assistants (مساعد الطبيب)** are clinic staff accounts that a doctor creates. A doctor can have several, each with its own permissions: for example registering patients and visits at reception, scanning papers, chatting with patients, or paying the monthly invoice. Medical decisions always stay with the doctor.
@@ -304,7 +304,7 @@ Rules:
 
 #### 6.4.1 Prescription layout (A5)
 
-**Design:** [Doctory prescription design](https://claude.ai/artifact/82SGZFVP9e6oVbRJtRzaqs). It has two A5 pages, one for the medication prescription and one for the investigations request, with the measurements in a note beside them. The link is private: share it from the page before sending it to developers.
+**Design:** [el3yada prescription design](https://claude.ai/artifact/82SGZFVP9e6oVbRJtRzaqs). It has two A5 pages, one for the medication prescription and one for the investigations request, with the measurements in a note beside them. The link is private: share it from the page before sending it to developers.
 
 **Paper:** A5 = 148 × 210 mm, portrait, with 10.5 mm margins on every side. There is no official Egyptian prescription size, and A5 is the most common pad size. A4 and a custom size are settings (BR-RX5).
 
@@ -318,7 +318,7 @@ Rules:
 | 4 | Body | Flexible | **Medication:** an "Rx" mark, then numbered items. Each item has the drug name, strength and form (English, bold, 12 pt), the instructions in Arabic underneath (10.5 pt), and a duration chip on the left. **Investigations:** «مطلوب عمل الفحوصات الآتية:», then a **Lab tests** group (check boxes in two columns) and a **Radiology** group (one column, with an Arabic explanation under each). |
 | 5 | Notes | 10 mm | «تعليمات:» (medication) or «ملاحظات:» (investigations) in a bordered box. Hidden when empty. |
 | 6 | Follow-up and signature | 12 mm | **Right:** follow-up date («موعد المتابعة»), or «إحضار النتائج في» for investigations. **Left:** a signature line, with the signature image when one is set (D22). |
-| 7 | Footer | 30 mm | A rule in the clinic colour. **Branches:** the session's branch first, then the others, up to 2 on A5 (3 on A4). Each shows its name, address and landmark, phone, WhatsApp and hours (BR-BR6). **Left:** a 20 × 20 mm QR code with «امسح الكود» and "Doctory". |
+| 7 | Footer | 30 mm | A rule in the clinic colour. **Branches:** the session's branch first, then the others, up to 2 on A5 (3 on A4). Each shows its name, address and landmark, phone, WhatsApp and hours (BR-BR6). **Left:** a 20 × 20 mm QR code with «امسح الكود» and "el3yada". |
 
 **Text:**
 
@@ -1018,7 +1018,7 @@ Doctors and assistants with more than one branch see a **current branch** picker
 | A11 | Force update | Store, download or installer link for the platform. Cannot be dismissed. |
 | A12 | Terms / Privacy Policy | Rendered content, set by the admin. |
 | A13 | Maintenance | Admin message. Retry button. |
-| A14 | Patient on desktop | A dialog on the login screen: «حساب المريض على تطبيق الموبايل فقط» and «تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق Doctory على موبايلك لمتابعة ملفك الطبي وحجوزاتك.» [S] Store links once the apps are published. The user stays signed out. |
+| A14 | Patient on desktop | A dialog on the login screen: «حساب المريض على تطبيق الموبايل فقط» and «تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق «العيادة» على موبايلك لمتابعة ملفك الطبي وحجوزاتك.» [S] Store links once the apps are published. The user stays signed out. |
 
 Session behaviour: users stay logged in until they log out. Changing the password signs the user out on other devices. Logout removes the device's push token.
 
@@ -2031,7 +2031,7 @@ Each question lists the default used in this spec, which stays in place until it
 15. **Admin visibility:** Does the admin need real patient names to settle billing disputes? *(Default: masked names only. D9.)*
 16. **Data retention:** How long must medical records be kept after a patient asks for account deletion or a doctor leaves? *(Needs legal input.)*
 17. **Partial payments:** Should a doctor be able to pay part of an invoice? *(Default: no. BR-B9.)*
-18. **Branding:** App name (is "Doctory" final?), logo, colours, and store developer account owner.
+18. **Branding:** ✅ **Name answered:** the app is called **el3yada** (العيادة). Store name: «el3yada | العيادة». Bundle ID: `com.el3yada.app`. Before store submission, check the existing app «el3eyada» by BlueCloud (one letter apart, similar features) and the Egyptian trademark register. Still open: logo, colours, and store developer account owner.
 19. **Medicine data source:** Launch with the free community dataset (checked against a sample from the EDA search), or buy a licensed Egyptian drug database that is updated regularly? *(Default: community dataset plus admin custom items.)*
 20. **Strict specialty filter:** Should medicines and tests from other specialties appear below the doctor's own (with a chip to hide them), or never appear at all? *(Default: they appear below, and the chip is off. BR-CAT4.)*
 21. **Other investigations:** Doctors in Egypt often request tests that are neither lab nor radiology: ECG, EEG, EMG, endoscopy, audiometry, OCT. Should the investigations request get a third category, "Other tests"? *(Default: they are added as admin custom items under radiology, and the section heading reads «أشعة وفحوصات».)*

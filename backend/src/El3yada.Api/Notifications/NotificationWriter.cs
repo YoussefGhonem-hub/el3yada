@@ -39,8 +39,8 @@ public sealed class NotificationWriter(AppDbContext db, TimeProvider time)
 /// <summary>A notification's type and its Arabic and English title and body.</summary>
 public sealed record NotificationText(string Type, string TitleAr, string TitleEn, string BodyAr, string BodyEn);
 
-/// <summary>The Phase 1 notifications (spec 10.1). Types are stable: the app may switch on them.</summary>
-public static class NotificationTexts
+/// <summary>Notifications (spec 10.1). Types are stable: the app may switch on them. Phase 1 here; later phases add theirs in their own files.</summary>
+public static partial class NotificationTexts
 {
     public const string DoctorRegistrationReceived = "doctorRegistrationReceived";
     public const string DoctorRegistrationResubmitted = "doctorRegistrationResubmitted";

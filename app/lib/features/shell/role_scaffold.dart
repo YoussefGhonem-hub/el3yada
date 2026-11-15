@@ -77,10 +77,22 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
     final shell = widget.shell;
     final location = widget.location;
     final width = MediaQuery.sizeOf(context).width;
-    final displayName = ref.watch(authControllerProvider).value?.displayName ?? '';
+    final session = ref.watch(authControllerProvider).value;
+    final displayName = session?.displayName ?? '';
+    // Items the user may not use (AD14 for a plain admin) aren't shown.
+    final visible = shell.visibleTo(session);
+    final profilePath = shell.profilePath;
     final appBar = AppBar(
       title: Text('${l10n.appTitle} · ${shell.role.label(l10n)}'),
-      actions: const [SettingsActions()],
+      actions: [
+        if (profilePath != null && session != null)
+          IconButton(
+            tooltip: l10n.adminMyProfile,
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => context.go(profilePath),
+          ),
+        const SettingsActions(),
+      ],
     );
 
     NavItem itemFor(NavDestinationSpec d, {bool bar = false}) => NavItem(
@@ -91,7 +103,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
         );
 
     if (width >= Breakpoints.desktop) {
-      final all = shell.destinations;
+      final all = visible;
       return Scaffold(
         appBar: appBar,
         body: Row(
@@ -115,9 +127,9 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
       );
     }
 
-    final primary = shell.primary;
-    final secondary = shell.secondary;
-    final hasMore = secondary.isNotEmpty;
+    final primary = visible.where((d) => d.primary).toList();
+    final secondary = visible.where((d) => !d.primary).toList();
+    final hasMore = shell.secondary.isNotEmpty;
     var index = primary.indexWhere((d) => location.startsWith(d.path));
     if (index < 0) index = hasMore ? primary.length : 0;
 

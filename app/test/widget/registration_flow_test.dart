@@ -317,7 +317,7 @@ void main() {
     await tapText(tester, 'Send for review');
 
     expect(find.text('Step 1 of 4'), findsOneWidget);
-    expect(find.text('An account with this email already exists. Sign in, or use another email.'), findsOneWidget);
+    expect(find.text('An account with this email already exists.'), findsOneWidget);
   });
 
   testWidgets('A4: a file of the wrong type is refused before upload', (tester) async {

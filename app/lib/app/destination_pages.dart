@@ -1,6 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/admin/admin_routes.dart';
+import '../features/admin/presentation/admins/admin_users_screen.dart';
+import '../features/admin/presentation/audit/audit_log_screen.dart';
+import '../features/admin/presentation/profile/admin_profile_screen.dart';
+import '../features/admin/presentation/settings/admin_settings_screen.dart';
+import '../features/admin/presentation/signups/signup_requests_screen.dart';
+import '../features/admin/presentation/signups/signup_review.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_shells.dart';
 
@@ -13,11 +20,28 @@ import '../features/shell/role_shells.dart';
 /// ```dart
 /// '/admin/signups': (_) => const SignupRequestsScreen(),
 /// ```
-final Map<String, WidgetBuilder> _destinationScreens = {};
+final Map<String, WidgetBuilder> _destinationScreens = {
+  AdminRoutes.signups: (_) => const SignupRequestsScreen(),
+  AdminRoutes.settings: (_) => const AdminSettingsScreen(),
+  AdminRoutes.admins: (_) => const AdminUsersScreen(),
+  AdminRoutes.audit: (_) => const AuditLogScreen(),
+};
 
 /// Detail routes under a destination, relative to it, for example
 /// `GoRoute(path: ':doctorId', builder: ...)` under `/admin/signups`.
-final Map<String, List<RouteBase>> _destinationRoutes = {};
+final Map<String, List<RouteBase>> _destinationRoutes = {
+  // AD3 by link (the sign-up notification); AD2 opens it in place.
+  AdminRoutes.signups: [
+    GoRoute(
+      path: ':doctorId',
+      builder: (context, state) => SignupReviewPage(doctorId: state.pathParameters['doctorId']!),
+    ),
+  ],
+  // AD18, opened from the profile button in the top bar.
+  AdminRoutes.settings: [
+    GoRoute(path: 'profile', builder: (context, state) => const AdminProfileScreen()),
+  ],
+};
 
 Widget destinationPage(BuildContext context, NavDestinationSpec destination) =>
     _destinationScreens[destination.path]?.call(context) ?? PlaceholderPage(destination: destination);

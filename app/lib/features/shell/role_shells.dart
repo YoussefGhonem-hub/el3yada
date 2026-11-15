@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/gen/app_localizations.dart';
+import '../auth/domain/auth_session.dart';
 import '../auth/domain/user_role.dart';
 
 typedef L10nLabel = String Function(AppLocalizations l10n);
@@ -15,6 +16,7 @@ class NavDestinationSpec {
     required this.screenId,
     this.primary = false,
     this.barLabel,
+    this.visibleTo,
   });
 
   final String path;
@@ -31,21 +33,36 @@ class NavDestinationSpec {
   /// Shown in the phone's bottom bar. Others go under "More" on phones and
   /// tablets. Desktop shows every item in the side menu.
   final bool primary;
+
+  /// Who sees this item; null for everyone in the role. A hidden item keeps
+  /// its route, so its screen must still refuse a user who opens the
+  /// address directly.
+  final bool Function(AuthSession session)? visibleTo;
+
+  bool isVisibleTo(AuthSession? session) => visibleTo == null || session != null && visibleTo!(session);
 }
 
 /// The area each role lands in after sign-in (spec section 7.1).
 class RoleShell {
-  RoleShell({required this.role, required this.basePath, required this.destinations});
+  RoleShell({required this.role, required this.basePath, required this.destinations, this.profilePath});
 
   final UserRole role;
   final String basePath;
   final List<NavDestinationSpec> destinations;
+
+  /// The user's own profile, opened from the account button in the top
+  /// bar. Null when the role has no such button yet.
+  final String? profilePath;
 
   String get homePath => destinations.first.path;
   String get morePath => '$basePath/more';
 
   List<NavDestinationSpec> get primary => destinations.where((d) => d.primary).toList();
   List<NavDestinationSpec> get secondary => destinations.where((d) => !d.primary).toList();
+
+  /// The items [session] may see (see [NavDestinationSpec.visibleTo]).
+  List<NavDestinationSpec> visibleTo(AuthSession? session) =>
+      destinations.where((d) => d.isVisibleTo(session)).toList();
 
   static RoleShell forRole(UserRole role) => all.firstWhere((shell) => shell.role == role);
 
@@ -98,6 +115,7 @@ class RoleShell {
   static final admin = RoleShell(
     role: UserRole.admin,
     basePath: '/admin',
+    profilePath: '/admin/settings/profile',
     destinations: [
       NavDestinationSpec(path: '/admin/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AD1', primary: true),
       NavDestinationSpec(path: '/admin/doctors', icon: Icons.medical_services_outlined, selectedIcon: Icons.medical_services, label: (l) => l.navDoctors, screenId: 'AD4', primary: true),
@@ -107,7 +125,7 @@ class RoleShell {
       NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, selectedIcon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
       NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, selectedIcon: Icons.category, label: (l) => l.navSpecialties, screenId: 'AD19'),
       NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, selectedIcon: Icons.library_books, label: (l) => l.navCatalogs, screenId: 'AD20'),
-      NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, selectedIcon: Icons.admin_panel_settings, label: (l) => l.navAdmins, screenId: 'AD14'),
+      NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, selectedIcon: Icons.admin_panel_settings, label: (l) => l.navAdmins, screenId: 'AD14', visibleTo: (s) => s.isSuperAdmin),
       NavDestinationSpec(path: '/admin/audit', icon: Icons.history, selectedIcon: Icons.history, label: (l) => l.navAuditLog, screenId: 'AD15'),
       NavDestinationSpec(path: '/admin/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AD13'),
     ],

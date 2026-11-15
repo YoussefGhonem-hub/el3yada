@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/staggered_entrance.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../auth/application/auth_controller.dart';
 import 'role_shells.dart';
 
 /// Stands in for a screen until it is built. Shows the screen ID from spec.md.
@@ -56,16 +58,18 @@ class PlaceholderPage extends StatelessWidget {
   }
 }
 
-/// "More" on phones and tablets: the items that aren't in the bottom bar.
-class MorePage extends StatelessWidget {
+/// "More" on phones and tablets: the items that aren't in the bottom bar
+/// (only those the user may see).
+class MorePage extends ConsumerWidget {
   const MorePage({super.key, required this.shell});
 
   final RoleShell shell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final items = shell.secondary;
+    final session = ref.watch(authControllerProvider).value;
+    final items = shell.secondary.where((d) => d.isVisibleTo(session)).toList();
     return StaggerGroup(
       child: ListView.builder(
         // The bottom padding includes the floating bar on phones.

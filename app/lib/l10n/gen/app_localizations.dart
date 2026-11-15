@@ -1448,18 +1448,6 @@ abstract class AppLocalizations {
   /// **', '**
   String get regListSeparator;
 
-  /// No description provided for @regErrorInvalidName.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter at least a first and a last name, in letters only.'**
-  String get regErrorInvalidName;
-
-  /// No description provided for @regErrorEmailTaken.
-  ///
-  /// In en, this message translates to:
-  /// **'An account with this email already exists. Sign in, or use another email.'**
-  String get regErrorEmailTaken;
-
   /// No description provided for @regErrorTitleRequired.
   ///
   /// In en, this message translates to:
@@ -1549,12 +1537,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter an amount from 0 to 100,000, with at most 2 decimals.'**
   String get regErrorPrice;
-
-  /// No description provided for @regErrorInvalidValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid value.'**
-  String get regErrorInvalidValue;
 
   /// No description provided for @regErrorNotEditable.
   ///
@@ -1717,6 +1699,1950 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thank you. Your email address is confirmed.'**
   String get regVerifiedBody;
+
+  /// Admin top-bar button and AD18 title.
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get adminMyProfile;
+
+  /// No description provided for @adminCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get adminCancel;
+
+  /// No description provided for @adminClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get adminClose;
+
+  /// No description provided for @adminSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get adminSave;
+
+  /// No description provided for @adminRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get adminRefresh;
+
+  /// No description provided for @adminRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t refresh. Showing the last list.'**
+  String get adminRefreshFailed;
+
+  /// Between items of a list in a sentence.
+  ///
+  /// In en, this message translates to:
+  /// **', '**
+  String get adminListSeparator;
+
+  /// No description provided for @adminNotProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'Not provided'**
+  String get adminNotProvided;
+
+  /// No description provided for @adminSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get adminSystem;
+
+  /// No description provided for @adminUnknownUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown user'**
+  String get adminUnknownUser;
+
+  /// Coral mark on a sign-up request sent in the last day.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get adminNew;
+
+  /// No description provided for @adminDoctorName.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name}'**
+  String adminDoctorName(String name);
+
+  /// No description provided for @adminJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get adminJustNow;
+
+  /// No description provided for @adminMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String adminMinutesAgo(int count);
+
+  /// No description provided for @adminHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String adminHoursAgo(int count);
+
+  /// No description provided for @adminDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String adminDaysAgo(int count);
+
+  /// No description provided for @adminMoneyEgp.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP {amount}'**
+  String adminMoneyEgp(String amount);
+
+  /// No description provided for @adminCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get adminCurrency;
+
+  /// No description provided for @adminUnitDays.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get adminUnitDays;
+
+  /// No description provided for @adminUnitMb.
+  ///
+  /// In en, this message translates to:
+  /// **'MB'**
+  String get adminUnitMb;
+
+  /// No description provided for @adminStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for review'**
+  String get adminStatusPending;
+
+  /// No description provided for @adminStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get adminStatusActive;
+
+  /// No description provided for @adminStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get adminStatusRejected;
+
+  /// No description provided for @adminStatusSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended'**
+  String get adminStatusSuspended;
+
+  /// No description provided for @adminStatusDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get adminStatusDisabled;
+
+  /// No description provided for @adminRoleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get adminRoleAdmin;
+
+  /// No description provided for @adminRoleSuperAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Super admin'**
+  String get adminRoleSuperAdmin;
+
+  /// No description provided for @adminEmptyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'(empty)'**
+  String get adminEmptyValue;
+
+  /// No description provided for @adminOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get adminOn;
+
+  /// No description provided for @adminOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get adminOff;
+
+  /// No description provided for @adminErrorOutOfRange.
+  ///
+  /// In en, this message translates to:
+  /// **'This value is out of the allowed range.'**
+  String get adminErrorOutOfRange;
+
+  /// No description provided for @adminErrorInvalidValue.
+  ///
+  /// In en, this message translates to:
+  /// **'This value isn\'t valid.'**
+  String get adminErrorInvalidValue;
+
+  /// No description provided for @adminErrorInvalidVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the version like 1.2.3.'**
+  String get adminErrorInvalidVersion;
+
+  /// No description provided for @adminErrorUnknownSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'This setting doesn\'t exist any more. Update the app.'**
+  String get adminErrorUnknownSetting;
+
+  /// No description provided for @adminErrorInvalidName.
+  ///
+  /// In en, this message translates to:
+  /// **'Write at least a first and a last name, in letters only.'**
+  String get adminErrorInvalidName;
+
+  /// No description provided for @adminErrorReasonRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the reason (at least 3 characters).'**
+  String get adminErrorReasonRequired;
+
+  /// No description provided for @adminErrorRegistrationNotPending.
+  ///
+  /// In en, this message translates to:
+  /// **'This request was already reviewed, maybe by another admin.'**
+  String get adminErrorRegistrationNotPending;
+
+  /// No description provided for @adminErrorEmailTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists.'**
+  String get adminErrorEmailTaken;
+
+  /// No description provided for @adminErrorLicenseMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The syndicate card file is missing on the server. Ask the doctor to upload it again.'**
+  String get adminErrorLicenseMissing;
+
+  /// No description provided for @adminErrorOwnRole.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t change your own role.'**
+  String get adminErrorOwnRole;
+
+  /// No description provided for @adminErrorDisableSelf.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t disable your own account.'**
+  String get adminErrorDisableSelf;
+
+  /// No description provided for @adminErrorLastSuperAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'There must always be at least one active super admin.'**
+  String get adminErrorLastSuperAdmin;
+
+  /// No description provided for @adminErrorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This item doesn\'t exist any more.'**
+  String get adminErrorNotFound;
+
+  /// No description provided for @adminErrorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to do this.'**
+  String get adminErrorForbidden;
+
+  /// No description provided for @adminErrorAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount in EGP, with at most 2 decimals.'**
+  String get adminErrorAmount;
+
+  /// No description provided for @adminErrorWholeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number.'**
+  String get adminErrorWholeNumber;
+
+  /// No description provided for @adminErrorRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a value from {min} to {max}.'**
+  String adminErrorRange(String min, String max);
+
+  /// No description provided for @adminErrorMaxLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at most {max} characters.'**
+  String adminErrorMaxLength(String max);
+
+  /// No description provided for @adminErrorInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid mobile, landline or hotline number.'**
+  String get adminErrorInvalidPhone;
+
+  /// No description provided for @adminErrorInvalidWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid mobile number (international numbers start with +).'**
+  String get adminErrorInvalidWhatsapp;
+
+  /// No description provided for @adminFixErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix the highlighted fields, then save.'**
+  String get adminFixErrors;
+
+  /// No description provided for @adminSignupsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No requests waiting} =1{1 request waiting} other{{count} requests waiting}}'**
+  String adminSignupsCount(int count);
+
+  /// No description provided for @adminSignupsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, email, mobile or number'**
+  String get adminSignupsSearchHint;
+
+  /// No description provided for @adminClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get adminClearSearch;
+
+  /// No description provided for @adminSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get adminSort;
+
+  /// No description provided for @adminSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get adminSortNewest;
+
+  /// No description provided for @adminSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first (queue order)'**
+  String get adminSortOldest;
+
+  /// No description provided for @adminSignupsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No sign-up requests waiting'**
+  String get adminSignupsEmptyTitle;
+
+  /// No description provided for @adminSignupsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New doctors\' requests show up here as soon as they register.'**
+  String get adminSignupsEmptyBody;
+
+  /// No description provided for @adminSignupsNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests match your search'**
+  String get adminSignupsNoMatchTitle;
+
+  /// No description provided for @adminSignupsNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the spelling, or search by mobile or syndicate number.'**
+  String get adminSignupsNoMatchBody;
+
+  /// No description provided for @adminSelectRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a request to review it'**
+  String get adminSelectRequest;
+
+  /// No description provided for @adminSubmittedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'sent {time}'**
+  String adminSubmittedShort(String time);
+
+  /// No description provided for @adminReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up request'**
+  String get adminReviewTitle;
+
+  /// No description provided for @adminSubmittedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent {relative} · {date}'**
+  String adminSubmittedAt(String relative, String date);
+
+  /// No description provided for @adminResubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent again'**
+  String get adminResubmitted;
+
+  /// No description provided for @adminEmailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email not confirmed'**
+  String get adminEmailNotVerified;
+
+  /// No description provided for @adminEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get adminEmailVerified;
+
+  /// No description provided for @adminPreviousRejection.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected before because'**
+  String get adminPreviousRejection;
+
+  /// No description provided for @adminSectionAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get adminSectionAccount;
+
+  /// No description provided for @adminSectionProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional details'**
+  String get adminSectionProfessional;
+
+  /// No description provided for @adminSectionBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic (first branch)'**
+  String get adminSectionBranch;
+
+  /// No description provided for @adminSectionPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit prices'**
+  String get adminSectionPrices;
+
+  /// No description provided for @adminSectionReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier reviews'**
+  String get adminSectionReviews;
+
+  /// No description provided for @adminFieldFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get adminFieldFullName;
+
+  /// No description provided for @adminFieldFullNameEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Name in English'**
+  String get adminFieldFullNameEn;
+
+  /// No description provided for @adminFieldEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get adminFieldEmail;
+
+  /// No description provided for @adminFieldMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get adminFieldMobile;
+
+  /// No description provided for @adminFieldLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get adminFieldLanguage;
+
+  /// No description provided for @adminFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get adminFieldTitle;
+
+  /// No description provided for @adminFieldTitleEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Title in English'**
+  String get adminFieldTitleEn;
+
+  /// No description provided for @adminFieldSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get adminFieldSpecialty;
+
+  /// No description provided for @adminFieldExtraSpecialties.
+  ///
+  /// In en, this message translates to:
+  /// **'Other specialties'**
+  String get adminFieldExtraSpecialties;
+
+  /// No description provided for @adminFieldLicenseNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate number'**
+  String get adminFieldLicenseNumber;
+
+  /// No description provided for @adminFieldDegreesAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Degrees (Arabic)'**
+  String get adminFieldDegreesAr;
+
+  /// No description provided for @adminFieldDegreesEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Degrees (English)'**
+  String get adminFieldDegreesEn;
+
+  /// No description provided for @adminFieldBranchName.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name'**
+  String get adminFieldBranchName;
+
+  /// No description provided for @adminFieldBranchNameEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name in English'**
+  String get adminFieldBranchNameEn;
+
+  /// No description provided for @adminFieldAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get adminFieldAddress;
+
+  /// No description provided for @adminFieldLandmark.
+  ///
+  /// In en, this message translates to:
+  /// **'Landmark'**
+  String get adminFieldLandmark;
+
+  /// No description provided for @adminFieldBranchEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic email'**
+  String get adminFieldBranchEmail;
+
+  /// No description provided for @adminFieldPhones.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone numbers'**
+  String get adminFieldPhones;
+
+  /// No description provided for @adminFieldExamPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination'**
+  String get adminFieldExamPrice;
+
+  /// No description provided for @adminFieldConsultPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get adminFieldConsultPrice;
+
+  /// No description provided for @adminAddressBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building {value}'**
+  String adminAddressBuilding(String value);
+
+  /// No description provided for @adminAddressFloor.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor {value}'**
+  String adminAddressFloor(String value);
+
+  /// No description provided for @adminAddressApartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment {value}'**
+  String adminAddressApartment(String value);
+
+  /// No description provided for @adminPhoneMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get adminPhoneMobile;
+
+  /// No description provided for @adminPhoneLandline.
+  ///
+  /// In en, this message translates to:
+  /// **'Landline'**
+  String get adminPhoneLandline;
+
+  /// No description provided for @adminPhoneReception.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception'**
+  String get adminPhoneReception;
+
+  /// No description provided for @adminOpenMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the location on the map'**
+  String get adminOpenMap;
+
+  /// No description provided for @adminReviewApprovedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved by {name}'**
+  String adminReviewApprovedBy(String name);
+
+  /// No description provided for @adminReviewRejectedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected by {name}'**
+  String adminReviewRejectedBy(String name);
+
+  /// No description provided for @adminApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get adminApprove;
+
+  /// No description provided for @adminReject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get adminReject;
+
+  /// No description provided for @adminReviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the syndicate card against the name and number before you decide.'**
+  String get adminReviewHint;
+
+  /// No description provided for @adminApproveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve Dr. {name}?'**
+  String adminApproveTitle(String name);
+
+  /// No description provided for @adminApproveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The account becomes active and the doctor is notified. They can start using el3yada right away.'**
+  String get adminApproveBody;
+
+  /// No description provided for @adminApprovedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name} is approved and can now use el3yada.'**
+  String adminApprovedMessage(String name);
+
+  /// No description provided for @adminRejectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject Dr. {name}\'s sign-up?'**
+  String adminRejectTitle(String name);
+
+  /// No description provided for @adminRejectBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor sees this reason, can correct their details and send the request again.'**
+  String get adminRejectBody;
+
+  /// No description provided for @adminRejectReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get adminRejectReasonLabel;
+
+  /// No description provided for @adminRejectPresets.
+  ///
+  /// In en, this message translates to:
+  /// **'Common reasons'**
+  String get adminRejectPresets;
+
+  /// No description provided for @adminRejectPresetLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'The syndicate card photo isn\'t clear. Upload a clearer photo.'**
+  String get adminRejectPresetLicense;
+
+  /// No description provided for @adminRejectPresetNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'The syndicate number doesn\'t match the card.'**
+  String get adminRejectPresetNumber;
+
+  /// No description provided for @adminRejectPresetBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'The clinic address or phone number is incomplete.'**
+  String get adminRejectPresetBranch;
+
+  /// No description provided for @adminRejectedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name}\'s sign-up was rejected. They\'ll see your reason.'**
+  String adminRejectedMessage(String name);
+
+  /// No description provided for @adminLicenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card'**
+  String get adminLicenseTitle;
+
+  /// No description provided for @adminLicenseSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare the name and number with the details below.'**
+  String get adminLicenseSubtitle;
+
+  /// No description provided for @adminLicenseImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card photo. Open it to zoom.'**
+  String get adminLicenseImageLabel;
+
+  /// No description provided for @adminLicenseImageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card of Dr. {name}'**
+  String adminLicenseImageOf(String name);
+
+  /// No description provided for @adminLicenseZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom'**
+  String get adminLicenseZoom;
+
+  /// No description provided for @adminLicensePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card (PDF)'**
+  String get adminLicensePdf;
+
+  /// No description provided for @adminLicenseFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get adminLicenseFile;
+
+  /// Start of the temporary file name of a downloaded license.
+  ///
+  /// In en, this message translates to:
+  /// **'license'**
+  String get adminLicenseFileName;
+
+  /// No description provided for @adminLicenseOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get adminLicenseOpen;
+
+  /// No description provided for @adminLicenseCantOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'This device can\'t open the file here. Open it from the computer app.'**
+  String get adminLicenseCantOpen;
+
+  /// No description provided for @adminFileSizeKb.
+  ///
+  /// In en, this message translates to:
+  /// **'{kb} KB'**
+  String adminFileSizeKb(int kb);
+
+  /// No description provided for @adminZoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get adminZoomIn;
+
+  /// No description provided for @adminZoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get adminZoomOut;
+
+  /// No description provided for @adminZoomReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit to screen'**
+  String get adminZoomReset;
+
+  /// No description provided for @adminSettingsLastChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Last changed by {name} · {time}'**
+  String adminSettingsLastChange(String name, String time);
+
+  /// No description provided for @adminGroupBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing'**
+  String get adminGroupBilling;
+
+  /// No description provided for @adminGroupBillingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform fees for each visit, and the payment rules.'**
+  String get adminGroupBillingBody;
+
+  /// No description provided for @adminGroupPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get adminGroupPayment;
+
+  /// No description provided for @adminGroupPaymentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Where doctors send their payments. Shown on the billing screen.'**
+  String get adminGroupPaymentBody;
+
+  /// No description provided for @adminGroupFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get adminGroupFiles;
+
+  /// No description provided for @adminGroupFilesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload limit for medical files.'**
+  String get adminGroupFilesBody;
+
+  /// No description provided for @adminGroupClinics.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinics'**
+  String get adminGroupClinics;
+
+  /// No description provided for @adminGroupClinicsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits for each doctor\'s clinic.'**
+  String get adminGroupClinicsBody;
+
+  /// No description provided for @adminGroupVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum app versions'**
+  String get adminGroupVersions;
+
+  /// No description provided for @adminGroupVersionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Older apps must be updated before they open.'**
+  String get adminGroupVersionsBody;
+
+  /// No description provided for @adminGroupMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get adminGroupMaintenance;
+
+  /// No description provided for @adminGroupMaintenanceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the app for everyone except admins, with your message.'**
+  String get adminGroupMaintenanceBody;
+
+  /// No description provided for @adminGroupSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support contact'**
+  String get adminGroupSupport;
+
+  /// No description provided for @adminGroupSupportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on the disabled, pending and maintenance screens.'**
+  String get adminGroupSupportBody;
+
+  /// No description provided for @adminGroupLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms and Privacy'**
+  String get adminGroupLegal;
+
+  /// No description provided for @adminGroupLegalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients accept these at their first sign-in. If one language is empty, the other one shows.'**
+  String get adminGroupLegalBody;
+
+  /// No description provided for @adminSettingExamFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination fee'**
+  String get adminSettingExamFee;
+
+  /// No description provided for @adminSettingConsultationFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation fee'**
+  String get adminSettingConsultationFee;
+
+  /// No description provided for @adminSettingGracePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Grace period'**
+  String get adminSettingGracePeriod;
+
+  /// No description provided for @adminSettingMaxConsultations.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultations in a row (maximum)'**
+  String get adminSettingMaxConsultations;
+
+  /// No description provided for @adminSettingInstapayAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'InstaPay address'**
+  String get adminSettingInstapayAddress;
+
+  /// No description provided for @adminSettingInstapayName.
+  ///
+  /// In en, this message translates to:
+  /// **'InstaPay account name'**
+  String get adminSettingInstapayName;
+
+  /// No description provided for @adminSettingInstapayInstructionsAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment instructions (Arabic)'**
+  String get adminSettingInstapayInstructionsAr;
+
+  /// No description provided for @adminSettingInstapayInstructionsEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment instructions (English)'**
+  String get adminSettingInstapayInstructionsEn;
+
+  /// No description provided for @adminSettingMaxUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum file size'**
+  String get adminSettingMaxUpload;
+
+  /// No description provided for @adminSettingMaxAssistants.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistants per doctor (maximum)'**
+  String get adminSettingMaxAssistants;
+
+  /// No description provided for @adminSettingMaxBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches per doctor (maximum)'**
+  String get adminSettingMaxBranches;
+
+  /// No description provided for @adminSettingVersionAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Android version'**
+  String get adminSettingVersionAndroid;
+
+  /// No description provided for @adminSettingVersionIos.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum iOS version'**
+  String get adminSettingVersionIos;
+
+  /// No description provided for @adminSettingVersionWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Windows version'**
+  String get adminSettingVersionWindows;
+
+  /// No description provided for @adminSettingVersionMacos.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum macOS version'**
+  String get adminSettingVersionMacos;
+
+  /// No description provided for @adminSettingMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance mode'**
+  String get adminSettingMaintenance;
+
+  /// No description provided for @adminSettingMaintenanceMessageAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance message (Arabic)'**
+  String get adminSettingMaintenanceMessageAr;
+
+  /// No description provided for @adminSettingMaintenanceMessageEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance message (English)'**
+  String get adminSettingMaintenanceMessageEn;
+
+  /// No description provided for @adminSettingSupportPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Support phone'**
+  String get adminSettingSupportPhone;
+
+  /// No description provided for @adminSettingSupportWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'Support WhatsApp'**
+  String get adminSettingSupportWhatsapp;
+
+  /// No description provided for @adminSettingSupportEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Support email'**
+  String get adminSettingSupportEmail;
+
+  /// No description provided for @adminSettingTermsAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use (Arabic)'**
+  String get adminSettingTermsAr;
+
+  /// No description provided for @adminSettingTermsEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of use (English)'**
+  String get adminSettingTermsEn;
+
+  /// No description provided for @adminSettingPrivacyAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy (Arabic)'**
+  String get adminSettingPrivacyAr;
+
+  /// No description provided for @adminSettingPrivacyEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy (English)'**
+  String get adminSettingPrivacyEn;
+
+  /// No description provided for @adminRangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From {min} to {max}'**
+  String adminRangeHint(String min, String max);
+
+  /// No description provided for @adminVersionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Like 1.2.0'**
+  String get adminVersionHint;
+
+  /// No description provided for @adminPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile, landline or hotline'**
+  String get adminPhoneHint;
+
+  /// No description provided for @adminWhatsappHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Egyptian number, or international starting with +'**
+  String get adminWhatsappHint;
+
+  /// No description provided for @adminAppliesToNewSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to new sessions only'**
+  String get adminAppliesToNewSessions;
+
+  /// No description provided for @adminAppliesToNewInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to new invoices only'**
+  String get adminAppliesToNewInvoices;
+
+  /// No description provided for @adminWasValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved value: {value}'**
+  String adminWasValue(String value);
+
+  /// No description provided for @adminCharacterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / {max}'**
+  String adminCharacterCount(String count, String max);
+
+  /// No description provided for @adminFieldHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Change history: {field}'**
+  String adminFieldHistory(String field);
+
+  /// No description provided for @adminMaintenanceOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On: everyone except admins sees the maintenance screen.'**
+  String get adminMaintenanceOn;
+
+  /// No description provided for @adminMaintenanceOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: the app is open for everyone.'**
+  String get adminMaintenanceOff;
+
+  /// No description provided for @adminMaintenanceWillStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance starts as soon as you save.'**
+  String get adminMaintenanceWillStart;
+
+  /// No description provided for @adminMaintenanceWillEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'The app opens for everyone as soon as you save.'**
+  String get adminMaintenanceWillEnd;
+
+  /// No description provided for @adminUnsavedChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 change not saved} other{{count} changes not saved}}'**
+  String adminUnsavedChanges(int count);
+
+  /// No description provided for @adminAllSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'All changes saved'**
+  String get adminAllSaved;
+
+  /// No description provided for @adminDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get adminDiscard;
+
+  /// No description provided for @adminDiscardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard your changes?'**
+  String get adminDiscardTitle;
+
+  /// No description provided for @adminDiscardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Your change hasn\'t been saved and will be lost.} other{Your {count} changes haven\'t been saved and will be lost.}}'**
+  String adminDiscardBody(int count);
+
+  /// No description provided for @adminSettingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 setting saved} other{{count} settings saved}}'**
+  String adminSettingsSaved(int count);
+
+  /// No description provided for @adminHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change history'**
+  String get adminHistoryTitle;
+
+  /// No description provided for @adminHistoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All settings'**
+  String get adminHistoryAll;
+
+  /// No description provided for @adminHistoryEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes yet'**
+  String get adminHistoryEmptyTitle;
+
+  /// No description provided for @adminHistoryEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every saved change shows here, with who made it.'**
+  String get adminHistoryEmptyBody;
+
+  /// No description provided for @adminHistoryChangedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {time}'**
+  String adminHistoryChangedBy(String name, String time);
+
+  /// No description provided for @adminHistoryChangedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'changed to'**
+  String get adminHistoryChangedTo;
+
+  /// No description provided for @adminHistoryBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Before'**
+  String get adminHistoryBefore;
+
+  /// No description provided for @adminHistoryAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'After'**
+  String get adminHistoryAfter;
+
+  /// No description provided for @adminHistoryShowFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the full text'**
+  String get adminHistoryShowFull;
+
+  /// No description provided for @adminAdminsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins: {count} · Active super admins: {superAdmins}'**
+  String adminAdminsCount(int count, int superAdmins);
+
+  /// No description provided for @adminAdminsRestricted.
+  ///
+  /// In en, this message translates to:
+  /// **'Only super admins can manage admins.'**
+  String get adminAdminsRestricted;
+
+  /// No description provided for @adminAddAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Add admin'**
+  String get adminAddAdmin;
+
+  /// No description provided for @adminAddAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They get a temporary password and choose their own at their first sign-in.'**
+  String get adminAddAdminBody;
+
+  /// No description provided for @adminRoleAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything except managing admins.'**
+  String get adminRoleAdminBody;
+
+  /// No description provided for @adminRoleSuperAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything, including adding admins and changing their roles.'**
+  String get adminRoleSuperAdminBody;
+
+  /// No description provided for @adminColumnName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get adminColumnName;
+
+  /// No description provided for @adminColumnRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get adminColumnRole;
+
+  /// No description provided for @adminColumnStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get adminColumnStatus;
+
+  /// No description provided for @adminColumnLastSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sign-in'**
+  String get adminColumnLastSignIn;
+
+  /// No description provided for @adminPasswordNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Hasn\'t set a password'**
+  String get adminPasswordNotSet;
+
+  /// No description provided for @adminNeverSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get adminNeverSignedIn;
+
+  /// No description provided for @adminLastSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sign-in: {time}'**
+  String adminLastSignIn(String time);
+
+  /// No description provided for @adminYouSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (you)'**
+  String adminYouSuffix(String name);
+
+  /// No description provided for @adminThatsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s you. Another super admin can change your account.'**
+  String get adminThatsYou;
+
+  /// No description provided for @adminActionsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions for {name}'**
+  String adminActionsFor(String name);
+
+  /// No description provided for @adminMakeSuper.
+  ///
+  /// In en, this message translates to:
+  /// **'Make super admin'**
+  String get adminMakeSuper;
+
+  /// No description provided for @adminMakeAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Make admin'**
+  String get adminMakeAdmin;
+
+  /// No description provided for @adminMakeSuperTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {name} a super admin?'**
+  String adminMakeSuperTitle(String name);
+
+  /// No description provided for @adminMakeSuperBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'ll be able to add admins, change roles and disable admins.'**
+  String get adminMakeSuperBody;
+
+  /// No description provided for @adminMakeAdminTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {name} an admin?'**
+  String adminMakeAdminTitle(String name);
+
+  /// No description provided for @adminMakeAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'ll no longer manage admins. The change takes effect right away.'**
+  String get adminMakeAdminBody;
+
+  /// No description provided for @adminRoleChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s role was changed.'**
+  String adminRoleChanged(String name);
+
+  /// No description provided for @adminDisable.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable'**
+  String get adminDisable;
+
+  /// No description provided for @adminEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get adminEnable;
+
+  /// No description provided for @adminDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable {name}?'**
+  String adminDisableTitle(String name);
+
+  /// No description provided for @adminDisableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out everywhere at once and can\'t sign in until you enable them again.'**
+  String get adminDisableBody;
+
+  /// No description provided for @adminEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable {name}?'**
+  String adminEnableTitle(String name);
+
+  /// No description provided for @adminEnableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They can sign in again with their password.'**
+  String get adminEnableBody;
+
+  /// No description provided for @adminDisabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was disabled.'**
+  String adminDisabledMessage(String name);
+
+  /// No description provided for @adminEnabledMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was enabled.'**
+  String adminEnabledMessage(String name);
+
+  /// No description provided for @adminNotAllowedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not allowed'**
+  String get adminNotAllowedTitle;
+
+  /// No description provided for @adminCreatedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was added'**
+  String adminCreatedTitle(String name);
+
+  /// No description provided for @adminPasswordOnceWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy this temporary password now. It\'s shown only once and can\'t be shown again. Share it with them privately.'**
+  String get adminPasswordOnceWarning;
+
+  /// No description provided for @adminTemporaryPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary password'**
+  String get adminTemporaryPassword;
+
+  /// No description provided for @adminCopyPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy password'**
+  String get adminCopyPassword;
+
+  /// No description provided for @adminCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get adminCopied;
+
+  /// No description provided for @adminPasswordNextStep.
+  ///
+  /// In en, this message translates to:
+  /// **'They sign in with {email} and this password, then choose their own password.'**
+  String adminPasswordNextStep(String email);
+
+  /// No description provided for @adminAuditCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No entries} =1{1 entry} other{{count} entries}}'**
+  String adminAuditCount(int count);
+
+  /// No description provided for @adminAuditEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet'**
+  String get adminAuditEmptyTitle;
+
+  /// No description provided for @adminAuditNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries match these filters'**
+  String get adminAuditNoMatchTitle;
+
+  /// No description provided for @adminAuditNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a longer date range or clear some filters.'**
+  String get adminAuditNoMatchBody;
+
+  /// No description provided for @adminAuditEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s everything.'**
+  String get adminAuditEnd;
+
+  /// No description provided for @adminClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get adminClearFilters;
+
+  /// No description provided for @adminClearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get adminClearFilter;
+
+  /// No description provided for @adminFilterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Action'**
+  String get adminFilterAction;
+
+  /// No description provided for @adminFilterAllActions.
+  ///
+  /// In en, this message translates to:
+  /// **'All actions'**
+  String get adminFilterAllActions;
+
+  /// No description provided for @adminFilterWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who'**
+  String get adminFilterWho;
+
+  /// No description provided for @adminFilterEveryone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone'**
+  String get adminFilterEveryone;
+
+  /// No description provided for @adminFilterTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get adminFilterTarget;
+
+  /// No description provided for @adminFilterAllTargets.
+  ///
+  /// In en, this message translates to:
+  /// **'All targets'**
+  String get adminFilterAllTargets;
+
+  /// No description provided for @adminFilterDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Any date'**
+  String get adminFilterDates;
+
+  /// No description provided for @adminFilterBy.
+  ///
+  /// In en, this message translates to:
+  /// **'By {name}'**
+  String adminFilterBy(String name);
+
+  /// No description provided for @adminDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} – {to}'**
+  String adminDateRange(String from, String to);
+
+  /// No description provided for @adminColumnWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get adminColumnWhen;
+
+  /// No description provided for @adminColumnWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who'**
+  String get adminColumnWho;
+
+  /// No description provided for @adminColumnWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What'**
+  String get adminColumnWhat;
+
+  /// No description provided for @adminColumnTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target'**
+  String get adminColumnTarget;
+
+  /// No description provided for @adminTargetDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get adminTargetDoctor;
+
+  /// No description provided for @adminTargetUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get adminTargetUser;
+
+  /// No description provided for @adminTargetSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get adminTargetSettings;
+
+  /// No description provided for @adminDetailFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings changed'**
+  String get adminDetailFields;
+
+  /// No description provided for @adminDetailChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'How'**
+  String get adminDetailChannel;
+
+  /// No description provided for @adminChannelEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email link'**
+  String get adminChannelEmail;
+
+  /// No description provided for @adminChannelDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Through the doctor'**
+  String get adminChannelDoctor;
+
+  /// No description provided for @adminEntryNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get adminEntryNumber;
+
+  /// No description provided for @adminOnlyThisPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this person'**
+  String get adminOnlyThisPerson;
+
+  /// No description provided for @adminOnlyThisRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this target'**
+  String get adminOnlyThisRecord;
+
+  /// No description provided for @adminOpenRegistration.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the sign-up request'**
+  String get adminOpenRegistration;
+
+  /// No description provided for @adminCopyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy details'**
+  String get adminCopyDetails;
+
+  /// No description provided for @adminCopiedDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details copied'**
+  String get adminCopiedDetails;
+
+  /// No description provided for @adminAuditRegistrationSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent a sign-up request'**
+  String get adminAuditRegistrationSubmitted;
+
+  /// No description provided for @adminAuditRegistrationResubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent the sign-up request again after a rejection'**
+  String get adminAuditRegistrationResubmitted;
+
+  /// No description provided for @adminAuditRegistrationApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved a doctor\'s sign-up'**
+  String get adminAuditRegistrationApproved;
+
+  /// No description provided for @adminAuditRegistrationRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected a doctor\'s sign-up'**
+  String get adminAuditRegistrationRejected;
+
+  /// No description provided for @adminAuditLicenseViewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewed a doctor\'s syndicate card'**
+  String get adminAuditLicenseViewed;
+
+  /// No description provided for @adminAuditAdminSeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Created the first super admin'**
+  String get adminAuditAdminSeeded;
+
+  /// No description provided for @adminAuditAdminCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added an admin ({role})'**
+  String adminAuditAdminCreated(String role);
+
+  /// No description provided for @adminAuditAdminRoleChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed an admin\'s role from {before} to {after}'**
+  String adminAuditAdminRoleChanged(String before, String after);
+
+  /// No description provided for @adminAuditAdminDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled an admin'**
+  String get adminAuditAdminDisabled;
+
+  /// No description provided for @adminAuditAdminEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled an admin'**
+  String get adminAuditAdminEnabled;
+
+  /// No description provided for @adminAuditProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated their profile'**
+  String get adminAuditProfileUpdated;
+
+  /// No description provided for @adminAuditSettingsUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed settings: {fields}'**
+  String adminAuditSettingsUpdated(String fields);
+
+  /// No description provided for @adminAuditPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a new password'**
+  String get adminAuditPasswordSet;
+
+  /// No description provided for @adminAuditPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed their password'**
+  String get adminAuditPasswordChanged;
+
+  /// No description provided for @adminAuditResetRequestedEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked for a password reset by email'**
+  String get adminAuditResetRequestedEmail;
+
+  /// No description provided for @adminAuditResetRequestedDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked their doctor for a password reset'**
+  String get adminAuditResetRequestedDoctor;
+
+  /// No description provided for @adminAuditPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset a password with the email link'**
+  String get adminAuditPasswordReset;
+
+  /// No description provided for @adminAuditLockedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked an account for 15 minutes after wrong passwords'**
+  String get adminAuditLockedOut;
+
+  /// No description provided for @adminAuditTokenReuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended a session: a sign-in token was used twice'**
+  String get adminAuditTokenReuse;
+
+  /// No description provided for @adminAuditEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed their email'**
+  String get adminAuditEmailVerified;
+
+  /// No description provided for @adminActionRegistrationSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up sent'**
+  String get adminActionRegistrationSubmitted;
+
+  /// No description provided for @adminActionRegistrationResubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up sent again'**
+  String get adminActionRegistrationResubmitted;
+
+  /// No description provided for @adminActionRegistrationApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up approved'**
+  String get adminActionRegistrationApproved;
+
+  /// No description provided for @adminActionRegistrationRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up rejected'**
+  String get adminActionRegistrationRejected;
+
+  /// No description provided for @adminActionLicenseViewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Syndicate card viewed'**
+  String get adminActionLicenseViewed;
+
+  /// No description provided for @adminActionAdminSeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'First super admin created'**
+  String get adminActionAdminSeeded;
+
+  /// No description provided for @adminActionAdminCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin added'**
+  String get adminActionAdminCreated;
+
+  /// No description provided for @adminActionAdminRoleChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin role changed'**
+  String get adminActionAdminRoleChanged;
+
+  /// No description provided for @adminActionAdminDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin disabled'**
+  String get adminActionAdminDisabled;
+
+  /// No description provided for @adminActionAdminEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin enabled'**
+  String get adminActionAdminEnabled;
+
+  /// No description provided for @adminActionProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get adminActionProfileUpdated;
+
+  /// No description provided for @adminActionSettingsUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings changed'**
+  String get adminActionSettingsUpdated;
+
+  /// No description provided for @adminActionPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Password set'**
+  String get adminActionPasswordSet;
+
+  /// No description provided for @adminActionPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed'**
+  String get adminActionPasswordChanged;
+
+  /// No description provided for @adminActionResetRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset requested'**
+  String get adminActionResetRequested;
+
+  /// No description provided for @adminActionPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset'**
+  String get adminActionPasswordReset;
+
+  /// No description provided for @adminActionLockedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Account locked'**
+  String get adminActionLockedOut;
+
+  /// No description provided for @adminActionTokenReuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in token reused'**
+  String get adminActionTokenReuse;
+
+  /// No description provided for @adminActionEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email confirmed'**
+  String get adminActionEmailVerified;
+
+  /// No description provided for @adminProfileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account, language and appearance, and password.'**
+  String get adminProfileSubtitle;
+
+  /// No description provided for @adminProfileAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get adminProfileAccount;
+
+  /// No description provided for @adminEditName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit name'**
+  String get adminEditName;
+
+  /// No description provided for @adminMemberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin since'**
+  String get adminMemberSince;
+
+  /// No description provided for @adminNameSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Name saved'**
+  String get adminNameSaved;
+
+  /// No description provided for @adminPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Language and appearance'**
+  String get adminPreferences;
+
+  /// No description provided for @adminPreferencesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this device and on your account.'**
+  String get adminPreferencesBody;
+
+  /// No description provided for @adminLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get adminLanguage;
+
+  /// No description provided for @adminChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get adminChangePassword;
+
+  /// No description provided for @adminChangePasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your other devices are signed out when you change it.'**
+  String get adminChangePasswordBody;
+
+  /// No description provided for @adminCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get adminCurrentPassword;
+
+  /// No description provided for @adminPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed. Your other devices were signed out.'**
+  String get adminPasswordChanged;
+
+  /// No description provided for @adminLogoutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out of el3yada on this device.'**
+  String get adminLogoutBody;
 }
 
 class _AppLocalizationsDelegate

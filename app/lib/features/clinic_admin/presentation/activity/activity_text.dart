@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/format/app_format.dart';
 import '../../../../l10n/gen/app_localizations.dart';
+import '../../../patients/clinic_paths.dart';
 import '../../clinic_admin_routes.dart';
 import '../../domain/activity_models.dart';
 import '../assistants/assistant_text.dart';
@@ -192,10 +193,15 @@ IconData activityIcon(String action) => switch (action) {
     };
 
 /// Where a row opens (spec D27 "tap opens the related item"), or null.
-/// Patients and sessions open once their screens land (D6, D9).
+/// D27 is the doctor's, so patients and visits open under `/doctor`. A
+/// deleted visit opens its patient.
 String? activityTargetPath(ActivityEntry entry) {
   final id = entry.targetId;
+  final patientId = entry.patient?.id;
   return switch ((entry.targetType, entry.action)) {
+    ('patient', _) when id != null => ClinicPaths.doctor.patient(id),
+    ('session', 'sessionDeleted') when patientId != null => ClinicPaths.doctor.patient(patientId),
+    ('session', _) when id != null && patientId != null => ClinicPaths.doctor.patientSession(patientId, id),
     ('branch', _) when id != null => ClinicAdminRoutes.branch(id),
     ('assistant', _) when id != null => ClinicAdminRoutes.assistant(id),
     ('doctor', 'pricesUpdated') => ClinicAdminRoutes.doctorPrices,

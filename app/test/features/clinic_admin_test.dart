@@ -490,4 +490,19 @@ void main() {
       expect(humanizeAction('assistantPermissionsChanged'), 'assistant permissions changed');
     });
   });
+
+  test('D27 rows open their patient or visit (a deleted visit opens the patient)', () {
+    ActivityEntry row(String type, String action, String? target) => ActivityEntry(
+          id: 1,
+          at: DateTime.utc(2026, 11, 15),
+          actor: const ActivityActor(userId: 'd1', name: 'Ahmed', role: 'doctor'),
+          action: action,
+          targetType: type,
+          targetId: target,
+          patient: const ActivityPatient(id: 'p1'),
+        );
+    expect(activityTargetPath(row('patient', 'patientCreated', 'p1')), '/doctor/patients/p1');
+    expect(activityTargetPath(row('session', 'sessionCreated', 's1')), '/doctor/patients/p1/sessions/s1');
+    expect(activityTargetPath(row('session', 'sessionDeleted', 's1')), '/doctor/patients/p1');
+  });
 }

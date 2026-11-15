@@ -104,7 +104,12 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
     final profilePath = shell.profilePath;
     final languageCode = Localizations.localeOf(context).languageCode;
     final appBar = AppBar(
-      title: Text(clinicTitle(l10n, languageCode, clinic) ?? '${l10n.appTitle} · ${shell.role.label(l10n)}'),
+      // Phones drop the role from the title, so it fits next to the branch picker.
+      title: Text(
+        clinicTitle(l10n, languageCode, clinic) ??
+            (width < Breakpoints.tablet ? l10n.appTitle : '${l10n.appTitle} · ${shell.role.label(l10n)}'),
+        overflow: TextOverflow.ellipsis,
+      ),
       actions: [
         if (_isClinic) BranchPicker(compact: width < Breakpoints.tablet),
         if (profilePath != null && session != null)

@@ -218,6 +218,8 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Screenshots:** `EL3YADA_SCREENSHOTS=1 flutter test test/screenshots` now writes every Phase 2 screen too (314 images).
 
+**Contract test:** `flutter test test/contract` (off by default; how to run it is at the top of `api_contract_test.dart`) now also runs one clinic day through the app's real Phase 2 repositories against a running API: sign-up and approval, branches, prices, patients, sessions, fees, a reception assistant, and the activity log. It passed on 16 Nov with no mismatches. Not covered yet: linking a patient from another clinic, a suspended doctor, `BRANCH_HAS_BOOKINGS`, and the app's own client (token refresh, reloading the clinic after a refusal).
+
 **Tables:** Patients, DoctorPatients, PatientMedicalProfileItems, Sessions, SessionPrivateNotes, DailyStats, MonthlyStats, Branches, BranchPhones, BranchPeriods, PriceHistory, Assistants, AssistantBranches, AuditLogs, Notifications (rows only; delivery comes in Phase 5).
 
 **Done when:** AC-1, AC-2, AC-3, AC-4, AC-5, AC-10, AC-11, AC-19 and the branch parts of AC-20 pass.

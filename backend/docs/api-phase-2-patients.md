@@ -640,7 +640,7 @@ Every write adds an `AuditLogs` row with the clinic's `doctorId`, the actor (doc
 | `patientPhoneChanged` | patient | |
 | `patientPasswordReset` | patient | |
 | `patientArchived`, `patientUnarchived` | patient | |
-| `patientMedicalProfileUpdated` | patient | `fields` (list names), `added`, `removed` (item counts) |
+| `patientMedicalProfileUpdated` | patient | `fields`: what changed, from `allergies`, `chronicDiseases`, `currentMedications`, `surgeries`, `familyHistory`, `notes`; `added`, `removed` (item counts). Saving the same profile again writes no row. |
 | `sessionCreated` | session | `type`, `branchId`, `feePiasters`, `awaitingDoctor` |
 | `sessionClinicalUpdated` | session | `fields` (names, `vitals.tempC` …) |
 | `sessionPrivateNoteUpdated` | session | `cleared` |

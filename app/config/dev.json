@@ -1,0 +1,5 @@
+{
+  "APP_ENV": "dev",
+  "API_BASE_URL": "https://localhost:7001",
+  "USE_FAKE_AUTH": true
+}

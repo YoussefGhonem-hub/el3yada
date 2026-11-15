@@ -9,6 +9,12 @@ public partial class RefreshToken
 
     public Guid UserId { get; set; }
 
+    /// <summary>
+    /// The sign-in this token belongs to. Every token made by rotating it keeps the same family,
+    /// so a rotated token that comes back can revoke the whole chain at once.
+    /// </summary>
+    public Guid FamilyId { get; set; }
+
     public string? DeviceId { get; set; }
 
     public byte[] TokenHash { get; set; } = null!;

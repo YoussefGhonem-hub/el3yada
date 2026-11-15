@@ -470,8 +470,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.WaitRedMinutes).HasDefaultValue(40);
             entity.Property(e => e.WindowDays).HasDefaultValue(30);
 
-            entity.HasOne(d => d.Doctor).WithOne(p => p.Branch)
-                .HasForeignKey<Branch>(d => d.DoctorId)
+            // One doctor has many branches (BR-BR1). The scaffolder read the filtered unique index
+            // UQ_Branches_OneDefault as a one-to-one, which would stop a second branch being added.
+            entity.HasOne(d => d.Doctor).WithMany(p => p.Branches)
+                .HasForeignKey(d => d.DoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Branches_DoctorId");
         });
@@ -1566,6 +1568,9 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UserId, "IX_RefreshTokens_User_Active").HasFilter("([RevokedAt] IS NULL)");
 
             entity.HasIndex(e => e.TokenHash, "UQ_RefreshTokens_TokenHash").IsUnique();
+
+            // Reuse of a rotated token revokes the whole family in one statement.
+            entity.HasIndex(e => e.FamilyId, "IX_RefreshTokens_FamilyId");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");
             entity.Property(e => e.CreatedAt)

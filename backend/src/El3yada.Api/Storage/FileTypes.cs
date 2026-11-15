@@ -9,7 +9,7 @@ public static class FileTypes
     public const string Pdf = "application/pdf";
 
     /// <summary>Bytes needed to check every signature below (WebP: "RIFF", size, "WEBP").</summary>
-    internal const int SignatureLength = 12;
+    public const int SignatureLength = 12;
 
     private static readonly Dictionary<string, string> ExtensionByType = new(StringComparer.Ordinal)
     {
@@ -50,6 +50,24 @@ public static class FileTypes
             : throw new FileStorageException(ErrorCodes.FileTypeNotAllowed, "Only JPEG, PNG, WebP and PDF files are accepted.");
 
     internal static string? TypeForExtension(string extension) => TypeByExtension.GetValueOrDefault(extension);
+
+    /// <summary>
+    /// The accepted type whose signature the first bytes carry (at least <see cref="SignatureLength"/> bytes),
+    /// or null. Upload endpoints use it instead of the part's Content-Type, which clients often send as
+    /// application/octet-stream.
+    /// </summary>
+    public static string? Detect(ReadOnlySpan<byte> header)
+    {
+        foreach (var type in ExtensionByType.Keys)
+        {
+            if (HasSignature(type, header))
+            {
+                return type;
+            }
+        }
+
+        return null;
+    }
 
     /// <summary>True when the first bytes are the signature of the type, so a renamed file is refused.</summary>
     internal static bool HasSignature(string contentType, ReadOnlySpan<byte> header) => contentType switch

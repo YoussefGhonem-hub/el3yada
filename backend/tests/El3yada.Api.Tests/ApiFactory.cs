@@ -21,6 +21,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         {
             ["Jwt:SigningKey"] = "test-only-signing-key-0123456789abcdef",
             ["Storage:RootPath"] = Path.Combine(TempRoot, "files"),
+            ["Email:PickupDirectory"] = Path.Combine(TempRoot, "mail"),
             ["Serilog:MinimumLevel:Default"] = "Warning",
             ["Serilog:WriteTo:File:Args:path"] = Path.Combine(TempRoot, "logs", "api-.log"),
         }));

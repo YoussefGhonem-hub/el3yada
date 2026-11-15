@@ -94,11 +94,74 @@ public class OptionsTests
     [Fact]
     public void Production_needs_an_absolute_storage_path()
     {
-        var settings = ValidSettings();
+        var settings = ProductionEmail(ValidSettings());
 
         Assert.Contains("Storage:RootPath", Fails(settings, Environments.Production).Message);
 
         settings["Storage:RootPath"] = Path.Combine(Path.GetTempPath(), "el3yada-files");
         ValidateOnStart(settings, Environments.Production).Dispose();
+    }
+
+    [Fact]
+    public void Production_needs_smtp_with_a_host()
+    {
+        var settings = ValidSettings();
+        settings["Storage:RootPath"] = Path.Combine(Path.GetTempPath(), "el3yada-files");
+
+        Assert.Contains("Email:Delivery", Fails(settings, Environments.Production).Message);
+
+        settings["Email:Delivery"] = "Smtp";
+        Assert.Contains("Email:Smtp:Host", Fails(settings, Environments.Production).Message);
+
+        ValidateOnStart(ProductionEmail(settings), Environments.Production).Dispose();
+    }
+
+    [Theory]
+    [InlineData("Email:ResetPasswordUrl", "not a link")]
+    [InlineData("Email:ResetPasswordUrl", "https://el3yada.app/reset?x=1")]
+    [InlineData("Email:FromAddress", "")]
+    [InlineData("Auth:MaxFailedLogins", "0")]
+    [InlineData("RateLimits:LoginPerMinute", "0")]
+    public void Bad_auth_email_and_rate_limit_settings_stop_the_start(string key, string value)
+    {
+        var settings = ValidSettings();
+        settings[key] = value;
+
+        Fails(settings);
+    }
+
+    [Fact]
+    public void Defaults_for_auth_and_rate_limits()
+    {
+        using var services = ValidateOnStart(ValidSettings());
+
+        var auth = services.GetRequiredService<IOptions<AuthOptions>>().Value;
+        Assert.Equal(5, auth.MaxFailedLogins);
+        Assert.Equal(15, auth.LockoutMinutes);
+        Assert.Equal(60, auth.PasswordResetTokenMinutes);
+        var limits = services.GetRequiredService<IOptions<RateLimitOptions>>().Value;
+        Assert.Equal(10, limits.LoginPerMinute);
+        Assert.Equal(5, limits.PasswordResetPer15Minutes);
+        Assert.Equal(EmailDelivery.Pickup, services.GetRequiredService<IOptions<EmailOptions>>().Value.Delivery);
+    }
+
+    [Fact]
+    public void Production_needs_real_email_links_and_sender()
+    {
+        var settings = ProductionEmail(ValidSettings());
+        settings["Storage:RootPath"] = Path.Combine(Path.GetTempPath(), "el3yada-files");
+        settings["Email:ResetPasswordUrl"] = "https://localhost:7001/reset-password";
+
+        Assert.Contains("Email__ResetPasswordUrl", Fails(settings, Environments.Production).Message);
+    }
+
+    private static Dictionary<string, string?> ProductionEmail(Dictionary<string, string?> settings)
+    {
+        settings["Email:Delivery"] = "Smtp";
+        settings["Email:Smtp:Host"] = "smtp.example.com";
+        settings["Email:FromAddress"] = "no-reply@example.com";
+        settings["Email:ResetPasswordUrl"] = "https://app.example.com/reset-password";
+        settings["Email:VerifyEmailUrl"] = "https://app.example.com/verify-email";
+        return settings;
     }
 }

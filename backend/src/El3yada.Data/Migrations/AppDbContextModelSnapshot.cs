@@ -3092,6 +3092,9 @@ namespace El3yada.Data.Migrations
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
 
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("ReplacedByTokenId")
                         .HasColumnType("uniqueidentifier");
 
@@ -3109,6 +3112,8 @@ namespace El3yada.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "FamilyId" }, "IX_RefreshTokens_FamilyId");
 
                     b.HasIndex(new[] { "UserId" }, "IX_RefreshTokens_User_Active")
                         .HasFilter("([RevokedAt] IS NULL)");
@@ -3813,8 +3818,8 @@ namespace El3yada.Data.Migrations
             modelBuilder.Entity("El3yada.Data.Entities.Branch", b =>
                 {
                     b.HasOne("El3yada.Data.Entities.Doctor", "Doctor")
-                        .WithOne("Branch")
-                        .HasForeignKey("El3yada.Data.Entities.Branch", "DoctorId")
+                        .WithMany("Branches")
+                        .HasForeignKey("DoctorId")
                         .IsRequired()
                         .HasConstraintName("FK_Branches_DoctorId");
 
@@ -4711,9 +4716,9 @@ namespace El3yada.Data.Migrations
 
                     b.Navigation("AuditLogs");
 
-                    b.Navigation("Branch");
-
                     b.Navigation("BranchClosures");
+
+                    b.Navigation("Branches");
 
                     b.Navigation("CatalogReports");
 

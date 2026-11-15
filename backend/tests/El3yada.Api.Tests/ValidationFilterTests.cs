@@ -62,6 +62,7 @@ public sealed class SampleRequestValidator : AbstractValidator<SampleRequest>
 
 [ApiController]
 [Route("test/sample")]
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
 public sealed class SampleController : ControllerBase
 {
     // No validation code here: ValidationFilter runs SampleRequestValidator first.

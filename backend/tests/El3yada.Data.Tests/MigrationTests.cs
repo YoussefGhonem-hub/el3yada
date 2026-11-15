@@ -67,6 +67,36 @@ public class MigrationTests(MigratedDatabase database) : IClassFixture<MigratedD
     }
 
     [Fact]
+    public async Task Audit_rows_get_their_id_from_the_identity_column()
+    {
+        await using var db = database.CreateContext();
+        var first = new AuditLog { ActorRole = "system", Action = "test", TargetType = "user", At = DateTime.UtcNow };
+        var second = new AuditLog { ActorRole = "system", Action = "test", TargetType = "user", At = DateTime.UtcNow };
+        db.AuditLogs.AddRange(first, second);
+
+        await db.SaveChangesAsync();
+
+        Assert.True(first.Id > 0);
+        Assert.True(second.Id > first.Id);
+    }
+
+    [Fact]
+    public async Task A_doctor_can_have_more_than_one_branch()
+    {
+        var firstBranch = await CreateBranchAsync(_ => { });
+        await using var db = database.CreateContext();
+        var doctorId = await db.Branches.Where(b => b.Id == firstBranch).Select(b => b.DoctorId).SingleAsync();
+        db.Branches.Add(new Branch
+        {
+            Id = Guid.NewGuid(), DoctorId = doctorId, NameAr = "فرع مدينة نصر", Governorate = "القاهرة", City = "مدينة نصر", Street = "عباس العقاد",
+        });
+
+        await db.SaveChangesAsync();
+
+        Assert.Equal(2, await db.Branches.CountAsync(b => b.DoctorId == doctorId));
+    }
+
+    [Fact]
     public async Task Database_rejects_an_assistant_permission_without_its_dependency()
     {
         await using var db = database.CreateContext();

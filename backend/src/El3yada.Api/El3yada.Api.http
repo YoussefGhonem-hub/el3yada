@@ -1,6 +1,69 @@
 @El3yada.Api_HostAddress = https://localhost:7001
 
+# Run in order. Paste the accessToken and refreshToken from the login answer below.
+@accessToken = paste-here
+@refreshToken = paste-here
+
 GET {{El3yada.Api_HostAddress}}/api/health
 Accept: application/json
+
+###
+
+GET {{El3yada.Api_HostAddress}}/api/settings/public
+Accept: application/json
+
+###
+
+GET {{El3yada.Api_HostAddress}}/api/specialties
+Accept: application/json
+
+###
+
+# The super admin from `dotnet run --project src/El3yada.Api -- seed-admin <email>`.
+POST {{El3yada.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "identifier": "admin@el3yada.dev",
+  "password": "temporary-password-printed-by-seed-admin",
+  "device": { "deviceId": "rest-client", "platform": "windows", "appVersion": "0.1.0" }
+}
+
+###
+
+GET {{El3yada.Api_HostAddress}}/api/auth/me
+Authorization: Bearer {{accessToken}}
+
+###
+
+POST {{El3yada.Api_HostAddress}}/api/auth/setNewPassword
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "newPassword": "MyNewPassw0rd" }
+
+###
+
+POST {{El3yada.Api_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{ "refreshToken": "{{refreshToken}}" }
+
+###
+
+GET {{El3yada.Api_HostAddress}}/api/admin/doctorRegistrations
+Authorization: Bearer {{accessToken}}
+
+###
+
+GET {{El3yada.Api_HostAddress}}/api/admin/settings
+Authorization: Bearer {{accessToken}}
+
+###
+
+POST {{El3yada.Api_HostAddress}}/api/auth/logout
+Content-Type: application/json
+
+{ "refreshToken": "{{refreshToken}}", "deviceId": "rest-client" }
 
 ###

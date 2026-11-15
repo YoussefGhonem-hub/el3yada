@@ -1144,6 +1144,8 @@ Assistant screens reuse the doctor's screens with **permission checks**. Anythin
 
 The names below are **logical collections**. In the API they map to SQL Server tables (and related tables for nested lists). The Flutter app never writes the database directly; it only calls the Web API.
 
+> **The real tables** are created by the EF Core migrations in [`backend/src/El3yada.Data`](backend/README.md) (55 tables plus starting data). Their original design, with comments, is [`database/schema.sql`](database/schema.sql). When this section and the migrations differ, the migrations win. It adds what this logical model leaves out: password and token tables, child tables for nested lists, and the `revenueView` and `pricesManage` assistant permissions from section 6.10.
+
 Conventions:
 
 - All money fields are integers in **piasters**.

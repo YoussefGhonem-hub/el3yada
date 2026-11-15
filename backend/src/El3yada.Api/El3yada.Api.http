@@ -1,0 +1,6 @@
+@El3yada.Api_HostAddress = https://localhost:7001
+
+GET {{El3yada.Api_HostAddress}}/api/health
+Accept: application/json
+
+###

@@ -5,7 +5,7 @@ The team (Youssef, Amr and Mohamed Gomaa) works through these phases together, i
 - Screen IDs (A, D, AS, P, AD) and rule IDs (BR-…) point to [spec.md](spec.md). Acceptance checks (AC-…) are in spec section 14.
 - **[M]** must have, **[S]** should have, **[C]** could have. A phase can close with open [S] and [C] items. Note them in the phase's checklist.
 - Every table already exists in [database/schema.sql](database/schema.sql). "Tables" below means the tables the phase reads and writes, not tables to create.
-- Tick a box only when the item works on **Android and Windows**, in **Arabic and English**, and in **light and dark**.
+- Tick a box only when the item works on **Android and Windows**, in **Arabic and English**, and in **light and dark**, and a screen also has **its motion** (spec section 12, "Motion and visual polish").
 
 | Phase | Scope | Main screens |
 |---|---|---|
@@ -26,10 +26,17 @@ The team (Youssef, Amr and Mohamed Gomaa) works through these phases together, i
 These rules keep three people's code consistent. Change them only by agreement.
 
 **Code and branches**
-- `main` is always working. Work on a branch named after the screen or task, for example `feature/D8-new-session` or `api/createSession`. Merge through a pull request that another team member reviews.
-- Before opening a pull request: `flutter analyze` is clean, `flutter test` passes, and the API tests pass.
+- Everyone works on the **`dev`** branch directly, with no pull requests. Pull before you start (`git pull --rebase`), commit small, and push often so the others see your work.
+- Before every push: `flutter analyze` is clean, `flutter test` passes, and the API tests pass. CI runs the same checks on every push to `dev`. If it goes red, fixing it comes before anything else.
+- `main` gets `dev` when a phase is done and CI is green.
 - One Flutter codebase for every platform. **Each screen is built once** and adapts to phone (< 600 px), tablet (600–1024) and desktop (> 1024), as in spec section 4. Don't make separate phone and desktop copies of a screen.
 - App structure follows [app/README.md](app/README.md): each feature has `domain/`, `data/`, `application/` and `presentation/`. No hard-coded text (ARB files, both languages) and no hard-coded colours (theme tokens).
+
+**Design and motion**
+- Every screen ships with its motion: entrance, staggered lists, crossfading states, pressed feedback, and at most one signature moment (spec section 12). Durations and curves come from `core/theme/motion.dart`, never inline numbers.
+- Build screens from the shared animated widgets made in Phase 0 (pressable, skeleton list, empty state, success animation) instead of re-creating them per screen.
+- Use the design skills in `.claude/skills/` when designing or reviewing a screen: `ui-ux-pro-max` (stack `flutter`, `--rtl`) and `frontend-design`. Before you push a screen, run the pre-delivery checklist in `ui-ux-pro-max/references/pro-rules.md`.
+- Check every new screen on a real phone with reduced motion on and off.
 
 **API**
 - One ASP.NET Core solution in `backend/` in this repo (created in Phase 0).
@@ -39,8 +46,8 @@ These rules keep three people's code consistent. Change them only by agreement.
 - Every sensitive action writes a row in `AuditLogs`.
 
 **Database**
-- The EF Core model and migrations in `backend/src/El3yada.Data` are the source of truth. Change a table by changing the entity and adding a migration (`dotnet ef migrations add <Name>`), with the matching update to spec section 8. Announce it to the team before you merge it. Steps in [backend/README.md](backend/README.md#changing-the-database).
-- Never edit a migration that is already on `main`. After pulling, run `dotnet ef database update`.
+- The EF Core model and migrations in `backend/src/El3yada.Data` are the source of truth. Change a table by changing the entity and adding a migration (`dotnet ef migrations add <Name>`), with the matching update to spec section 8. Announce it to the team before you push it. Steps in [backend/README.md](backend/README.md#changing-the-database).
+- Never edit a migration that is already pushed to `dev`. After pulling, run `dotnet ef database update`.
 - Conventions (names, piasters, UTC, Cairo dates, enums as strings) are at the top of `database/schema.sql`, which is kept as the original design.
 
 ---
@@ -55,26 +62,62 @@ These rules keep three people's code consistent. Change them only by agreement.
 - [x] Backend solution in [backend/](backend/README.md): ASP.NET Core Web API (.NET 10), EF Core model for all 55 tables, migrations `InitialCreate` and `SeedReferenceData`, `GET /api/health`, OpenAPI document, and data tests. The migrated database was compared with `schema.sql` object by object (tables, columns, defaults, keys, foreign keys, checks, indexes) and matches.
 
 **Database**
-- [ ] Each person runs `dotnet tool restore` and `dotnet ef database update` to create `el3yada_dev` locally ([backend/README.md](backend/README.md)).
+- [ ] Each person runs `dotnet tool restore` and `dotnet ef database update` to create `el3yada_dev` locally ([backend/README.md](backend/README.md)), then sets the dev JWT key with `dotnet user-secrets` (one command in the README).
+  - Youssef: done 15 Nov. Both migrations applied, and `GET /api/health` returns `{"status":"ok","database":"el3yada_dev","appliedMigrations":2,"pendingMigrations":[]}`. Amr and Mohamed Gomaa: not yet.
 - [ ] Shared `dev` and `prod` SQL Server databases on the host, in a region close to Egypt. Daily backups.
+  - Not started: the team first has to choose and pay for a host. The API is ready for it: set `ConnectionStrings__Default`, `Jwt__SigningKey`, `Storage__RootPath` and the log path there.
 
 **API**
-- [ ] Add Serilog and FluentValidation.
-- [ ] `dev` and `prod` environments (connection strings, JWT keys, file storage path) outside the repo.
-- [ ] File storage service behind the API: upload, download and thumbnail, using the paths in spec section 8. Files are never public URLs.
-- [ ] CI: build and test the API and the app on every pull request.
+- [x] Serilog and FluentValidation.
+  - **Serilog:** console plus daily JSON log files, kept 31 days. The request log has no query strings, headers or bodies.
+  - **FluentValidation:** a global filter returns a 400 `application/problem+json` with `errors` and `errorCodes` per field. `.EgyptianMobile()` is the first shared rule, matching the app's validator.
+  - Unknown routes and server errors also return problem+json.
+- [x] `dev` and `prod` settings live outside the repo, checked when the API starts (`Jwt`, `Storage`, connection string).
+  - **Dev:** the JWT key comes from `dotnet user-secrets`.
+  - **Prod:** environment variables only; the list is in [backend/README.md](backend/README.md).
+  - **Tokens:** access tokens last 15 minutes and refresh tokens 30 days. The spec gave no values, so change them here if needed.
+- [x] File storage service behind the API: save, read, delete and image thumbnails (SkiaSharp), using the spec section 8 paths, which are now built from IDs only.
+  - **Files:** only JPEG, PNG, WebP and PDF are accepted, and the file's first bytes must match its type. Size limits are enforced, and path traversal is rejected.
+  - **Endpoints:** none yet, because files need sign-in. Upload and download endpoints come in Phase 3.
+- [ ] CI: build and test the API and the app on every push to `dev` (and `main`).
+  - Written in [.github/workflows/ci.yml](.github/workflows/ci.yml): the API runs against a SQL Server container, and the app runs `flutter analyze`, `flutter test` and a check that generated code is up to date.
+
+API checks (15 Nov): `dotnet build` gives 0 warnings. `dotnet test` passes 74 of 74 (69 API tests and 5 data tests), five runs in a row.
+
+Notes for later phases:
+- **Phase 3 uploads:** the server's default request body limit (about 28.6 MB) is below the 50 MB upload setting, so the upload endpoints need `[RequestSizeLimit]`.
+- **Photo GPS data:** thumbnails drop it, but original photos keep it; consider stripping it in Phase 3.
+- **Duplicate phone numbers:** SQL Server's duplicate-key error message contains the duplicate value, such as a phone number, and that message gets logged. Check phone uniqueness in code (Phases 1–2) before saving.
+- **Pasted numbers:** the mobile-number check doesn't strip the invisible direction marks that pasted Arabic numbers can carry. Fix it in the API and the app together.
 
 **App**
-- [ ] Flutter flavors for `dev` and `prod`, wired to `config/dev.json` and `config/prod.json`.
-- [ ] Bundle the Arabic + Latin font (IBM Plex Sans Arabic or Cairo) and set `AppTheme.fontFamily`.
-- [ ] Add `freezed` + `json_serializable` for API models.
+- [x] Android flavors `dev` and `prod`, wired to `config/dev.json` and `config/prod.json`. `dev` installs next to `prod` as "el3yada dev" (`com.el3yada.app.dev`). The app refuses to start when the flavor and the config file disagree (`Env.checkFlavor`). Checked: `flutter build apk --flavor dev` gives that ID and name. Launch configurations in `.vscode/launch.json`.
+- [ ] iOS and macOS flavor schemes (`dev`, `prod`). They need Xcode, so whoever has a Mac does this.
+- [x] Alexandria (Arabic + Latin, SIL OFL) bundled in 4 weights and set as `AppTheme.fontFamily`. Light and dark colour tokens rebuilt from the chosen design (pine `#0F4C45`, mint ground `#E6F2EC`, mint `#7CE0C3`, coral for "new"), and the ع = 3 logo mark drawn in code on the splash and login screens. Checked with widget tests and rendered screenshots in Arabic, light and dark. Not run on Windows yet (see the Windows check below).
+- [x] `freezed` + `json_serializable` for API models. `AuthSession` is the first one. Generated files are committed, and CI fails if they are out of date.
+
+**App: design and motion foundation** (spec section 12, "Motion and visual polish")
+- [ ] Add `flutter_animate`, `animations`, `lottie`, `skeletonizer` and `flutter_svg` (checked: they resolve with the current Flutter and packages).
+- [ ] Motion tokens in `core/theme/motion.dart`: `fast` / `normal` / `slow` durations, enter and exit curves, and a reduced-motion switch that every animated widget reads.
+- [ ] Page transitions in the router: shared axis forward and back (mirrored in Arabic), fade-through between tabs, and a container transform helper for list → detail.
+- [ ] Custom floating bottom navigation bar for phones: pill shape, sliding mint indicator, outline-to-filled icons, badge pop-in, haptic, RTL mirroring, hidden with the keyboard. The same sliding indicator on the tablet rail and the desktop side menu.
+- [ ] Shared animated widgets: pressable (scale or ripple feedback), staggered list entrance, skeleton loading, empty state with illustration, success animation (Lottie).
+- [ ] Animated logo (ع = 3 stroke drawing) as an SVG or Lottie asset, used by the splash and login.
 
 **Checks (do these before Phase 1 features depend on them)**
 - [ ] **Windows release build:** HTTPS login, token refresh, file upload and a SignalR connection all work (spec section 13).
+  - *Result (15 Nov):* not run. Youssef's machine is missing the Visual Studio "Desktop development with C++" workload (`flutter doctor`), so Windows can't build there yet. The login, refresh, upload and SignalR endpoints arrive in Phases 1, 3 and 5, so repeat this check as each one lands.
 - [ ] **Firestore on Windows:** custom-token sign-in and live updates in a release build. If it falls short, Windows uses the 15-second API refresh (spec 9.6).
+  - *Result (15 Nov):* not run. It needs the Firebase project (`flutterfire configure`), which doesn't exist yet.
 - [ ] **Scanner prototype** on Android and iOS (cunning_document_scanner or equivalent).
+  - *Result (15 Nov):* not run. It needs a real Android or iOS device.
 - [ ] **Arabic PDF prototype:** an A5 prescription with Arabic and English text renders, prints and shares correctly.
+  - *Result (15 Nov):* renders correctly. `app/test/prototypes/arabic_pdf_test.dart` writes `build/prototypes/rx_a5_prototype.pdf` (A5, Arabic and English, QR code), and it was checked by eye. Two findings for Phase 3:
+    - The PDF library needs every Arabic presentation-form glyph, and Alexandria lacks the isolated ي («استشاري» printed as «استشار»). Arabic text in PDFs therefore uses Noto Sans Arabic (bundled, OFL), and Latin text uses Alexandria. `font_coverage_test.dart` guards this.
+    - A space between an Arabic word and the number after it can disappear («كل12»). Put numbers in their own span when building the PDF.
+  - Still open: printing on a real printer and sharing from a phone. Both need the `printing` plugin (Phase 3).
 - [ ] **Local catalog search:** drift + SQLite FTS5 with Arabic search works on Android, iOS and Windows.
+  - *Result (15 Nov):* works on Windows. `app/test/prototypes/catalog_fts5_test.dart` confirms FTS5 and the spec A.6 normalization: hamza forms, ة/ه, ى/ي, diacritics, Arabic-Indic digits, "250/5" kept as one number, and every word as a prefix that must match. `sqlite3` 3.x bundles SQLite with FTS5 through build hooks, so `sqlite3_flutter_libs` isn't needed. Still open: run the same test on an Android and an iOS device.
 
 **Done when:** all three of us run the app against our local API and database, and every check above has a result written down.
 
@@ -97,6 +140,7 @@ These rules keep three people's code consistent. Change them only by agreement.
 **App**
 - [ ] A1 Splash routing by session, role and status; A2 language choice on first launch.
 - [ ] A3 Login against the real API (replace `FakeAuthRepository` in prod builds), A4 registration (4 steps), A5 verify email [S].
+- [ ] Splash and login signature animation: the logo draws in and moves into the login header, the form slides up, Sign in morphs into progress and then a check, and wrong credentials shake the form once. Registration steps (A4) slide between steps with the progress bar animating.
 - [ ] A6 pending, A7 rejected (edit and resubmit), A8 forgot password, A9 set new password, A10 disabled, A11 force update, A12 terms, A13 maintenance, A14 patient on desktop.
 - [ ] Token refresh on 401 in the API client (TODO in `AuthInterceptor`).
 - [ ] AD2 sign-up requests, AD3 sign-up review, AD13 settings, AD14 admin users, AD15 audit log, AD18 admin profile.
@@ -267,6 +311,7 @@ These rules keep three people's code consistent. Change them only by agreement.
 **Goal:** the app is ready for the stores and for real clinics.
 
 - [ ] Full QA on Android, iOS and Windows (macOS if in scope), in all four combinations: Arabic/English × light/dark. Golden tests for the main screens. AC-16 and AC-17 pass.
+- [ ] Motion review on a mid-range Android phone in profile mode: 60 fps on the live board, the bottom bar and the screen transitions. Every screen still works with reduced motion on, and no animation blocks a tap.
 - [ ] Performance: dashboard under 2 seconds on 4G, lists paginated at 25, image compression on upload.
 - [ ] Monitoring: Crashlytics or Sentry in the app, API logs with alerts on billing-job errors.
 - [ ] Backups and point-in-time restore tested on a copy of `prod`.

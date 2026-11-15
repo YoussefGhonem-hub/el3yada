@@ -1,7 +1,13 @@
+import 'package:flutter/services.dart' show appFlavor;
+
 /// Build-time configuration, passed with `--dart-define-from-file`.
 ///
+/// Android also has native flavors (different app ID and name), so pass the
+/// matching `--flavor`. Windows has no flavors; the config file decides.
+///
 /// ```
-/// flutter run --dart-define-from-file=config/dev.json
+/// flutter run --flavor dev --dart-define-from-file=config/dev.json
+/// flutter build apk --flavor prod --dart-define-from-file=config/prod.json
 /// flutter build windows --dart-define-from-file=config/prod.json
 /// ```
 abstract final class Env {
@@ -24,4 +30,19 @@ abstract final class Env {
   static bool get isProd => name == 'prod';
 
   static bool get useFakeAuth => _useFakeAuth && !isProd;
+
+  /// Stops a build that mixes a native flavor with the other environment's
+  /// config, for example `--flavor prod` with `config/dev.json`.
+  static void checkFlavor() {
+    final problem = flavorMismatch(flavor: appFlavor, env: name);
+    if (problem != null) throw StateError(problem);
+  }
+
+  /// The error message when [flavor] and [env] disagree, otherwise null.
+  /// Builds without a flavor (Windows, tests) always pass.
+  static String? flavorMismatch({required String? flavor, required String env}) {
+    if (flavor == null || flavor == env) return null;
+    return 'Built with --flavor $flavor but config/$env.json. '
+        'Use --dart-define-from-file=config/$flavor.json.';
+  }
 }

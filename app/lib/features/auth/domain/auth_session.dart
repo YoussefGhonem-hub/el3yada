@@ -1,46 +1,29 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'user_role.dart';
 
+part 'auth_session.freezed.dart';
+part 'auth_session.g.dart';
+
 /// The signed-in user, as returned by `POST /auth/login` (spec section 9.1).
-class AuthSession {
-  const AuthSession({
-    required this.userId,
-    required this.displayName,
-    required this.role,
-    required this.accessToken,
-    required this.refreshToken,
-    this.doctorId,
-    this.mustChangePassword = false,
-  });
+///
+/// API models use freezed + json_serializable. After changing one, run
+/// `dart run build_runner build` and commit the generated files.
+@freezed
+abstract class AuthSession with _$AuthSession {
+  const factory AuthSession({
+    required String userId,
+    @Default('') String displayName,
+    required UserRole role,
+    required String accessToken,
+    required String refreshToken,
 
-  final String userId;
-  final String displayName;
-  final UserRole role;
-  final String accessToken;
-  final String refreshToken;
+    /// For assistants: the doctor they work for (BR-AS3).
+    String? doctorId,
 
-  /// For assistants: the doctor they work for (BR-AS3).
-  final String? doctorId;
+    /// Patients and assistants must set a new password at first login (A9).
+    @Default(false) bool mustChangePassword,
+  }) = _AuthSession;
 
-  /// Patients and assistants must set a new password at first login (A9).
-  final bool mustChangePassword;
-
-  factory AuthSession.fromJson(Map<String, dynamic> json) => AuthSession(
-        userId: json['userId'] as String,
-        displayName: json['displayName'] as String? ?? '',
-        role: UserRole.fromJson(json['role'] as String),
-        accessToken: json['accessToken'] as String,
-        refreshToken: json['refreshToken'] as String,
-        doctorId: json['doctorId'] as String?,
-        mustChangePassword: json['mustChangePassword'] as bool? ?? false,
-      );
-
-  Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'displayName': displayName,
-        'role': role.toJson(),
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'doctorId': doctorId,
-        'mustChangePassword': mustChangePassword,
-      };
+  factory AuthSession.fromJson(Map<String, dynamic> json) => _$AuthSessionFromJson(json);
 }

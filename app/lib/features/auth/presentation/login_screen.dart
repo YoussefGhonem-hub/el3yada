@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/env.dart';
 import '../../../core/validation/validators.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/settings_actions.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../shell/role_shells.dart';
@@ -107,7 +108,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(Icons.local_hospital_outlined, size: 56, color: scheme.primary),
+                    const Center(child: AppLogoMark()),
                     const SizedBox(height: 12),
                     Text(
                       l10n.appTitle,

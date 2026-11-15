@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "el3yada (dev)",
+      "name": "el3yada (dev, Android)",
       "type": "dart",
       "request": "launch",
       "cwd": "app",
       "program": "lib/main.dart",
-      "args": ["--dart-define-from-file=config/dev.json"]
+      "args": ["--flavor", "dev", "--dart-define-from-file=config/dev.json"]
     },
     {
       "name": "el3yada (dev, Windows)",
@@ -19,11 +19,21 @@
       "args": ["--dart-define-from-file=config/dev.json"]
     },
     {
-      "name": "el3yada (prod)",
+      "name": "el3yada (prod, Android)",
       "type": "dart",
       "request": "launch",
       "cwd": "app",
       "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "prod", "--dart-define-from-file=config/prod.json"]
+    },
+    {
+      "name": "el3yada (prod, Windows)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "app",
+      "program": "lib/main.dart",
+      "deviceId": "windows",
       "flutterMode": "release",
       "args": ["--dart-define-from-file=config/prod.json"]
     }

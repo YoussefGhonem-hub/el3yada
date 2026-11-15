@@ -322,11 +322,11 @@ Rules:
 
 **Text:**
 
-- **Font:** IBM Plex Sans Arabic (or Cairo), embedded in the PDF.
+- **Font:** embedded in the PDF. Arabic text uses Noto Sans Arabic and Latin text uses Alexandria (the app font). The PDF library needs every Arabic presentation-form glyph, and Alexandria lacks the isolated ي (Phase 0 check, `app/test/prototypes/font_coverage_test.dart`).
 - **Sizes:** drug and test names 12 pt, instructions 10.5 pt, nothing smaller than 9 pt.
 - **English inside Arabic:** English names keep their left-to-right order inside the Arabic layout.
 
-**Colour:** one clinic colour, chosen by the doctor in D22 (default deep blue `#0B5C8E`), for the names, rules and chips. Everything else is black and grey, so the page prints well in black and white.
+**Colour:** one clinic colour, chosen by the doctor in D22 (default: the brand pine `#0F4C45`), for the names, rules and chips. Everything else is black and grey, so the page prints well in black and white.
 
 **Too long for one page:** the body continues on page 2. Page 2 repeats the header, the patient strip and the footer, and shows «صفحة 2 من 2».
 
@@ -1172,7 +1172,7 @@ doctors/{doctorId = uid}
   fullNameEn?, titleEn?, degreesAr?, degreesEn?   // printed in the prescription header (6.4.1)
   defaultBranchId                                  // branch details live in `branches`
   prices: { examinationPiasters?, consultationPiasters? }   // visit prices (section 6.15)
-  rxHeader: { logoPath?, signaturePath?, footerText?, language: 'ar' | 'en', accentColor: '#0B5C8E' }
+  rxHeader: { logoPath?, signaturePath?, footerText?, language: 'ar' | 'en', accentColor: '#0F4C45' }
   rxPrint: { paperSize: 'A5' | 'A4' | 'custom', customWidthMm?, customHeightMm? [S],
              preprinted: bool, marginTopMm?, marginBottomMm? }   // BR-RX5
   status: 'pendingApproval' | 'active' | 'rejected' | 'suspended' | 'disabled'   (fn)
@@ -1372,14 +1372,16 @@ priceHistory/{id}                                  (fn)  // BR-PR5
   after: { examinationPiasters?, consultationPiasters? }, changedBy, changedByRole, at
 ```
 
-**File storage paths** (object storage or a secured server folder, served through the API, not as public URLs):
+**File storage paths** (object storage or a secured server folder, served through the API, not as public URLs). Paths are built only from IDs (lower-case GUIDs), never from the uploaded file name; the original name is kept in the database for display. `{ext}` comes from the checked file type (jpg, png, webp or pdf). Code: `backend/src/El3yada.Api/Storage/StoragePath.cs`.
 
 ```text
-medical/{doctorId}/{patientId}/{recordId}/{fileName}
+medical/{doctorId}/{patientId}/{recordId}/{attachmentId}.{ext}
+medical/{doctorId}/{patientId}/{recordId}/{attachmentId}.thumb.jpg
 prescriptions/{doctorId}/{patientId}/{rxId}.pdf
-chat/{chatId}/{msgId}/{fileName}
-payments/{doctorId}/{invoiceId}/{paymentId}/{n}.jpg
-doctors/{doctorId}/license/{fileName}
+chat/{chatId}/{msgId}/file.{ext}
+chat/{chatId}/{msgId}/thumb.jpg
+payments/{doctorId}/{invoiceId}/{paymentId}/{n}.{ext}      n = 1–3
+doctors/{doctorId}/license/{fileId}.{ext}
 doctors/{doctorId}/branding/{logo|signature}.png
 ```
 
@@ -1677,7 +1679,7 @@ Error messages appear in the user's current language. The table shows the Arabic
   - Text that people type (diagnosis, notes, drug names, chat) is shown as typed and never translated. Each text field and chat bubble takes its direction from its first strong character, so an English drug name typed in the Arabic UI reads correctly.
   - Phone numbers, amounts, numeric dates and file numbers always display left-to-right, even inside Arabic sentences. Western digits (0–9) in both languages. Currency: «30 ج.م» in Arabic, "EGP 30" in English. Month and day names follow the language. Gregorian calendar, Cairo time.
   - Lists the admin manages (specialties, medicine groups, custom catalog items), Terms, Privacy Policy and payment instructions have Arabic and English fields. The app shows the one that matches the current language and falls back to the other if it is empty.
-  - One bundled font family that covers both Arabic and Latin (for example Cairo or IBM Plex Sans Arabic), so both languages look consistent and work offline.
+  - One bundled font family that covers both Arabic and Latin: **Alexandria** (SIL Open Font License), so both languages look consistent and work offline.
 - **Appearance [M]:**
   - Three options: Light, Dark, System (default). Changing it takes effect immediately and is saved on the device and in `users.themeMode`.
   - Material 3 light and dark color schemes built from one set of named color tokens. Widgets never use hard-coded colors; every color comes from the theme.
@@ -1686,6 +1688,29 @@ Error messages appear in the user's current language. The table shows the Arabic
   - The medical image viewer uses a black background in both themes, which suits X-rays. Prescription PDFs, payment screenshots and uploaded documents keep their own colors and are never inverted.
   - Admin dashboard charts use theme-aware colors.
   - Screenshot (golden) tests cover the main screens in all four combinations: Arabic/English × Light/Dark.
+- **Motion and visual polish [M]:** the app should feel crafted, not templated. Motion always explains something: where content came from, what changed, or that a tap registered.
+  - **Every screen animates.** Content enters with a short fade and slide (8–16 dp). List and grid items stagger 30–50 ms apart (the first 8 only). Loading, content, empty and error states crossfade instead of snapping. Every tappable element gives pressed feedback within 100 ms (ripple, or a scale to about 0.97). A screen is not finished until its motion is.
+  - **Motion tokens**, defined once in `app/lib/core/theme/motion.dart` and never typed inline: `fast` 150 ms (press, toggles), `normal` 250 ms (state changes, navigation bar), `slow` 400 ms (screen entrances, signature moments). Arrivals use decelerating or spring curves. Exits take about 65% of the entrance time and accelerate.
+  - **Screen transitions:** forward and back use a horizontal shared-axis transition, mirrored in Arabic. Opening an item from a list uses a container transform where it fits (a patient card grows into the profile D6, an appointment into P17). Switching tabs uses fade-through.
+  - **One signature moment per screen, at most.** For example:
+    - **Splash (A1) and Login (A3):** the ع = 3 logo draws its stroke, then moves (Hero) into the login header. The form slides up. Sign in morphs into a progress indicator, then into a check before the home screen opens. Wrong credentials shake the form once.
+    - **Patient home (P1):** the queue-ticket card slides in, and the "now serving" number rolls when it changes.
+    - **Live board (D34):** cards slide between columns, a new booking pulses once, and the counters roll.
+    - **Success** (booking confirmed P15, prescription sent D15, payment submitted D20): a short Lottie check, 1.5 s at most.
+    - **Empty states:** a small illustration (Lottie or SVG) with the message and its action, never plain text alone.
+  - **Loading:** lists and cards show skeleton placeholders shaped like the content, not a centred spinner. Spinners appear only inside buttons. Actions that finish in under 300 ms show no loader.
+  - **Mobile bottom navigation bar:** a custom widget, not the stock `NavigationBar` or a third-party package.
+    - A floating pill, 16 dp from the screen edges and above the system gesture area, with fully rounded corners and a soft shadow. It uses the primary (pine) surface in light mode and an elevated surface in dark mode.
+    - Every item keeps its icon and label. The selected item sits on a mint indicator that slides between items on a spring. Its icon switches from outline to filled with a small bounce, and its label turns bold.
+    - Unread badges (chats) pop in with a scale animation. A tap gives a light haptic on Android and iOS.
+    - In Arabic, the item order and the slide direction mirror. The bar hides while the keyboard is open. **[S]** It slides away while scrolling down and returns on scroll up.
+    - Tablets use a navigation rail, and desktops the side menu, each with the same sliding indicator.
+  - **Accessibility and performance:**
+    - When the device asks for reduced motion (`MediaQuery.disableAnimations`), entrances and decorative motion are skipped or become a plain fade. State changes still crossfade.
+    - Animations never block input and stop as soon as the user taps or swipes.
+    - Animate transform and opacity only, and wrap continuously animating widgets in a `RepaintBoundary`.
+    - Hold 60 fps on a mid-range Android phone, checked in profile mode with Flutter DevTools.
+    - Lottie files are bundled with the app and are 100 KB or less each.
 - **Responsive UI:** breakpoints as in [section 4](#4-platforms-and-who-uses-what). Touch targets ≥ 48 dp. Text scales with the system font size. **[C]** Desktop keyboard shortcuts: Ctrl+N new session, Ctrl+F search.
 - **Performance:**
   - Dashboard ready in under 2 seconds on a normal 4G connection.
@@ -1724,6 +1749,11 @@ Error messages appear in the user's current language. The table shows the Arabic
 | Models | freezed + json_serializable |
 | Localization | flutter_localizations + intl (ARB), `Bidi` helpers from intl for per-text direction |
 | Theme | Material 3 `ThemeData` for light and dark from shared color tokens, flutter_native_splash (light and dark splash), shared_preferences (device copy of language and theme) |
+| Motion | `flutter_animate` (entrances, staggers, micro-interactions), `animations` (Material motion: shared axis, container transform, fade through), `lottie` (success and empty-state animations), plus Flutter's implicit animations and `Hero`. Durations and curves come from the motion tokens (section 12). |
+| Loading placeholders | `skeletonizer` |
+| Vector graphics | `flutter_svg` (logo, illustrations) |
+| Bottom navigation | Custom floating bar (section 12). Navigation-bar packages were not adopted: the popular ones have had no release since 2023–2024 and don't follow our tokens or mirror correctly in Arabic. |
+| UI components | Material 3 widgets styled by our theme. Full UI kits (forui 0.28, shadcn_flutter 0.0.55) were considered and not adopted: they are pre-1.0 and would replace Material, which the theme and this spec are built on. |
 | HTTP / API client | dio (or http) + interceptors for JWT refresh, JSON models via freezed |
 | Push (mobile) | firebase_messaging (Android/iOS/macOS only) or equivalent FCM plugin; tokens registered with the API |
 | Real-time | signalr_netcore (chat, Windows toasts, live unread). cloud_firestore + firebase_auth with a custom token for the live board (section 9.6). |
@@ -1732,7 +1762,7 @@ Error messages appear in the user's current language. The table shows the Arabic
 | Local and desktop notifications | flutter_local_notifications |
 | Scanning (mobile) | cunning_document_scanner (ML Kit Document Scanner on Android, VisionKit on iOS) or an equivalent |
 | Files | file_picker, desktop_drop, image_picker, open_filex, share_plus, path_provider, cached_network_image |
-| Local catalog database | drift + sqlite3_flutter_libs (bundled SQLite with FTS5 full-text search on Android, iOS, Windows and macOS; confirm FTS5 and Arabic search in Phase 0) |
+| Local catalog database | drift + sqlite3 3.x, which bundles SQLite with FTS5 through build hooks on Android, iOS, Windows and macOS (`sqlite3_flutter_libs` is no longer needed). FTS5 and Arabic search were confirmed on Windows in Phase 0; Android and iOS still need a device run. |
 | PDF | `pdf` (generation with an embedded Arabic font such as Cairo or Noto Naskh Arabic), `printing` (print, share, preview), plus a PDF viewer (pdfrx or similar; check the licence) |
 | Images | photo_view (zoom), image compression package |
 | Desktop extras | tray_manager / window_manager (system tray) **[S]** |

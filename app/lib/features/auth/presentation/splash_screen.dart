@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/gen/app_localizations.dart';
 
 /// A1: shown while the saved session is being read.
@@ -15,7 +16,7 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.local_hospital_outlined, size: 56, color: theme.colorScheme.primary),
+            const AppLogoMark(),
             const SizedBox(height: 12),
             Text(l10n.appTitle, style: theme.textTheme.headlineMedium),
             const SizedBox(height: 24),

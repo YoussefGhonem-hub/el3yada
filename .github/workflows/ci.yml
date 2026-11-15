@@ -1,0 +1,67 @@
+# Builds and tests the API and the app on every push to dev and main
+# (PHASES.md, "How we work": a red build is fixed before anything else).
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (build and test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      # Throwaway SQL Server for the migration tests. The password only
+      # protects this container, which is deleted when the job ends.
+      sql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: Ci_Only_Pass_123!
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Ci_Only_Pass_123!' -C -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      EL3YADA_TEST_SQL: Server=localhost,1433;User Id=sa;Password=Ci_Only_Pass_123!;TrustServerCertificate=True
+      DOTNET_NOLOGO: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore El3yada.slnx
+      - run: dotnet build El3yada.slnx --no-restore --configuration Release
+      - run: dotnet test El3yada.slnx --no-build --configuration Release
+
+  app:
+    name: App (analyze and test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.1
+          cache: true
+      - run: flutter pub get
+      - name: Generated code is up to date
+        run: |
+          dart run build_runner build
+          git diff --exit-code -- lib
+      - run: flutter analyze
+      - run: flutter test

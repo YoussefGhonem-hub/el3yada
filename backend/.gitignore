@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# el3yada: local stored files (Storage:RootPath in Development). Logs are covered by [Ll]ogs/ above.
+App_Data/

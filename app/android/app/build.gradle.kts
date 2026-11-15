@@ -25,6 +25,25 @@ android {
         versionName = flutter.versionName
     }
 
+    // Flavors: `flutter run --flavor dev --dart-define-from-file=config/dev.json`.
+    // dev installs next to prod (different application ID and name).
+    buildFeatures {
+        resValues = true
+    }
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "el3yada dev")
+        }
+        create("prod") {
+            dimension = "env"
+            resValue("string", "app_name", "el3yada")
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.

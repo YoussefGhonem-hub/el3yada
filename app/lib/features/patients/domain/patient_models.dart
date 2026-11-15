@@ -39,13 +39,13 @@ class PatientVisits {
   });
 
   factory PatientVisits.fromJson(Map<String, dynamic> json) => PatientVisits(
-        firstVisitAt: _timeOrNull(json['firstVisitAt']),
-        lastVisit: json['lastVisit'] == null ? null : LastVisit.fromJson(_map(json['lastVisit'])),
-        total: json['total'] as int,
-        examinations: json['examinations'] as int,
-        consultations: json['consultations'] as int,
-        consultationsSinceExam: json['consultationsSinceExam'] as int,
-      );
+    firstVisitAt: _timeOrNull(json['firstVisitAt']),
+    lastVisit: json['lastVisit'] == null ? null : LastVisit.fromJson(_map(json['lastVisit'])),
+    total: json['total'] as int,
+    examinations: json['examinations'] as int,
+    consultations: json['consultations'] as int,
+    consultationsSinceExam: json['consultationsSinceExam'] as int,
+  );
 
   final DateTime? firstVisitAt;
   final LastVisit? lastVisit;
@@ -85,30 +85,30 @@ class PatientView {
   });
 
   factory PatientView.fromJson(Map<String, dynamic> json) => PatientView(
-        patientId: json['patientId'] as String,
-        fileNumber: json['fileNumber'] as int,
-        fullName: json['fullName'] as String,
-        phone: json['phone'] as String,
-        gender: Gender.fromWire(json['gender']),
-        dateOfBirth: parseDay(json['dateOfBirth']),
-        dateOfBirthEstimated: json['dateOfBirthEstimated'] as bool? ?? false,
-        ageYears: json['ageYears'] as int,
-        nationalId: _text(json['nationalId']),
-        address: _text(json['address']),
-        bloodType: _text(json['bloodType']),
-        emergencyContactName: _text(json['emergencyContactName']),
-        emergencyContactPhone: _text(json['emergencyContactPhone']),
-        ownsDetails: json['ownsDetails'] as bool? ?? false,
-        accountStatus: json['accountStatus'] as String? ?? 'active',
-        archived: json['archived'] as bool? ?? false,
-        archivedAt: _timeOrNull(json['archivedAt']),
-        linkedAt: _time(json['linkedAt']),
-        visits: PatientVisits.fromJson(_map(json['visits'])),
-        totalPaidPiasters: json['totalPaidPiasters'] as int?,
-        hasAllergies: json['hasAllergies'] as bool?,
-        filesTotal: json['files'] is Map ? (_map(json['files'])['total'] as int? ?? 0) : 0,
-        prescriptionCount: json['prescriptionCount'] as int? ?? 0,
-      );
+    patientId: json['patientId'] as String,
+    fileNumber: json['fileNumber'] as int,
+    fullName: json['fullName'] as String,
+    phone: json['phone'] as String,
+    gender: Gender.fromWire(json['gender']),
+    dateOfBirth: parseDay(json['dateOfBirth']),
+    dateOfBirthEstimated: json['dateOfBirthEstimated'] as bool? ?? false,
+    ageYears: json['ageYears'] as int,
+    nationalId: _text(json['nationalId']),
+    address: _text(json['address']),
+    bloodType: _text(json['bloodType']),
+    emergencyContactName: _text(json['emergencyContactName']),
+    emergencyContactPhone: _text(json['emergencyContactPhone']),
+    ownsDetails: json['ownsDetails'] as bool? ?? false,
+    accountStatus: json['accountStatus'] as String? ?? 'active',
+    archived: json['archived'] as bool? ?? false,
+    archivedAt: _timeOrNull(json['archivedAt']),
+    linkedAt: _time(json['linkedAt']),
+    visits: PatientVisits.fromJson(_map(json['visits'])),
+    totalPaidPiasters: json['totalPaidPiasters'] as int?,
+    hasAllergies: json['hasAllergies'] as bool?,
+    filesTotal: json['files'] is Map ? (_map(json['files'])['total'] as int? ?? 0) : 0,
+    prescriptionCount: json['prescriptionCount'] as int? ?? 0,
+  );
 
   final String patientId;
 
@@ -148,7 +148,11 @@ class PatientView {
   final int prescriptionCount;
 
   bool get hasDetails =>
-      nationalId != null || address != null || bloodType != null || emergencyContactName != null || emergencyContactPhone != null;
+      nationalId != null ||
+      address != null ||
+      bloodType != null ||
+      emergencyContactName != null ||
+      emergencyContactPhone != null;
 }
 
 /// One D4 row (`GET /api/patients/register`).
@@ -171,21 +175,23 @@ class PatientRegisterRow {
   });
 
   factory PatientRegisterRow.fromJson(Map<String, dynamic> json) => PatientRegisterRow(
-        patientId: json['patientId'] as String,
-        fileNumber: json['fileNumber'] as int,
-        fullName: json['fullName'] as String,
-        phone: json['phone'] as String,
-        gender: Gender.fromWire(json['gender']),
-        dateOfBirthEstimated: json['dateOfBirthEstimated'] as bool? ?? false,
-        ageYears: json['ageYears'] as int,
-        visits: PatientVisits.fromJson(_map(json['visits'])),
-        totalPaidPiasters: json['totalPaidPiasters'] as int?,
-        filesCount: json['filesCount'] as int? ?? 0,
-        hasAllergies: json['hasAllergies'] as bool?,
-        chronicDiseases: json['chronicDiseases'] == null ? null : [for (final d in json['chronicDiseases'] as List) d as String],
-        archived: json['archived'] as bool? ?? false,
-        linkedAt: _time(json['linkedAt']),
-      );
+    patientId: json['patientId'] as String,
+    fileNumber: json['fileNumber'] as int,
+    fullName: json['fullName'] as String,
+    phone: json['phone'] as String,
+    gender: Gender.fromWire(json['gender']),
+    dateOfBirthEstimated: json['dateOfBirthEstimated'] as bool? ?? false,
+    ageYears: json['ageYears'] as int,
+    visits: PatientVisits.fromJson(_map(json['visits'])),
+    totalPaidPiasters: json['totalPaidPiasters'] as int?,
+    filesCount: json['filesCount'] as int? ?? 0,
+    hasAllergies: json['hasAllergies'] as bool?,
+    chronicDiseases: json['chronicDiseases'] == null
+        ? null
+        : [for (final d in json['chronicDiseases'] as List) d as String],
+    archived: json['archived'] as bool? ?? false,
+    linkedAt: _time(json['linkedAt']),
+  );
 
   final String patientId;
   final int fileNumber;
@@ -210,22 +216,22 @@ enum PhoneLookupStatus {
   existsElsewhere;
 
   static PhoneLookupStatus fromWire(Object? value) => switch (value) {
-        'linkedToYou' => linkedToYou,
-        'existsElsewhere' => existsElsewhere,
-        _ => isNew,
-      };
+    'linkedToYou' => linkedToYou,
+    'existsElsewhere' => existsElsewhere,
+    _ => isNew,
+  };
 }
 
 class PhoneLookup {
   const PhoneLookup({required this.status, this.patientId, this.fileNumber, this.fullName, this.archived});
 
   factory PhoneLookup.fromJson(Map<String, dynamic> json) => PhoneLookup(
-        status: PhoneLookupStatus.fromWire(json['status']),
-        patientId: json['patientId'] as String?,
-        fileNumber: json['fileNumber'] as int?,
-        fullName: _text(json['fullName']),
-        archived: json['archived'] as bool?,
-      );
+    status: PhoneLookupStatus.fromWire(json['status']),
+    patientId: json['patientId'] as String?,
+    fileNumber: json['fileNumber'] as int?,
+    fullName: _text(json['fullName']),
+    archived: json['archived'] as bool?,
+  );
 
   final PhoneLookupStatus status;
 
@@ -241,10 +247,10 @@ class CreatedPatient {
   const CreatedPatient({required this.linked, required this.patient, this.temporaryPassword});
 
   factory CreatedPatient.fromJson(Map<String, dynamic> json) => CreatedPatient(
-        linked: json['linked'] as bool,
-        temporaryPassword: json['temporaryPassword'] as String?,
-        patient: PatientView.fromJson(_map(json['patient'])),
-      );
+    linked: json['linked'] as bool,
+    temporaryPassword: json['temporaryPassword'] as String?,
+    patient: PatientView.fromJson(_map(json['patient'])),
+  );
 
   /// True: an existing account was linked (BR-P3), no password.
   final bool linked;
@@ -267,8 +273,23 @@ class PatientDraft {
     this.bloodType,
     this.emergencyContactName,
     this.emergencyContactPhone,
-  });
+  }) : linkOnly = false;
 
+  /// BR-P3: linking an existing number sends the phone alone; the account
+  /// keeps its own identity.
+  const PatientDraft.link(String this.phone)
+    : linkOnly = true,
+      fullName = '',
+      gender = Gender.male,
+      dateOfBirth = null,
+      ageYears = null,
+      nationalId = null,
+      address = null,
+      bloodType = null,
+      emergencyContactName = null,
+      emergencyContactPhone = null;
+
+  final bool linkOnly;
   final String fullName;
 
   /// Only for `createPatient`; D7 changes it through `updatePatientPhone`.
@@ -284,24 +305,27 @@ class PatientDraft {
   final String? emergencyContactName;
   final String? emergencyContactPhone;
 
-  Map<String, Object?> toJson() => {
-        'phone': ?phone,
-        'fullName': fullName,
-        'gender': gender.wire,
-        'dateOfBirth': dateOfBirth == null ? null : dayKey(dateOfBirth!),
-        'ageYears': dateOfBirth == null ? ageYears : null,
-        'nationalId': nationalId,
-        'address': address,
-        'bloodType': bloodType,
-        'emergencyContactName': emergencyContactName,
-        'emergencyContactPhone': emergencyContactPhone,
-      };
+  Map<String, Object?> toJson() => linkOnly
+      ? {'phone': phone}
+      : {
+          'phone': ?phone,
+          'fullName': fullName,
+          'gender': gender.wire,
+          'dateOfBirth': dateOfBirth == null ? null : dayKey(dateOfBirth!),
+          'ageYears': dateOfBirth == null ? ageYears : null,
+          'nationalId': nationalId,
+          'address': address,
+          'bloodType': bloodType,
+          'emergencyContactName': emergencyContactName,
+          'emergencyContactPhone': emergencyContactPhone,
+        };
 }
 
 class ProfileItem {
   const ProfileItem({required this.id, required this.text});
 
-  factory ProfileItem.fromJson(Map<String, dynamic> json) => ProfileItem(id: json['id'] as String, text: json['text'] as String);
+  factory ProfileItem.fromJson(Map<String, dynamic> json) =>
+      ProfileItem(id: json['id'] as String, text: json['text'] as String);
 
   final String id;
   final String text;
@@ -323,7 +347,9 @@ class MedicalProfile {
   });
 
   factory MedicalProfile.fromJson(Map<String, dynamic> json) {
-    List<ProfileItem> items(String key) => [for (final row in json[key] as List? ?? const []) ProfileItem.fromJson(_map(row))];
+    List<ProfileItem> items(String key) => [
+      for (final row in json[key] as List? ?? const []) ProfileItem.fromJson(_map(row)),
+    ];
     return MedicalProfile(
       patientId: json['patientId'] as String,
       allergies: items('allergies'),
@@ -346,11 +372,11 @@ class MedicalProfile {
   bool get hasAllergies => allergies.isNotEmpty;
 
   List<ProfileItem> list(ProfileList list) => switch (list) {
-        ProfileList.allergies => allergies,
-        ProfileList.chronicDiseases => chronicDiseases,
-        ProfileList.currentMedications => currentMedications,
-        ProfileList.surgeries => surgeries,
-      };
+    ProfileList.allergies => allergies,
+    ProfileList.chronicDiseases => chronicDiseases,
+    ProfileList.currentMedications => currentMedications,
+    ProfileList.surgeries => surgeries,
+  };
 
   bool get isEmpty => ProfileList.values.every((l) => list(l).isEmpty) && familyHistory == null && notes == null;
 }
@@ -374,21 +400,21 @@ class MedicalProfileDraft {
   final String? notes;
 
   List<String> list(ProfileList list) => switch (list) {
-        ProfileList.allergies => allergies,
-        ProfileList.chronicDiseases => chronicDiseases,
-        ProfileList.currentMedications => currentMedications,
-        ProfileList.surgeries => surgeries,
-      };
+    ProfileList.allergies => allergies,
+    ProfileList.chronicDiseases => chronicDiseases,
+    ProfileList.currentMedications => currentMedications,
+    ProfileList.surgeries => surgeries,
+  };
 
   Map<String, Object?> toJson(String patientId) => {
-        'patientId': patientId,
-        'allergies': allergies,
-        'chronicDiseases': chronicDiseases,
-        'currentMedications': currentMedications,
-        'surgeries': surgeries,
-        'familyHistory': familyHistory,
-        'notes': notes,
-      };
+    'patientId': patientId,
+    'allergies': allergies,
+    'chronicDiseases': chronicDiseases,
+    'currentMedications': currentMedications,
+    'surgeries': surgeries,
+    'familyHistory': familyHistory,
+    'notes': notes,
+  };
 }
 
 /// D4's "last visit" filter.
@@ -453,13 +479,13 @@ class RegisterQuery {
 
   /// How many filters (not search or sort) are on, for the filter button.
   int get filterCount => [
-        lastVisit != null,
-        branchId != null,
-        minVisits != null || maxVisits != null,
-        newThisMonth,
-        archived,
-        hasChronicDisease,
-      ].where((on) => on).length;
+    lastVisit != null,
+    branchId != null,
+    minVisits != null || maxVisits != null,
+    newThisMonth,
+    archived,
+    hasChronicDisease,
+  ].where((on) => on).length;
 
   bool get isFiltered => search.trim().isNotEmpty || filterCount > 0;
 
@@ -474,34 +500,33 @@ class RegisterQuery {
     bool? hasChronicDisease,
     RegisterSort? sort,
     bool? Function()? descending,
-  }) =>
-      RegisterQuery(
-        search: search ?? this.search,
-        lastVisit: lastVisit == null ? this.lastVisit : lastVisit(),
-        branchId: branchId == null ? this.branchId : branchId(),
-        minVisits: minVisits == null ? this.minVisits : minVisits(),
-        maxVisits: maxVisits == null ? this.maxVisits : maxVisits(),
-        newThisMonth: newThisMonth ?? this.newThisMonth,
-        archived: archived ?? this.archived,
-        hasChronicDisease: hasChronicDisease ?? this.hasChronicDisease,
-        sort: sort ?? this.sort,
-        descending: descending == null ? this.descending : descending(),
-      );
+  }) => RegisterQuery(
+    search: search ?? this.search,
+    lastVisit: lastVisit == null ? this.lastVisit : lastVisit(),
+    branchId: branchId == null ? this.branchId : branchId(),
+    minVisits: minVisits == null ? this.minVisits : minVisits(),
+    maxVisits: maxVisits == null ? this.maxVisits : maxVisits(),
+    newThisMonth: newThisMonth ?? this.newThisMonth,
+    archived: archived ?? this.archived,
+    hasChronicDisease: hasChronicDisease ?? this.hasChronicDisease,
+    sort: sort ?? this.sort,
+    descending: descending == null ? this.descending : descending(),
+  );
 
   /// The filters off, the search and sort kept.
   RegisterQuery withoutFilters() => RegisterQuery(search: search, sort: sort, descending: descending);
 
   /// The query string, without paging.
   Map<String, Object> toQuery() => {
-        if (search.trim().isNotEmpty) 'search': search.trim(),
-        if (lastVisit != null) 'lastVisit': lastVisit!.name,
-        'branchId': ?branchId,
-        'minVisits': ?minVisits,
-        'maxVisits': ?maxVisits,
-        if (newThisMonth) 'newThisMonth': 'true',
-        if (archived) 'archived': 'true',
-        if (hasChronicDisease) 'hasChronicDisease': 'true',
-        if (sort != RegisterSort.lastVisit) 'sort': sort.name,
-        if (descending != null && descending != sort.descending) 'direction': descending! ? 'desc' : 'asc',
-      };
+    if (search.trim().isNotEmpty) 'search': search.trim(),
+    if (lastVisit != null) 'lastVisit': lastVisit!.name,
+    'branchId': ?branchId,
+    'minVisits': ?minVisits,
+    'maxVisits': ?maxVisits,
+    if (newThisMonth) 'newThisMonth': 'true',
+    if (archived) 'archived': 'true',
+    if (hasChronicDisease) 'hasChronicDisease': 'true',
+    if (sort != RegisterSort.lastVisit) 'sort': sort.name,
+    if (descending != null && descending != sort.descending) 'direction': descending! ? 'desc' : 'asc',
+  };
 }

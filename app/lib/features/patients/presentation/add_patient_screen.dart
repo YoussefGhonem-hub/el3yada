@@ -196,7 +196,7 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
     });
     try {
       final draft = linking
-          ? PatientDraft(fullName: '', gender: Gender.male, phone: number)
+          ? PatientDraft.link(number)
           : _identity.draft(phone: number);
       final created = await ref.read(patientsRepositoryProvider).createPatient(draft);
       if (!mounted) return;

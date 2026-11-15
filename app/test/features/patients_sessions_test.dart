@@ -202,6 +202,8 @@ void main() {
           PatientDraft(fullName: 'سارة علي', gender: Gender.female, dateOfBirth: DateTime.utc(1997, 1, 2), ageYears: 29).toJson();
       expect(byDate['dateOfBirth'], '1997-01-02');
       expect(byDate['ageYears'], isNull, reason: 'never both');
+      // BR-P3: linking sends the phone alone.
+      expect(const PatientDraft.link('01122223333').toJson(), {'phone': '01122223333'});
     });
   });
 

@@ -61,6 +61,38 @@ void main() {
     await settle(tester);
   }
 
+  // Every screen at a small phone and at tablet width: a layout overflow fails the test.
+  for (final (name, size) in [('small phone', const Size(360, 740)), ('tablet', const Size(820, 1100))]) {
+    testWidgets('the screens lay out on a $name', (tester) async {
+      await start(tester, 'doctor@el3yada.dev', size: size);
+      final mona = id(tester, SeedPatients.mona);
+      final laila = id(tester, SeedPatients.laila);
+      final exam = recordsOf(tester).sessionIdsOf(mona).last;
+      for (final path in [
+        '/doctor/live',
+        '/doctor/patients',
+        '/doctor/patients/new',
+        '/doctor/patients/$mona',
+        '/doctor/patients/$mona/edit',
+        '/doctor/patients/$mona/edit?part=medical',
+        '/doctor/patients/$mona/sessions/new',
+        '/doctor/patients/$mona/sessions/$exam',
+        '/doctor/live/sessions/new',
+        '/doctor/dashboard',
+        '/doctor/dashboard/today',
+        '/doctor/dashboard/month',
+      ]) {
+        await open(tester, path);
+      }
+      await open(tester, '/doctor/patients/$laila/sessions/new');
+      await tapVisible(tester, find.text('Consultation'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Next'));
+      await settle(tester);
+      await tester.scrollUntilVisible(find.text('Amount charged'), 300, scrollable: find.byType(Scrollable).last);
+      expect(find.text('Amount charged'), findsOneWidget);
+    });
+  }
+
   group('D5 add patient', () {
     testWidgets('a new number: the temporary password once, then the profile (BR-P4)', (tester) async {
       await start(tester, 'doctor@el3yada.dev');

@@ -5663,6 +5663,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A first and a last name, at least'**
   String get assistantNameHint;
+
+  /// No description provided for @activityPatientCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a new patient'**
+  String get activityPatientCreated;
+
+  /// No description provided for @activityPatientLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a patient who already has an account'**
+  String get activityPatientLinked;
+
+  /// No description provided for @activityPatientUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited the patient\'s details'**
+  String get activityPatientUpdated;
+
+  /// No description provided for @activityPatientPhoneChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the patient\'s mobile number'**
+  String get activityPatientPhoneChanged;
+
+  /// No description provided for @activityPatientPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset the patient\'s password'**
+  String get activityPatientPasswordReset;
+
+  /// No description provided for @activityPatientArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived the patient\'s file'**
+  String get activityPatientArchived;
+
+  /// No description provided for @activityPatientUnarchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Brought the patient\'s file back from the archive'**
+  String get activityPatientUnarchived;
+
+  /// No description provided for @activityPatientMedicalProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited the medical profile'**
+  String get activityPatientMedicalProfileUpdated;
+
+  /// No description provided for @activitySessionCreatedExamination.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded an examination'**
+  String get activitySessionCreatedExamination;
+
+  /// No description provided for @activitySessionCreatedConsultation.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded a consultation'**
+  String get activitySessionCreatedConsultation;
+
+  /// No description provided for @activitySessionClinicalUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited a visit\'s medical notes'**
+  String get activitySessionClinicalUpdated;
+
+  /// No description provided for @activitySessionPrivateNoteUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited a visit\'s private note'**
+  String get activitySessionPrivateNoteUpdated;
+
+  /// No description provided for @activitySessionAmountChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the amount charged for a visit'**
+  String get activitySessionAmountChanged;
+
+  /// No description provided for @activitySessionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a visit'**
+  String get activitySessionDeleted;
+
+  /// D27: an amount that changed.
+  ///
+  /// In en, this message translates to:
+  /// **'From {before} to {after}'**
+  String activityFromTo(String before, String after);
+
+  /// D27: why a visit was deleted (BR-S7).
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String activityReason(String reason);
+
+  /// No description provided for @activityActionPatientCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient added'**
+  String get activityActionPatientCreated;
+
+  /// No description provided for @activityActionPatientLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient linked'**
+  String get activityActionPatientLinked;
+
+  /// No description provided for @activityActionPatientUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient edited'**
+  String get activityActionPatientUpdated;
+
+  /// No description provided for @activityActionPatientPhoneChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient mobile changed'**
+  String get activityActionPatientPhoneChanged;
+
+  /// No description provided for @activityActionPatientPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient password reset'**
+  String get activityActionPatientPasswordReset;
+
+  /// No description provided for @activityActionPatientArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient archived'**
+  String get activityActionPatientArchived;
+
+  /// No description provided for @activityActionPatientUnarchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient unarchived'**
+  String get activityActionPatientUnarchived;
+
+  /// No description provided for @activityActionPatientMedicalProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical profile edited'**
+  String get activityActionPatientMedicalProfileUpdated;
+
+  /// No description provided for @activityActionSessionCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit recorded'**
+  String get activityActionSessionCreated;
+
+  /// No description provided for @activityActionSessionClinicalUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit notes edited'**
+  String get activityActionSessionClinicalUpdated;
+
+  /// No description provided for @activityActionSessionPrivateNoteUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Private note edited'**
+  String get activityActionSessionPrivateNoteUpdated;
+
+  /// No description provided for @activityActionSessionAmountChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount charged changed'**
+  String get activityActionSessionAmountChanged;
+
+  /// No description provided for @activityActionSessionDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit deleted'**
+  String get activityActionSessionDeleted;
 }
 
 class _AppLocalizationsDelegate

@@ -24,8 +24,8 @@ void main() {
     expect(find.text('Examination: not set → EGP 400'), findsOneWidget);
     expect(find.text('Changed منى سمير\'s permissions'), findsOneWidget);
     expect(find.text('Added: Chat.'), findsOneWidget);
-    // Actions the app doesn't know yet still read.
-    expect(find.text('Other action: patient created'), findsWidgets);
+    expect(find.text('Added a new patient'), findsWidgets);
+    expect(find.text('Recorded an examination'), findsWidgets);
     expect(find.text('كريم عادل, file 18'), findsOneWidget);
   });
 
@@ -55,7 +55,7 @@ void main() {
     await tester.tap(find.text('منى حسن, file 17').first);
     await settle(tester);
     expect(find.byType(InputChip), findsOneWidget);
-    expect(find.text('Other action: session created'), findsOneWidget);
+    expect(find.text('Recorded an examination'), findsOneWidget);
     expect(find.text('Changed the working hours of Maadi'), findsNothing);
   });
 

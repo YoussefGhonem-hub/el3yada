@@ -18,9 +18,8 @@ class ActivityNames {
 
 /// Human text for D27 rows, like AD15's `AuditText`: a sentence per action
 /// (without the actor, who shows under it), names for the action filter,
-/// and an icon. To add an action (the patients and sessions API adds
-/// `patientCreated`, `sessionCreated` …), add one line to each switch and
-/// its ARB keys. Unknown actions read «إجراء آخر: patient created».
+/// and an icon. To add an action, add one line to each switch and its ARB
+/// keys. Unknown actions read «إجراء آخر: something new».
 extension ActivityText on AppLocalizations {
   String activitySentence(ActivityEntry entry, ActivityNames names) {
     final d = entry.details;
@@ -50,6 +49,20 @@ extension ActivityText on AppLocalizations {
       'passwordResetRequested' => activityPasswordResetRequested(names.people[target] ?? activitySomeAssistant),
       'doctorRegistrationSubmitted' || 'doctorRegistrationResubmitted' => activityRegistrationSent,
       'emailVerified' => activityEmailVerified,
+      // Patients and sessions (api-phase-2-patients.md, "Audit actions"). The patient shows under the sentence.
+      'patientCreated' => activityPatientCreated,
+      'patientLinked' => activityPatientLinked,
+      'patientUpdated' => activityPatientUpdated,
+      'patientPhoneChanged' => activityPatientPhoneChanged,
+      'patientPasswordReset' => activityPatientPasswordReset,
+      'patientArchived' => activityPatientArchived,
+      'patientUnarchived' => activityPatientUnarchived,
+      'patientMedicalProfileUpdated' => activityPatientMedicalProfileUpdated,
+      'sessionCreated' => d['type'] == 'consultation' ? activitySessionCreatedConsultation : activitySessionCreatedExamination,
+      'sessionClinicalUpdated' => activitySessionClinicalUpdated,
+      'sessionPrivateNoteUpdated' => activitySessionPrivateNoteUpdated,
+      'sessionAmountChanged' => activitySessionAmountChanged,
+      'sessionDeleted' => activitySessionDeleted,
       _ => activityOther(humanizeAction(entry.action)),
     };
   }
@@ -76,6 +89,19 @@ extension ActivityText on AppLocalizations {
         'passwordResetRequested' => activityActionPasswordResetRequested,
         'doctorRegistrationSubmitted' || 'doctorRegistrationResubmitted' => activityActionRegistrationSent,
         'emailVerified' => activityActionEmailVerified,
+        'patientCreated' => activityActionPatientCreated,
+        'patientLinked' => activityActionPatientLinked,
+        'patientUpdated' => activityActionPatientUpdated,
+        'patientPhoneChanged' => activityActionPatientPhoneChanged,
+        'patientPasswordReset' => activityActionPatientPasswordReset,
+        'patientArchived' => activityActionPatientArchived,
+        'patientUnarchived' => activityActionPatientUnarchived,
+        'patientMedicalProfileUpdated' => activityActionPatientMedicalProfileUpdated,
+        'sessionCreated' => activityActionSessionCreated,
+        'sessionClinicalUpdated' => activityActionSessionClinicalUpdated,
+        'sessionPrivateNoteUpdated' => activityActionSessionPrivateNoteUpdated,
+        'sessionAmountChanged' => activityActionSessionAmountChanged,
+        'sessionDeleted' => activityActionSessionDeleted,
         _ => humanizeAction(action),
       };
 
@@ -107,6 +133,15 @@ extension ActivityText on AppLocalizations {
       case 'branchHoursUpdated':
         final periods = d['periods'];
         return periods is int ? activityPeriods(periods) : null;
+      case 'sessionAmountChanged':
+        final before = d['before'];
+        final after = d['after'];
+        return before is int && after is int
+            ? activityFromTo(AppFormat.egp(context, before), AppFormat.egp(context, after))
+            : null;
+      case 'sessionDeleted':
+        final reason = d['reason'];
+        return reason is String && reason.isNotEmpty ? activityReason(reason) : null;
       default:
         return null;
     }
@@ -143,7 +178,16 @@ IconData activityIcon(String action) => switch (action) {
       'assistantPermissionsChanged' => Icons.verified_user_outlined,
       'assistantDisabled' || 'assistantRemoved' => Icons.person_off_outlined,
       'assistantEnabled' || 'assistantUpdated' => Icons.person_outline,
-      'assistantPasswordReset' || 'passwordChanged' || 'passwordSet' || 'passwordResetRequested' => Icons.key_outlined,
+      'assistantPasswordReset' || 'passwordChanged' || 'passwordSet' || 'passwordResetRequested' || 'patientPasswordReset' =>
+        Icons.key_outlined,
+      'patientCreated' || 'patientLinked' => Icons.person_add_alt_outlined,
+      'patientUpdated' || 'patientPhoneChanged' => Icons.edit_outlined,
+      'patientArchived' || 'patientUnarchived' => Icons.inventory_2_outlined,
+      'patientMedicalProfileUpdated' => Icons.medical_information_outlined,
+      'sessionCreated' => Icons.event_available_outlined,
+      'sessionClinicalUpdated' || 'sessionPrivateNoteUpdated' => Icons.edit_note_outlined,
+      'sessionAmountChanged' => Icons.payments_outlined,
+      'sessionDeleted' => Icons.delete_outline,
       _ => Icons.history,
     };
 

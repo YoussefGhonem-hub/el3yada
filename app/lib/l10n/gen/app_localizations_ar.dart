@@ -3314,4 +3314,95 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get assistantNameHint => 'الاسم الأول واسم العائلة على الأقل';
+
+  @override
+  String get activityPatientCreated => 'أضاف مريضاً جديداً';
+
+  @override
+  String get activityPatientLinked => 'أضاف مريضاً لديه حساب بالفعل';
+
+  @override
+  String get activityPatientUpdated => 'عدّل بيانات المريض';
+
+  @override
+  String get activityPatientPhoneChanged => 'غيّر رقم موبايل المريض';
+
+  @override
+  String get activityPatientPasswordReset => 'أعاد تعيين كلمة مرور المريض';
+
+  @override
+  String get activityPatientArchived => 'نقل ملف المريض إلى الأرشيف';
+
+  @override
+  String get activityPatientUnarchived => 'أعاد ملف المريض من الأرشيف';
+
+  @override
+  String get activityPatientMedicalProfileUpdated => 'عدّل الملف الطبي';
+
+  @override
+  String get activitySessionCreatedExamination => 'سجّل كشفاً';
+
+  @override
+  String get activitySessionCreatedConsultation => 'سجّل استشارة';
+
+  @override
+  String get activitySessionClinicalUpdated => 'عدّل البيانات الطبية لزيارة';
+
+  @override
+  String get activitySessionPrivateNoteUpdated => 'عدّل الملاحظة الخاصة لزيارة';
+
+  @override
+  String get activitySessionAmountChanged => 'غيّر المبلغ المدفوع لزيارة';
+
+  @override
+  String get activitySessionDeleted => 'حذف زيارة';
+
+  @override
+  String activityFromTo(String before, String after) {
+    return 'من $before إلى $after';
+  }
+
+  @override
+  String activityReason(String reason) {
+    return 'السبب: $reason';
+  }
+
+  @override
+  String get activityActionPatientCreated => 'إضافة مريض';
+
+  @override
+  String get activityActionPatientLinked => 'ربط مريض';
+
+  @override
+  String get activityActionPatientUpdated => 'تعديل بيانات مريض';
+
+  @override
+  String get activityActionPatientPhoneChanged => 'تغيير موبايل مريض';
+
+  @override
+  String get activityActionPatientPasswordReset => 'إعادة تعيين كلمة مرور مريض';
+
+  @override
+  String get activityActionPatientArchived => 'أرشفة مريض';
+
+  @override
+  String get activityActionPatientUnarchived => 'إلغاء أرشفة مريض';
+
+  @override
+  String get activityActionPatientMedicalProfileUpdated => 'تعديل الملف الطبي';
+
+  @override
+  String get activityActionSessionCreated => 'تسجيل زيارة';
+
+  @override
+  String get activityActionSessionClinicalUpdated => 'تعديل بيانات زيارة';
+
+  @override
+  String get activityActionSessionPrivateNoteUpdated => 'تعديل ملاحظة خاصة';
+
+  @override
+  String get activityActionSessionAmountChanged => 'تغيير المبلغ المدفوع';
+
+  @override
+  String get activityActionSessionDeleted => 'حذف زيارة';
 }

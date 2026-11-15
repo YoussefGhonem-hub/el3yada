@@ -3313,4 +3313,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assistantNameHint => 'A first and a last name, at least';
+
+  @override
+  String get activityPatientCreated => 'Added a new patient';
+
+  @override
+  String get activityPatientLinked =>
+      'Added a patient who already has an account';
+
+  @override
+  String get activityPatientUpdated => 'Edited the patient\'s details';
+
+  @override
+  String get activityPatientPhoneChanged =>
+      'Changed the patient\'s mobile number';
+
+  @override
+  String get activityPatientPasswordReset => 'Reset the patient\'s password';
+
+  @override
+  String get activityPatientArchived => 'Archived the patient\'s file';
+
+  @override
+  String get activityPatientUnarchived =>
+      'Brought the patient\'s file back from the archive';
+
+  @override
+  String get activityPatientMedicalProfileUpdated =>
+      'Edited the medical profile';
+
+  @override
+  String get activitySessionCreatedExamination => 'Recorded an examination';
+
+  @override
+  String get activitySessionCreatedConsultation => 'Recorded a consultation';
+
+  @override
+  String get activitySessionClinicalUpdated =>
+      'Edited a visit\'s medical notes';
+
+  @override
+  String get activitySessionPrivateNoteUpdated =>
+      'Edited a visit\'s private note';
+
+  @override
+  String get activitySessionAmountChanged =>
+      'Changed the amount charged for a visit';
+
+  @override
+  String get activitySessionDeleted => 'Deleted a visit';
+
+  @override
+  String activityFromTo(String before, String after) {
+    return 'From $before to $after';
+  }
+
+  @override
+  String activityReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get activityActionPatientCreated => 'Patient added';
+
+  @override
+  String get activityActionPatientLinked => 'Patient linked';
+
+  @override
+  String get activityActionPatientUpdated => 'Patient edited';
+
+  @override
+  String get activityActionPatientPhoneChanged => 'Patient mobile changed';
+
+  @override
+  String get activityActionPatientPasswordReset => 'Patient password reset';
+
+  @override
+  String get activityActionPatientArchived => 'Patient archived';
+
+  @override
+  String get activityActionPatientUnarchived => 'Patient unarchived';
+
+  @override
+  String get activityActionPatientMedicalProfileUpdated =>
+      'Medical profile edited';
+
+  @override
+  String get activityActionSessionCreated => 'Visit recorded';
+
+  @override
+  String get activityActionSessionClinicalUpdated => 'Visit notes edited';
+
+  @override
+  String get activityActionSessionPrivateNoteUpdated => 'Private note edited';
+
+  @override
+  String get activityActionSessionAmountChanged => 'Amount charged changed';
+
+  @override
+  String get activityActionSessionDeleted => 'Visit deleted';
 }

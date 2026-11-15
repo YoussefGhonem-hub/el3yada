@@ -482,8 +482,11 @@ void main() {
         en.activitySentence(row('branchStatusChanged', target: 'b1', details: {'before': 'active', 'after': 'archived'}), names),
         'Maadi: Open → Archived',
       );
-      expect(en.activitySentence(row('sessionCreated'), names), 'Other action: session created');
-      expect(en.activityActionName('patientCreated'), 'patient created');
+      expect(en.activitySentence(row('sessionCreated', details: {'type': 'consultation'}), names), 'Recorded a consultation');
+      expect(en.activitySentence(row('patientCreated'), names), 'Added a new patient');
+      expect(en.activityActionName('sessionDeleted'), 'Visit deleted');
+      expect(en.activitySentence(row('somethingNew'), names), 'Other action: something new');
+      expect(en.activityActionName('somethingNew'), 'something new');
       expect(humanizeAction('assistantPermissionsChanged'), 'assistant permissions changed');
     });
   });

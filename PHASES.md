@@ -99,12 +99,13 @@ Notes for later phases:
 - [x] `freezed` + `json_serializable` for API models. `AuthSession` is the first one. Generated files are committed, and CI fails if they are out of date.
 
 **App: design and motion foundation** (spec section 12, "Motion and visual polish")
-- [ ] Add `flutter_animate`, `animations`, `lottie`, `skeletonizer` and `flutter_svg` (checked: they resolve with the current Flutter and packages).
-- [ ] Motion tokens in `core/theme/motion.dart`: `fast` / `normal` / `slow` durations, enter and exit curves, and a reduced-motion switch that every animated widget reads.
-- [ ] Page transitions in the router: shared axis forward and back (mirrored in Arabic), fade-through between tabs, and a container transform helper for list → detail.
-- [ ] Custom floating bottom navigation bar for phones: pill shape, sliding mint indicator, outline-to-filled icons, badge pop-in, haptic, RTL mirroring, hidden with the keyboard. The same sliding indicator on the tablet rail and the desktop side menu.
-- [ ] Shared animated widgets: pressable (scale or ripple feedback), staggered list entrance, skeleton loading, empty state with illustration, success animation (Lottie).
-- [ ] Animated logo (ع = 3 stroke drawing) as an SVG or Lottie asset, used by the splash and login.
+- [x] Add `flutter_animate`, `animations`, `lottie`, `skeletonizer` and `flutter_svg`. `flutter_animate` and `flutter_svg` are added but not used yet: `Animate` starts a timer even with no delay, which breaks widget tests that don't pump time, and `flutter_svg` needs per-theme colour mapping. The shared widgets use Flutter's own animations instead (see the Conventions section in `app/README.md`).
+- [x] Motion tokens in `core/theme/motion.dart`: `fast` / `normal` / `slow` durations, enter and exit curves, a spring curve, and one reduced-motion switch (`Motion.of(context)`) that every animated widget reads.
+- [x] Page transitions: shared axis forward and back (mirrored in Arabic), set in the theme so every `GoRoute` gets it; fade-through between tabs (each role is one `StatefulShellRoute`, so each tab keeps its state); `ContainerTransform` for list → detail. Note: the global transition removes the iOS edge swipe to go back; turning it back on is one line in `AppTheme`.
+- [x] Custom floating bottom bar for phones (`FloatingNavBar`): pill shape, sliding mint indicator, outline-to-filled icons, badge pop-in (`navBadgeProvider`), haptic, RTL mirroring, hidden while the keyboard is open. The same indicator on the tablet rail (`AppNavRail`) and the desktop side menu (`AppSideMenu`). At 360 dp, "اللوحة المباشرة" was too long for the bar, so the phone bar uses `navLiveShort` ("المباشر" / "Live"). **Team: confirm this wording.**
+- [x] Shared animated widgets in `core/widgets/`: `Pressable`, `StaggeredEntrance`, `SkeletonLoading`, `EmptyState` (queue-ticket illustration drawn in code), `SuccessCheck` (Lottie, 1.1 s, made for the project), `StateSwitcher` / `AsyncStateSwitcher`, `ShakeOnError`, `SubmitButton` (label → spinner after 300 ms → check).
+- [x] Animated logo: the ع draws itself and the plus pops in (`AppLogoMark(animate: true)`), drawn in code rather than SVG or Lottie. Used on the splash. It carries a Hero tag for the splash → login move, which Phase 1 wires up (A3).
+- *Checked (15 Nov):* `flutter analyze` clean, 89 tests pass, phone, tablet and desktop screenshots checked in Arabic, light and dark. Still open: 60 fps in profile mode and the haptics on a real phone (the Phase 9 motion review).
 
 **Checks (do these before Phase 1 features depend on them)**
 - [ ] **Windows release build:** HTTPS login, token refresh, file upload and a SignalR connection all work (spec section 13).

@@ -71,6 +71,7 @@ class PatientProfileView extends ConsumerWidget {
           ],
         ),
         data: (context, patient) => _ProfileContent(
+          key: ValueKey(patient.patientId),
           patient: patient,
           clinic: clinic,
           showBack: showBack,
@@ -84,7 +85,7 @@ class PatientProfileView extends ConsumerWidget {
 enum _Tab { overview, sessions }
 
 class _ProfileContent extends ConsumerStatefulWidget {
-  const _ProfileContent({required this.patient, required this.clinic, required this.showBack, this.onClose});
+  const _ProfileContent({super.key, required this.patient, required this.clinic, required this.showBack, this.onClose});
 
   final PatientView patient;
   final ClinicContext clinic;
@@ -224,7 +225,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 360,
+                    width: 400,
                     child: ListView(
                       padding: EdgeInsets.only(bottom: bottom),
                       children: [
@@ -510,7 +511,12 @@ class _PhoneRow extends StatelessWidget {
           children: [
             ExcludeSemantics(child: Icon(Icons.phone_iphone, size: 20, color: scheme.onSurfaceVariant)),
             const SizedBox(width: 10),
-            Expanded(child: LtrText(AppFormat.phone(phone), style: theme.textTheme.titleMedium)),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: LtrText(AppFormat.phone(phone), style: theme.textTheme.titleMedium),
+              ),
+            ),
             IconButton(
               tooltip: l10n.patientCall,
               onPressed: () => _open(context, Uri(scheme: 'tel', path: phone)),
@@ -576,7 +582,7 @@ class _Summary extends StatelessWidget {
                         children: [
                           TypeBadge(last!.type),
                           const SizedBox(width: 8),
-                          Flexible(child: Text(ClinicFormat.day(context, last.day), style: theme.textTheme.bodyLarge)),
+                          Flexible(child: Text(ClinicFormat.dayAuto(context, last.day), style: theme.textTheme.bodyLarge)),
                         ],
                       ),
                       const SizedBox(height: 4),
@@ -600,7 +606,7 @@ class _Summary extends StatelessWidget {
                 ),
                 tile(
                   l10n.patientConsultationsSinceExam,
-                  Text(l10n.sessionConsultationCount(visits.consultationsSinceExam, maxConsultations),
+                  Text(l10n.sessionConsultationShort(visits.consultationsSinceExam, maxConsultations),
                       style: theme.textTheme.bodyLarge),
                 ),
                 if (patient.totalPaidPiasters != null)
@@ -915,7 +921,7 @@ class _TimelineRow extends StatelessWidget {
                   child: const SizedBox.square(dimension: 12),
                 ),
                 if (!last)
-                  Expanded(child: Center(child: SizedBox(width: 2, child: ColoredBox(color: scheme.outlineVariant)))),
+                  Expanded(child: Container(width: 2, color: scheme.outlineVariant)),
               ],
             ),
           ),
@@ -940,7 +946,7 @@ class _TimelineRow extends StatelessWidget {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              '${ClinicFormat.day(context, item.day)}  ${ClinicFormat.time(context, item.at)}',
+                              '${ClinicFormat.dayAuto(context, item.day)}  ${ClinicFormat.time(context, item.at)}',
                               style: theme.textTheme.titleSmall,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

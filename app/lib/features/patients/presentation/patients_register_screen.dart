@@ -40,7 +40,7 @@ class PatientsRegisterScreen extends ConsumerStatefulWidget {
 class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen> {
   static const _searchDelay = Duration(milliseconds: 350);
 
-  late final _search = TextEditingController(text: ref.read(registerQueryProvider).search);
+  late final TextEditingController _search;
   final _searchFocus = FocusNode();
   Timer? _debounce;
 
@@ -63,6 +63,7 @@ class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen>
   @override
   void initState() {
     super.initState();
+    _search = TextEditingController(text: ref.read(registerQueryProvider).search);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && ref.read(registerSearchRequestProvider)) _focusSearch();
     });
@@ -126,9 +127,7 @@ class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen>
           return Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AnimatedContainer(
-                duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-                curve: Motion.standardCurve,
+              SizedBox(
                 width: selected == null ? constraints.maxWidth : listWidth,
                 child: _pane(
                   context,
@@ -444,10 +443,12 @@ class _FilterBar extends StatelessWidget {
           onPressed: onClear,
         ),
     ];
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: gutter),
-      child: Row(children: [for (final (i, chip) in chips.indexed) ...[if (i > 0) const SizedBox(width: 8), chip]]),
+    return ClinicChips(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: gutter),
+        child: Row(children: [for (final (i, chip) in chips.indexed) ...[if (i > 0) const SizedBox(width: 8), chip]]),
+      ),
     );
   }
 }
@@ -900,7 +901,7 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
     ),
     _Column(
       label: l10n.patientColumnVisits,
-      width: 108,
+      width: 128,
       sort: RegisterSort.visits,
       cell: (context, row) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -927,8 +928,8 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
       ),
     if (clinic.can(ClinicPermission.clinicalView))
       _Column(
-        label: l10n.patientColumnAllergies,
-        width: 72,
+        label: l10n.patientAllergyFlag,
+        width: 96,
         sort: RegisterSort.allergies,
         cell: (context, row) => (row.hasAllergies ?? false) ? const AllergyFlag(compact: true) : const SizedBox.shrink(),
       ),

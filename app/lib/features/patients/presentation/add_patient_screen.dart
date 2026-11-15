@@ -339,11 +339,6 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
               icon: Icons.link,
               title: l10n.patientPhoneElsewhere,
               body: l10n.patientPhoneElsewhereBody,
-              action: FilledButton.tonalIcon(
-                onPressed: _status == SubmitStatus.idle ? _askToLink : null,
-                icon: const Icon(Icons.link),
-                label: Text(l10n.patientLinkConfirm),
-              ),
             ),
         };
 

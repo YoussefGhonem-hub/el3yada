@@ -706,7 +706,7 @@
   "patientCall": "اتصال",
   "patientWhatsApp": "واتساب",
   "patientFileSummary": "ملخص الملف",
-  "patientConsultationsSinceExam": "منذ آخر كشف",
+  "patientConsultationsSinceExam": "الاستشارات منذ آخر كشف",
   "sessionConsultationCount": "{count, plural, =0{لا استشارات منذ آخر كشف (الحد {max})} other{استشارة {count} من {max} منذ آخر كشف}}",
   "patientProfileEmptyTitle": "لا يوجد ملف طبي بعد",
   "patientProfileEmptyBody": "سجّل الحساسية والأمراض المزمنة والأدوية الحالية.",
@@ -913,5 +913,7 @@
   "patientErrorAlreadyLinked": "هذا الرقم لمريض مسجل لديك بالفعل.",
   "patientErrorPhoneTaken": "هذا الرقم مستخدم لحساب مريض آخر.",
   "sessionErrorBranchArchived": "هذا الفرع مؤرشف. اختر فرعاً آخر.",
-  "sessionErrorAmountNotEditable": "لا يمكن تعديل المبلغ إلا في يوم الزيارة."
+  "sessionErrorAmountNotEditable": "لا يمكن تعديل المبلغ إلا في يوم الزيارة.",
+  "sessionNoClinical": "لا توجد بيانات طبية بعد.",
+  "sessionConsultationShort": "{count} من {max}"
 }

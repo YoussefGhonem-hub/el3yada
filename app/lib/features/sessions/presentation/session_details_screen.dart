@@ -59,7 +59,7 @@ class SessionDetailsPage extends ConsumerWidget {
               Expanded(child: AdminErrorView(error: error, onRetry: () => ref.invalidate(sessionProvider(sessionId)))),
             ],
           ),
-          data: (context, session) => _Details(session: session, clinic: clinic, showPatientLink: showPatientLink),
+          data: (context, session) => _Details(key: ValueKey(session.sessionId), session: session, clinic: clinic, showPatientLink: showPatientLink),
         ),
       ),
     );
@@ -67,7 +67,7 @@ class SessionDetailsPage extends ConsumerWidget {
 }
 
 class _Details extends ConsumerStatefulWidget {
-  const _Details({required this.session, required this.clinic, required this.showPatientLink});
+  const _Details({super.key, required this.session, required this.clinic, required this.showPatientLink});
 
   final SessionView session;
   final ClinicContext clinic;
@@ -218,15 +218,20 @@ class _SummaryCard extends StatelessWidget {
     final amount = session.amountChargedPiasters;
     final recorder = session.recordedBy;
 
+    // BR-S6: the lock sits at the start of the value and stays on its first line.
     Widget locked(String text) => Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Flexible(child: Text(text, style: theme.textTheme.bodyLarge)),
-            const SizedBox(width: 6),
-            Tooltip(
-              message: l10n.sessionLocked,
-              child: Icon(Icons.lock_outline, size: 16, color: scheme.onSurfaceVariant, semanticLabel: l10n.sessionLocked),
+            Padding(
+              padding: const EdgeInsets.only(top: 3),
+              child: Tooltip(
+                message: l10n.sessionLocked,
+                child: Icon(Icons.lock_outline, size: 16, color: scheme.onSurfaceVariant, semanticLabel: l10n.sessionLocked),
+              ),
             ),
+            const SizedBox(width: 6),
+            Flexible(child: Text(text, style: theme.textTheme.bodyLarge)),
           ],
         );
 
@@ -418,15 +423,23 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
           Text(l10n.sessionAwaitingHint, style: muted),
           const SizedBox(height: 16),
         ],
-        block(l10n.sessionChiefComplaint, clinical.chiefComplaint),
-        Text(l10n.sessionVitals, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        const SizedBox(height: 8),
-        VitalsView(vitals: clinical.vitals),
-        const SizedBox(height: 16),
-        block(l10n.sessionFindings, clinical.findings),
-        block(l10n.sessionDiagnosis, clinical.diagnosis),
-        block(l10n.sessionPatientNotes, clinical.patientNotes),
-        block(l10n.sessionFollowUp, clinical.followUpDate == null ? null : ClinicFormat.dayWithWeekday(context, clinical.followUpDate!)),
+        if (clinical.isEmpty)
+          Text(l10n.sessionNoClinical, style: muted)
+        else ...[
+          // The complaint and the diagnosis always show; the rest only when recorded.
+          block(l10n.sessionChiefComplaint, clinical.chiefComplaint),
+          if (!clinical.vitals.isEmpty) ...[
+            Text(l10n.sessionVitals, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            const SizedBox(height: 8),
+            VitalsView(vitals: clinical.vitals),
+            const SizedBox(height: 16),
+          ],
+          if (clinical.findings != null) block(l10n.sessionFindings, clinical.findings),
+          block(l10n.sessionDiagnosis, clinical.diagnosis),
+          if (clinical.patientNotes != null) block(l10n.sessionPatientNotes, clinical.patientNotes),
+          if (clinical.followUpDate != null)
+            block(l10n.sessionFollowUp, ClinicFormat.dayWithWeekday(context, clinical.followUpDate!)),
+        ],
       ],
     );
   }
@@ -447,7 +460,7 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
           enabled: !busy,
           minLines: 1,
           maxLines: 4,
-          maxLength: 1000,
+          inputFormatters: [LengthLimitingTextInputFormatter(1000)],
           decoration: InputDecoration(labelText: l10n.sessionChiefComplaint, errorText: server('chiefComplaint')),
         ),
         const SizedBox(height: 8),
@@ -466,7 +479,7 @@ class _ClinicalCardState extends ConsumerState<_ClinicalCard> {
           enabled: !busy,
           minLines: 1,
           maxLines: 3,
-          maxLength: 1000,
+          inputFormatters: [LengthLimitingTextInputFormatter(1000)],
           decoration: InputDecoration(labelText: l10n.sessionDiagnosis, errorText: server('diagnosis')),
         ),
         const SizedBox(height: 8),

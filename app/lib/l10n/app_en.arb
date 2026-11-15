@@ -828,7 +828,7 @@
   "patientCall": "Call",
   "patientWhatsApp": "WhatsApp",
   "patientFileSummary": "File summary",
-  "patientConsultationsSinceExam": "Since the last examination",
+  "patientConsultationsSinceExam": "Consultations since the last examination",
   "sessionConsultationCount": "{count, plural, =0{No consultations since the last examination (up to {max})} other{Consultation {count} of {max} since the last examination}}",
   "@sessionConsultationCount": {"description":"BR-S4 count: «استشارة 1 من 2 منذ آخر كشف».","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}},
   "patientProfileEmptyTitle": "No medical profile yet",
@@ -1056,5 +1056,8 @@
   "patientErrorAlreadyLinked": "This number is already one of your patients.",
   "patientErrorPhoneTaken": "Another patient account uses this number.",
   "sessionErrorBranchArchived": "This branch is archived. Choose another branch.",
-  "sessionErrorAmountNotEditable": "The amount can be changed only on the day of the session."
+  "sessionErrorAmountNotEditable": "The amount can be changed only on the day of the session.",
+  "sessionNoClinical": "No clinical notes yet.",
+  "sessionConsultationShort": "{count} of {max}",
+  "@sessionConsultationShort": {"description":"Consultations since the last examination, D6 summary.","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}}
 }

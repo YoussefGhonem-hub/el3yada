@@ -78,6 +78,7 @@ class EditPatientScreen extends ConsumerWidget {
             return const SkeletonLoading(loading: true, child: _EditSkeleton());
           }
           return _EditForm(
+            key: ValueKey(patientId),
             patient: patient.requireValue,
             profile: profile.value,
             clinic: clinic,
@@ -103,6 +104,7 @@ class _Item {
 
 class _EditForm extends ConsumerStatefulWidget {
   const _EditForm({
+    super.key,
     required this.patient,
     required this.profile,
     required this.clinic,
@@ -403,7 +405,12 @@ class _EditFormState extends ConsumerState<_EditForm> {
           icon: Icons.phone_iphone,
           child: Row(
             children: [
-              Expanded(child: LtrText(AppFormat.phone(_patient.phone), style: theme.textTheme.titleMedium)),
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: LtrText(AppFormat.phone(_patient.phone), style: theme.textTheme.titleMedium),
+                ),
+              ),
               OutlinedButton.icon(
                 onPressed: busy ? null : _changePhone,
                 icon: const Icon(Icons.swap_horiz),
@@ -447,7 +454,7 @@ class _EditFormState extends ConsumerState<_EditForm> {
             enabled: !busy,
             minLines: 2,
             maxLines: 6,
-            maxLength: 2000,
+            inputFormatters: [LengthLimitingTextInputFormatter(2000)],
             decoration: InputDecoration(hintText: l10n.patientFamilyHistoryHint, errorText: error('familyHistory')),
           ),
         ),
@@ -460,7 +467,7 @@ class _EditFormState extends ConsumerState<_EditForm> {
             enabled: !busy,
             minLines: 2,
             maxLines: 6,
-            maxLength: 2000,
+            inputFormatters: [LengthLimitingTextInputFormatter(2000)],
             decoration: InputDecoration(errorText: error('notes')),
           ),
         ),

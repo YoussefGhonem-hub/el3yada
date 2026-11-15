@@ -34,6 +34,10 @@ abstract final class ClinicFormat {
   /// «الثلاثاء 3 نوفمبر» / "Tue, Nov 3".
   static String dayWithWeekday(BuildContext context, DateTime day) => DateFormat.MMMEd(_locale(context)).format(day);
 
+  /// [dayShort] this year, [day] (with the year) otherwise.
+  static String dayAuto(BuildContext context, DateTime day) =>
+      day.year == today().year ? dayShort(context, day) : ClinicFormat.day(context, day);
+
   /// «نوفمبر 2026» / "November 2026".
   static String month(BuildContext context, DateTime month) => DateFormat.yMMMM(_locale(context)).format(month);
 
@@ -436,4 +440,25 @@ class MoneyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(AppFormat.egp(context, piasters), style: style);
+}
+
+/// Filter and choice chips on the mint ground: a white chip with a hairline,
+/// so an unselected chip still reads as tappable.
+class ClinicChips extends StatelessWidget {
+  const ClinicChips({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ChipTheme(
+      data: ChipTheme.of(context).copyWith(
+        backgroundColor: scheme.surfaceContainerLow,
+        selectedColor: scheme.secondaryContainer,
+        side: BorderSide(color: scheme.outlineVariant),
+      ),
+      child: child,
+    );
+  }
 }

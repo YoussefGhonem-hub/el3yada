@@ -114,7 +114,7 @@ class _MonthlySummaryScreenState extends ConsumerState<MonthlySummaryScreen> {
           padding: EdgeInsets.fromLTRB(gutter, 16, gutter, 8),
           child: ClinicHeader(title: l10n.feesMonthTitle, subtitle: l10n.feesMonthSubtitle, backFallback: paths.dashboard),
         ),
-        Padding(padding: EdgeInsets.symmetric(horizontal: gutter), child: controls),
+        Padding(padding: EdgeInsets.symmetric(horizontal: gutter), child: ClinicChips(child: controls)),
         const SizedBox(height: 12),
         Expanded(
           child: AsyncStateSwitcher<MonthFees>(
@@ -278,7 +278,10 @@ class _DayRow extends StatelessWidget {
     final scheme = theme.colorScheme;
     final empty = day.totals.sessionCount == 0;
     final style = empty ? theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant) : theme.textTheme.bodyLarge;
-    final label = ClinicFormat.dayWithWeekday(context, day.day);
+    // Phones: "15 نوفمبر"; wider: with the weekday.
+    final label = MediaQuery.sizeOf(context).width < 600
+        ? ClinicFormat.dayShort(context, day.day)
+        : ClinicFormat.dayWithWeekday(context, day.day);
     return Semantics(
       button: onTap != null,
       label: '$label, ${feeEquation(context, day.totals)}',

@@ -127,8 +127,15 @@ class DaySessionRow extends StatelessWidget {
         wide: wide,
       );
 
+  /// The columns need about this much room; below it the row stacks.
+  static const double _columnsWidth = 840;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) => _row(context, wide: wide && constraints.maxWidth >= _columnsWidth),
+      );
+
+  Widget _row(BuildContext context, {required bool wide}) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
@@ -152,7 +159,6 @@ class DaySessionRow extends StatelessWidget {
         children: [
           SizedBox(width: 88, child: time),
           Expanded(
-            flex: 3,
             child: Row(
               children: [
                 Flexible(child: Text(item.patientName, style: theme.textTheme.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
@@ -163,14 +169,14 @@ class DaySessionRow extends StatelessWidget {
           ),
           SizedBox(width: 110, child: Align(alignment: AlignmentDirectional.centerStart, child: TypeBadge(item.type))),
           SizedBox(width: 96, child: Text(AppFormat.egp(context, item.platformFeePiasters), style: theme.textTheme.bodyMedium)),
-          Expanded(
-            flex: 2,
+          SizedBox(
+            width: 128,
             child: Text(item.branch.name(language), style: muted, maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
           if (showRecorder)
-            Expanded(flex: 2, child: Text(recorder, style: muted, maxLines: 1, overflow: TextOverflow.ellipsis)),
+            SizedBox(width: 128, child: Text(recorder, style: muted, maxLines: 1, overflow: TextOverflow.ellipsis)),
           SizedBox(
-            width: 150,
+            width: 140,
             child: Align(
               alignment: AlignmentDirectional.centerEnd,
               child: item.awaitingDoctor ? const AwaitingDoctorBadge() : const SizedBox.shrink(),

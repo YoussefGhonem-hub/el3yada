@@ -200,7 +200,7 @@ class _QuickActions extends StatelessWidget {
     final scheme = theme.colorScheme;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final columns = constraints.maxWidth < 360 ? 1 : actions.length.clamp(1, 3);
+        final columns = constraints.maxWidth < 280 ? 1 : actions.length.clamp(1, 3);
         final spacing = 12.0;
         final tileWidth = (constraints.maxWidth - spacing * (columns - 1)) / columns;
         return Wrap(
@@ -214,7 +214,7 @@ class _QuickActions extends StatelessWidget {
                   onTap: action.onTap,
                   semanticLabel: action.label,
                   child: Container(
-                    constraints: const BoxConstraints(minHeight: 96),
+                    constraints: const BoxConstraints(minHeight: 92),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: action.primary ? scheme.primary : scheme.surfaceContainerLow,

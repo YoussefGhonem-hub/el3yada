@@ -2490,7 +2490,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patientFileSummary => 'File summary';
 
   @override
-  String get patientConsultationsSinceExam => 'Since the last examination';
+  String get patientConsultationsSinceExam =>
+      'Consultations since the last examination';
 
   @override
   String sessionConsultationCount(int count, int max) {
@@ -3203,4 +3204,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sessionErrorAmountNotEditable =>
       'The amount can be changed only on the day of the session.';
+
+  @override
+  String get sessionNoClinical => 'No clinical notes yet.';
+
+  @override
+  String sessionConsultationShort(int count, int max) {
+    return '$count of $max';
+  }
 }

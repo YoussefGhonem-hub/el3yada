@@ -168,7 +168,7 @@ class _TodaySessionsScreenState extends ConsumerState<TodaySessionsScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Padding(padding: EdgeInsets.symmetric(horizontal: gutter), child: filters),
+        Padding(padding: EdgeInsets.symmetric(horizontal: gutter), child: ClinicChips(child: filters)),
         const SizedBox(height: 12),
         Expanded(
           child: AsyncStateSwitcher<DaySessions>(

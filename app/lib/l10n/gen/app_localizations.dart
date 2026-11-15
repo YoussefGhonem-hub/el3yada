@@ -4329,7 +4329,7 @@ abstract class AppLocalizations {
   /// No description provided for @patientConsultationsSinceExam.
   ///
   /// In en, this message translates to:
-  /// **'Since the last examination'**
+  /// **'Consultations since the last examination'**
   String get patientConsultationsSinceExam;
 
   /// BR-S4 count: «استشارة 1 من 2 منذ آخر كشف».
@@ -5573,6 +5573,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The amount can be changed only on the day of the session.'**
   String get sessionErrorAmountNotEditable;
+
+  /// No description provided for @sessionNoClinical.
+  ///
+  /// In en, this message translates to:
+  /// **'No clinical notes yet.'**
+  String get sessionNoClinical;
+
+  /// Consultations since the last examination, D6 summary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max}'**
+  String sessionConsultationShort(int count, int max);
 }
 
 class _AppLocalizationsDelegate

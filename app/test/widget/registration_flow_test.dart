@@ -423,7 +423,8 @@ void main() {
 
     app.auth.current = app.auth.current!.copyWith(doctorStatus: DoctorStatus.active);
     await tapText(tester, 'Refresh');
-    expect(find.text('Screen D34 in spec.md'), findsOneWidget);
+    // The doctor's home (D34 until the live board arrives in Phase 6).
+    expect(find.text('Search patient'), findsOneWidget);
   });
 
   testWidgets('A5: Resend starts a visible 60-second cooldown, and a code verifies the email', (tester) async {

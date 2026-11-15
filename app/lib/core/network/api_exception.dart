@@ -15,6 +15,7 @@ class ApiException implements Exception {
     this.fieldCodes = const {},
     this.retryAfter,
     this.cause,
+    this.details = const {},
   });
 
   /// Not from the API: used by the app itself (for example a patient on desktop).
@@ -23,7 +24,8 @@ class ApiException implements Exception {
         status = null,
         fieldCodes = const {},
         retryAfter = null,
-        cause = null;
+        cause = null,
+        details = const {};
 
   factory ApiException.fromDio(DioException error) {
     if (error.error is ApiException) return error.error! as ApiException;
@@ -50,8 +52,10 @@ class ApiException implements Exception {
     final body = response?.data;
     String? code;
     final fieldCodes = <String, String>{};
+    var details = const <String, Object?>{};
     if (body is Map) {
       code = body['code'] as String?;
+      details = body.cast<String, Object?>();
       final errorCodes = body['errorCodes'];
       if (errorCodes is Map) {
         for (final entry in errorCodes.entries) {
@@ -74,6 +78,7 @@ class ApiException implements Exception {
       fieldCodes: fieldCodes,
       retryAfter: retryAfter,
       cause: error,
+      details: details,
     );
   }
 
@@ -83,6 +88,11 @@ class ApiException implements Exception {
   final Map<String, String> fieldCodes;
   final Duration? retryAfter;
   final Object? cause;
+
+  /// The whole problem+json body, for the extra fields some codes carry:
+  /// `reason` on `CONSULTATION_REQUIRES_EXAM` and `SESSION_NOT_DELETABLE`,
+  /// `patientId` on `PATIENT_ALREADY_LINKED` (backend/docs/api-phase-2-patients.md).
+  final Map<String, Object?> details;
 
   bool get isNetwork => kind == ApiErrorKind.network;
 
@@ -119,4 +129,13 @@ abstract final class ApiCodes {
   static const doctorPendingApproval = 'DOCTOR_PENDING_APPROVAL';
   static const doctorRejected = 'DOCTOR_REJECTED';
   static const doctorSuspended = 'DOCTOR_SUSPENDED';
+
+  // Patients and sessions (backend/docs/api-phase-2-patients.md).
+  static const notLinked = 'NOT_LINKED';
+  static const patientAlreadyLinked = 'PATIENT_ALREADY_LINKED';
+  static const patientPhoneTaken = 'PATIENT_PHONE_TAKEN';
+  static const consultationRequiresExam = 'CONSULTATION_REQUIRES_EXAM';
+  static const branchArchived = 'BRANCH_ARCHIVED';
+  static const amountNotEditable = 'AMOUNT_NOT_EDITABLE';
+  static const sessionNotDeletable = 'SESSION_NOT_DELETABLE';
 }

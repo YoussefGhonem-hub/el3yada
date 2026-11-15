@@ -19,6 +19,7 @@ import '../features/clinic_admin/presentation/branches/branches_screen.dart';
 import '../features/clinic_admin/presentation/prices/visit_prices_screen.dart';
 import '../features/clinic_admin/presentation/profile/doctor_profile_screen.dart';
 import '../features/clinic_admin/presentation/settings/clinic_settings_screen.dart';
+import '../features/patients/clinic_routes.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_shells.dart';
 
@@ -42,6 +43,8 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   ClinicAdminRoutes.branches: (_) => const BranchesScreen(),
   ClinicAdminRoutes.assistants: (_) => const AssistantsScreen(),
   ClinicAdminRoutes.activity: (_) => const ActivityLogScreen(),
+  // D1–D9, AS1–AS5 (patients, sessions, fees).
+  ...clinicDestinationScreens,
 };
 
 /// Detail routes under a destination, relative to it, for example
@@ -93,6 +96,7 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
       builder: (context, state) => const VisitPricesScreen(),
     ),
   ],
+  ...clinicDestinationRoutes,
 };
 
 Widget destinationPage(BuildContext context, NavDestinationSpec destination) =>

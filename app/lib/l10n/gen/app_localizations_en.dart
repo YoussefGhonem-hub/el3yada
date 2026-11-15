@@ -3412,4 +3412,1085 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityActionSessionDeleted => 'Visit deleted';
+
+  @override
+  String get sessionToday => 'Today';
+
+  @override
+  String get sessionYesterday => 'Yesterday';
+
+  @override
+  String sessionDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionTypeExamination => 'Examination';
+
+  @override
+  String get sessionTypeConsultation => 'Consultation';
+
+  @override
+  String get sessionPaymentCash => 'Cash';
+
+  @override
+  String get sessionPaymentCard => 'Card';
+
+  @override
+  String get sessionPaymentInstapay => 'InstaPay';
+
+  @override
+  String get sessionPaymentWallet => 'Mobile wallet';
+
+  @override
+  String get sessionAwaitingDoctor => 'Waiting for the doctor';
+
+  @override
+  String get patientHasAllergies => 'Has allergies';
+
+  @override
+  String get patientAllergyFlag => 'Allergies';
+
+  @override
+  String patientFileNumber(String number) {
+    return 'File $number';
+  }
+
+  @override
+  String feesEquation(String examinations, String consultations, String total) {
+    return '$examinations + $consultations = $total';
+  }
+
+  @override
+  String feesExaminationCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count examinations',
+      one: '1 examination',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String feesConsultationCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count consultations',
+      one: '1 consultation',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientAdd => 'Add patient';
+
+  @override
+  String patientRegisterCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count patients',
+      one: '1 patient',
+      zero: 'No patients',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientSearchHint => 'Search by name, mobile or file number';
+
+  @override
+  String get patientNoMatchTitle => 'No patients match';
+
+  @override
+  String get patientNoMatchBody => 'Try another name, number or filter.';
+
+  @override
+  String get patientFilterClear => 'Clear filters';
+
+  @override
+  String get patientEmptyTitle => 'No patients yet';
+
+  @override
+  String get patientEmptyBody => 'Add your first patient to open their file.';
+
+  @override
+  String get patientFilterLastVisit => 'Last visit';
+
+  @override
+  String get patientFilterAny => 'Any';
+
+  @override
+  String get patientFilterBranch => 'Branch';
+
+  @override
+  String get patientFilterAllBranches => 'All branches';
+
+  @override
+  String get patientFilterVisits => 'Visits';
+
+  @override
+  String get patientFilterNewThisMonth => 'New this month';
+
+  @override
+  String get patientFilterChronic => 'Chronic disease';
+
+  @override
+  String get patientFilterArchived => 'Archived';
+
+  @override
+  String get patientVisitsOne => '1 visit';
+
+  @override
+  String get patientVisitsFew => '2 to 4 visits';
+
+  @override
+  String get patientVisitsMany => '5 visits or more';
+
+  @override
+  String get patientLastVisitThisWeek => 'This week';
+
+  @override
+  String get patientLastVisitThisMonth => 'This month';
+
+  @override
+  String get patientLastVisitNotSeen3m => 'Not seen for 3 months';
+
+  @override
+  String get patientLastVisitNotSeen6m => 'Not seen for 6 months';
+
+  @override
+  String get patientLastVisitNotSeen12m => 'Not seen for a year';
+
+  @override
+  String get patientLastVisitNever => 'Never visited';
+
+  @override
+  String get patientArchived => 'Archived';
+
+  @override
+  String get patientNoVisits => 'No visits yet';
+
+  @override
+  String get patientColumnFile => 'File';
+
+  @override
+  String get patientColumnName => 'Name';
+
+  @override
+  String get patientColumnPhone => 'Mobile';
+
+  @override
+  String get patientColumnAge => 'Age';
+
+  @override
+  String get patientColumnFirstVisit => 'First visit';
+
+  @override
+  String get patientColumnLastVisit => 'Last visit';
+
+  @override
+  String get patientColumnVisits => 'Visits';
+
+  @override
+  String get patientColumnPaid => 'Paid';
+
+  @override
+  String get patientColumnAllergies => 'Allergies';
+
+  @override
+  String patientVisitsSplit(int examinations, int consultations) {
+    return '$examinations exam., $consultations consult.';
+  }
+
+  @override
+  String get patientGenderMale => 'Male';
+
+  @override
+  String get patientGenderFemale => 'Female';
+
+  @override
+  String patientAgeYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years years',
+      one: '1 year',
+      zero: 'Under 1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientAgeGender(String age, String gender) {
+    return '$age, $gender';
+  }
+
+  @override
+  String patientVisitsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count visits',
+      one: '1 visit',
+      zero: 'No visits',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientVisitsSummary(
+    String visits,
+    String examinations,
+    String consultations,
+  ) {
+    return '$visits: $examinations, $consultations';
+  }
+
+  @override
+  String get patientSortFileNumber => 'File number';
+
+  @override
+  String get patientSortGender => 'Gender';
+
+  @override
+  String get patientSortExaminations => 'Examinations';
+
+  @override
+  String get patientSortConsultations => 'Consultations';
+
+  @override
+  String get patientSortFiles => 'Files';
+
+  @override
+  String get patientSortLinkedAt => 'Date added';
+
+  @override
+  String get patientTotalPaid => 'Total paid';
+
+  @override
+  String patientLastVisitSemantics(String type, String date, String ago) {
+    return 'Last visit: $type, $date, $ago';
+  }
+
+  @override
+  String get patientResetPasswordTitle => 'Reset the password?';
+
+  @override
+  String patientResetPasswordBody(String name) {
+    return '$name gets a new temporary password and is signed out on every device. They choose their own at the next sign-in.';
+  }
+
+  @override
+  String get patientResetPassword => 'Reset password';
+
+  @override
+  String get patientNewTemporaryPassword => 'New temporary password';
+
+  @override
+  String get patientArchiveTitle => 'Archive this patient?';
+
+  @override
+  String get patientUnarchiveTitle => 'Bring this patient back?';
+
+  @override
+  String get patientArchiveBody =>
+      'They leave the patients list. Nothing is deleted, and a new session brings them back.';
+
+  @override
+  String get patientUnarchiveBody => 'They appear in the patients list again.';
+
+  @override
+  String get patientArchive => 'Archive';
+
+  @override
+  String get patientUnarchive => 'Unarchive';
+
+  @override
+  String get patientArchivedDone => 'Patient archived';
+
+  @override
+  String get patientUnarchivedDone => 'Patient back in the list';
+
+  @override
+  String get patientMoreActions => 'More actions';
+
+  @override
+  String get sessionNew => 'New session';
+
+  @override
+  String get patientEdit => 'Edit';
+
+  @override
+  String get patientLinkedNote =>
+      'This patient\'s account was created by another clinic. You see their name, mobile, gender and date of birth, and only the records your clinic adds.';
+
+  @override
+  String get patientDetails => 'Personal details';
+
+  @override
+  String get patientBloodType => 'Blood type';
+
+  @override
+  String get patientNationalId => 'National ID';
+
+  @override
+  String get patientAddress => 'Address';
+
+  @override
+  String get patientEmergencyContact => 'Emergency contact';
+
+  @override
+  String get patientNoTabs =>
+      'Your permissions don\'t include this patient\'s medical file.';
+
+  @override
+  String get patientTabOverview => 'Overview';
+
+  @override
+  String get patientTabSessions => 'Sessions';
+
+  @override
+  String get patientCantOpenApp => 'No app on this device can open it.';
+
+  @override
+  String get patientCall => 'Call';
+
+  @override
+  String get patientWhatsApp => 'WhatsApp';
+
+  @override
+  String get patientFileSummary => 'File summary';
+
+  @override
+  String get patientConsultationsSinceExam =>
+      'Consultations since the last examination';
+
+  @override
+  String sessionConsultationCount(int count, int max) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Consultation $count of $max since the last examination',
+      zero: 'No consultations since the last examination (up to $max)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientProfileEmptyTitle => 'No medical profile yet';
+
+  @override
+  String get patientProfileEmptyBody =>
+      'Record allergies, chronic diseases and current medications.';
+
+  @override
+  String get patientEditMedicalProfile => 'Edit medical profile';
+
+  @override
+  String get patientAllergies => 'Allergies';
+
+  @override
+  String get patientChronicDiseases => 'Chronic diseases';
+
+  @override
+  String get patientCurrentMedications => 'Current medications';
+
+  @override
+  String get patientSurgeries => 'Past surgeries';
+
+  @override
+  String get patientFamilyHistory => 'Family history';
+
+  @override
+  String get patientGeneralNotes => 'Notes';
+
+  @override
+  String get patientNoAllergies => 'No known allergies';
+
+  @override
+  String get patientNothingRecorded => 'Nothing recorded';
+
+  @override
+  String get patientSessionsEmptyTitle => 'No sessions yet';
+
+  @override
+  String get patientSessionsEmptyBody =>
+      'A first visit is always an examination.';
+
+  @override
+  String get patientLoadMore => 'Show more';
+
+  @override
+  String sessionPlatformFeeShort(String amount) {
+    return 'Fee $amount';
+  }
+
+  @override
+  String sessionRecordedBy(String name) {
+    return 'Recorded by $name';
+  }
+
+  @override
+  String get patientCheckFields => 'Check the highlighted fields.';
+
+  @override
+  String get patientAddSubtitle =>
+      'The patient gets an account and a file number. Their temporary password is shown once.';
+
+  @override
+  String get patientMobile => 'Mobile number';
+
+  @override
+  String get patientMobileHint => 'The patient signs in with it.';
+
+  @override
+  String get patientMobileLabel => 'Mobile';
+
+  @override
+  String get patientPhoneChecking => 'Checking the number…';
+
+  @override
+  String get patientPhoneNew => 'New number. Fill in the patient’s details.';
+
+  @override
+  String get patientPhoneOurs => 'This number is already one of your patients';
+
+  @override
+  String get patientPhoneElsewhere =>
+      'This number already has an el3yada account';
+
+  @override
+  String get patientPhoneElsewhereBody =>
+      'Link the patient to add them to your list. No new account is created.';
+
+  @override
+  String get patientLinkTitle => 'This patient already has an account';
+
+  @override
+  String patientLinkBody(String phone) {
+    return 'The number $phone belongs to a patient of another clinic. Linking adds them to your list with a new file number.';
+  }
+
+  @override
+  String get patientLinkPrivacy =>
+      'You will see their name, mobile, gender and date of birth, and only the records your clinic creates.';
+
+  @override
+  String get patientLinkConfirm => 'Link patient';
+
+  @override
+  String get patientLinkedTitle => 'Patient added';
+
+  @override
+  String get patientLinkedBody =>
+      'This patient already has an account and has been added to your list.';
+
+  @override
+  String get patientOpenFile => 'Open file';
+
+  @override
+  String get patientErrorName => 'Write at least two names, in letters only.';
+
+  @override
+  String get patientErrorAge => 'Enter an age from 0 to 120.';
+
+  @override
+  String get patientErrorDateOfBirth => 'The date of birth isn’t valid.';
+
+  @override
+  String get patientErrorNationalId => 'The national ID must be 14 digits.';
+
+  @override
+  String get patientIdentity => 'Identity';
+
+  @override
+  String get patientFullName => 'Full name';
+
+  @override
+  String get patientFullNameHint => 'At least two names';
+
+  @override
+  String get patientGender => 'Gender';
+
+  @override
+  String get patientDateOfBirth => 'Date of birth or age';
+
+  @override
+  String get patientUseDate => 'Date';
+
+  @override
+  String get patientUseAge => 'Age';
+
+  @override
+  String get patientAgeLabel => 'Age in years';
+
+  @override
+  String get patientYearsSuffix => 'years';
+
+  @override
+  String get patientDateOfBirthLabel => 'Date of birth';
+
+  @override
+  String get patientMoreDetails => 'More details';
+
+  @override
+  String get patientOptional => 'Optional';
+
+  @override
+  String get patientNationalIdHint => '14 digits';
+
+  @override
+  String get patientNotSet => 'Not set';
+
+  @override
+  String get patientEmergencyName => 'Emergency contact name';
+
+  @override
+  String get patientEmergencyPhone => 'Emergency contact number';
+
+  @override
+  String get patientEditTitle => 'Edit patient';
+
+  @override
+  String get patientMedicalProfile => 'Medical profile';
+
+  @override
+  String get patientDiscardBody =>
+      'Your changes haven’t been saved and will be lost.';
+
+  @override
+  String get patientSaved => 'Saved';
+
+  @override
+  String get patientNoChanges => 'No changes';
+
+  @override
+  String get patientUnsaved => 'Changes not saved';
+
+  @override
+  String get patientPhoneChangeHint =>
+      'The patient’s login. It changes on its own, with a confirmation.';
+
+  @override
+  String get patientChangePhone => 'Change number';
+
+  @override
+  String patientChangePhoneBody(String name) {
+    return '$name will sign in with the new number. Devices already signed in stay signed in.';
+  }
+
+  @override
+  String get patientNewMobile => 'New mobile number';
+
+  @override
+  String get patientChangePhoneConfirm => 'Change number';
+
+  @override
+  String get patientPhoneSame => 'This is the current number.';
+
+  @override
+  String get patientPhoneChanged =>
+      'Mobile number changed. The patient signs in with the new one.';
+
+  @override
+  String get patientFamilyHistoryHint => 'For example: father, diabetes';
+
+  @override
+  String patientListCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'None',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientListFull => 'A list holds 50 items at most.';
+
+  @override
+  String get patientListDuplicate => 'Already in the list.';
+
+  @override
+  String get patientMoveUp => 'Move up';
+
+  @override
+  String get patientMoveDown => 'Move down';
+
+  @override
+  String patientRemoveItem(String item) {
+    return 'Remove $item';
+  }
+
+  @override
+  String get patientAddItemHint => 'Add an item';
+
+  @override
+  String get patientAddItem => 'Add';
+
+  @override
+  String sessionConsultationLimit(int max) {
+    String _temp0 = intl.Intl.pluralLogic(
+      max,
+      locale: localeName,
+      other:
+          'This patient has had $max consultations in a row. Record an examination first.',
+      one:
+          'This patient has had 1 consultation in a row. Record an examination first.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionRuleFirstVisit =>
+      'This is the patient\'s first visit with you, so it must be an examination.';
+
+  @override
+  String sessionRuleChanged(String message) {
+    return 'A session was just recorded for this patient on another device. $message';
+  }
+
+  @override
+  String get sessionStepType => 'Visit type';
+
+  @override
+  String get sessionStepDetails => 'Details and amount';
+
+  @override
+  String get sessionPickType => 'Choose the visit type.';
+
+  @override
+  String sessionPicked(String type) {
+    return '$type selected';
+  }
+
+  @override
+  String get sessionNext => 'Next';
+
+  @override
+  String get sessionSave => 'Save session';
+
+  @override
+  String get sessionAmountRequired => 'Enter the amount charged.';
+
+  @override
+  String get sessionClinical => 'Clinical notes';
+
+  @override
+  String get sessionChiefComplaint => 'Chief complaint';
+
+  @override
+  String get sessionFindings => 'Examination findings';
+
+  @override
+  String get sessionDiagnosis => 'Diagnosis';
+
+  @override
+  String get sessionPatientNotes => 'Notes for the patient';
+
+  @override
+  String get sessionPatientNotesHint => 'The patient sees these in their app.';
+
+  @override
+  String get sessionAmountCharged => 'Amount charged';
+
+  @override
+  String get sessionNoPrice =>
+      'No visit price is set for this branch. Enter what the patient paid.';
+
+  @override
+  String sessionVisitPrice(String amount) {
+    return 'Visit price $amount';
+  }
+
+  @override
+  String get sessionFree => 'Free';
+
+  @override
+  String get sessionAmountLabel => 'Amount';
+
+  @override
+  String get sessionCurrency => 'EGP';
+
+  @override
+  String get sessionAmountHint =>
+      'Lower it for a discount. It never changes the platform fee.';
+
+  @override
+  String get sessionFreeVisit => 'Free visit';
+
+  @override
+  String get sessionPaymentMethod => 'Payment method (optional)';
+
+  @override
+  String sessionBranch(String name) {
+    return 'Branch: $name';
+  }
+
+  @override
+  String get sessionChangeBranch => 'Change branch';
+
+  @override
+  String get sessionFirstVisit => 'First visit with you: examination only';
+
+  @override
+  String sessionLastSession(String type, String date) {
+    return 'Last session: $type, $date';
+  }
+
+  @override
+  String get sessionNoPriceShort => 'No price set';
+
+  @override
+  String get sessionNoPriceHint => 'Type the amount in the next step';
+
+  @override
+  String get sessionVisitPriceLabel => 'Visit price';
+
+  @override
+  String sessionPlatformFee(String amount) {
+    return 'Platform fee $amount';
+  }
+
+  @override
+  String get sessionPrivateNote => 'Private note';
+
+  @override
+  String get sessionPrivateNoteHint => 'Not visible to the patient';
+
+  @override
+  String get sessionPrivateNotePlaceholder => 'Only you can read this.';
+
+  @override
+  String get sessionFollowUp => 'Follow-up date';
+
+  @override
+  String get sessionClearFollowUp => 'Clear the follow-up date';
+
+  @override
+  String sessionConfirmTitle(String type) {
+    return 'Save as $type?';
+  }
+
+  @override
+  String sessionConfirmFee(String amount) {
+    return 'A fee of $amount will be added.';
+  }
+
+  @override
+  String get sessionConfirmPatient => 'Patient';
+
+  @override
+  String get sessionConfirmBranch => 'Branch';
+
+  @override
+  String get sessionConfirmLocked =>
+      'The type and time can\'t be changed after saving.';
+
+  @override
+  String get sessionConfirmSave => 'Save';
+
+  @override
+  String get sessionLater => 'Later';
+
+  @override
+  String get sessionSaved => 'Session saved';
+
+  @override
+  String sessionSavedBody(String type, String patient, String fee) {
+    return '$type for $patient. A fee of $fee was added.';
+  }
+
+  @override
+  String get sessionWritePrescription => 'Write prescription';
+
+  @override
+  String get sessionLabRequest => 'Lab or radiology request';
+
+  @override
+  String get sessionAttachFiles => 'Attach files';
+
+  @override
+  String get sessionView => 'View session';
+
+  @override
+  String get sessionPickPatient => 'Choose the patient';
+
+  @override
+  String get sessionRecentPatients => 'Recent patients';
+
+  @override
+  String get sessionSearchResults => 'Results';
+
+  @override
+  String get sessionVitals => 'Vitals';
+
+  @override
+  String get sessionVitalsHint =>
+      'Blood pressure, pulse, temperature, weight, height, blood sugar';
+
+  @override
+  String get sessionVitalBp => 'Blood pressure';
+
+  @override
+  String get sessionVitalBpSys => 'Systolic';
+
+  @override
+  String get sessionVitalBpDia => 'Diastolic';
+
+  @override
+  String get sessionVitalPulse => 'Pulse';
+
+  @override
+  String get sessionVitalTemp => 'Temperature';
+
+  @override
+  String get sessionVitalWeight => 'Weight';
+
+  @override
+  String get sessionVitalHeight => 'Height';
+
+  @override
+  String get sessionVitalGlucose => 'Blood sugar';
+
+  @override
+  String get sessionVitalBpPair => 'Enter both blood pressure values.';
+
+  @override
+  String get sessionVitalUnusual => 'Unusual value, check it.';
+
+  @override
+  String get sessionNoVitals => 'No vitals recorded';
+
+  @override
+  String get sessionRecordedByDoctor => 'The doctor';
+
+  @override
+  String feesExaminationsFee(String amount) {
+    return 'Examinations $amount';
+  }
+
+  @override
+  String feesConsultationsFee(String amount) {
+    return 'Consultations $amount';
+  }
+
+  @override
+  String get sessionDetailsTitle => 'Session details';
+
+  @override
+  String get sessionLocked => 'Can\'t be changed after saving';
+
+  @override
+  String get sessionSummary => 'Session';
+
+  @override
+  String get sessionTime => 'Time';
+
+  @override
+  String get sessionType => 'Type';
+
+  @override
+  String get sessionBranchLabel => 'Branch';
+
+  @override
+  String get sessionPlatformFeeLabel => 'Platform fee';
+
+  @override
+  String get sessionRecordedByLabel => 'Recorded by';
+
+  @override
+  String sessionRecordedByAssistant(String name) {
+    return '$name (assistant)';
+  }
+
+  @override
+  String get sessionEditAmount => 'Change the amount';
+
+  @override
+  String get sessionAmountSaved => 'Amount saved';
+
+  @override
+  String get sessionAmountLogged =>
+      'Every change is recorded in the activity log.';
+
+  @override
+  String get sessionNotRecorded => 'Not recorded';
+
+  @override
+  String get sessionAwaitingHint =>
+      'Recorded by an assistant. Add the clinical notes to clear «Waiting for the doctor».';
+
+  @override
+  String get sessionNoPrivateNote => 'No private note';
+
+  @override
+  String get sessionDelete => 'Delete session';
+
+  @override
+  String get sessionDeleted => 'Session deleted';
+
+  @override
+  String get sessionNotDeletableLatest =>
+      'Only the patient\'s latest session can be deleted.';
+
+  @override
+  String get sessionNotDeletableDay =>
+      'A session can be deleted only on the day it was recorded.';
+
+  @override
+  String get sessionDeleteTitle => 'Delete this session?';
+
+  @override
+  String get sessionDeleteBody =>
+      'Its fee comes off today’s and this month’s totals, and the deletion is recorded with your reason.';
+
+  @override
+  String get sessionDeleteReason => 'Reason';
+
+  @override
+  String get sessionDeleteReasonRequired =>
+      'Write the reason (3 characters or more).';
+
+  @override
+  String get sessionDeleteConfirm => 'Delete';
+
+  @override
+  String get sessionTodayTitle => 'Today\'s sessions';
+
+  @override
+  String get sessionDayTitle => 'Sessions';
+
+  @override
+  String get sessionRecordedByAll => 'Everyone';
+
+  @override
+  String get sessionDayNoMatch => 'No sessions match';
+
+  @override
+  String get sessionDayEmptyTitle => 'No sessions on this day';
+
+  @override
+  String get sessionDayEmptyBody =>
+      'Sessions you record appear here with their fees.';
+
+  @override
+  String get sessionPreviousDay => 'Previous day';
+
+  @override
+  String get sessionNextDay => 'Next day';
+
+  @override
+  String get sessionBackToToday => 'Today';
+
+  @override
+  String get feesPlatformFees => 'Platform fees';
+
+  @override
+  String get feesCollected => 'Collected';
+
+  @override
+  String get feesMonthTitle => 'Monthly summary';
+
+  @override
+  String get feesMonthSubtitle =>
+      'Platform fees, examinations and consultations';
+
+  @override
+  String get feesPreviousMonth => 'Previous month';
+
+  @override
+  String get feesNextMonth => 'Next month';
+
+  @override
+  String get feesMonthTotals => 'Month to date';
+
+  @override
+  String get feesPerBranch => 'Per branch';
+
+  @override
+  String get feesMonthNoDays => 'This month has no days yet.';
+
+  @override
+  String get feesColumnDay => 'Day';
+
+  @override
+  String get feesColumnExaminations => 'Exam.';
+
+  @override
+  String get feesColumnConsultations => 'Consult.';
+
+  @override
+  String get feesColumnAmount => 'Fees';
+
+  @override
+  String get feesToday => 'Today';
+
+  @override
+  String get feesThisMonth => 'This month';
+
+  @override
+  String get homeAnalyticsLaterTitle => 'Charts and insights are coming';
+
+  @override
+  String get homeAnalyticsLaterBody =>
+      'Revenue, visits and booking trends arrive in a later update.';
+
+  @override
+  String get homeToday => 'Today';
+
+  @override
+  String get homeSearchPatient => 'Search patient';
+
+  @override
+  String get homeTodaySessions => 'Today\'s sessions';
+
+  @override
+  String homeTodaySessionsIn(String branch) {
+    return 'Today\'s sessions in $branch';
+  }
+
+  @override
+  String get homeNoSessionsTitle => 'No sessions yet today';
+
+  @override
+  String get homeNoSessionsBody => 'Record the first visit of the day.';
+
+  @override
+  String get sessionErrorNotLinked => 'This patient isn\'t on your list.';
+
+  @override
+  String get patientErrorAlreadyLinked =>
+      'This number is already one of your patients.';
+
+  @override
+  String get patientErrorPhoneTaken =>
+      'Another patient account uses this number.';
+
+  @override
+  String get sessionErrorBranchArchived =>
+      'This branch is archived. Choose another branch.';
+
+  @override
+  String get sessionErrorAmountNotEditable =>
+      'The amount can be changed only on the day of the session.';
+
+  @override
+  String get sessionNoClinical => 'No clinical notes yet.';
+
+  @override
+  String sessionConsultationShort(int count, int max) {
+    return '$count of $max';
+  }
 }

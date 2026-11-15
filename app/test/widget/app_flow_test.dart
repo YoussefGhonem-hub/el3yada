@@ -13,12 +13,13 @@ void main() {
     expect(find.text('Mobile number or email'), findsOneWidget);
   });
 
-  testWidgets('a doctor on desktop lands on the live board with the side menu', (tester) async {
+  testWidgets('a doctor on desktop lands on the home with the side menu', (tester) async {
     await pumpApp(tester, platform: AppPlatform.desktop);
     await signIn(tester, 'doctor@el3yada.dev');
 
     expect(find.text('el3yada · Doctor'), findsOneWidget);
-    expect(find.text('Screen D34 in spec.md'), findsOneWidget);
+    // The home until the live board (D34) arrives in Phase 6.
+    expect(find.text('Search patient'), findsOneWidget);
     expect(find.text('Branches'), findsOneWidget); // side menu shows every item
   });
 

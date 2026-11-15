@@ -109,7 +109,7 @@ Notes for later phases:
 
 **Checks (do these before Phase 1 features depend on them)**
 - [ ] **Windows release build:** HTTPS login, token refresh, file upload and a SignalR connection all work (spec section 13).
-  - *Result (15 Nov):* not run. Youssef's machine is missing the Visual Studio "Desktop development with C++" workload (`flutter doctor`), so Windows can't build there yet. The login, refresh, upload and SignalR endpoints arrive in Phases 1, 3 and 5, so repeat this check as each one lands.
+  - *Result (15 Nov):* not run. Youssef's machine is missing the Visual Studio "Desktop development with C++" workload (`flutter doctor`), so Windows can't build there yet. The login, refresh, upload and SignalR endpoints arrive in Phases 1, 3 and 5, so repeat this check as each one lands. Windows builds also need **Developer Mode** on (Settings → For developers), because plugins are linked with symlinks; `flutter pub get` warns when it's off.
 - [ ] **Firestore on Windows:** custom-token sign-in and live updates in a release build. If it falls short, Windows uses the 15-second API refresh (spec 9.6).
   - *Result (15 Nov):* not run. It needs the Firebase project (`flutterfire configure`), which doesn't exist yet.
 - [ ] **Scanner prototype** on Android and iOS (cunning_document_scanner or equivalent).
@@ -130,23 +130,37 @@ Notes for later phases:
 
 **Goal:** every role can sign in, doctors can register and be approved, and the admin can manage settings and admins.
 
-**API**
-- [ ] `login` (email or Egyptian mobile; patient + assistant on the same number asks "log in as"), access + refresh tokens, `refresh`, `logout` (removes the device's push token), rate limiting.
-- [ ] Password rules: `mustChangePassword`, set new password (A9), password change signs out other devices (`SecurityStamp`).
-- [ ] Forgot password (A8): email reset link for doctors and admins (`UserTokens`); phone request for patients and assistants notifies their doctor (`requestPatientPasswordReset`). Same answer whether or not the account exists.
-- [ ] `completeDoctorRegistration` (A4, with the first branch), license upload, `pendingApproval` status.
-- [ ] `reviewDoctorRegistration` (approve / reject with reason), `createAdmin`, `setAdminRole`, disable admin.
-- [ ] `updateSettings` with range checks and `SettingsHistory`. Public settings endpoint (version, maintenance, support, terms).
-- [ ] One-time command to create the first super admin (`dotnet run -- seed-admin <email>`).
-- [ ] Audit log foundation: one helper that every endpoint uses to write `AuditLogs`.
+The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md) (routes, session fields, error codes, refresh rules).
 
-**App**
+**API** (163 tests: 77 unit, 79 integration on a migrated database, 7 data. Smoke-tested on LocalDB.)
+- [x] `login` (email or Egyptian mobile; patient + assistant on the same number asks "log in as"), access + refresh tokens, `refresh`, `logout` (removes the device's push token), rate limiting.
+  - Doctors and admins sign in by email only; a mobile number matches patients and assistants. Refresh tokens are grouped per device (`RefreshTokens.FamilyId`): reusing one revokes the family, so the app must never run two refreshes at once. Lockout after 5 wrong passwords for 15 minutes. Behind a reverse proxy the per-IP limits need forwarded headers (backend/README.md).
+- [x] Password rules: `mustChangePassword`, set new password (A9), password change signs out other devices (`SecurityStamp`). The server answers 403 `PASSWORD_CHANGE_REQUIRED` everywhere until the password is set.
+- [x] Forgot password (A8): email reset link for doctors and admins (`UserTokens`); phone request for patients and assistants notifies their doctor (`requestPatientPasswordReset`). Same answer whether or not the account exists. The email also shows the code, which the app accepts. Emails go through an in-memory queue (lost on restart); production refuses to start without SMTP settings.
+- [x] `completeDoctorRegistration` (A4, with the first branch), license upload, `pendingApproval` status. Also `myRegistration` and `resubmitDoctorRegistration` (A7), and email verification (A5). Visit prices entered at sign-up become the doctor's prices; working hours come after approval (Phase 2).
+- [x] `reviewDoctorRegistration` (approve / reject with reason), `createAdmin`, `setAdminRole`, disable admin. `createAdmin` returns a temporary password shown once (spec AD14 updated); the last super admin can't be demoted or disabled.
+- [x] `updateSettings` with range checks and `SettingsHistory`. Public settings endpoint (version, maintenance, support, terms). Partial updates; the Terms and Privacy "version" is a fingerprint of the text.
+- [x] One-time command to create the first super admin (`dotnet run -- seed-admin <email>`; `--reset` prints a new temporary password).
+- [x] Audit log foundation: one helper that every endpoint uses to write `AuditLogs`. Successful logins aren't audited (to keep the table small); lockouts and token reuse are.
+- Fixed on the way: Doctor → Branch was one-to-one in the model (now one-to-many, needed for Phase 2), and every `AuditLogs` insert would have failed (IDENTITY key).
+- Not in Phase 1: the API doesn't enforce maintenance mode or the minimum version (the app does); notification list and push (Phase 5); the `DOCTOR_*` status gate on doctor endpoints (Phase 2).
+
+**App** (status 15 Nov: built and covered by widget tests and Arabic light/dark screenshots; not yet run on an Android device or a Windows build, so nothing below is ticked yet)
 - [ ] A1 Splash routing by session, role and status; A2 language choice on first launch.
+  - *Built:* start-up reads public settings (cached for offline), checks the minimum version (A11) and maintenance (A13), refreshes the saved session from `/auth/me`, then routes in the order in `appRedirect` (router.dart). A2 previews the language as you pick.
 - [ ] A3 Login against the real API (replace `FakeAuthRepository` in prod builds), A4 registration (4 steps), A5 verify email [S].
+  - *Built:* A3 with "log in as" (bottom sheet on phones, dialog on desktop). `config/dev.json` now uses the local API; `config/dev-offline.json` keeps the offline accounts (pending, rejected, disabled, two-account and first-login cases). A4 and A5: in progress.
 - [ ] Splash and login signature animation: the logo draws in and moves into the login header, the form slides up, Sign in morphs into progress and then a check, and wrong credentials shake the form once. Registration steps (A4) slide between steps with the progress bar animating.
+  - *Built for splash and login:* the splash and login share one page, so the logo rises in place (no Hero needed). A4 steps: in progress.
 - [ ] A6 pending, A7 rejected (edit and resubmit), A8 forgot password, A9 set new password, A10 disabled, A11 force update, A12 terms, A13 maintenance, A14 patient on desktop.
+  - *Built:* A8 (by mobile, or by email with the code from the email), A9 (live checklist, Terms checkbox for patients), A10 (disabled account, or inactive clinic for assistants), A11 (needs the store links as `UPDATE_URL_*` defines once published), A12, A13 (admins can still sign in), A14. A6 and A7: in progress.
 - [ ] Token refresh on 401 in the API client (TODO in `AuthInterceptor`).
-- [ ] AD2 sign-up requests, AD3 sign-up review, AD13 settings, AD14 admin users, AD15 audit log, AD18 admin profile.
+  - *Built:* refresh shortly before expiry and on 401, one refresh at a time, one retry; a refused refresh signs out; 403 `ACCOUNT_DISABLED` / `CLINIC_NOT_ACTIVE` open A10. Unit-tested.
+- [ ] AD2 sign-up requests, AD3 sign-up review, AD13 settings, AD14 admin users, AD15 audit log, AD18 admin profile. *In progress.*
+
+**Dev accounts:** run `dotnet run --project src/El3yada.Api -- seed-admin admin@el3yada.dev` once; it prints a temporary password that must be changed at first sign-in. Patients and assistants arrive in Phase 2 (created by doctors); until then use `config/dev-offline.json` to see their screens.
+
+**Screenshots:** `EL3YADA_SCREENSHOTS=1 flutter test test/screenshots` (in `app/`) writes every Phase 1 screen to `app/build/screenshots/`.
 
 **Tables:** Users, UserDevices, RefreshTokens, UserTokens, Doctors, DoctorExtraSpecialties, Branches, BranchPhones, Specialties, AppSettings, SettingsHistory, AuditLogs.
 

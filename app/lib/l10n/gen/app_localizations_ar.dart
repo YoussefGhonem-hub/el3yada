@@ -2127,4 +2127,486 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get tempPasswordMessageCopied =>
       'لا يوجد تطبيق رسائل. تم نسخ الرسالة، الصقها حيث تريد.';
+
+  @override
+  String get branchErrorLimitReached =>
+      'وصلت للحد الأقصى لعدد الفروع. أرشف فرعاً لإضافة فرع جديد.';
+
+  @override
+  String get branchErrorArchiveDefault =>
+      'لا يمكن أرشفة الفرع الافتراضي. اجعل فرعاً آخر هو الافتراضي أولاً.';
+
+  @override
+  String get branchErrorLastActive =>
+      'يجب أن يبقى فرع واحد مفتوح على الأقل، لذلك لا يمكن إغلاق هذا الفرع أو أرشفته.';
+
+  @override
+  String get branchErrorHasBookings =>
+      'لدى هذا الفرع حجوزات قادمة. انقلها أو ألغها أولاً.';
+
+  @override
+  String get branchErrorNotActive =>
+      'الفرع المفتوح فقط يمكن أن يكون الافتراضي.';
+
+  @override
+  String get branchErrorInvalidBranch =>
+      'اختر فرعاً من فروع العيادة غير المؤرشفة.';
+
+  @override
+  String get branchErrorPeriodEndBeforeStart =>
+      'تنتهي قبل أن تبدأ. فعّل «تنتهي في اليوم التالي» إذا كانت بعد منتصف الليل.';
+
+  @override
+  String get branchErrorPeriodLength => 'مدة الفترة من 15 دقيقة إلى 16 ساعة.';
+
+  @override
+  String get branchErrorPeriodsOverlap => 'الفترات متداخلة';
+
+  @override
+  String get assistantErrorLimitReached => 'وصلت للحد الأقصى لعدد المساعدين';
+
+  @override
+  String get assistantErrorPhoneTaken =>
+      'هذا الرقم مسجّل كمساعد بالفعل، في هذه العيادة أو غيرها.';
+
+  @override
+  String get assistantErrorRemoved =>
+      'تمت إزالة هذا المساعد. أضفه من جديد كمساعد جديد.';
+
+  @override
+  String get profileTopBarTooltip => 'ملفي الشخصي';
+
+  @override
+  String get settingsSubtitleDoctor =>
+      'ملفك الشخصي والأسعار واللغة والإشعارات وكلمة المرور.';
+
+  @override
+  String get settingsSubtitleAssistant =>
+      'اللغة والإشعارات وكلمة المرور، وما يمكنك فعله في العيادة.';
+
+  @override
+  String get settingsProfileHint => 'الاسم واللقب والدرجات العلمية والتخصصات';
+
+  @override
+  String settingsPermissionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صلاحية',
+      many: '$count صلاحية',
+      few: '$count صلاحيات',
+      two: 'صلاحيتان',
+      one: 'صلاحية واحدة',
+      zero: 'بدون صلاحيات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String settingsBranchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فرع',
+      many: '$count فرعاً',
+      few: '$count فروع',
+      two: 'فرعان',
+      one: 'فرع واحد',
+      zero: 'بدون فروع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsClinicGroup => 'العيادة';
+
+  @override
+  String get settingsPricesHint => 'الكشف والاستشارة، للطبيب ولكل فرع';
+
+  @override
+  String get settingsMyPermissions => 'صلاحياتي';
+
+  @override
+  String get settingsMyPermissionsFooter =>
+      'الطبيب فقط يمكنه تغييرها، وتُطبق التغييرات فوراً.';
+
+  @override
+  String get settingsNoPermissions => 'لا توجد صلاحيات بعد. تواصل مع الطبيب.';
+
+  @override
+  String get settingsMyBranches => 'فروعي';
+
+  @override
+  String get settingsAllBranchesFooter =>
+      'تعمل في كل الفروع، ومنها ما يضيفه الطبيب لاحقاً.';
+
+  @override
+  String get settingsNotifications => 'الإشعارات';
+
+  @override
+  String get settingsNotifyChat => 'رسائل المحادثات';
+
+  @override
+  String get settingsNotifyChatHint => 'الرسائل الجديدة من المرضى';
+
+  @override
+  String get settingsNotifyReminders => 'التذكيرات';
+
+  @override
+  String get settingsNotifyRemindersHint => 'الفواتير والمواعيد';
+
+  @override
+  String get settingsNotifyBookings => 'الحجوزات';
+
+  @override
+  String get settingsNotifyBookingsHint =>
+      'الحجوزات الجديدة والمعدّلة والملغاة';
+
+  @override
+  String get settingsShowPreview => 'إظهار نص الرسالة في الإشعارات';
+
+  @override
+  String get settingsShowPreviewHint =>
+      'عند الإيقاف: يظهر فقط أن رسالة وصلت، دون نصها.';
+
+  @override
+  String get settingsAccount => 'الحساب';
+
+  @override
+  String get settingsAbout => 'عن التطبيق';
+
+  @override
+  String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get pricesTitle => 'أسعار الكشف والاستشارة';
+
+  @override
+  String get assistantPresetReception => 'استقبال';
+
+  @override
+  String get assistantPresetClinical => 'مساعد طبي';
+
+  @override
+  String get assistantPresetOfficeManager => 'مدير العيادة';
+
+  @override
+  String get assistantPresetCustom => 'مخصص';
+
+  @override
+  String get assistantPresetReceptionBody =>
+      'المرضى والزيارات والملفات والحجوزات.';
+
+  @override
+  String get assistantPresetClinicalBody =>
+      'الاستقبال، مع الملف الطبي والمسودات والمحادثات.';
+
+  @override
+  String get assistantPresetOfficeManagerBody =>
+      'الاستقبال، مع الفواتير ومواعيد العمل والأسعار والمحادثات.';
+
+  @override
+  String get assistantPresetCustomBody => 'ما تختاره من القائمة أدناه.';
+
+  @override
+  String get assistantGroupPatients => 'المرضى';
+
+  @override
+  String get assistantGroupSessions => 'الزيارات';
+
+  @override
+  String get assistantGroupClinical => 'الملف الطبي';
+
+  @override
+  String get assistantGroupFiles => 'الملفات والروشتات';
+
+  @override
+  String get assistantGroupChat => 'المحادثات';
+
+  @override
+  String get assistantGroupBilling => 'الفواتير';
+
+  @override
+  String get assistantGroupAppointments => 'الحجوزات';
+
+  @override
+  String get assistantGroupMoney => 'الإيرادات والأسعار';
+
+  @override
+  String get assistantPermPatientsManage => 'إدارة المرضى';
+
+  @override
+  String get assistantPermPatientsManageHelp =>
+      'إضافة المرضى وربطهم وتعديل بياناتهم وأرشفتهم.';
+
+  @override
+  String get assistantPermPatientsResetPassword =>
+      'إعادة تعيين كلمات مرور المرضى';
+
+  @override
+  String get assistantPermPatientsResetPasswordHelp =>
+      'إعطاء المريض كلمة مرور مؤقتة جديدة، واستلام طلباته لإعادة التعيين.';
+
+  @override
+  String get assistantPermSessionsCreate => 'تسجيل الزيارات';
+
+  @override
+  String get assistantPermSessionsCreateHelp =>
+      'نوع الزيارة والشكوى والعلامات الحيوية، وقائمة الزيارات.';
+
+  @override
+  String get assistantPermSessionsDelete => 'حذف الزيارات';
+
+  @override
+  String get assistantPermSessionsDeleteHelp =>
+      'بنفس شروط الطبيب. مغلقة افتراضياً.';
+
+  @override
+  String get assistantPermClinicalView => 'عرض الملف الطبي';
+
+  @override
+  String get assistantPermClinicalViewHelp =>
+      'التاريخ المرضي والفحص والتشخيص والملاحظات والروشتات.';
+
+  @override
+  String get assistantPermClinicalEditProfile => 'تعديل التاريخ المرضي';
+
+  @override
+  String get assistantPermClinicalEditProfileHelp =>
+      'الحساسية والأمراض المزمنة والأدوية والعمليات والتاريخ العائلي.';
+
+  @override
+  String get assistantPermFilesManage => 'الملفات';
+
+  @override
+  String get assistantPermFilesManageHelp =>
+      'مسح الملفات ورفعها وعرضها، وحفظ مرفقات المحادثات.';
+
+  @override
+  String get assistantPermPrescriptionsPrint => 'طباعة الروشتات';
+
+  @override
+  String get assistantPermPrescriptionsPrintHelp =>
+      'فتح الروشتات التي أرسلها الطبيب وطباعتها ومشاركتها.';
+
+  @override
+  String get assistantPermPrescriptionsDraft => 'تجهيز مسودات الروشتات';
+
+  @override
+  String get assistantPermPrescriptionsDraftHelp =>
+      'كتابة المسودات وإرسالها للطبيب للمراجعة.';
+
+  @override
+  String get assistantPermChat => 'المحادثات';
+
+  @override
+  String get assistantPermChatHelp =>
+      'قراءة رسائل المرضى والرد عليها نيابة عن الطبيب.';
+
+  @override
+  String get assistantPermBillingView => 'عرض الفواتير';
+
+  @override
+  String get assistantPermBillingViewHelp =>
+      'بطاقات الرسوم والإجماليات اليومية والشهرية والفواتير.';
+
+  @override
+  String get assistantPermBillingPay => 'سداد الفواتير';
+
+  @override
+  String get assistantPermBillingPayHelp => 'إرسال سداد الفاتورة.';
+
+  @override
+  String get assistantPermAppointmentsView => 'عرض الحجوزات';
+
+  @override
+  String get assistantPermAppointmentsViewHelp =>
+      'التقويم ولوحة اليوم والبحث، في فروعه.';
+
+  @override
+  String get assistantPermAppointmentsManage => 'إدارة الحجوزات';
+
+  @override
+  String get assistantPermAppointmentsManageHelp =>
+      'الحجز والتأكيد والتغيير والإلغاء وتسجيل الحضور ونداء التالي.';
+
+  @override
+  String get assistantPermScheduleManage => 'إدارة مواعيد العمل';
+
+  @override
+  String get assistantPermScheduleManageHelp =>
+      'مواعيد العمل والأيام الخاصة وإعدادات الحجز في فروعه.';
+
+  @override
+  String get assistantPermRevenueView => 'عرض الإيرادات';
+
+  @override
+  String get assistantPermRevenueViewHelp =>
+      'إيرادات العيادة وصافي الدخل والمبالغ المحصّلة.';
+
+  @override
+  String get assistantPermPricesManage => 'إدارة أسعار الكشف والاستشارة';
+
+  @override
+  String get assistantPermPricesManageHelp => 'أسعار الطبيب، وأسعار فروعه.';
+
+  @override
+  String get assistantStatusRemoved => 'تمت إزالته';
+
+  @override
+  String get branchStatusActive => 'مفتوح';
+
+  @override
+  String get branchStatusArchived => 'مؤرشف';
+
+  @override
+  String get branchDefault => 'افتراضي';
+
+  @override
+  String get branchPayCash => 'نقداً';
+
+  @override
+  String get branchPayCard => 'بطاقة';
+
+  @override
+  String get branchPayInstapay => 'إنستاباي';
+
+  @override
+  String get branchPayWallet => 'محفظة إلكترونية';
+
+  @override
+  String get branchAmenityElevator => 'مصعد';
+
+  @override
+  String get branchAmenityParking => 'مكان لركن السيارات';
+
+  @override
+  String get branchAmenityWheelchair => 'مدخل للكراسي المتحركة';
+
+  @override
+  String get branchAmenityKidsArea => 'مكان انتظار للأطفال';
+
+  @override
+  String branchEndsNextDayShort(String range) {
+    return '$range (اليوم التالي)';
+  }
+
+  @override
+  String get profileSubtitle =>
+      'بياناتك الشخصية والمهنية كما تظهر للمرضى والإدارة.';
+
+  @override
+  String profileLastSaved(String time) {
+    return 'آخر حفظ $time';
+  }
+
+  @override
+  String get profilePersonal => 'البيانات الشخصية';
+
+  @override
+  String get profileFullNameAr => 'الاسم بالعربية';
+
+  @override
+  String get profileReadOnlyNote =>
+      'هذه البيانات تخص حسابك وترخيصك. لتغييرها تواصل مع الدعم.';
+
+  @override
+  String get profileProfessional => 'البيانات المهنية';
+
+  @override
+  String get profileDegreesHint => 'مثال: ماجستير الباطنة، جامعة القاهرة';
+
+  @override
+  String get profileSpecialtyNote =>
+      'يُطبَّق تغيير التخصص فوراً، ويتم إبلاغ الإدارة.';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف الشخصي';
+
+  @override
+  String get profileSavedSpecialty =>
+      'تم الحفظ. التخصص الجديد مُطبّق الآن، وتم إبلاغ الإدارة.';
+
+  @override
+  String get profilePrescriptionHeader => 'رأس الروشتة';
+
+  @override
+  String get profilePrescriptionHeaderTitle =>
+      'الشعار والتوقيع واللون وإعدادات الطباعة';
+
+  @override
+  String get profilePrescriptionHeaderLater =>
+      'ستضبط شكل الروشتة عند إضافة الروشتات للتطبيق.';
+
+  @override
+  String get settingsLaterPhase => 'مرحلة لاحقة';
+
+  @override
+  String get pricesSubtitle => 'ما يدفعه المرضى في العيادة، للطبيب ولكل فرع.';
+
+  @override
+  String get pricesFutureOnly =>
+      'تُطبق الأسعار الجديدة على الزيارات القادمة فقط';
+
+  @override
+  String get pricesDoctorTitle => 'أسعار الطبيب';
+
+  @override
+  String get pricesDoctorBody => 'يستخدمها كل فرع ليس له أسعار خاصة.';
+
+  @override
+  String get pricesBranchesTitle => 'أسعار الفروع';
+
+  @override
+  String get pricesUseDoctor => 'استخدام أسعار الطبيب';
+
+  @override
+  String pricesUseDoctorOn(String examination, String consultation) {
+    return 'الكشف: $examination، الاستشارة: $consultation';
+  }
+
+  @override
+  String get pricesUseDoctorOff =>
+      'أسعار خاصة بهذا الفرع، والسعر الفارغ يستخدم سعر الطبيب.';
+
+  @override
+  String get pricesEmptyAskClinic =>
+      'فارغ: سيرى المرضى «يُرجى الاستفسار من العيادة»، ويُكتب المبلغ في كل زيارة.';
+
+  @override
+  String pricesEmptyUsesDoctor(String price) {
+    return 'فارغ: يُطبق سعر الطبيب ($price).';
+  }
+
+  @override
+  String get pricesAskClinic => 'يُرجى الاستفسار من العيادة';
+
+  @override
+  String get pricesSaved => 'تم حفظ الأسعار، وتُطبق على الزيارات من الآن.';
+
+  @override
+  String get pricesNotYourBranch =>
+      'يغيّر هذه الأسعار الطبيب أو مساعدو هذا الفرع فقط.';
+
+  @override
+  String get pricesHistoryTitle => 'سجل التغييرات';
+
+  @override
+  String get pricesHistoryEmptyTitle => 'لا توجد تغييرات في الأسعار بعد';
+
+  @override
+  String get pricesHistoryEmptyBody => 'يظهر هنا كل تغيير، مع من قام به ومتى.';
+
+  @override
+  String get pricesNotSet => 'بدون سعر';
+
+  @override
+  String pricesChange(String type, String before, String after) {
+    return '$type: $before ← $after';
+  }
+
+  @override
+  String pricesChangedBy(String name, String role, String time) {
+    return '$name ($role)، $time';
+  }
 }

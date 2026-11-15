@@ -109,7 +109,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
         if (_isClinic) BranchPicker(compact: width < Breakpoints.tablet),
         if (profilePath != null && session != null)
           IconButton(
-            tooltip: l10n.adminMyProfile,
+            tooltip: l10n.profileTopBarTooltip,
             icon: const Icon(Icons.account_circle_outlined),
             onPressed: () => context.go(profilePath),
           ),

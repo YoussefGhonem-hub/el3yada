@@ -24,6 +24,15 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.permissionDenied => errorPermissionDenied,
       ApiCodes.doctorSuspended => errorDoctorSuspended,
       ApiCodes.branchNotAllowed => errorBranchNotAllowed,
+      // Branches, assistants (backend/docs/api-phase-2-clinic.md).
+      'BRANCH_LIMIT_REACHED' => branchErrorLimitReached,
+      'CANNOT_ARCHIVE_DEFAULT_BRANCH' => branchErrorArchiveDefault,
+      'LAST_ACTIVE_BRANCH' => branchErrorLastActive,
+      'BRANCH_HAS_BOOKINGS' => branchErrorHasBookings,
+      'BRANCH_NOT_ACTIVE' => branchErrorNotActive,
+      'ASSISTANT_LIMIT_REACHED' => assistantErrorLimitReached,
+      'ASSISTANT_PHONE_TAKEN' => assistantErrorPhoneTaken,
+      'ASSISTANT_REMOVED' => assistantErrorRemoved,
       ApiCodes.selectionTokenInvalid ||
       ApiCodes.refreshTokenInvalid ||
       ApiCodes.refreshTokenReused ||
@@ -75,6 +84,12 @@ extension ApiErrorText on AppLocalizations {
         'LAST_SUPER_ADMIN' => adminErrorLastSuperAdmin,
         'NOT_FOUND' => adminErrorNotFound,
         'FORBIDDEN' => adminErrorForbidden,
+        // Clinic admin fields (backend/docs/api-phase-2-clinic.md).
+        'INVALID_BRANCH' => branchErrorInvalidBranch,
+        'PERIOD_END_BEFORE_START' => branchErrorPeriodEndBeforeStart,
+        'PERIOD_LENGTH_OUT_OF_RANGE' => branchErrorPeriodLength,
+        'PERIODS_OVERLAP' => branchErrorPeriodsOverlap,
+        'ASSISTANT_PHONE_TAKEN' => assistantErrorPhoneTaken,
         _ => null,
       };
 

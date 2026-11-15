@@ -93,6 +93,8 @@ class RoleShell {
   static final doctor = RoleShell(
     role: UserRole.doctor,
     basePath: '/doctor',
+    // D22, under Settings.
+    profilePath: '/doctor/settings/profile',
     destinations: [
       NavDestinationSpec(path: '/doctor/live', icon: Icons.monitor_heart_outlined, selectedIcon: Icons.monitor_heart, label: (l) => l.navLive, barLabel: (l) => l.navLiveShort, screenId: 'D34', primary: true),
       NavDestinationSpec(path: '/doctor/patients', icon: Icons.people_alt_outlined, selectedIcon: Icons.people_alt, label: (l) => l.navPatients, screenId: 'D4', primary: true),

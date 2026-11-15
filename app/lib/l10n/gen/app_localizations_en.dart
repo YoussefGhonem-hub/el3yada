@@ -2131,4 +2131,485 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tempPasswordMessageCopied =>
       'No messaging app found. The message is copied; paste it where you like.';
+
+  @override
+  String get branchErrorLimitReached =>
+      'You\'ve reached the most branches you can have. Archive one to add another.';
+
+  @override
+  String get branchErrorArchiveDefault =>
+      'The default branch can\'t be archived. Make another branch the default first.';
+
+  @override
+  String get branchErrorLastActive =>
+      'The clinic needs at least one open branch, so this one can\'t be closed or archived.';
+
+  @override
+  String get branchErrorHasBookings =>
+      'This branch has upcoming bookings. Move or cancel them first.';
+
+  @override
+  String get branchErrorNotActive => 'Only an open branch can be the default.';
+
+  @override
+  String get branchErrorInvalidBranch =>
+      'Choose one of the clinic\'s open branches.';
+
+  @override
+  String get branchErrorPeriodEndBeforeStart =>
+      'Ends before it starts. Turn on «Ends the next day» if it runs past midnight.';
+
+  @override
+  String get branchErrorPeriodLength =>
+      'A period lasts from 15 minutes to 16 hours.';
+
+  @override
+  String get branchErrorPeriodsOverlap => 'The periods overlap.';
+
+  @override
+  String get assistantErrorLimitReached =>
+      'You\'ve reached the most assistants you can have.';
+
+  @override
+  String get assistantErrorPhoneTaken =>
+      'This number is already an assistant, in this clinic or another.';
+
+  @override
+  String get assistantErrorRemoved =>
+      'This assistant was removed. Add them again as a new assistant.';
+
+  @override
+  String get profileTopBarTooltip => 'My profile';
+
+  @override
+  String get settingsSubtitleDoctor =>
+      'Your profile, prices, language, notifications and password.';
+
+  @override
+  String get settingsSubtitleAssistant =>
+      'Your language, notifications and password, and what you can do in the clinic.';
+
+  @override
+  String get settingsProfileHint => 'Name, title, degrees and specialties';
+
+  @override
+  String settingsPermissionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count permissions',
+      one: '1 permission',
+      zero: 'No permissions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String settingsBranchCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count branches',
+      one: '1 branch',
+      zero: 'No branches',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsClinicGroup => 'Clinic';
+
+  @override
+  String get settingsPricesHint =>
+      'Examination and consultation, for the doctor and each branch';
+
+  @override
+  String get settingsMyPermissions => 'My permissions';
+
+  @override
+  String get settingsMyPermissionsFooter =>
+      'Only the doctor can change these. Changes apply at once.';
+
+  @override
+  String get settingsNoPermissions => 'No permissions yet. Ask the doctor.';
+
+  @override
+  String get settingsMyBranches => 'My branches';
+
+  @override
+  String get settingsAllBranchesFooter =>
+      'You work in every branch, including ones the doctor adds later.';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsNotifyChat => 'Chat messages';
+
+  @override
+  String get settingsNotifyChatHint => 'New messages from patients';
+
+  @override
+  String get settingsNotifyReminders => 'Reminders';
+
+  @override
+  String get settingsNotifyRemindersHint => 'Invoices and appointments';
+
+  @override
+  String get settingsNotifyBookings => 'Bookings';
+
+  @override
+  String get settingsNotifyBookingsHint =>
+      'New, changed and cancelled bookings';
+
+  @override
+  String get settingsShowPreview => 'Show message text in notifications';
+
+  @override
+  String get settingsShowPreviewHint =>
+      'Off: notifications only say that a message arrived.';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsAbout => 'About';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get pricesTitle => 'Visit prices';
+
+  @override
+  String get assistantPresetReception => 'Reception';
+
+  @override
+  String get assistantPresetClinical => 'Clinical assistant';
+
+  @override
+  String get assistantPresetOfficeManager => 'Office manager';
+
+  @override
+  String get assistantPresetCustom => 'Custom';
+
+  @override
+  String get assistantPresetReceptionBody =>
+      'Patients, visits, files and bookings.';
+
+  @override
+  String get assistantPresetClinicalBody =>
+      'Reception, plus the medical file, drafts and chat.';
+
+  @override
+  String get assistantPresetOfficeManagerBody =>
+      'Reception, plus billing, the schedule, prices and chat.';
+
+  @override
+  String get assistantPresetCustomBody => 'The boxes you tick below.';
+
+  @override
+  String get assistantGroupPatients => 'Patients';
+
+  @override
+  String get assistantGroupSessions => 'Visits';
+
+  @override
+  String get assistantGroupClinical => 'Medical file';
+
+  @override
+  String get assistantGroupFiles => 'Files and prescriptions';
+
+  @override
+  String get assistantGroupChat => 'Chat';
+
+  @override
+  String get assistantGroupBilling => 'Billing';
+
+  @override
+  String get assistantGroupAppointments => 'Appointments';
+
+  @override
+  String get assistantGroupMoney => 'Revenue and prices';
+
+  @override
+  String get assistantPermPatientsManage => 'Manage patients';
+
+  @override
+  String get assistantPermPatientsManageHelp =>
+      'Add and link patients, edit their details, archive.';
+
+  @override
+  String get assistantPermPatientsResetPassword => 'Reset patient passwords';
+
+  @override
+  String get assistantPermPatientsResetPasswordHelp =>
+      'Give a patient a new temporary password, and get their reset requests.';
+
+  @override
+  String get assistantPermSessionsCreate => 'Record visits';
+
+  @override
+  String get assistantPermSessionsCreateHelp =>
+      'Visit type, chief complaint and vitals, and the visit list.';
+
+  @override
+  String get assistantPermSessionsDelete => 'Delete visits';
+
+  @override
+  String get assistantPermSessionsDeleteHelp =>
+      'Under the same conditions as the doctor. Off by default.';
+
+  @override
+  String get assistantPermClinicalView => 'View the medical file';
+
+  @override
+  String get assistantPermClinicalViewHelp =>
+      'Medical profile, findings, diagnosis, notes and prescriptions.';
+
+  @override
+  String get assistantPermClinicalEditProfile => 'Edit the medical profile';
+
+  @override
+  String get assistantPermClinicalEditProfileHelp =>
+      'Allergies, chronic diseases, medications, surgeries, family history.';
+
+  @override
+  String get assistantPermFilesManage => 'Files';
+
+  @override
+  String get assistantPermFilesManageHelp =>
+      'Scan, upload and view files, and save chat attachments.';
+
+  @override
+  String get assistantPermPrescriptionsPrint => 'Print prescriptions';
+
+  @override
+  String get assistantPermPrescriptionsPrintHelp =>
+      'Open, print and share prescriptions the doctor sent.';
+
+  @override
+  String get assistantPermPrescriptionsDraft => 'Prepare prescription drafts';
+
+  @override
+  String get assistantPermPrescriptionsDraftHelp =>
+      'Write drafts and send them to the doctor for review.';
+
+  @override
+  String get assistantPermChat => 'Chat';
+
+  @override
+  String get assistantPermChatHelp =>
+      'Read and reply to patients on the doctor\'s behalf.';
+
+  @override
+  String get assistantPermBillingView => 'View billing';
+
+  @override
+  String get assistantPermBillingViewHelp =>
+      'Fee cards, daily and monthly totals, invoices.';
+
+  @override
+  String get assistantPermBillingPay => 'Pay invoices';
+
+  @override
+  String get assistantPermBillingPayHelp => 'Send the payment for an invoice.';
+
+  @override
+  String get assistantPermAppointmentsView => 'View appointments';
+
+  @override
+  String get assistantPermAppointmentsViewHelp =>
+      'Calendar, today\'s board and search, in their branches.';
+
+  @override
+  String get assistantPermAppointmentsManage => 'Manage appointments';
+
+  @override
+  String get assistantPermAppointmentsManageHelp =>
+      'Book, confirm, move, cancel, check in, call the next patient.';
+
+  @override
+  String get assistantPermScheduleManage => 'Manage the schedule';
+
+  @override
+  String get assistantPermScheduleManageHelp =>
+      'Working hours, special dates and booking settings of their branches.';
+
+  @override
+  String get assistantPermRevenueView => 'View revenue';
+
+  @override
+  String get assistantPermRevenueViewHelp =>
+      'Clinic revenue, net income and the amounts patients paid.';
+
+  @override
+  String get assistantPermPricesManage => 'Manage visit prices';
+
+  @override
+  String get assistantPermPricesManageHelp =>
+      'The doctor\'s prices, and their branches\' prices.';
+
+  @override
+  String get assistantStatusRemoved => 'Removed';
+
+  @override
+  String get branchStatusActive => 'Open';
+
+  @override
+  String get branchStatusArchived => 'Archived';
+
+  @override
+  String get branchDefault => 'Default';
+
+  @override
+  String get branchPayCash => 'Cash';
+
+  @override
+  String get branchPayCard => 'Card';
+
+  @override
+  String get branchPayInstapay => 'InstaPay';
+
+  @override
+  String get branchPayWallet => 'Mobile wallet';
+
+  @override
+  String get branchAmenityElevator => 'Elevator';
+
+  @override
+  String get branchAmenityParking => 'Parking';
+
+  @override
+  String get branchAmenityWheelchair => 'Wheelchair access';
+
+  @override
+  String get branchAmenityKidsArea => 'Children\'s waiting area';
+
+  @override
+  String branchEndsNextDayShort(String range) {
+    return '$range (next day)';
+  }
+
+  @override
+  String get profileSubtitle =>
+      'Your personal and professional details, as patients and the admin team see them.';
+
+  @override
+  String profileLastSaved(String time) {
+    return 'Last saved $time';
+  }
+
+  @override
+  String get profilePersonal => 'Personal details';
+
+  @override
+  String get profileFullNameAr => 'Full name in Arabic';
+
+  @override
+  String get profileReadOnlyNote =>
+      'These identify your account and license. To change them, contact support.';
+
+  @override
+  String get profileProfessional => 'Professional details';
+
+  @override
+  String get profileDegreesHint =>
+      'For example: MSc in internal medicine, Cairo University';
+
+  @override
+  String get profileSpecialtyNote =>
+      'A specialty change applies at once, and the admin team is told.';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get profileSavedSpecialty =>
+      'Profile saved. Your new specialty applies now, and the admin team was told.';
+
+  @override
+  String get profilePrescriptionHeader => 'Prescription header';
+
+  @override
+  String get profilePrescriptionHeaderTitle =>
+      'Logo, signature, colour and print settings';
+
+  @override
+  String get profilePrescriptionHeaderLater =>
+      'You\'ll set how your prescriptions look when prescriptions arrive in the app.';
+
+  @override
+  String get settingsLaterPhase => 'Later phase';
+
+  @override
+  String get pricesSubtitle =>
+      'What patients pay at the clinic, for the doctor and for each branch.';
+
+  @override
+  String get pricesFutureOnly => 'New prices apply to future visits only.';
+
+  @override
+  String get pricesDoctorTitle => 'Doctor\'s prices';
+
+  @override
+  String get pricesDoctorBody =>
+      'Every branch without its own prices uses these.';
+
+  @override
+  String get pricesBranchesTitle => 'Branch prices';
+
+  @override
+  String get pricesUseDoctor => 'Use the doctor\'s prices';
+
+  @override
+  String pricesUseDoctorOn(String examination, String consultation) {
+    return 'Examination: $examination, consultation: $consultation';
+  }
+
+  @override
+  String get pricesUseDoctorOff =>
+      'This branch\'s own prices. An empty one uses the doctor\'s.';
+
+  @override
+  String get pricesEmptyAskClinic =>
+      'Empty: patients see «Ask the clinic», and the amount is typed at each visit.';
+
+  @override
+  String pricesEmptyUsesDoctor(String price) {
+    return 'Empty: the doctor\'s price ($price) applies.';
+  }
+
+  @override
+  String get pricesAskClinic => 'Ask the clinic';
+
+  @override
+  String get pricesSaved => 'Prices saved. They apply to visits from now on.';
+
+  @override
+  String get pricesNotYourBranch =>
+      'Only the doctor or this branch\'s assistants can change these prices.';
+
+  @override
+  String get pricesHistoryTitle => 'Change history';
+
+  @override
+  String get pricesHistoryEmptyTitle => 'No price changes yet';
+
+  @override
+  String get pricesHistoryEmptyBody =>
+      'Every change shows here, with who made it and when.';
+
+  @override
+  String get pricesNotSet => 'not set';
+
+  @override
+  String pricesChange(String type, String before, String after) {
+    return '$type: $before → $after';
+  }
+
+  @override
+  String pricesChangedBy(String name, String role, String time) {
+    return '$name ($role), $time';
+  }
 }

@@ -57,6 +57,40 @@ public sealed class PatientsTests(IntegrationHost host)
     }
 
     [Fact]
+    public async Task Another_clinic_sees_only_the_identity_fields_and_cannot_change_the_details()
+    {
+        // BR-P3: the second doctor sees name, phone, gender and date of birth; the optional details stay with
+        // the clinic that created the account.
+        var (_, clientA, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        var phone = TestData.Mobile();
+        var (_, created) = await clientA.PostAsync("/api/patients/createPatient", new
+        {
+            fullName = "منى حسن", phone, gender = "female", dateOfBirth = "1990-05-01",
+            nationalId = "29005010123456", address = "المعادي", bloodType = "A+",
+        });
+        var patientId = created.GetProperty("patient").Str("patientId");
+        var (_, clientB, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        await clientB.PostAsync("/api/patients/createPatient", TestData.PatientBody(phone));
+
+        var (_, seenByB) = await clientB.GetJsonAsync($"/api/patients/{patientId}");
+        var (updateStatus, _) = await clientB.PostAsync("/api/patients/updatePatient", new
+        {
+            patientId, fullName = "منى حسن علي", gender = "female", dateOfBirth = "1990-05-01", address = "مدينة نصر",
+        });
+        var (_, seenByA) = await clientA.GetJsonAsync($"/api/patients/{patientId}");
+
+        Assert.False(seenByB.BoolAt("ownsDetails"));
+        Assert.True(seenByB.IsNullAt("nationalId"));
+        Assert.True(seenByB.IsNullAt("address"));
+        Assert.True(seenByB.IsNullAt("bloodType"));
+        Assert.Equal(HttpStatusCode.OK, updateStatus);
+        Assert.True(seenByA.BoolAt("ownsDetails"));
+        Assert.Equal("منى حسن علي", seenByA.Str("fullName"));
+        Assert.Equal("المعادي", seenByA.Str("address"));
+        Assert.Equal("29005010123456", seenByA.Str("nationalId"));
+    }
+
+    [Fact]
     public async Task Another_clinic_adding_the_number_links_the_same_account_and_sees_none_of_the_first_clinics_records()
     {
         var a = await PatientScene.CreateAsync(Factory);

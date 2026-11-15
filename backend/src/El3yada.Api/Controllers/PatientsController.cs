@@ -174,7 +174,7 @@ public sealed class PatientsController(
             CreatedAt = now,
             UpdatedAt = now,
         };
-        ApplyIdentity(patient, request, Today);
+        ApplyIdentity(patient, request, Today, details: true);
         db.Users.Add(user);
         db.Patients.Add(patient);
         return patient;
@@ -206,7 +206,8 @@ public sealed class PatientsController(
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         var patient = await db.Patients.Include(p => p.User).SingleAsync(p => p.Id == patientId, cancellationToken);
         var before = IdentityFields(patient);
-        ApplyIdentity(patient, request, Today);
+        // BR-P3: only the clinic that created the account keeps its optional details; others leave them as they are.
+        ApplyIdentity(patient, request, Today, details: patient.CreatedByDoctorId == caller.DoctorId);
         var after = IdentityFields(patient);
         var changed = before.Keys.Where(key => !Equals(before[key], after[key])).ToList();
         if (changed.Count > 0)
@@ -483,8 +484,11 @@ public sealed class PatientsController(
         return Ok(await PatientsRegister.PageAsync(db, caller, query, Today, cancellationToken));
     }
 
-    /// <summary>Sets the identity fields from the request (names tidied, optional fields cleared when empty).</summary>
-    private static void ApplyIdentity(Patient patient, IPatientIdentity input, DateOnly today)
+    /// <summary>
+    /// Sets the identity fields from the request (names tidied). With <paramref name="details"/>, also the
+    /// optional details, cleared when empty (BR-P3: only the creating clinic has them).
+    /// </summary>
+    private static void ApplyIdentity(Patient patient, IPatientIdentity input, DateOnly today, bool details)
     {
         patient.FullName = Text.CollapseSpaces(input.FullName!);
         patient.Gender = input.Gender!;
@@ -500,6 +504,11 @@ public sealed class PatientsController(
             // doesn't move the date of birth every day.
             patient.DateOfBirth = PatientAge.EstimatedDateOfBirth(input.AgeYears!.Value, today);
             patient.DateOfBirthEstimated = true;
+        }
+
+        if (!details)
+        {
+            return;
         }
 
         patient.NationalId = Patients.NationalId.Normalize(input.NationalId);

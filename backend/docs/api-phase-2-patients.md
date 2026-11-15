@@ -145,6 +145,7 @@ Errors: 400 as above; **409 `PATIENT_ALREADY_LINKED`**, already this doctor's pa
   "dateOfBirth": "1990-05-01", "dateOfBirthEstimated": false, "ageYears": 36,
   "nationalId": null, "address": null, "bloodType": null,
   "emergencyContactName": null, "emergencyContactPhone": null,
+  "ownsDetails": true,
   "accountStatus": "active",
   "archived": false, "archivedAt": null,
   "linkedAt": "2026-11-15T20:37:09.593Z",
@@ -165,6 +166,7 @@ Errors: 400 as above; **409 `PATIENT_ALREADY_LINKED`**, already this doctor's pa
 }
 ```
 
+- `ownsDetails`: this clinic created the account, so it sees and edits the optional details (`nationalId`, `address`, `bloodType`, `emergencyContact*`). In a clinic that linked an existing patient they are `null` and `ownsDetails` is `false`: hide those fields in D6 and D7 (BR-P3).
 - `ageYears` is computed from `dateOfBirth` on today's Cairo date. Show "≈" when `dateOfBirthEstimated`.
 - `accountStatus`: the patient account: `active`, `disabled` (by the admin, AD11) or `deleted` (Phase 4).
 - `visits` counts this doctor's non-deleted sessions only (BR-P3). `lastVisit` is `null` before the first session. `lastVisit.day` is its Cairo date and `daysAgo` the Cairo days since (0 = today), for "x days ago".
@@ -186,7 +188,8 @@ D7 identity fields, except the phone. Every field is replaced: an optional field
 
 Rules as in `createPatient`, and `fullName`, `gender` and `dateOfBirth` or `ageYears` are always required. `patientId`: `REQUIRED`.
 
-- The identity is one account shared by every clinic the patient is linked to, so a change shows in every clinic (the name on every link and in their search).
+- The identity is one account shared by every clinic the patient is linked to, so a change to the name, gender or date of birth shows in every clinic (the name on every link and in their search).
+- The optional details change only when `ownsDetails` is true; elsewhere they are ignored (BR-P3).
 - An estimated date of birth is kept while the `ageYears` sent is still the age it gives, so re-saving the form doesn't move the date.
 
 **200** patient view. Errors: 400, 404.
@@ -664,7 +667,7 @@ New in this part. The shared clinic codes (`PERMISSION_DENIED`, `BRANCH_NOT_ALLO
 
 ## Decisions where the spec is silent
 
-- **Shared identity.** The identity fields (name, gender, date of birth, national ID, address, blood type, emergency contact) are one `Patients` row, so every linked clinic sees and edits the same values. BR-P3 names only name, phone, gender and date of birth; the optional D5 fields live on the same row.
+- **Shared identity.** Name, phone, gender and date of birth are one `Patients` row that every linked clinic sees and edits (BR-P3). The optional D5 details live on the same row but belong to the clinic that created the account (`Patients.CreatedByDoctorId`): only it sees and edits them (`ownsDetails`).
 - **Linking** keeps the existing account's identity and ignores the typed fields. It needs the phone alone.
 - **Age instead of a date of birth** is stored as today minus that many years, flagged as estimated.
 - **The medical profile** is replaced per call. Items that stay keep their row; removed items are deleted (the table has no soft delete; the lists are a current summary, not records). The audit row counts what was added and removed, without the text.

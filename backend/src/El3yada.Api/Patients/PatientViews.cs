@@ -23,6 +23,11 @@ public sealed record PatientFilesView(int Prescription, int Lab, int Radiology, 
 /// D6 header and file summary (<c>GET /api/patients/{patientId}</c>), also returned by every patient write.
 /// <c>totalPaidPiasters</c> is null without <c>revenueView</c> and <c>hasAllergies</c> null without
 /// <c>clinicalView</c>: null means hidden, never "none".
+/// <para>
+/// BR-P3: a doctor who linked an existing patient sees only the identity fields (name, phone, gender, date
+/// of birth). The optional details (national ID, address, blood type, emergency contact) belong to the clinic
+/// that created the account: <c>ownsDetails</c> is true there, and elsewhere they are null and can't be edited.
+/// </para>
 /// </summary>
 public sealed record PatientDetailView(
     Guid PatientId,
@@ -38,6 +43,7 @@ public sealed record PatientDetailView(
     string? BloodType,
     string? EmergencyContactName,
     string? EmergencyContactPhone,
+    bool OwnsDetails,
     string AccountStatus,
     bool Archived,
     DateTime? ArchivedAt,

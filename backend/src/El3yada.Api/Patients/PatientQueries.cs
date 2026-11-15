@@ -40,6 +40,7 @@ public static class PatientQueries
                 l.Patient.BloodType,
                 l.Patient.EmergencyContactName,
                 l.Patient.EmergencyContactPhone,
+                l.Patient.CreatedByDoctorId,
                 l.Patient.Status,
             })
             .SingleOrDefaultAsync(cancellationToken);
@@ -48,6 +49,8 @@ public static class PatientQueries
             return null;
         }
 
+        // BR-P3: the optional details are the creating clinic's.
+        var ownsDetails = row.CreatedByDoctorId == doctorId;
         int? totalPaid = caller.Has(ClinicPermissions.RevenueView)
             ? await db.Sessions
                 .Where(s => s.DoctorId == doctorId && s.PatientId == patientId && !s.Deleted)
@@ -73,11 +76,12 @@ public static class PatientQueries
             row.DateOfBirth,
             row.DateOfBirthEstimated,
             PatientAge.Years(row.DateOfBirth, today),
-            row.NationalId,
-            row.Address,
-            row.BloodType,
-            row.EmergencyContactName,
-            row.EmergencyContactPhone,
+            ownsDetails ? row.NationalId : null,
+            ownsDetails ? row.Address : null,
+            ownsDetails ? row.BloodType : null,
+            ownsDetails ? row.EmergencyContactName : null,
+            ownsDetails ? row.EmergencyContactPhone : null,
+            ownsDetails,
             row.Status,
             row.Archived,
             row.ArchivedAt,

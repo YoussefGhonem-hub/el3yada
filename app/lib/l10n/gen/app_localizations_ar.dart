@@ -2609,4 +2609,308 @@ class AppLocalizationsAr extends AppLocalizations {
   String pricesChangedBy(String name, String role, String time) {
     return '$name ($role)، $time';
   }
+
+  @override
+  String get branchesSubtitle =>
+      'أماكن استقبال المرضى. اضغط على فرع لتعديل بياناته أو مواعيده أو حالته.';
+
+  @override
+  String get branchesEmptyTitle => 'لا توجد فروع بعد';
+
+  @override
+  String get branchAdd => 'إضافة فرع';
+
+  @override
+  String branchCountOf(int count, int limit) {
+    return '$count من $limit فروع';
+  }
+
+  @override
+  String get branchArchivedHint => 'مؤرشف: لا يظهر للمرضى ولا يقبل حجوزات';
+
+  @override
+  String get branchClosedToday => 'مغلق اليوم';
+
+  @override
+  String branchUpcomingBookings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حجز قادم',
+      many: '$count حجزاً قادماً',
+      few: '$count حجوزات قادمة',
+      two: 'حجزان قادمان',
+      one: 'حجز قادم واحد',
+      zero: 'لا توجد حجوزات قادمة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchReopensOn(String date) {
+    return 'يعود للعمل يوم $date';
+  }
+
+  @override
+  String get branchSaved => 'تم الحفظ';
+
+  @override
+  String get branchTabInfo => 'البيانات';
+
+  @override
+  String get branchTabAddress => 'العنوان والخريطة';
+
+  @override
+  String get branchTabContact => 'التواصل';
+
+  @override
+  String get branchTabHours => 'مواعيد العمل';
+
+  @override
+  String get branchTabClinic => 'معلومات للمرضى';
+
+  @override
+  String branchTabUnsaved(String tab) {
+    return '$tab، غير محفوظ';
+  }
+
+  @override
+  String get branchDescription => 'وصف قصير (اختياري)';
+
+  @override
+  String get branchDescriptionHint => 'مثال: الدور الثاني، بجوار الصيدلية';
+
+  @override
+  String get branchAreaLabel => 'المنطقة (اختياري)';
+
+  @override
+  String get branchEmailLabel => 'بريد العيادة (اختياري)';
+
+  @override
+  String get branchMapPin => 'الموقع على الخريطة';
+
+  @override
+  String get branchMapPinHint =>
+      'في خرائط Google اضغط مطولاً على مكان العيادة، وانسخ الرقمين والصقهما هنا.';
+
+  @override
+  String get branchLatitude => 'خط العرض';
+
+  @override
+  String get branchLongitude => 'خط الطول';
+
+  @override
+  String get branchTestInMaps => 'تجربة في خرائط Google';
+
+  @override
+  String get branchClearPin => 'إزالة الموقع';
+
+  @override
+  String get branchMapsFailed => 'تعذّر فتح خرائط Google على هذا الجهاز.';
+
+  @override
+  String get branchErrorPinPair => 'أدخل الرقمين معاً أو اتركهما فارغين.';
+
+  @override
+  String get branchErrorPinRange => 'إحداثي غير صحيح.';
+
+  @override
+  String get branchPaymentMethods => 'طرق الدفع في العيادة';
+
+  @override
+  String get branchAmenities => 'المرافق';
+
+  @override
+  String get branchForPatients => 'ما يراه المرضى';
+
+  @override
+  String get branchForPatientsBody => 'تظهر على بطاقة الفرع عند الحجز.';
+
+  @override
+  String get branchPricesTitle => 'أسعار هذا الفرع';
+
+  @override
+  String branchHoursQueueNote(int count) {
+    return 'الحجز هنا بنظام الدور. كل فترة تستقبل $count مريضاً ما لم تحدد لها عدداً آخر.';
+  }
+
+  @override
+  String get branchHoursTimedNote => 'الحجز هنا بمواعيد محددة.';
+
+  @override
+  String get branchCopySaturday => 'نسخ السبت لكل الأيام';
+
+  @override
+  String get branchCopySaturdayTitle => 'نسخ مواعيد السبت لكل الأيام؟';
+
+  @override
+  String get branchCopySaturdayBody =>
+      'تُستبدل فترات الأيام الأخرى بفترات السبت، ولا يُحفظ شيء حتى تضغط حفظ.';
+
+  @override
+  String get branchDayClosed => 'مغلق';
+
+  @override
+  String get branchAddPeriod => 'إضافة فترة';
+
+  @override
+  String get branchRemovePeriod => 'حذف هذه الفترة';
+
+  @override
+  String get branchPeriodFrom => 'من';
+
+  @override
+  String get branchPeriodTo => 'إلى';
+
+  @override
+  String get branchEndsNextDay => 'تنتهي في اليوم التالي';
+
+  @override
+  String get branchPeriodMorning => 'صباحي';
+
+  @override
+  String get branchPeriodEvening => 'مسائي';
+
+  @override
+  String get branchCapacity => 'عدد المرضى';
+
+  @override
+  String get branchErrorTooManyPeriods => '10 فترات في اليوم كحد أقصى.';
+
+  @override
+  String get branchStatusTitle => 'حالة الفرع';
+
+  @override
+  String get branchStatusActiveBody => 'مفتوح: يراه المرضى ويمكنهم الحجز.';
+
+  @override
+  String get branchStatusDefaultBody =>
+      'مفتوح، وهو الفرع الافتراضي: تُسجّل الزيارات الجديدة عليه ما لم تختر فرعاً آخر.';
+
+  @override
+  String get branchStatusClosedBody =>
+      'يرى المرضى رسالتك على بطاقة الفرع ولا يمكنهم الحجز فيه.';
+
+  @override
+  String get branchStatusArchivedBody =>
+      'مخفي عن المرضى والحجز. يبقى سجله، ويمكنك إعادته.';
+
+  @override
+  String get branchPatientsSee => 'يرى المرضى';
+
+  @override
+  String get branchMakeDefault => 'اجعله الافتراضي';
+
+  @override
+  String branchMakeDefaultTitle(String name) {
+    return 'جعل $name الفرع الافتراضي؟';
+  }
+
+  @override
+  String get branchMakeDefaultBody =>
+      'تستخدم الزيارات الجديدة الفرع الافتراضي ما لم يُختر فرع آخر.';
+
+  @override
+  String branchDefaultMessage(String name) {
+    return 'أصبح $name الفرع الافتراضي.';
+  }
+
+  @override
+  String get branchCloseTemporarily => 'إغلاق مؤقت';
+
+  @override
+  String get branchCloseBody =>
+      'يرى المرضى هذه الرسالة على بطاقة الفرع، ولا يمكنهم الحجز حتى تعيد فتحه.';
+
+  @override
+  String get branchClosedMessageLabel => 'رسالة للمرضى';
+
+  @override
+  String get branchClosedMessageHint => 'مثال: مغلق للتجديدات';
+
+  @override
+  String get branchReopenDateAdd => 'تاريخ العودة المتوقع (اختياري)';
+
+  @override
+  String get branchCloseConfirm => 'إغلاق الفرع';
+
+  @override
+  String get branchClosedMessage => 'تم إغلاق الفرع مؤقتاً.';
+
+  @override
+  String get branchEditClosure => 'تعديل الرسالة';
+
+  @override
+  String get branchReopen => 'إعادة الفتح';
+
+  @override
+  String get branchReopenedMessage => 'تمت إعادة فتح الفرع.';
+
+  @override
+  String get branchArchive => 'أرشفة';
+
+  @override
+  String branchArchiveTitle(String name) {
+    return 'أرشفة $name؟';
+  }
+
+  @override
+  String get branchArchiveBody =>
+      'يختفي عن المرضى ولا يقبل حجوزات. تبقى زياراته وسجله، ويمكنك إعادته لاحقاً.';
+
+  @override
+  String get branchArchivedMessage => 'تمت أرشفة الفرع.';
+
+  @override
+  String get branchRestore => 'إعادة الفرع';
+
+  @override
+  String get branchRestoredMessage => 'عاد الفرع وأصبح مفتوحاً.';
+
+  @override
+  String get branchRefusedTitle => 'غير ممكن الآن';
+
+  @override
+  String branchBookingsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حجز قادم',
+      many: '$count حجزاً قادماً',
+      few: '$count حجوزات قادمة',
+      two: 'حجزان قادمان',
+      one: 'حجز قادم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchBookingsMore(int count) {
+    return 'و$count غيرها.';
+  }
+
+  @override
+  String get branchBookingsHint =>
+      'انقلها لفرع آخر أو ألغها من تقويم الحجوزات، ثم حاول مرة أخرى. يُبلَّغ المرضى الملغاة حجوزاتهم برابط لإعادة الحجز.';
+
+  @override
+  String branchBookingGuest(String name) {
+    return '$name (ضيف)';
+  }
+
+  @override
+  String get branchLaterTabs => 'لاحقاً';
+
+  @override
+  String get branchLaterTabsTitle => 'إعدادات الحجز والأيام الخاصة';
+
+  @override
+  String get branchLaterTabsBody => 'تُضاف مع الحجوزات.';
+
+  @override
+  String get branchAddedMessage => 'تمت إضافة الفرع. حدّد مواعيد العمل الآن.';
+
+  @override
+  String get branchNewNextSteps =>
+      'مواعيد العمل والأسعار في الخطوة التالية، بعد إضافة الفرع.';
 }

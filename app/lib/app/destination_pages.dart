@@ -12,6 +12,8 @@ import '../features/admin/presentation/signups/signup_review.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/clinic/domain/clinic_permissions.dart';
 import '../features/clinic_admin/clinic_admin_routes.dart';
+import '../features/clinic_admin/presentation/branches/branch_editor_screen.dart';
+import '../features/clinic_admin/presentation/branches/branches_screen.dart';
 import '../features/clinic_admin/presentation/prices/visit_prices_screen.dart';
 import '../features/clinic_admin/presentation/profile/doctor_profile_screen.dart';
 import '../features/clinic_admin/presentation/settings/clinic_settings_screen.dart';
@@ -35,6 +37,7 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   // Clinic settings (D24, AS12), branches (D28), assistants (D25), activity (D27).
   ClinicAdminRoutes.doctorSettings: (_) => const ClinicSettingsScreen(),
   ClinicAdminRoutes.assistantSettings: (_) => const ClinicSettingsScreen(),
+  ClinicAdminRoutes.branches: (_) => const BranchesScreen(),
 };
 
 /// Detail routes under a destination, relative to it, for example
@@ -55,6 +58,17 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
   ClinicAdminRoutes.doctorSettings: [
     GoRoute(path: 'profile', builder: (context, state) => const DoctorProfileScreen()),
     GoRoute(path: 'prices', builder: (context, state) => const VisitPricesScreen()),
+  ],
+  // D29: a new branch, or one branch (`?tab=hours` opens a tab).
+  ClinicAdminRoutes.branches: [
+    GoRoute(path: 'new', builder: (context, state) => const NewBranchScreen()),
+    GoRoute(
+      path: ':branchId',
+      builder: (context, state) => BranchEditorScreen(
+        branchId: state.pathParameters['branchId']!,
+        initialTab: BranchEditorScreen.tabNamed(state.uri.queryParameters['tab']),
+      ),
+    ),
   ],
   // AS19, only with pricesManage (spec 7.6): hidden, and refused by address.
   ClinicAdminRoutes.assistantSettings: [

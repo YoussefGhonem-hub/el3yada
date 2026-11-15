@@ -2612,4 +2612,305 @@ class AppLocalizationsEn extends AppLocalizations {
   String pricesChangedBy(String name, String role, String time) {
     return '$name ($role), $time';
   }
+
+  @override
+  String get branchesSubtitle =>
+      'Where you see patients. Tap a branch to change its details, hours or status.';
+
+  @override
+  String get branchesEmptyTitle => 'No branches yet';
+
+  @override
+  String get branchAdd => 'Add branch';
+
+  @override
+  String branchCountOf(int count, int limit) {
+    return '$count of $limit branches';
+  }
+
+  @override
+  String get branchArchivedHint =>
+      'Archived: hidden from patients and bookings';
+
+  @override
+  String get branchClosedToday => 'Closed today';
+
+  @override
+  String branchUpcomingBookings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count upcoming bookings',
+      one: '1 upcoming booking',
+      zero: 'No upcoming bookings',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchReopensOn(String date) {
+    return 'Reopens on $date';
+  }
+
+  @override
+  String get branchSaved => 'Saved';
+
+  @override
+  String get branchTabInfo => 'Info';
+
+  @override
+  String get branchTabAddress => 'Address and map';
+
+  @override
+  String get branchTabContact => 'Contact';
+
+  @override
+  String get branchTabHours => 'Working hours';
+
+  @override
+  String get branchTabClinic => 'Clinic info for patients';
+
+  @override
+  String branchTabUnsaved(String tab) {
+    return '$tab, not saved';
+  }
+
+  @override
+  String get branchDescription => 'Short description (optional)';
+
+  @override
+  String get branchDescriptionHint =>
+      'For example: second floor, next to the pharmacy';
+
+  @override
+  String get branchAreaLabel => 'Area (optional)';
+
+  @override
+  String get branchEmailLabel => 'Clinic email (optional)';
+
+  @override
+  String get branchMapPin => 'Map pin';
+
+  @override
+  String get branchMapPinHint =>
+      'In Google Maps, press and hold the clinic\'s place, copy the two numbers and paste them here.';
+
+  @override
+  String get branchLatitude => 'Latitude';
+
+  @override
+  String get branchLongitude => 'Longitude';
+
+  @override
+  String get branchTestInMaps => 'Test in Google Maps';
+
+  @override
+  String get branchClearPin => 'Remove the pin';
+
+  @override
+  String get branchMapsFailed => 'Couldn\'t open Google Maps on this device.';
+
+  @override
+  String get branchErrorPinPair => 'Enter both numbers, or neither.';
+
+  @override
+  String get branchErrorPinRange => 'Not a valid coordinate.';
+
+  @override
+  String get branchPaymentMethods => 'Payment at the clinic';
+
+  @override
+  String get branchAmenities => 'Amenities';
+
+  @override
+  String get branchForPatients => 'What patients see';
+
+  @override
+  String get branchForPatientsBody =>
+      'Shown on the branch card when patients book.';
+
+  @override
+  String get branchPricesTitle => 'This branch\'s prices';
+
+  @override
+  String branchHoursQueueNote(int count) {
+    return 'Bookings here go by queue number. Each period takes $count patients unless you set its own number.';
+  }
+
+  @override
+  String get branchHoursTimedNote => 'Bookings here go by appointment time.';
+
+  @override
+  String get branchCopySaturday => 'Copy Saturday to all days';
+
+  @override
+  String get branchCopySaturdayTitle => 'Copy Saturday to every day?';
+
+  @override
+  String get branchCopySaturdayBody =>
+      'The other days\' periods are replaced by Saturday\'s. Nothing is saved until you tap Save.';
+
+  @override
+  String get branchDayClosed => 'Closed';
+
+  @override
+  String get branchAddPeriod => 'Add period';
+
+  @override
+  String get branchRemovePeriod => 'Remove this period';
+
+  @override
+  String get branchPeriodFrom => 'From';
+
+  @override
+  String get branchPeriodTo => 'To';
+
+  @override
+  String get branchEndsNextDay => 'Ends the next day';
+
+  @override
+  String get branchPeriodMorning => 'Morning';
+
+  @override
+  String get branchPeriodEvening => 'Evening';
+
+  @override
+  String get branchCapacity => 'Patients';
+
+  @override
+  String get branchErrorTooManyPeriods => 'At most 10 periods a day.';
+
+  @override
+  String get branchStatusTitle => 'Branch status';
+
+  @override
+  String get branchStatusActiveBody => 'Open: patients see it and can book.';
+
+  @override
+  String get branchStatusDefaultBody =>
+      'Open, and the default: new visits use it unless you pick another branch.';
+
+  @override
+  String get branchStatusClosedBody =>
+      'Patients see your message on the branch card and can\'t book here.';
+
+  @override
+  String get branchStatusArchivedBody =>
+      'Hidden from patients and bookings. Its history stays, and you can bring it back.';
+
+  @override
+  String get branchPatientsSee => 'Patients see';
+
+  @override
+  String get branchMakeDefault => 'Make default';
+
+  @override
+  String branchMakeDefaultTitle(String name) {
+    return 'Make $name the default?';
+  }
+
+  @override
+  String get branchMakeDefaultBody =>
+      'New visits and walk-ins use the default branch unless another one is picked.';
+
+  @override
+  String branchDefaultMessage(String name) {
+    return '$name is now the default branch.';
+  }
+
+  @override
+  String get branchCloseTemporarily => 'Close temporarily';
+
+  @override
+  String get branchCloseBody =>
+      'Patients see this message on the branch card and can\'t book here until you reopen it.';
+
+  @override
+  String get branchClosedMessageLabel => 'Message for patients';
+
+  @override
+  String get branchClosedMessageHint => 'For example: closed for renovation';
+
+  @override
+  String get branchReopenDateAdd => 'Expected reopening date (optional)';
+
+  @override
+  String get branchCloseConfirm => 'Close the branch';
+
+  @override
+  String get branchClosedMessage => 'The branch is closed for now.';
+
+  @override
+  String get branchEditClosure => 'Edit the message';
+
+  @override
+  String get branchReopen => 'Reopen';
+
+  @override
+  String get branchReopenedMessage => 'The branch is open again.';
+
+  @override
+  String get branchArchive => 'Archive';
+
+  @override
+  String branchArchiveTitle(String name) {
+    return 'Archive $name?';
+  }
+
+  @override
+  String get branchArchiveBody =>
+      'It disappears for patients and can\'t take bookings. Its visits and history stay, and you can bring it back later.';
+
+  @override
+  String get branchArchivedMessage => 'The branch is archived.';
+
+  @override
+  String get branchRestore => 'Bring back';
+
+  @override
+  String get branchRestoredMessage => 'The branch is back and open.';
+
+  @override
+  String get branchRefusedTitle => 'Not possible yet';
+
+  @override
+  String branchBookingsTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count upcoming bookings',
+      one: '1 upcoming booking',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchBookingsMore(int count) {
+    return 'And $count more.';
+  }
+
+  @override
+  String get branchBookingsHint =>
+      'Move them to another branch or cancel them from the appointments calendar, then try again. Cancelled patients are told, with a link to book again.';
+
+  @override
+  String branchBookingGuest(String name) {
+    return '$name (guest)';
+  }
+
+  @override
+  String get branchLaterTabs => 'Coming later';
+
+  @override
+  String get branchLaterTabsTitle => 'Booking settings and special dates';
+
+  @override
+  String get branchLaterTabsBody => 'They arrive with appointments.';
+
+  @override
+  String get branchAddedMessage => 'Branch added. Now set its working hours.';
+
+  @override
+  String get branchNewNextSteps =>
+      'Working hours and prices come next, after you add the branch.';
 }

@@ -4555,6 +4555,510 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} ({role}), {time}'**
   String pricesChangedBy(String name, String role, String time);
+
+  /// No description provided for @branchesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where you see patients. Tap a branch to change its details, hours or status.'**
+  String get branchesSubtitle;
+
+  /// No description provided for @branchesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No branches yet'**
+  String get branchesEmptyTitle;
+
+  /// No description provided for @branchAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add branch'**
+  String get branchAdd;
+
+  /// D28 «2 من 5». Archived branches don't count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {limit} branches'**
+  String branchCountOf(int count, int limit);
+
+  /// No description provided for @branchArchivedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived: hidden from patients and bookings'**
+  String get branchArchivedHint;
+
+  /// No description provided for @branchClosedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed today'**
+  String get branchClosedToday;
+
+  /// No description provided for @branchUpcomingBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No upcoming bookings} =1{1 upcoming booking} other{{count} upcoming bookings}}'**
+  String branchUpcomingBookings(int count);
+
+  /// No description provided for @branchReopensOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopens on {date}'**
+  String branchReopensOn(String date);
+
+  /// No description provided for @branchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get branchSaved;
+
+  /// No description provided for @branchTabInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get branchTabInfo;
+
+  /// No description provided for @branchTabAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address and map'**
+  String get branchTabAddress;
+
+  /// No description provided for @branchTabContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get branchTabContact;
+
+  /// No description provided for @branchTabHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours'**
+  String get branchTabHours;
+
+  /// No description provided for @branchTabClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic info for patients'**
+  String get branchTabClinic;
+
+  /// No description provided for @branchTabUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{tab}, not saved'**
+  String branchTabUnsaved(String tab);
+
+  /// No description provided for @branchDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Short description (optional)'**
+  String get branchDescription;
+
+  /// No description provided for @branchDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: second floor, next to the pharmacy'**
+  String get branchDescriptionHint;
+
+  /// No description provided for @branchAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Area (optional)'**
+  String get branchAreaLabel;
+
+  /// No description provided for @branchEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic email (optional)'**
+  String get branchEmailLabel;
+
+  /// No description provided for @branchMapPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Map pin'**
+  String get branchMapPin;
+
+  /// No description provided for @branchMapPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In Google Maps, press and hold the clinic\'s place, copy the two numbers and paste them here.'**
+  String get branchMapPinHint;
+
+  /// No description provided for @branchLatitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get branchLatitude;
+
+  /// No description provided for @branchLongitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get branchLongitude;
+
+  /// No description provided for @branchTestInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Test in Google Maps'**
+  String get branchTestInMaps;
+
+  /// No description provided for @branchClearPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the pin'**
+  String get branchClearPin;
+
+  /// No description provided for @branchMapsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open Google Maps on this device.'**
+  String get branchMapsFailed;
+
+  /// No description provided for @branchErrorPinPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter both numbers, or neither.'**
+  String get branchErrorPinPair;
+
+  /// No description provided for @branchErrorPinRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid coordinate.'**
+  String get branchErrorPinRange;
+
+  /// No description provided for @branchPaymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment at the clinic'**
+  String get branchPaymentMethods;
+
+  /// No description provided for @branchAmenities.
+  ///
+  /// In en, this message translates to:
+  /// **'Amenities'**
+  String get branchAmenities;
+
+  /// No description provided for @branchForPatients.
+  ///
+  /// In en, this message translates to:
+  /// **'What patients see'**
+  String get branchForPatients;
+
+  /// No description provided for @branchForPatientsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on the branch card when patients book.'**
+  String get branchForPatientsBody;
+
+  /// No description provided for @branchPricesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch\'s prices'**
+  String get branchPricesTitle;
+
+  /// No description provided for @branchHoursQueueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings here go by queue number. Each period takes {count} patients unless you set its own number.'**
+  String branchHoursQueueNote(int count);
+
+  /// No description provided for @branchHoursTimedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings here go by appointment time.'**
+  String get branchHoursTimedNote;
+
+  /// No description provided for @branchCopySaturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Saturday to all days'**
+  String get branchCopySaturday;
+
+  /// No description provided for @branchCopySaturdayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Saturday to every day?'**
+  String get branchCopySaturdayTitle;
+
+  /// No description provided for @branchCopySaturdayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The other days\' periods are replaced by Saturday\'s. Nothing is saved until you tap Save.'**
+  String get branchCopySaturdayBody;
+
+  /// No description provided for @branchDayClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get branchDayClosed;
+
+  /// No description provided for @branchAddPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Add period'**
+  String get branchAddPeriod;
+
+  /// No description provided for @branchRemovePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this period'**
+  String get branchRemovePeriod;
+
+  /// No description provided for @branchPeriodFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get branchPeriodFrom;
+
+  /// No description provided for @branchPeriodTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get branchPeriodTo;
+
+  /// No description provided for @branchEndsNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends the next day'**
+  String get branchEndsNextDay;
+
+  /// No description provided for @branchPeriodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get branchPeriodMorning;
+
+  /// No description provided for @branchPeriodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening'**
+  String get branchPeriodEvening;
+
+  /// No description provided for @branchCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients'**
+  String get branchCapacity;
+
+  /// No description provided for @branchErrorTooManyPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'At most 10 periods a day.'**
+  String get branchErrorTooManyPeriods;
+
+  /// No description provided for @branchStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch status'**
+  String get branchStatusTitle;
+
+  /// No description provided for @branchStatusActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open: patients see it and can book.'**
+  String get branchStatusActiveBody;
+
+  /// No description provided for @branchStatusDefaultBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open, and the default: new visits use it unless you pick another branch.'**
+  String get branchStatusDefaultBody;
+
+  /// No description provided for @branchStatusClosedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see your message on the branch card and can\'t book here.'**
+  String get branchStatusClosedBody;
+
+  /// No description provided for @branchStatusArchivedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden from patients and bookings. Its history stays, and you can bring it back.'**
+  String get branchStatusArchivedBody;
+
+  /// No description provided for @branchPatientsSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see'**
+  String get branchPatientsSee;
+
+  /// No description provided for @branchMakeDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Make default'**
+  String get branchMakeDefault;
+
+  /// No description provided for @branchMakeDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {name} the default?'**
+  String branchMakeDefaultTitle(String name);
+
+  /// No description provided for @branchMakeDefaultBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New visits and walk-ins use the default branch unless another one is picked.'**
+  String get branchMakeDefaultBody;
+
+  /// No description provided for @branchDefaultMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is now the default branch.'**
+  String branchDefaultMessage(String name);
+
+  /// No description provided for @branchCloseTemporarily.
+  ///
+  /// In en, this message translates to:
+  /// **'Close temporarily'**
+  String get branchCloseTemporarily;
+
+  /// No description provided for @branchCloseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see this message on the branch card and can\'t book here until you reopen it.'**
+  String get branchCloseBody;
+
+  /// No description provided for @branchClosedMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message for patients'**
+  String get branchClosedMessageLabel;
+
+  /// No description provided for @branchClosedMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: closed for renovation'**
+  String get branchClosedMessageHint;
+
+  /// No description provided for @branchReopenDateAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected reopening date (optional)'**
+  String get branchReopenDateAdd;
+
+  /// No description provided for @branchCloseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the branch'**
+  String get branchCloseConfirm;
+
+  /// No description provided for @branchClosedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is closed for now.'**
+  String get branchClosedMessage;
+
+  /// No description provided for @branchEditClosure.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit the message'**
+  String get branchEditClosure;
+
+  /// No description provided for @branchReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get branchReopen;
+
+  /// No description provided for @branchReopenedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is open again.'**
+  String get branchReopenedMessage;
+
+  /// No description provided for @branchArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get branchArchive;
+
+  /// No description provided for @branchArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive {name}?'**
+  String branchArchiveTitle(String name);
+
+  /// No description provided for @branchArchiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears for patients and can\'t take bookings. Its visits and history stay, and you can bring it back later.'**
+  String get branchArchiveBody;
+
+  /// No description provided for @branchArchivedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is archived.'**
+  String get branchArchivedMessage;
+
+  /// No description provided for @branchRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get branchRestore;
+
+  /// No description provided for @branchRestoredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is back and open.'**
+  String get branchRestoredMessage;
+
+  /// No description provided for @branchRefusedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not possible yet'**
+  String get branchRefusedTitle;
+
+  /// No description provided for @branchBookingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 upcoming booking} other{{count} upcoming bookings}}'**
+  String branchBookingsTitle(int count);
+
+  /// No description provided for @branchBookingsMore.
+  ///
+  /// In en, this message translates to:
+  /// **'And {count} more.'**
+  String branchBookingsMore(int count);
+
+  /// No description provided for @branchBookingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Move them to another branch or cancel them from the appointments calendar, then try again. Cancelled patients are told, with a link to book again.'**
+  String get branchBookingsHint;
+
+  /// No description provided for @branchBookingGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (guest)'**
+  String branchBookingGuest(String name);
+
+  /// No description provided for @branchLaterTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming later'**
+  String get branchLaterTabs;
+
+  /// No description provided for @branchLaterTabsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking settings and special dates'**
+  String get branchLaterTabsTitle;
+
+  /// No description provided for @branchLaterTabsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They arrive with appointments.'**
+  String get branchLaterTabsBody;
+
+  /// No description provided for @branchAddedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch added. Now set its working hours.'**
+  String get branchAddedMessage;
+
+  /// No description provided for @branchNewNextSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours and prices come next, after you add the branch.'**
+  String get branchNewNextSteps;
 }
 
 class _AppLocalizationsDelegate

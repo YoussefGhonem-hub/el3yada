@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:el3yada/features/clinic_admin/data/fake_clinic_admin_repository.dart';
+
 import '../support/admin_support.dart';
 import '../support/app_overrides.dart';
 import '../support/clinic_admin_support.dart';
@@ -80,6 +82,44 @@ void main() {
         goTo(tester, '/doctor/settings/prices');
         await settle(tester);
         await capture(tester, 'd37_prices_${width}_ar_$theme');
+        await tester.drag(find.byType(SingleChildScrollView).last, const Offset(0, -900));
+        await settle(tester);
+        await capture(tester, 'd37_prices_end_${width}_ar_$theme');
+      });
+
+      testWidgets('D28 branches ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+        await signedIn(tester, size, 'doctor@el3yada.dev');
+        goTo(tester, '/doctor/branches');
+        await settle(tester);
+        await capture(tester, 'd28_branches_${width}_ar_$theme');
+      });
+
+      testWidgets('D29 branch editor ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+        await signedIn(tester, size, 'doctor@el3yada.dev');
+        goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}');
+        await settle(tester);
+        await capture(tester, 'd29_info_${width}_ar_$theme');
+        for (final tab in ['address', 'contact', 'hours', 'clinic']) {
+          goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}?tab=$tab');
+          await settle(tester);
+          await capture(tester, 'd29_${tab}_${width}_ar_$theme');
+        }
+        // The BR-BR9 refusal: Nasr City has bookings.
+        goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}');
+        await settle(tester);
+        await tester.ensureVisible(find.text('أرشفة').first);
+        await tester.tap(find.text('أرشفة').first);
+        await settle(tester);
+        await tester.tap(find.widgetWithText(FilledButton, 'أرشفة'));
+        await settle(tester);
+        await capture(tester, 'd29_bookings_refusal_${width}_ar_$theme');
+      });
+
+      testWidgets('D29 new branch ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+        await signedIn(tester, size, 'doctor@el3yada.dev');
+        goTo(tester, '/doctor/branches/new');
+        await settle(tester);
+        await capture(tester, 'd29_new_${width}_ar_$theme');
       });
     }
   }

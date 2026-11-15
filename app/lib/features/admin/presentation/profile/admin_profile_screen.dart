@@ -4,17 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/format/app_format.dart';
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/network/api_exception.dart';
-import '../../../../core/settings/app_settings.dart';
-import '../../../../core/theme/motion.dart';
-import '../../../../core/validation/validators.dart';
-import '../../../../core/widgets/password_checklist.dart';
-import '../../../../core/widgets/shake_on_error.dart';
+import '../../../../core/widgets/preference_pickers.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../core/widgets/state_switcher.dart';
 import '../../../../core/widgets/submit_button.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/application/auth_controller.dart';
+import '../../../auth/presentation/change_password_form.dart';
 import '../../admin_routes.dart';
 import '../../application/admin_controllers.dart';
 import '../../domain/admin_models.dart';
@@ -253,15 +250,13 @@ class _IdentityCardState extends ConsumerState<_IdentityCard> {
   }
 }
 
-class _PreferencesCard extends ConsumerWidget {
+class _PreferencesCard extends StatelessWidget {
   const _PreferencesCard();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final settings = ref.watch(appSettingsProvider);
-    final controller = ref.read(appSettingsProvider.notifier);
     return SectionCard(
       icon: Icons.tune,
       title: l10n.adminPreferences,
@@ -271,183 +266,28 @@ class _PreferencesCard extends ConsumerWidget {
         children: [
           Text(l10n.adminLanguage, style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
-          SegmentedButton<String>(
-            segments: [
-              ButtonSegment(value: 'ar', label: Text(l10n.languageArabic)),
-              ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
-            ],
-            selected: {settings.locale.languageCode},
-            onSelectionChanged: (selection) => controller.setLocale(Locale(selection.first)),
-          ),
+          const LanguagePicker(),
           const SizedBox(height: 20),
           Text(l10n.appearance, style: theme.textTheme.labelLarge),
           const SizedBox(height: 8),
-          SegmentedButton<ThemeMode>(
-            segments: [
-              ButtonSegment(value: ThemeMode.light, label: Text(l10n.themeLight), icon: const Icon(Icons.light_mode_outlined)),
-              ButtonSegment(value: ThemeMode.dark, label: Text(l10n.themeDark), icon: const Icon(Icons.dark_mode_outlined)),
-              ButtonSegment(
-                value: ThemeMode.system,
-                label: Text(l10n.themeSystem),
-                icon: const Icon(Icons.brightness_auto_outlined),
-              ),
-            ],
-            selected: {settings.themeMode},
-            onSelectionChanged: (selection) => controller.setThemeMode(selection.first),
-          ),
+          const AppearancePicker(),
         ],
       ),
     );
   }
 }
 
-class _PasswordCard extends ConsumerStatefulWidget {
+class _PasswordCard extends StatelessWidget {
   const _PasswordCard();
-
-  @override
-  ConsumerState<_PasswordCard> createState() => _PasswordCardState();
-}
-
-class _PasswordCardState extends ConsumerState<_PasswordCard> {
-  final _formKey = GlobalKey<FormState>();
-  final _current = TextEditingController();
-  final _password = TextEditingController();
-  final _confirm = TextEditingController();
-  bool _obscure = true;
-  SubmitStatus _status = SubmitStatus.idle;
-  Map<String, String> _fieldErrors = const {};
-  String? _error;
-  int _failures = 0;
-
-  @override
-  void dispose() {
-    _current.dispose();
-    _password.dispose();
-    _confirm.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    final l10n = AppLocalizations.of(context);
-    final reduced = Motion.of(context).reduced;
-    setState(() {
-      _fieldErrors = const {};
-      _error = null;
-    });
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      setState(() => _failures++);
-      return;
-    }
-    setState(() => _status = SubmitStatus.loading);
-    try {
-      await ref.read(authControllerProvider.notifier).changePassword(_current.text, _password.text);
-      if (!mounted) return;
-      setState(() => _status = SubmitStatus.success);
-      showAdminSnack(context, l10n.adminPasswordChanged);
-      await Future<void>.delayed(reduced ? Duration.zero : Motion.slow);
-      if (!mounted) return;
-      _current.clear();
-      _password.clear();
-      _confirm.clear();
-      _formKey.currentState?.reset();
-      setState(() => _status = SubmitStatus.idle);
-    } on ApiException catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _status = SubmitStatus.idle;
-        _fieldErrors = error.fieldCodes;
-        _error = error.fieldCodes.isEmpty ? l10n.apiError(error) : null;
-        _failures++;
-      });
-      _formKey.currentState?.validate();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    final busy = _status != SubmitStatus.idle;
-    final toggle = IconButton(
-      tooltip: _obscure ? l10n.showPassword : l10n.hidePassword,
-      icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-      onPressed: () => setState(() => _obscure = !_obscure),
-    );
     return SectionCard(
       icon: Icons.lock_outline,
       title: l10n.adminChangePassword,
       subtitle: l10n.adminChangePasswordBody,
-      child: ShakeOnError(
-        trigger: _failures == 0 ? null : _failures,
-        child: Form(
-          key: _formKey,
-          child: AutofillGroup(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  controller: _current,
-                  enabled: !busy,
-                  obscureText: _obscure,
-                  autofillHints: const [AutofillHints.password],
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.adminCurrentPassword,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: toggle,
-                  ),
-                  validator: (value) {
-                    final server = l10n.fieldError(_fieldErrors['currentPassword']);
-                    if (server != null) return server;
-                    if (value == null || value.isEmpty) return l10n.errorRequired;
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _password,
-                  enabled: !busy,
-                  obscureText: _obscure,
-                  autofillHints: const [AutofillHints.newPassword],
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(labelText: l10n.newPasswordLabel, prefixIcon: const Icon(Icons.key_outlined)),
-                  validator: (value) {
-                    final server = l10n.fieldError(_fieldErrors['newPassword']);
-                    if (server != null) return server;
-                    if (value == null || value.isEmpty) return l10n.errorRequired;
-                    if (!PasswordRules.isStrong(value)) return l10n.errorWeakPassword;
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                PasswordChecklist(controller: _password),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _confirm,
-                  enabled: !busy,
-                  obscureText: _obscure,
-                  autofillHints: const [AutofillHints.newPassword],
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
-                  decoration: InputDecoration(labelText: l10n.confirmPasswordLabel, prefixIcon: const Icon(Icons.key_outlined)),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return l10n.errorRequired;
-                    if (value != _password.text) return l10n.errorPasswordsDontMatch;
-                    return null;
-                  },
-                ),
-                if (_error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Semantics(liveRegion: true, child: Text(_error!, style: TextStyle(color: scheme.error))),
-                  ),
-                const SizedBox(height: 20),
-                SubmitButton(label: l10n.adminChangePassword, status: _status, onPressed: _submit),
-              ],
-            ),
-          ),
-        ),
-      ),
+      child: const ChangePasswordForm(),
     );
   }
 }

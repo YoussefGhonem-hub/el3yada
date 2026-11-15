@@ -8,7 +8,7 @@ import '../../../../core/format/app_format.dart';
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/theme/motion.dart';
-import '../../../../core/widgets/shake_on_error.dart';
+import '../../../../core/widgets/save_bar.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../core/widgets/state_switcher.dart';
@@ -349,7 +349,7 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                 ),
               ),
             ),
-            _SaveBar(
+            SaveBar(
               visible: showBar,
               dirty: dirty,
               status: _status,
@@ -534,107 +534,6 @@ class _MaintenanceSwitch extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-/// "3 changes not saved · Discard · Save": slides up while there are
-/// changes, above the phone's floating bar.
-class _SaveBar extends StatelessWidget {
-  const _SaveBar({
-    required this.visible,
-    required this.dirty,
-    required this.status,
-    required this.error,
-    required this.failures,
-    required this.gutter,
-    required this.bottomInset,
-    required this.onDiscard,
-    required this.onSave,
-  });
-
-  final bool visible;
-  final int dirty;
-  final SubmitStatus status;
-  final String? error;
-  final int failures;
-  final double gutter;
-  final double bottomInset;
-  final VoidCallback onDiscard;
-  final VoidCallback onSave;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final reduced = Motion.of(context).reduced;
-    final bar = Material(
-      color: scheme.surfaceContainerLow,
-      elevation: 6,
-      shadowColor: scheme.shadow.withValues(alpha: 0.3),
-      child: DecoratedBox(
-        decoration: BoxDecoration(border: Border(top: BorderSide(color: scheme.outlineVariant))),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(gutter, 12, gutter, 12 + bottomInset),
-          child: ShakeOnError(
-            trigger: failures == 0 ? null : failures,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Semantics(
-                      liveRegion: true,
-                      child: Text(error!, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.error)),
-                    ),
-                  ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Semantics(
-                        liveRegion: true,
-                        child: Text(
-                          status == SubmitStatus.success ? l10n.adminAllSaved : l10n.adminUnsavedChanges(dirty),
-                          style: theme.textTheme.titleSmall,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: status == SubmitStatus.idle ? onDiscard : null,
-                      child: Text(l10n.adminDiscard),
-                    ),
-                    const SizedBox(width: 8),
-                    SizedBox(
-                      width: 150,
-                      child: SubmitButton(label: l10n.adminSave, status: status, onPressed: onSave),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-    return AnimatedSwitcher(
-      duration: Motion.normal,
-      reverseDuration: Motion.normalExit,
-      switchInCurve: Motion.enterCurve,
-      switchOutCurve: Motion.exitCurveReversed,
-      transitionBuilder: (child, animation) => SizeTransition(
-        sizeFactor: animation,
-        alignment: Alignment.topCenter,
-        child: reduced
-            ? FadeTransition(opacity: animation, child: child)
-            : SlideTransition(
-                position: animation.drive(Tween(begin: const Offset(0, 0.4), end: Offset.zero)),
-                child: FadeTransition(opacity: animation, child: child),
-              ),
-      ),
-      child: visible ? KeyedSubtree(key: const ValueKey('bar'), child: bar) : const SizedBox(width: double.infinity),
     );
   }
 }

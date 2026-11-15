@@ -3751,6 +3751,1918 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No messaging app found. The message is copied; paste it where you like.'**
   String get tempPasswordMessageCopied;
+
+  /// BRANCH_LIMIT_REACHED (api-phase-2-clinic.md).
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the most branches you can have. Archive one to add another.'**
+  String get branchErrorLimitReached;
+
+  /// No description provided for @branchErrorArchiveDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The default branch can\'t be archived. Make another branch the default first.'**
+  String get branchErrorArchiveDefault;
+
+  /// No description provided for @branchErrorLastActive.
+  ///
+  /// In en, this message translates to:
+  /// **'The clinic needs at least one open branch, so this one can\'t be closed or archived.'**
+  String get branchErrorLastActive;
+
+  /// No description provided for @branchErrorHasBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch has upcoming bookings. Move or cancel them first.'**
+  String get branchErrorHasBookings;
+
+  /// No description provided for @branchErrorNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Only an open branch can be the default.'**
+  String get branchErrorNotActive;
+
+  /// No description provided for @branchErrorInvalidBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one of the clinic\'s open branches.'**
+  String get branchErrorInvalidBranch;
+
+  /// No description provided for @branchErrorPeriodEndBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends before it starts. Turn on «Ends the next day» if it runs past midnight.'**
+  String get branchErrorPeriodEndBeforeStart;
+
+  /// No description provided for @branchErrorPeriodLength.
+  ///
+  /// In en, this message translates to:
+  /// **'A period lasts from 15 minutes to 16 hours.'**
+  String get branchErrorPeriodLength;
+
+  /// No description provided for @branchErrorPeriodsOverlap.
+  ///
+  /// In en, this message translates to:
+  /// **'The periods overlap.'**
+  String get branchErrorPeriodsOverlap;
+
+  /// No description provided for @assistantErrorLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the most assistants you can have.'**
+  String get assistantErrorLimitReached;
+
+  /// No description provided for @assistantErrorPhoneTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This number is already an assistant, in this clinic or another.'**
+  String get assistantErrorPhoneTaken;
+
+  /// No description provided for @assistantErrorRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'This assistant was removed. Add them again as a new assistant.'**
+  String get assistantErrorRemoved;
+
+  /// The account button in the top bar (admins: AD18, doctors: D22).
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get profileTopBarTooltip;
+
+  /// No description provided for @settingsSubtitleDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile, prices, language, notifications and password.'**
+  String get settingsSubtitleDoctor;
+
+  /// No description provided for @settingsSubtitleAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Your language, notifications and password, and what you can do in the clinic.'**
+  String get settingsSubtitleAssistant;
+
+  /// No description provided for @settingsProfileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, title, degrees and specialties'**
+  String get settingsProfileHint;
+
+  /// No description provided for @settingsPermissionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No permissions} =1{1 permission} other{{count} permissions}}'**
+  String settingsPermissionCount(int count);
+
+  /// No description provided for @settingsBranchCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No branches} =1{1 branch} other{{count} branches}}'**
+  String settingsBranchCount(int count);
+
+  /// No description provided for @settingsClinicGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic'**
+  String get settingsClinicGroup;
+
+  /// No description provided for @settingsPricesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination and consultation, for the doctor and each branch'**
+  String get settingsPricesHint;
+
+  /// No description provided for @settingsMyPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'My permissions'**
+  String get settingsMyPermissions;
+
+  /// No description provided for @settingsMyPermissionsFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the doctor can change these. Changes apply at once.'**
+  String get settingsMyPermissionsFooter;
+
+  /// No description provided for @settingsNoPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'No permissions yet. Ask the doctor.'**
+  String get settingsNoPermissions;
+
+  /// No description provided for @settingsMyBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'My branches'**
+  String get settingsMyBranches;
+
+  /// No description provided for @settingsAllBranchesFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'You work in every branch, including ones the doctor adds later.'**
+  String get settingsAllBranchesFooter;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsNotifyChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat messages'**
+  String get settingsNotifyChat;
+
+  /// No description provided for @settingsNotifyChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New messages from patients'**
+  String get settingsNotifyChatHint;
+
+  /// No description provided for @settingsNotifyReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get settingsNotifyReminders;
+
+  /// No description provided for @settingsNotifyRemindersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices and appointments'**
+  String get settingsNotifyRemindersHint;
+
+  /// No description provided for @settingsNotifyBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings'**
+  String get settingsNotifyBookings;
+
+  /// No description provided for @settingsNotifyBookingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New, changed and cancelled bookings'**
+  String get settingsNotifyBookingsHint;
+
+  /// No description provided for @settingsShowPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Show message text in notifications'**
+  String get settingsShowPreview;
+
+  /// No description provided for @settingsShowPreviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: notifications only say that a message arrived.'**
+  String get settingsShowPreviewHint;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsAbout;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @pricesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit prices'**
+  String get pricesTitle;
+
+  /// No description provided for @assistantPresetReception.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception'**
+  String get assistantPresetReception;
+
+  /// No description provided for @assistantPresetClinical.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinical assistant'**
+  String get assistantPresetClinical;
+
+  /// No description provided for @assistantPresetOfficeManager.
+  ///
+  /// In en, this message translates to:
+  /// **'Office manager'**
+  String get assistantPresetOfficeManager;
+
+  /// No description provided for @assistantPresetCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get assistantPresetCustom;
+
+  /// No description provided for @assistantPresetReceptionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients, visits, files and bookings.'**
+  String get assistantPresetReceptionBody;
+
+  /// No description provided for @assistantPresetClinicalBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception, plus the medical file, drafts and chat.'**
+  String get assistantPresetClinicalBody;
+
+  /// No description provided for @assistantPresetOfficeManagerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception, plus billing, the schedule, prices and chat.'**
+  String get assistantPresetOfficeManagerBody;
+
+  /// No description provided for @assistantPresetCustomBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The boxes you tick below.'**
+  String get assistantPresetCustomBody;
+
+  /// No description provided for @assistantGroupPatients.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients'**
+  String get assistantGroupPatients;
+
+  /// No description provided for @assistantGroupSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get assistantGroupSessions;
+
+  /// No description provided for @assistantGroupClinical.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical file'**
+  String get assistantGroupClinical;
+
+  /// No description provided for @assistantGroupFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files and prescriptions'**
+  String get assistantGroupFiles;
+
+  /// No description provided for @assistantGroupChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get assistantGroupChat;
+
+  /// No description provided for @assistantGroupBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing'**
+  String get assistantGroupBilling;
+
+  /// No description provided for @assistantGroupAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get assistantGroupAppointments;
+
+  /// No description provided for @assistantGroupMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue and prices'**
+  String get assistantGroupMoney;
+
+  /// No description provided for @assistantPermPatientsManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage patients'**
+  String get assistantPermPatientsManage;
+
+  /// No description provided for @assistantPermPatientsManageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and link patients, edit their details, archive.'**
+  String get assistantPermPatientsManageHelp;
+
+  /// No description provided for @assistantPermPatientsResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset patient passwords'**
+  String get assistantPermPatientsResetPassword;
+
+  /// No description provided for @assistantPermPatientsResetPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Give a patient a new temporary password, and get their reset requests.'**
+  String get assistantPermPatientsResetPasswordHelp;
+
+  /// No description provided for @assistantPermSessionsCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Record visits'**
+  String get assistantPermSessionsCreate;
+
+  /// No description provided for @assistantPermSessionsCreateHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit type, chief complaint and vitals, and the visit list.'**
+  String get assistantPermSessionsCreateHelp;
+
+  /// No description provided for @assistantPermSessionsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete visits'**
+  String get assistantPermSessionsDelete;
+
+  /// No description provided for @assistantPermSessionsDeleteHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Under the same conditions as the doctor. Off by default.'**
+  String get assistantPermSessionsDeleteHelp;
+
+  /// No description provided for @assistantPermClinicalView.
+  ///
+  /// In en, this message translates to:
+  /// **'View the medical file'**
+  String get assistantPermClinicalView;
+
+  /// No description provided for @assistantPermClinicalViewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical profile, findings, diagnosis, notes and prescriptions.'**
+  String get assistantPermClinicalViewHelp;
+
+  /// No description provided for @assistantPermClinicalEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit the medical profile'**
+  String get assistantPermClinicalEditProfile;
+
+  /// No description provided for @assistantPermClinicalEditProfileHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies, chronic diseases, medications, surgeries, family history.'**
+  String get assistantPermClinicalEditProfileHelp;
+
+  /// No description provided for @assistantPermFilesManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get assistantPermFilesManage;
+
+  /// No description provided for @assistantPermFilesManageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan, upload and view files, and save chat attachments.'**
+  String get assistantPermFilesManageHelp;
+
+  /// No description provided for @assistantPermPrescriptionsPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Print prescriptions'**
+  String get assistantPermPrescriptionsPrint;
+
+  /// No description provided for @assistantPermPrescriptionsPrintHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open, print and share prescriptions the doctor sent.'**
+  String get assistantPermPrescriptionsPrintHelp;
+
+  /// No description provided for @assistantPermPrescriptionsDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare prescription drafts'**
+  String get assistantPermPrescriptionsDraft;
+
+  /// No description provided for @assistantPermPrescriptionsDraftHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Write drafts and send them to the doctor for review.'**
+  String get assistantPermPrescriptionsDraftHelp;
+
+  /// No description provided for @assistantPermChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get assistantPermChat;
+
+  /// No description provided for @assistantPermChatHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Read and reply to patients on the doctor\'s behalf.'**
+  String get assistantPermChatHelp;
+
+  /// No description provided for @assistantPermBillingView.
+  ///
+  /// In en, this message translates to:
+  /// **'View billing'**
+  String get assistantPermBillingView;
+
+  /// No description provided for @assistantPermBillingViewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee cards, daily and monthly totals, invoices.'**
+  String get assistantPermBillingViewHelp;
+
+  /// No description provided for @assistantPermBillingPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay invoices'**
+  String get assistantPermBillingPay;
+
+  /// No description provided for @assistantPermBillingPayHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the payment for an invoice.'**
+  String get assistantPermBillingPayHelp;
+
+  /// No description provided for @assistantPermAppointmentsView.
+  ///
+  /// In en, this message translates to:
+  /// **'View appointments'**
+  String get assistantPermAppointmentsView;
+
+  /// No description provided for @assistantPermAppointmentsViewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar, today\'s board and search, in their branches.'**
+  String get assistantPermAppointmentsViewHelp;
+
+  /// No description provided for @assistantPermAppointmentsManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage appointments'**
+  String get assistantPermAppointmentsManage;
+
+  /// No description provided for @assistantPermAppointmentsManageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Book, confirm, move, cancel, check in, call the next patient.'**
+  String get assistantPermAppointmentsManageHelp;
+
+  /// No description provided for @assistantPermScheduleManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the schedule'**
+  String get assistantPermScheduleManage;
+
+  /// No description provided for @assistantPermScheduleManageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours, special dates and booking settings of their branches.'**
+  String get assistantPermScheduleManageHelp;
+
+  /// No description provided for @assistantPermRevenueView.
+  ///
+  /// In en, this message translates to:
+  /// **'View revenue'**
+  String get assistantPermRevenueView;
+
+  /// No description provided for @assistantPermRevenueViewHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic revenue, net income and the amounts patients paid.'**
+  String get assistantPermRevenueViewHelp;
+
+  /// No description provided for @assistantPermPricesManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage visit prices'**
+  String get assistantPermPricesManage;
+
+  /// No description provided for @assistantPermPricesManageHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor\'s prices, and their branches\' prices.'**
+  String get assistantPermPricesManageHelp;
+
+  /// No description provided for @assistantStatusRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get assistantStatusRemoved;
+
+  /// No description provided for @branchStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get branchStatusActive;
+
+  /// No description provided for @branchStatusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get branchStatusArchived;
+
+  /// No description provided for @branchDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get branchDefault;
+
+  /// No description provided for @branchPayCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get branchPayCash;
+
+  /// No description provided for @branchPayCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get branchPayCard;
+
+  /// No description provided for @branchPayInstapay.
+  ///
+  /// In en, this message translates to:
+  /// **'InstaPay'**
+  String get branchPayInstapay;
+
+  /// No description provided for @branchPayWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile wallet'**
+  String get branchPayWallet;
+
+  /// No description provided for @branchAmenityElevator.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevator'**
+  String get branchAmenityElevator;
+
+  /// No description provided for @branchAmenityParking.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking'**
+  String get branchAmenityParking;
+
+  /// No description provided for @branchAmenityWheelchair.
+  ///
+  /// In en, this message translates to:
+  /// **'Wheelchair access'**
+  String get branchAmenityWheelchair;
+
+  /// No description provided for @branchAmenityKidsArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Children\'s waiting area'**
+  String get branchAmenityKidsArea;
+
+  /// No description provided for @branchEndsNextDayShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} (next day)'**
+  String branchEndsNextDayShort(String range);
+
+  /// No description provided for @profileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal and professional details, as patients and the admin team see them.'**
+  String get profileSubtitle;
+
+  /// No description provided for @profileLastSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Last saved {time}'**
+  String profileLastSaved(String time);
+
+  /// No description provided for @profilePersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal details'**
+  String get profilePersonal;
+
+  /// No description provided for @profileFullNameAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name in Arabic'**
+  String get profileFullNameAr;
+
+  /// No description provided for @profileReadOnlyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'These identify your account and license. To change them, contact support.'**
+  String get profileReadOnlyNote;
+
+  /// No description provided for @profileProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional details'**
+  String get profileProfessional;
+
+  /// No description provided for @profileDegreesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: MSc in internal medicine, Cairo University'**
+  String get profileDegreesHint;
+
+  /// No description provided for @profileSpecialtyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A specialty change applies at once, and the admin team is told.'**
+  String get profileSpecialtyNote;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// No description provided for @profileSavedSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved. Your new specialty applies now, and the admin team was told.'**
+  String get profileSavedSpecialty;
+
+  /// No description provided for @profilePrescriptionHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription header'**
+  String get profilePrescriptionHeader;
+
+  /// No description provided for @profilePrescriptionHeaderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logo, signature, colour and print settings'**
+  String get profilePrescriptionHeaderTitle;
+
+  /// No description provided for @profilePrescriptionHeaderLater.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll set how your prescriptions look when prescriptions arrive in the app.'**
+  String get profilePrescriptionHeaderLater;
+
+  /// No description provided for @settingsLaterPhase.
+  ///
+  /// In en, this message translates to:
+  /// **'Later phase'**
+  String get settingsLaterPhase;
+
+  /// No description provided for @pricesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What patients pay at the clinic, for the doctor and for each branch.'**
+  String get pricesSubtitle;
+
+  /// No description provided for @pricesFutureOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'New prices apply to future visits only.'**
+  String get pricesFutureOnly;
+
+  /// No description provided for @pricesDoctorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor\'s prices'**
+  String get pricesDoctorTitle;
+
+  /// No description provided for @pricesDoctorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every branch without its own prices uses these.'**
+  String get pricesDoctorBody;
+
+  /// No description provided for @pricesBranchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch prices'**
+  String get pricesBranchesTitle;
+
+  /// No description provided for @pricesUseDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the doctor\'s prices'**
+  String get pricesUseDoctor;
+
+  /// No description provided for @pricesUseDoctorOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination: {examination}, consultation: {consultation}'**
+  String pricesUseDoctorOn(String examination, String consultation);
+
+  /// No description provided for @pricesUseDoctorOff.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch\'s own prices. An empty one uses the doctor\'s.'**
+  String get pricesUseDoctorOff;
+
+  /// No description provided for @pricesEmptyAskClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: patients see «Ask the clinic», and the amount is typed at each visit.'**
+  String get pricesEmptyAskClinic;
+
+  /// No description provided for @pricesEmptyUsesDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty: the doctor\'s price ({price}) applies.'**
+  String pricesEmptyUsesDoctor(String price);
+
+  /// No description provided for @pricesAskClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the clinic'**
+  String get pricesAskClinic;
+
+  /// No description provided for @pricesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices saved. They apply to visits from now on.'**
+  String get pricesSaved;
+
+  /// No description provided for @pricesNotYourBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the doctor or this branch\'s assistants can change these prices.'**
+  String get pricesNotYourBranch;
+
+  /// No description provided for @pricesHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change history'**
+  String get pricesHistoryTitle;
+
+  /// No description provided for @pricesHistoryEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No price changes yet'**
+  String get pricesHistoryEmptyTitle;
+
+  /// No description provided for @pricesHistoryEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every change shows here, with who made it and when.'**
+  String get pricesHistoryEmptyBody;
+
+  /// No description provided for @pricesNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'not set'**
+  String get pricesNotSet;
+
+  /// No description provided for @pricesChange.
+  ///
+  /// In en, this message translates to:
+  /// **'{type}: {before} → {after}'**
+  String pricesChange(String type, String before, String after);
+
+  /// No description provided for @pricesChangedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({role}), {time}'**
+  String pricesChangedBy(String name, String role, String time);
+
+  /// No description provided for @branchesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where you see patients. Tap a branch to change its details, hours or status.'**
+  String get branchesSubtitle;
+
+  /// No description provided for @branchesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No branches yet'**
+  String get branchesEmptyTitle;
+
+  /// No description provided for @branchAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add branch'**
+  String get branchAdd;
+
+  /// D28 «2 من 5». Archived branches don't count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {limit} branches'**
+  String branchCountOf(int count, int limit);
+
+  /// No description provided for @branchArchivedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived: hidden from patients and bookings'**
+  String get branchArchivedHint;
+
+  /// No description provided for @branchClosedToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed today'**
+  String get branchClosedToday;
+
+  /// No description provided for @branchUpcomingBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No upcoming bookings} =1{1 upcoming booking} other{{count} upcoming bookings}}'**
+  String branchUpcomingBookings(int count);
+
+  /// No description provided for @branchReopensOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopens on {date}'**
+  String branchReopensOn(String date);
+
+  /// No description provided for @branchSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get branchSaved;
+
+  /// No description provided for @branchTabInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get branchTabInfo;
+
+  /// No description provided for @branchTabAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address and map'**
+  String get branchTabAddress;
+
+  /// No description provided for @branchTabContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get branchTabContact;
+
+  /// No description provided for @branchTabHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours'**
+  String get branchTabHours;
+
+  /// No description provided for @branchTabClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic info for patients'**
+  String get branchTabClinic;
+
+  /// No description provided for @branchTabUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{tab}, not saved'**
+  String branchTabUnsaved(String tab);
+
+  /// No description provided for @branchDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Short description (optional)'**
+  String get branchDescription;
+
+  /// No description provided for @branchDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: second floor, next to the pharmacy'**
+  String get branchDescriptionHint;
+
+  /// No description provided for @branchAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Area (optional)'**
+  String get branchAreaLabel;
+
+  /// No description provided for @branchEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic email (optional)'**
+  String get branchEmailLabel;
+
+  /// No description provided for @branchMapPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Map pin'**
+  String get branchMapPin;
+
+  /// No description provided for @branchMapPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In Google Maps, press and hold the clinic\'s place, copy the two numbers and paste them here.'**
+  String get branchMapPinHint;
+
+  /// No description provided for @branchLatitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get branchLatitude;
+
+  /// No description provided for @branchLongitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get branchLongitude;
+
+  /// No description provided for @branchTestInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Test in Google Maps'**
+  String get branchTestInMaps;
+
+  /// No description provided for @branchClearPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the pin'**
+  String get branchClearPin;
+
+  /// No description provided for @branchMapsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open Google Maps on this device.'**
+  String get branchMapsFailed;
+
+  /// No description provided for @branchErrorPinPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter both numbers, or neither.'**
+  String get branchErrorPinPair;
+
+  /// No description provided for @branchErrorPinRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid coordinate.'**
+  String get branchErrorPinRange;
+
+  /// No description provided for @branchPaymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment at the clinic'**
+  String get branchPaymentMethods;
+
+  /// No description provided for @branchAmenities.
+  ///
+  /// In en, this message translates to:
+  /// **'Amenities'**
+  String get branchAmenities;
+
+  /// No description provided for @branchForPatients.
+  ///
+  /// In en, this message translates to:
+  /// **'What patients see'**
+  String get branchForPatients;
+
+  /// No description provided for @branchForPatientsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on the branch card when patients book.'**
+  String get branchForPatientsBody;
+
+  /// No description provided for @branchPricesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch\'s prices'**
+  String get branchPricesTitle;
+
+  /// No description provided for @branchHoursQueueNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings here go by queue number. Each period takes {count} patients unless you set its own number.'**
+  String branchHoursQueueNote(int count);
+
+  /// No description provided for @branchHoursTimedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings here go by appointment time.'**
+  String get branchHoursTimedNote;
+
+  /// No description provided for @branchCopySaturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Saturday to all days'**
+  String get branchCopySaturday;
+
+  /// No description provided for @branchCopySaturdayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Saturday to every day?'**
+  String get branchCopySaturdayTitle;
+
+  /// No description provided for @branchCopySaturdayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The other days\' periods are replaced by Saturday\'s. Nothing is saved until you tap Save.'**
+  String get branchCopySaturdayBody;
+
+  /// No description provided for @branchDayClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get branchDayClosed;
+
+  /// No description provided for @branchAddPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Add period'**
+  String get branchAddPeriod;
+
+  /// No description provided for @branchRemovePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this period'**
+  String get branchRemovePeriod;
+
+  /// No description provided for @branchPeriodFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get branchPeriodFrom;
+
+  /// No description provided for @branchPeriodTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get branchPeriodTo;
+
+  /// No description provided for @branchEndsNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends the next day'**
+  String get branchEndsNextDay;
+
+  /// No description provided for @branchPeriodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get branchPeriodMorning;
+
+  /// No description provided for @branchPeriodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening'**
+  String get branchPeriodEvening;
+
+  /// No description provided for @branchCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients'**
+  String get branchCapacity;
+
+  /// No description provided for @branchErrorTooManyPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'At most 10 periods a day.'**
+  String get branchErrorTooManyPeriods;
+
+  /// No description provided for @branchStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch status'**
+  String get branchStatusTitle;
+
+  /// No description provided for @branchStatusActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open: patients see it and can book.'**
+  String get branchStatusActiveBody;
+
+  /// No description provided for @branchStatusDefaultBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open, and the default: new visits use it unless you pick another branch.'**
+  String get branchStatusDefaultBody;
+
+  /// No description provided for @branchStatusClosedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see your message on the branch card and can\'t book here.'**
+  String get branchStatusClosedBody;
+
+  /// No description provided for @branchStatusArchivedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden from patients and bookings. Its history stays, and you can bring it back.'**
+  String get branchStatusArchivedBody;
+
+  /// No description provided for @branchPatientsSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see'**
+  String get branchPatientsSee;
+
+  /// No description provided for @branchMakeDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Make default'**
+  String get branchMakeDefault;
+
+  /// No description provided for @branchMakeDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {name} the default?'**
+  String branchMakeDefaultTitle(String name);
+
+  /// No description provided for @branchMakeDefaultBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New visits and walk-ins use the default branch unless another one is picked.'**
+  String get branchMakeDefaultBody;
+
+  /// No description provided for @branchDefaultMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is now the default branch.'**
+  String branchDefaultMessage(String name);
+
+  /// No description provided for @branchCloseTemporarily.
+  ///
+  /// In en, this message translates to:
+  /// **'Close temporarily'**
+  String get branchCloseTemporarily;
+
+  /// No description provided for @branchCloseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients see this message on the branch card and can\'t book here until you reopen it.'**
+  String get branchCloseBody;
+
+  /// No description provided for @branchClosedMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message for patients'**
+  String get branchClosedMessageLabel;
+
+  /// No description provided for @branchClosedMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: closed for renovation'**
+  String get branchClosedMessageHint;
+
+  /// No description provided for @branchReopenDateAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected reopening date (optional)'**
+  String get branchReopenDateAdd;
+
+  /// No description provided for @branchCloseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the branch'**
+  String get branchCloseConfirm;
+
+  /// No description provided for @branchClosedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is closed for now.'**
+  String get branchClosedMessage;
+
+  /// No description provided for @branchEditClosure.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit the message'**
+  String get branchEditClosure;
+
+  /// No description provided for @branchReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopen'**
+  String get branchReopen;
+
+  /// No description provided for @branchReopenedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is open again.'**
+  String get branchReopenedMessage;
+
+  /// No description provided for @branchArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get branchArchive;
+
+  /// No description provided for @branchArchiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive {name}?'**
+  String branchArchiveTitle(String name);
+
+  /// No description provided for @branchArchiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears for patients and can\'t take bookings. Its visits and history stay, and you can bring it back later.'**
+  String get branchArchiveBody;
+
+  /// No description provided for @branchArchivedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is archived.'**
+  String get branchArchivedMessage;
+
+  /// No description provided for @branchRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back'**
+  String get branchRestore;
+
+  /// No description provided for @branchRestoredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is back and open.'**
+  String get branchRestoredMessage;
+
+  /// No description provided for @branchRefusedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not possible yet'**
+  String get branchRefusedTitle;
+
+  /// No description provided for @branchBookingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 upcoming booking} other{{count} upcoming bookings}}'**
+  String branchBookingsTitle(int count);
+
+  /// No description provided for @branchBookingsMore.
+  ///
+  /// In en, this message translates to:
+  /// **'And {count} more.'**
+  String branchBookingsMore(int count);
+
+  /// No description provided for @branchBookingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Move them to another branch or cancel them from the appointments calendar, then try again. Cancelled patients are told, with a link to book again.'**
+  String get branchBookingsHint;
+
+  /// No description provided for @branchBookingGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (guest)'**
+  String branchBookingGuest(String name);
+
+  /// No description provided for @branchLaterTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming later'**
+  String get branchLaterTabs;
+
+  /// No description provided for @branchLaterTabsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking settings and special dates'**
+  String get branchLaterTabsTitle;
+
+  /// No description provided for @branchLaterTabsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They arrive with appointments.'**
+  String get branchLaterTabsBody;
+
+  /// No description provided for @branchAddedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch added. Now set its working hours.'**
+  String get branchAddedMessage;
+
+  /// No description provided for @branchNewNextSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours and prices come next, after you add the branch.'**
+  String get branchNewNextSteps;
+
+  /// No description provided for @assistantsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'People who work with you, and what each one can do.'**
+  String get assistantsSubtitle;
+
+  /// No description provided for @assistantAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add assistant'**
+  String get assistantAdd;
+
+  /// D25 «2 من 5». Removed assistants don't count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {limit} assistants'**
+  String assistantCountOf(int count, int limit);
+
+  /// No description provided for @assistantsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No assistants yet'**
+  String get assistantsEmptyTitle;
+
+  /// No description provided for @assistantsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone from reception to record visits and bookings for you.'**
+  String get assistantsEmptyBody;
+
+  /// No description provided for @assistantChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an assistant to see their details'**
+  String get assistantChoose;
+
+  /// No description provided for @assistantAddBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They get a temporary password and choose their own when they first sign in.'**
+  String get assistantAddBody;
+
+  /// No description provided for @assistantNeverActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Hasn\'t used the clinic yet'**
+  String get assistantNeverActive;
+
+  /// No description provided for @assistantLastActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Last active {time}'**
+  String assistantLastActive(String time);
+
+  /// No description provided for @assistantAddedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Added on {date}'**
+  String assistantAddedOn(String date);
+
+  /// No description provided for @assistantDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get assistantDetails;
+
+  /// No description provided for @assistantPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They sign in with this number.'**
+  String get assistantPhoneHint;
+
+  /// No description provided for @assistantBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get assistantBranches;
+
+  /// No description provided for @assistantBranchesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings, today\'s board and visit lists show only these branches.'**
+  String get assistantBranchesHint;
+
+  /// No description provided for @assistantAllBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'All branches'**
+  String get assistantAllBranches;
+
+  /// No description provided for @assistantSomeBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Some branches'**
+  String get assistantSomeBranches;
+
+  /// No description provided for @assistantAllBranchesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Including branches you add later.'**
+  String get assistantAllBranchesBody;
+
+  /// No description provided for @assistantErrorBranchRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one branch.'**
+  String get assistantErrorBranchRequired;
+
+  /// No description provided for @assistantPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get assistantPermissions;
+
+  /// No description provided for @assistantPermissionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a preset, then adjust the boxes. Some need another, which is ticked for you.'**
+  String get assistantPermissionsHint;
+
+  /// No description provided for @assistantAlsoOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Also turned on: {permissions}'**
+  String assistantAlsoOn(String permissions);
+
+  /// No description provided for @assistantAlsoOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Also turned off: {permissions}'**
+  String assistantAlsoOff(String permissions);
+
+  /// No description provided for @assistantSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s changes are saved. They apply on their next action.'**
+  String assistantSaved(String name);
+
+  /// No description provided for @assistantAccountActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get assistantAccountActions;
+
+  /// No description provided for @assistantResetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get assistantResetPassword;
+
+  /// No description provided for @assistantResetPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A new temporary password, when they forget theirs.'**
+  String get assistantResetPasswordHint;
+
+  /// No description provided for @assistantResetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset {name}\'s password?'**
+  String assistantResetTitle(String name);
+
+  /// No description provided for @assistantResetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out on every device and sign in again with the new temporary password.'**
+  String get assistantResetBody;
+
+  /// No description provided for @assistantNewPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New temporary password'**
+  String get assistantNewPasswordTitle;
+
+  /// No description provided for @assistantDisableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops them signing in, at once. You can enable them again.'**
+  String get assistantDisableHint;
+
+  /// No description provided for @assistantEnableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They can sign in again.'**
+  String get assistantEnableHint;
+
+  /// No description provided for @assistantDisableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable {name}?'**
+  String assistantDisableTitle(String name);
+
+  /// No description provided for @assistantDisableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out at once and can\'t sign in until you enable them again.'**
+  String get assistantDisableBody;
+
+  /// No description provided for @assistantEnableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable {name}?'**
+  String assistantEnableTitle(String name);
+
+  /// No description provided for @assistantEnableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They can sign in again with their password.'**
+  String get assistantEnableBody;
+
+  /// No description provided for @assistantRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get assistantRemove;
+
+  /// No description provided for @assistantRemoveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Final. Their history stays in the activity log.'**
+  String get assistantRemoveHint;
+
+  /// No description provided for @assistantRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String assistantRemoveTitle(String name);
+
+  /// No description provided for @assistantRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They\'re signed out at once and can\'t come back. Their history stays in the activity log, and their number can be added again as a new assistant.'**
+  String get assistantRemoveBody;
+
+  /// No description provided for @assistantRemovedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was removed.'**
+  String assistantRemovedMessage(String name);
+
+  /// No description provided for @assistantRemovedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} was removed'**
+  String assistantRemovedTitle(String name);
+
+  /// No description provided for @activityCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing recorded yet} =1{1 entry} other{{count} entries}}'**
+  String activityCount(int count);
+
+  /// No description provided for @activityEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet'**
+  String get activityEmptyTitle;
+
+  /// No description provided for @activityEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What you and your assistants do in the clinic shows here.'**
+  String get activityEmptyBody;
+
+  /// No description provided for @activityToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get activityToday;
+
+  /// No description provided for @activityYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get activityYesterday;
+
+  /// No description provided for @activityWhoWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'{who}, {time}'**
+  String activityWhoWhen(String who, String time);
+
+  /// No description provided for @activityRemovedPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (removed)'**
+  String activityRemovedPerson(String name);
+
+  /// No description provided for @activityPatientFile.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, file {number}'**
+  String activityPatientFile(String name, int number);
+
+  /// No description provided for @activityPatientUnlinked.
+  ///
+  /// In en, this message translates to:
+  /// **'A patient no longer in the clinic'**
+  String get activityPatientUnlinked;
+
+  /// No description provided for @activityOnlyThisPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Only this patient'**
+  String get activityOnlyThisPatient;
+
+  /// No description provided for @activitySomeBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'a branch'**
+  String get activitySomeBranch;
+
+  /// No description provided for @activitySomeAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'an assistant'**
+  String get activitySomeAssistant;
+
+  /// No description provided for @activityBranchCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added the branch {branch}'**
+  String activityBranchCreated(String branch);
+
+  /// No description provided for @activityBranchUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited {branch}'**
+  String activityBranchUpdated(String branch);
+
+  /// No description provided for @activityBranchHoursUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the working hours of {branch}'**
+  String activityBranchHoursUpdated(String branch);
+
+  /// No description provided for @activityBranchStatusChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{branch}: {before} → {after}'**
+  String activityBranchStatusChanged(
+    String branch,
+    String before,
+    String after,
+  );
+
+  /// No description provided for @activityDefaultBranchChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Made {branch} the default branch'**
+  String activityDefaultBranchChanged(String branch);
+
+  /// No description provided for @activityDoctorPricesUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the doctor\'s visit prices'**
+  String get activityDoctorPricesUpdated;
+
+  /// No description provided for @activityBranchPricesUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the prices of {branch}'**
+  String activityBranchPricesUpdated(String branch);
+
+  /// No description provided for @activityProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited the profile'**
+  String get activityProfileUpdated;
+
+  /// No description provided for @activitySpecialtyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the specialty'**
+  String get activitySpecialtyChanged;
+
+  /// No description provided for @activityAssistantCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added the assistant {name} ({preset})'**
+  String activityAssistantCreated(String name, String preset);
+
+  /// No description provided for @activityAssistantUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited {name}\'s details'**
+  String activityAssistantUpdated(String name);
+
+  /// No description provided for @activityAssistantPermissionsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {name}\'s permissions'**
+  String activityAssistantPermissionsChanged(String name);
+
+  /// No description provided for @activityAssistantPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset {name}\'s password'**
+  String activityAssistantPasswordReset(String name);
+
+  /// No description provided for @activityAssistantDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled {name}'**
+  String activityAssistantDisabled(String name);
+
+  /// No description provided for @activityAssistantEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled {name}'**
+  String activityAssistantEnabled(String name);
+
+  /// No description provided for @activityAssistantRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {name}'**
+  String activityAssistantRemoved(String name);
+
+  /// No description provided for @activityPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed their password'**
+  String get activityPasswordChanged;
+
+  /// No description provided for @activityPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set their password'**
+  String get activityPasswordSet;
+
+  /// No description provided for @activityPasswordResetRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asked for a new password'**
+  String activityPasswordResetRequested(String name);
+
+  /// No description provided for @activityRegistrationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent the sign-up request'**
+  String get activityRegistrationSent;
+
+  /// No description provided for @activityEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed the email'**
+  String get activityEmailVerified;
+
+  /// No description provided for @activityOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other action: {action}'**
+  String activityOther(String action);
+
+  /// No description provided for @activityPermissionsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added: {permissions}.'**
+  String activityPermissionsAdded(String permissions);
+
+  /// No description provided for @activityPermissionsRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed: {permissions}.'**
+  String activityPermissionsRemoved(String permissions);
+
+  /// No description provided for @activityPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Closed every day} =1{1 period a week} other{{count} periods a week}}'**
+  String activityPeriods(int count);
+
+  /// No description provided for @activityActionBranchCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch added'**
+  String get activityActionBranchCreated;
+
+  /// No description provided for @activityActionBranchUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch edited'**
+  String get activityActionBranchUpdated;
+
+  /// No description provided for @activityActionBranchHoursUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours changed'**
+  String get activityActionBranchHoursUpdated;
+
+  /// No description provided for @activityActionBranchStatusChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch status changed'**
+  String get activityActionBranchStatusChanged;
+
+  /// No description provided for @activityActionDefaultBranchChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Default branch changed'**
+  String get activityActionDefaultBranchChanged;
+
+  /// No description provided for @activityActionPricesUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices changed'**
+  String get activityActionPricesUpdated;
+
+  /// No description provided for @activityActionProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile edited'**
+  String get activityActionProfileUpdated;
+
+  /// No description provided for @activityActionSpecialtyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty changed'**
+  String get activityActionSpecialtyChanged;
+
+  /// No description provided for @activityActionAssistantCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant added'**
+  String get activityActionAssistantCreated;
+
+  /// No description provided for @activityActionAssistantUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant edited'**
+  String get activityActionAssistantUpdated;
+
+  /// No description provided for @activityActionPermissionsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions changed'**
+  String get activityActionPermissionsChanged;
+
+  /// No description provided for @activityActionAssistantPasswordReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant password reset'**
+  String get activityActionAssistantPasswordReset;
+
+  /// No description provided for @activityActionAssistantDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant disabled'**
+  String get activityActionAssistantDisabled;
+
+  /// No description provided for @activityActionAssistantEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant enabled'**
+  String get activityActionAssistantEnabled;
+
+  /// No description provided for @activityActionAssistantRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant removed'**
+  String get activityActionAssistantRemoved;
+
+  /// No description provided for @activityActionPasswordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed'**
+  String get activityActionPasswordChanged;
+
+  /// No description provided for @activityActionPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Password chosen'**
+  String get activityActionPasswordSet;
+
+  /// No description provided for @activityActionPasswordResetRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'New password requested'**
+  String get activityActionPasswordResetRequested;
+
+  /// No description provided for @activityActionRegistrationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up sent'**
+  String get activityActionRegistrationSent;
+
+  /// No description provided for @activityActionEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email confirmed'**
+  String get activityActionEmailVerified;
+
+  /// No description provided for @assistantNotAddedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not added yet'**
+  String get assistantNotAddedYet;
+
+  /// No description provided for @assistantNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A first and a last name, at least'**
+  String get assistantNameHint;
 }
 
 class _AppLocalizationsDelegate

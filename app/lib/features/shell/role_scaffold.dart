@@ -113,7 +113,10 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
             icon: const Icon(Icons.account_circle_outlined),
             onPressed: () => context.go(profilePath),
           ),
-        const SettingsActions(),
+        // Phones have little room: doctors, assistants and admins change the
+        // language and theme, and sign out, in their settings (D24, AS12,
+        // AD18). Patients keep them here until their account screen (P14).
+        if (width >= Breakpoints.tablet || shell.role == UserRole.patient) const SettingsActions(),
       ],
     );
 

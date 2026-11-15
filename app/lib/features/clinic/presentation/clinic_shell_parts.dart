@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/motion.dart';
+import '../../../core/widgets/motion_size.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../application/clinic_providers.dart';
 import '../domain/clinic_context.dart';
@@ -94,11 +95,8 @@ class SuspensionBanner extends ConsumerWidget {
     final show = clinic?.isSuspended ?? false;
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final motion = Motion.of(context);
-    return AnimatedSize(
-      duration: motion.reduced ? Duration.zero : Motion.normal,
+    return MotionSize(
       curve: Motion.enterCurve,
-      alignment: AlignmentDirectional.topStart,
       child: !show
           ? const SizedBox(width: double.infinity)
           : Material(

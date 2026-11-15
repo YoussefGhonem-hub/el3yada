@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/motion.dart';
+import '../../../../core/widgets/motion_size.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../domain/admin_models.dart';
 
@@ -453,10 +453,5 @@ class AdminAnimatedSize extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) => AnimatedSize(
-        duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
-        curve: Motion.standardCurve,
-        alignment: AlignmentDirectional.topStart,
-        child: child,
-      );
+  Widget build(BuildContext context) => MotionSize(child: child);
 }

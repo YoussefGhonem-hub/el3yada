@@ -8,6 +8,7 @@ import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../admin/presentation/widgets/admin_widgets.dart';
 
+export '../../../../core/widgets/motion_size.dart';
 export '../../../admin/presentation/widgets/admin_widgets.dart'
     show
         AdminErrorView,
@@ -479,20 +480,6 @@ class MoneyField extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Grows and shrinks with its child. With reduced motion the size simply
-/// changes (an `AnimatedSize` with a zero duration asserts).
-class MotionSize extends StatelessWidget {
-  const MotionSize({super.key, required this.child, this.alignment = AlignmentDirectional.topStart});
-
-  final Widget child;
-  final AlignmentGeometry alignment;
-
-  @override
-  Widget build(BuildContext context) => Motion.of(context).reduced
-      ? child
-      : AnimatedSize(duration: Motion.normal, curve: Motion.standardCurve, alignment: alignment, child: child);
 }
 
 /// A page of stacked sections: gutter by width, at most [maxWidth] wide,

@@ -84,7 +84,8 @@ public sealed class BranchContactInputValidator : AbstractValidator<BranchContac
         RuleFor(x => x.Phones)
             .Must(phones => phones is { Count: > 0 }).WithErrorCode(ErrorCodes.PhoneRequired).WithMessage("Add at least one phone number.")
             .Must(phones => phones is null || phones.Count <= 5).WithErrorCode(ErrorCodes.InvalidValue).WithMessage("At most 5 phone numbers.");
-        RuleForEach(x => x.Phones).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.").ChildRules(phone =>
+        // Continue: every phone gets its own error, not only the first one that fails.
+        RuleForEach(x => x.Phones).Cascade(CascadeMode.Continue).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.").ChildRules(phone =>
         {
             phone.RuleFor(p => p.Number).Required()
                 .Must(number => number is null || EgyptianPhone.Normalize(number) is not null)
@@ -219,9 +220,10 @@ public sealed class UpdateBranchHoursRequestValidator : AbstractValidator<Update
     {
         RuleFor(x => x.BranchId).Required();
         RuleFor(x => x.Periods).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("Send the week's periods (an empty list closes every day).");
-        RuleForEach(x => x.Periods).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.").ChildRules(period =>
+        // Continue: every period gets its own error, not only the first one that fails.
+        RuleForEach(x => x.Periods).Cascade(CascadeMode.Continue).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.").ChildRules(period =>
         {
-            period.RuleFor(p => p.Weekday).Required()
+            period.RuleFor(p => p.Weekday).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.")
                 .InclusiveBetween(1, 7).WithErrorCode(ErrorCodes.OutOfRange).WithMessage("1 = Monday … 7 = Sunday.");
             period.RuleFor(p => p.StartLocal).Required()
                 .Must(value => WeeklyHours.ParseTime(value) is not null)

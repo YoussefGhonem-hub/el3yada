@@ -282,6 +282,7 @@ public sealed class AssistantsController(
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         await sessions.SignOutEverywhereAsync(user, cancellationToken);
         await transaction.CommitAsync(cancellationToken);
+        stateCache.Invalidate(user.Id);
 
         Response.Headers.CacheControl = "no-store";
         return Ok(new AssistantWithPasswordView(AssistantView.Of(assistant, true), temporaryPassword));

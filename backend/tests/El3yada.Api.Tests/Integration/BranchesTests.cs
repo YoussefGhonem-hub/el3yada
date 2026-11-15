@@ -138,10 +138,11 @@ public sealed class BranchesTests(IntegrationHost host)
         {
             info = new { nameAr = "فرع" },
             address = new { governorate = "القاهرة", city = "المعادي", street = "شارع 9" },
-            contact = new { phones = new[] { new { number = "123", label = "fax" } } },
+            contact = new { phones = new[] { new { number = "123", label = "fax" }, new { number = "0100", label = "mobile" } } },
         });
         Assert.Equal(ErrorCodes.InvalidPhone, body.FieldCode("contact.phones[0].number"));
         Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("contact.phones[0].label"));
+        Assert.Equal(ErrorCodes.InvalidPhone, body.FieldCode("contact.phones[1].number"));
 
         (status, body) = await client.PostAsync("/api/branches/createBranch", new { });
         Assert.Equal(ErrorCodes.Required, body.FieldCode("info"));
@@ -264,6 +265,8 @@ public sealed class BranchesTests(IntegrationHost host)
                 new { weekday = 8, startLocal = "25:00", endLocal = "10:00", capacity = 0 },
                 new { weekday = 5, startLocal = "22:00", endLocal = "02:00", endsNextDay = true },
                 new { weekday = 6, startLocal = "01:00", endLocal = "03:00" },
+                new { weekday = 0, startLocal = "10:00", endLocal = "11:00", label = new string('ص', 31) },
+                new { startLocal = "10:00", endLocal = "11:00" },
             },
         });
 
@@ -271,6 +274,9 @@ public sealed class BranchesTests(IntegrationHost host)
         Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("periods[4].weekday"));
         Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("periods[4].startLocal"));
         Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("periods[4].capacity"));
+        Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("periods[7].weekday"));
+        Assert.Equal(ErrorCodes.TooLong, body.FieldCode("periods[7].label"));
+        Assert.Equal(ErrorCodes.Required, body.FieldCode("periods[8].weekday"));
 
         // Once every field is readable, the whole week is checked.
         (status, body) = await client.PostAsync("/api/branches/updateBranchHours", new

@@ -174,26 +174,49 @@ The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md
 
 **Goal:** a doctor and their assistants can run a clinic day without appointments: add patients, record examinations and consultations, and see today's and this month's platform fees.
 
-**API**
-- [ ] `createPatient` (link an existing number with BR-P3, file number, temporary password shown once), `updatePatientPhone`, `resetPatientPassword`, archive [S].
-- [ ] Medical profile read and update (allergies, chronic diseases, medications, surgeries, family history, notes).
-- [ ] `createSession` in one transaction: consultation rule (BR-S2, BR-S3), fee snapshot, visit price, amount charged, branch, link counters, `DailyStats` and `MonthlyStats`, patient notification. Error codes `CONSULTATION_REQUIRES_EXAM`, `DOCTOR_SUSPENDED`, `NOT_LINKED`.
-- [ ] Session clinical fields update (doctor only), private notes, `deleteSession` (BR-S7, soft, recalculates the link).
-- [ ] `createBranch`, `updateBranch`, `setBranchStatus` (info, address, contact, weekly working hours), `updatePrices` with `PriceHistory`.
-- [ ] `createAssistant`, `updateAssistant` (presets, permission dependencies), `resetAssistantPassword`, `setAssistantStatus`, `getClinicActivity`.
-- [ ] Assistant permission checks in **every** endpoint, read from the database on each request.
-- [ ] `getPatientsRegister` (D4) with search (Arabic letter variants), filters, sorting and paging.
-- [ ] **API authorization tests** for every role and every assistant permission. Phase 2 does not close without them.
+The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md) (who may call what, `GET /api/clinic/me`), [api-phase-2-patients.md](backend/docs/api-phase-2-patients.md) and [api-phase-2-clinic.md](backend/docs/api-phase-2-clinic.md).
 
-**App**
+**API** (508 tests: 7 data and 501 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
+- [x] `createPatient` (link an existing number with BR-P3, file number, temporary password shown once), `updatePatientPhone`, `resetPatientPassword`, archive [S].
+  - Also `lookupPhone` for D5. Linking needs the phone alone. A clinic that linked an existing patient sees only the name, phone, gender and date of birth (`ownsDetails`); the optional details stay with the clinic that created the account. A doctor's password reset also lifts the 15-minute login block on the number.
+- [x] Medical profile read and update (allergies, chronic diseases, medications, surgeries, family history, notes).
+  - Removed items are soft-deleted (BR-P8, migration `SoftDeleteMedicalProfileItems`: run `dotnet ef database update` after pulling).
+- [x] `createSession` in one transaction: consultation rule (BR-S2, BR-S3), fee snapshot, visit price, amount charged, branch, link counters, `DailyStats` and `MonthlyStats`, patient notification. Error codes `CONSULTATION_REQUIRES_EXAM`, `DOCTOR_SUSPENDED`, `NOT_LINKED`.
+  - The link row is locked, so two saves at once can't both pass (AC-2). Archived branches refuse sessions (`BRANCH_ARCHIVED`); a temporarily closed branch still takes them. Fee totals (D1–D3) are SQL sums of the sessions.
+- [x] Session clinical fields update (doctor only), private notes, `deleteSession` (BR-S7, soft, recalculates the link).
+  - The amount charged can change on the same Cairo day, by the doctor or whoever recorded the session. The admin audit log lists that change without the amounts (BR-REV1).
+- [x] `createBranch`, `updateBranch`, `setBranchStatus` (info, address, contact, weekly working hours), `updatePrices` with `PriceHistory`.
+  - Weekly hours are `updateBranchHours` (spec 9.1's `updateBranchSchedule`; Phase 6 adds date overrides, booking settings and the BR-AP12 dry run). Also `setDefaultBranch`. The default branch and the last active branch can't be archived; future bookings block closing (BR-BR9). Not done: branch photos [S].
+- [x] `createAssistant`, `updateAssistant` (presets, permission dependencies), `resetAssistantPassword`, `setAssistantStatus`, `getClinicActivity`.
+  - Removing an assistant is final and frees the number. Disabling or removing one refuses their next request with `ACCOUNT_DISABLED` (A10). Also the doctor profile (D22: a specialty change notifies the admins) and notification preferences (`/api/me/notificationPrefs`).
+- [x] Assistant permission checks in **every** endpoint, read from the database on each request.
+  - One guard, `[Clinic(permission) { DoctorOnly, BlockedWhileSuspended }]` in `Clinic/ClinicAttribute.cs`, runs before body validation. Branch scope (BR-AS13) is checked on each request too (`BRANCH_NOT_ALLOWED`).
+- [x] `getPatientsRegister` (D4) with search (Arabic letter variants), filters, sorting and paging.
+  - Booking and no-show filters come with appointments (Phase 6).
+- [x] **API authorization tests** for every role and every assistant permission. Phase 2 does not close without them.
+  - Two matrices (`PatientsAuthorizationTests` and the clinic one) check, for every endpoint: no token, patient, admin, assistant with and without the permission, another doctor's record, a suspended doctor, and another branch.
+
+**App** (status 16 Nov: built and covered by widget tests and Arabic light/dark screenshots at phone and desktop sizes; not yet run on an Android device or a Windows build, so nothing below is ticked yet)
 - [ ] Current-branch picker in the top bar (BR-BR3).
+  - *Built:* shown when the doctor or assistant works in more than one branch, and remembered per user. The shell also reads `GET /api/clinic/me` (again on resume and after a refusal), hides an assistant's menu items without the permission (also by address), and shows «عيادة د. …» to assistants and the suspension banner with Pay now (BR-G5, BR-G8).
 - [ ] D4 patients register (cards on phone, table on desktop, master-detail on desktop), D5 add patient, D6 patient profile, D7 edit patient and medical profile.
+  - *Built:* all four, with the temporary password dialog (WhatsApp, SMS, Copy) and the BR-P3 link dialog. Not done: D6's Files, Prescriptions and Appointments tabs and its Book, Chat, Scan and Upload actions (Phases 3, 5, 6); D4's files, booking and unread columns; export [S].
 - [ ] D8 new session (type cards, consultation rule message, fee confirmation, amount charged), D9 session details.
+  - *Built:* both. After saving, prescription, lab request and attach files show as «قريباً» (Phase 3).
 - [ ] D1 dashboard (fee cards and suspension banner only; analytics come in Phase 7), D2 today's sessions, D3 monthly summary.
+  - *Built:* all three. Until the live board arrives (Phase 6), the doctor's home (`/doctor/live`) shows today's sessions in the current branch, with quick actions.
 - [ ] D22 profile (personal and professional info; the prescription header comes in Phase 3), D24 settings, D37 visit prices.
+  - *Built:* all three. Doctors get a profile button in the top bar. On phones, language, theme and sign-out live in settings.
 - [ ] D28 branches, D29 branch editor (Info, Address and map, Contact, Working hours tabs).
+  - *Built:* both, plus a Clinic info tab (prices, payment methods, amenities). There's no map package, so the location is typed as latitude and longitude, with "Test in Google Maps". Special dates and booking settings come in Phase 6.
 - [ ] D25 assistants, D26 add / edit assistant, D27 activity log.
+  - *Built:* all three. D26 applies the permission dependencies and turns the preset into Custom. D27 rows read as sentences and open their branch, assistant, patient or visit.
 - [ ] Assistant screens AS1 (home without the live board), AS2–AS5, AS12, AS19, with every item the assistant can't use hidden.
+  - *Built:* all of them, from the same screens as the doctor's. Not done: AS17 (branch schedule) comes with appointments (Phase 6).
+
+**Dev accounts:** `config/dev-offline.json` has a full offline clinic: `doctor@el3yada.dev` (two branches, 15 patients, today's sessions), `suspended@el3yada.dev` (the banner), `+201000000001` (reception assistant, one branch) and `+201000000005` (office manager). Against the local API, register a doctor, approve them as the admin, then add assistants from D26.
+
+**Screenshots:** `EL3YADA_SCREENSHOTS=1 flutter test test/screenshots` now writes every Phase 2 screen too (314 images).
 
 **Tables:** Patients, DoctorPatients, PatientMedicalProfileItems, Sessions, SessionPrivateNotes, DailyStats, MonthlyStats, Branches, BranchPhones, BranchPeriods, PriceHistory, Assistants, AssistantBranches, AuditLogs, Notifications (rows only; delivery comes in Phase 5).
 

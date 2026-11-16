@@ -1256,29 +1256,59 @@ abstract class AppLocalizations {
   /// **'City or area'**
   String get regCityLabel;
 
-  /// No description provided for @regStreetLabel.
+  /// No description provided for @addressDetailsLabel.
   ///
   /// In en, this message translates to:
-  /// **'Street address'**
-  String get regStreetLabel;
+  /// **'Detailed address'**
+  String get addressDetailsLabel;
 
-  /// No description provided for @regBuildingLabel.
+  /// No description provided for @addressDetailsHint.
   ///
   /// In en, this message translates to:
-  /// **'Building'**
-  String get regBuildingLabel;
+  /// **'For example: 12 Street 9, Al Nour building, 3rd floor, apartment 5'**
+  String get addressDetailsHint;
 
-  /// No description provided for @regFloorLabel.
+  /// No description provided for @mapLinkLabel.
   ///
   /// In en, this message translates to:
-  /// **'Floor'**
-  String get regFloorLabel;
+  /// **'Google Maps link (optional)'**
+  String get mapLinkLabel;
 
-  /// No description provided for @regApartmentLabel.
+  /// No description provided for @mapLinkHelp.
   ///
   /// In en, this message translates to:
-  /// **'Apartment'**
-  String get regApartmentLabel;
+  /// **'In Google Maps, open the clinic\'s place, tap Share, then Copy link, and paste it here.'**
+  String get mapLinkHelp;
+
+  /// No description provided for @mapLinkShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Maps'**
+  String get mapLinkShort;
+
+  /// No description provided for @mapLinkOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Google Maps'**
+  String get mapLinkOpen;
+
+  /// No description provided for @mapLinkClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the link'**
+  String get mapLinkClear;
+
+  /// No description provided for @mapLinkInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s not a Google Maps link.'**
+  String get mapLinkInvalid;
+
+  /// No description provided for @mapLinkOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open Google Maps on this device.'**
+  String get mapLinkOpenFailed;
 
   /// No description provided for @regLandmarkLabel.
   ///
@@ -1435,24 +1465,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone numbers'**
   String get regPhonesLabel;
-
-  /// No description provided for @regBuildingValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Building {value}'**
-  String regBuildingValue(String value);
-
-  /// No description provided for @regFloorValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Floor {value}'**
-  String regFloorValue(String value);
-
-  /// No description provided for @regApartmentValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Apartment {value}'**
-  String regApartmentValue(String value);
 
   /// No description provided for @regListSeparator.
   ///
@@ -2276,24 +2288,6 @@ abstract class AppLocalizations {
   /// **'Consultation'**
   String get adminFieldConsultPrice;
 
-  /// No description provided for @adminAddressBuilding.
-  ///
-  /// In en, this message translates to:
-  /// **'Building {value}'**
-  String adminAddressBuilding(String value);
-
-  /// No description provided for @adminAddressFloor.
-  ///
-  /// In en, this message translates to:
-  /// **'Floor {value}'**
-  String adminAddressFloor(String value);
-
-  /// No description provided for @adminAddressApartment.
-  ///
-  /// In en, this message translates to:
-  /// **'Apartment {value}'**
-  String adminAddressApartment(String value);
-
   /// No description provided for @adminPhoneMobile.
   ///
   /// In en, this message translates to:
@@ -2311,12 +2305,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reception'**
   String get adminPhoneReception;
-
-  /// No description provided for @adminOpenMap.
-  ///
-  /// In en, this message translates to:
-  /// **'Open the location on the map'**
-  String get adminOpenMap;
 
   /// No description provided for @adminReviewApprovedBy.
   ///
@@ -4681,60 +4669,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clinic email (optional)'**
   String get branchEmailLabel;
-
-  /// No description provided for @branchMapPin.
-  ///
-  /// In en, this message translates to:
-  /// **'Map pin'**
-  String get branchMapPin;
-
-  /// No description provided for @branchMapPinHint.
-  ///
-  /// In en, this message translates to:
-  /// **'In Google Maps, press and hold the clinic\'s place, copy the two numbers and paste them here.'**
-  String get branchMapPinHint;
-
-  /// No description provided for @branchLatitude.
-  ///
-  /// In en, this message translates to:
-  /// **'Latitude'**
-  String get branchLatitude;
-
-  /// No description provided for @branchLongitude.
-  ///
-  /// In en, this message translates to:
-  /// **'Longitude'**
-  String get branchLongitude;
-
-  /// No description provided for @branchTestInMaps.
-  ///
-  /// In en, this message translates to:
-  /// **'Test in Google Maps'**
-  String get branchTestInMaps;
-
-  /// No description provided for @branchClearPin.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove the pin'**
-  String get branchClearPin;
-
-  /// No description provided for @branchMapsFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t open Google Maps on this device.'**
-  String get branchMapsFailed;
-
-  /// No description provided for @branchErrorPinPair.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter both numbers, or neither.'**
-  String get branchErrorPinPair;
-
-  /// No description provided for @branchErrorPinRange.
-  ///
-  /// In en, this message translates to:
-  /// **'Not a valid coordinate.'**
-  String get branchErrorPinRange;
 
   /// No description provided for @branchPaymentMethods.
   ///

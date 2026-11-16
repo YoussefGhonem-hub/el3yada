@@ -414,8 +414,8 @@ public partial class AppDbContext : DbContext
                 .HasFilter("([IsDefault]=(1))");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");
+            entity.Property(e => e.AddressDetails).HasMaxLength(300);
             entity.Property(e => e.AmenitiesJson).HasMaxLength(300);
-            entity.Property(e => e.Apartment).HasMaxLength(20);
             entity.Property(e => e.Area).HasMaxLength(60);
             entity.Property(e => e.AutoConfirm).HasDefaultValue(true);
             entity.Property(e => e.AvgVisitMinutes).HasDefaultValue(10);
@@ -423,7 +423,6 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(5)
                 .IsUnicode(false)
                 .HasDefaultValue("queue");
-            entity.Property(e => e.Building).HasMaxLength(20);
             entity.Property(e => e.City).HasMaxLength(60);
             entity.Property(e => e.ClosedMessage).HasMaxLength(300);
             entity.Property(e => e.ConsultationSlots).HasDefaultValue((byte)1);
@@ -434,12 +433,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.Email).HasMaxLength(254);
             entity.Property(e => e.ExamSlots).HasDefaultValue((byte)1);
-            entity.Property(e => e.Floor).HasMaxLength(20);
             entity.Property(e => e.FreeCancelMinutes).HasDefaultValue(120);
             entity.Property(e => e.Governorate).HasMaxLength(50);
             entity.Property(e => e.Landmark).HasMaxLength(150);
-            entity.Property(e => e.Lat).HasColumnType("decimal(9, 6)");
-            entity.Property(e => e.Lng).HasColumnType("decimal(9, 6)");
+            entity.Property(e => e.MapUrl).HasMaxLength(500);
             entity.Property(e => e.MaxReschedules).HasDefaultValue(2);
             entity.Property(e => e.MaxUpcomingPerPatient).HasDefaultValue(1);
             entity.Property(e => e.MinNoticeMinutes).HasDefaultValue(60);
@@ -462,7 +459,6 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(17)
                 .IsUnicode(false)
                 .HasDefaultValue("active");
-            entity.Property(e => e.Street).HasMaxLength(150);
             entity.Property(e => e.UpdatedAt)
                 .HasPrecision(3)
                 .HasDefaultValueSql("(sysutcdatetime())");

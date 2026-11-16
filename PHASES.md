@@ -149,7 +149,7 @@ The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md
 - [ ] A1 Splash routing by session, role and status; A2 language choice on first launch.
   - *Built:* start-up reads public settings (cached for offline), checks the minimum version (A11) and maintenance (A13), refreshes the saved session from `/auth/me`, then routes in the order in `appRedirect` (router.dart). A2 previews the language as you pick.
 - [ ] A3 Login against the real API (replace `FakeAuthRepository` in prod builds), A4 registration (4 steps), A5 verify email [S].
-  - *Built:* A3 with "log in as" (bottom sheet on phones, dialog on desktop). `config/dev.json` now uses the local API; `config/dev-offline.json` keeps the offline accounts (pending, rejected, disabled, two-account and first-login cases). A4: 4 steps with the license from the camera, photos or a file (`image_picker`, `file_selector`), searchable specialty and governorate pickers, server errors sent back to the right step. A5: paste the code from the email, "I've verified", Resend with a 60-second countdown. Not done: the map pin on step 3 (lat/lng are optional), changing the email from A5 (no endpoint while pending), opening the app from the email link.
+  - *Built:* A3 with "log in as" (bottom sheet on phones, dialog on desktop). `config/dev.json` now uses the local API; `config/dev-offline.json` keeps the offline accounts (pending, rejected, disabled, two-account and first-login cases). A4: 4 steps with the license from the camera, photos or a file (`image_picker`, `file_selector`), searchable specialty and governorate pickers, server errors sent back to the right step. A5: paste the code from the email, "I've verified", Resend with a 60-second countdown. Step 3's map pin became an optional Google Maps link in Phase 2 (see D28/D29 below). Not done: changing the email from A5 (no endpoint while pending), opening the app from the email link.
 - [ ] Splash and login signature animation: the logo draws in and moves into the login header, the form slides up, Sign in morphs into progress and then a check, and wrong credentials shake the form once. Registration steps (A4) slide between steps with the progress bar animating.
   - *Built for splash and login:* the splash and login share one page, so the logo rises in place (no Hero needed). A4 steps slide between each other (mirrored in Arabic) under an animated progress bar.
 - [ ] A6 pending, A7 rejected (edit and resubmit), A8 forgot password, A9 set new password, A10 disabled, A11 force update, A12 terms, A13 maintenance, A14 patient on desktop.
@@ -176,7 +176,7 @@ The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md
 
 The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md) (who may call what, `GET /api/clinic/me`), [api-phase-2-patients.md](backend/docs/api-phase-2-patients.md) and [api-phase-2-clinic.md](backend/docs/api-phase-2-clinic.md).
 
-**API** (508 tests: 7 data and 501 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
+**API** (565 tests: 8 data and 557 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
 - [x] `createPatient` (link an existing number with BR-P3, file number, temporary password shown once), `updatePatientPhone`, `resetPatientPassword`, archive [S].
   - Also `lookupPhone` for D5. Linking needs the phone alone. A clinic that linked an existing patient sees only the name, phone, gender and date of birth (`ownsDetails`); the optional details stay with the clinic that created the account. A doctor's password reset also lifts the 15-minute login block on the number.
 - [x] Medical profile read and update (allergies, chronic diseases, medications, surgeries, family history, notes).
@@ -187,6 +187,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
   - The amount charged can change on the same Cairo day, by the doctor or whoever recorded the session. The admin audit log lists that change without the amounts (BR-REV1).
 - [x] `createBranch`, `updateBranch`, `setBranchStatus` (info, address, contact, weekly working hours), `updatePrices` with `PriceHistory`.
   - Weekly hours are `updateBranchHours` (spec 9.1's `updateBranchSchedule`; Phase 6 adds date overrides, booking settings and the BR-AP12 dry run). Also `setDefaultBranch`. The default branch and the last active branch can't be archived; future bookings block closing (BR-BR9). Not done: branch photos [S].
+  - Address (product owner's change, 16 Nov): street, building, floor and apartment became one «العنوان بالتفصيل» text (`details`; `addressDetails` in the sign-up branch), and latitude and longitude became an optional Google Maps link (`mapUrl`, `INVALID_MAP_LINK` when it isn't one). Migration `BranchAddressDetailsAndMapUrl` copies existing branches over: **run `dotnet ef database update` after pulling.**
 - [x] `createAssistant`, `updateAssistant` (presets, permission dependencies), `resetAssistantPassword`, `setAssistantStatus`, `getClinicActivity`.
   - Removing an assistant is final and frees the number. Disabling or removing one refuses their next request with `ACCOUNT_DISABLED` (A10). Also the doctor profile (D22: a specialty change notifies the admins) and notification preferences (`/api/me/notificationPrefs`).
 - [x] Assistant permission checks in **every** endpoint, read from the database on each request.
@@ -208,7 +209,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 - [ ] D22 profile (personal and professional info; the prescription header comes in Phase 3), D24 settings, D37 visit prices.
   - *Built:* all three. Doctors get a profile button in the top bar. On phones, language, theme and sign-out live in settings.
 - [ ] D28 branches, D29 branch editor (Info, Address and map, Contact, Working hours tabs).
-  - *Built:* both, plus a Clinic info tab (prices, payment methods, amenities). There's no map package, so the location is typed as latitude and longitude, with "Test in Google Maps". Special dates and booking settings come in Phase 6.
+  - *Built:* both, plus a Clinic info tab (prices, payment methods, amenities). The Address tab has the detailed address and the Google Maps link: a pasted share text keeps just the link, and "Open in Google Maps" checks it (sign-up step 3 has the same two fields). Special dates and booking settings come in Phase 6.
 - [ ] D25 assistants, D26 add / edit assistant, D27 activity log.
   - *Built:* all three. D26 applies the permission dependencies and turns the preset into Custom. D27 rows read as sentences and open their branch, assistant, patient or visit.
 - [ ] Assistant screens AS1 (home without the live board), AS2–AS5, AS12, AS19, with every item the assistant can't use hidden.
@@ -218,7 +219,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Screenshots:** `EL3YADA_SCREENSHOTS=1 flutter test test/screenshots` now writes every Phase 2 screen too (314 images).
 
-**Contract test:** `flutter test test/contract` (off by default; how to run it is at the top of `api_contract_test.dart`) now also runs one clinic day through the app's real Phase 2 repositories against a running API: sign-up and approval, branches, prices, patients, sessions, fees, a reception assistant, and the activity log. It passed on 16 Nov with no mismatches. Not covered yet: linking a patient from another clinic, a suspended doctor, `BRANCH_HAS_BOOKINGS`, and the app's own client (token refresh, reloading the clinic after a refusal).
+**Contract test:** `flutter test test/contract` (off by default; how to run it is at the top of `api_contract_test.dart`) now also runs one clinic day through the app's real Phase 2 repositories against a running API: sign-up and approval, branches, prices, patients, sessions, fees, a reception assistant, and the activity log. After it, a second clinic links that patient (BR-P3), a booking put in by the Development-only `add-booking` command shows on the branch card and stops closing and archiving (`BRANCH_HAS_BOOKINGS`), the admin suspends and reactivates the doctor (`setDoctorStatus`, below in Phase 7), and the app's own client (the Riverpod providers, the auth interceptor and `clinicContextProvider`) refreshes a stale token, reloads the clinic after `PERMISSION_DENIED` and `DOCTOR_SUSPENDED`, and signs out to A10 on `ACCOUNT_DISABLED`. It passed twice on one database on 16 Nov with no mismatches.
 
 **Tables:** Patients, DoctorPatients, PatientMedicalProfileItems, Sessions, SessionPrivateNotes, DailyStats, MonthlyStats, Branches, BranchPhones, BranchPeriods, PriceHistory, Assistants, AssistantBranches, AuditLogs, Notifications (rows only; delivery comes in Phase 5).
 
@@ -336,6 +337,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 - [ ] `dailyBillingCheck` (00:10): reminders, `overdue`, suspension (BR-G1). `statsReconcile` [S].
 - [ ] `submitPayment` (screenshots), `reviewPayment` (approve / reject, reactivation check BR-G3).
 - [ ] `adjustInvoice`, `waiveInvoice`, `markInvoicePaid`, `extendInvoiceDueDate`, `setDoctorStatus`, `getDoctorActivity` (masked patient names).
+  - *Done early (Phase 2), API only:* `setDoctorStatus` suspends and reactivates by hand with a reason (BR-G4), notifies the doctor and assistants and writes the audit row (`backend/docs/api-phase-1.md`); the app has it in `AdminRepository`. Not done: the AD5 screen, "disable" (it must cancel future bookings, so it waits for Phase 6), and the automatic suspension and reactivation (`dailyBillingCheck`, BR-G1, BR-G3).
 - [ ] Suspension limits applied everywhere (BR-G5, BR-G8): read-only plus payment for the doctor and assistants, patients keep read access.
 - [ ] `buildDailyMetrics` (02:30), `getDashboard`, `getRevenueReport`. Money fields are removed for callers without revenue access (BR-REV1).
 

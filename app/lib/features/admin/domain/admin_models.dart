@@ -102,15 +102,11 @@ class RegistrationBranch {
     required this.nameAr,
     required this.governorate,
     required this.city,
-    required this.street,
+    required this.addressDetails,
     this.nameEn,
     this.area,
-    this.building,
-    this.floor,
-    this.apartment,
     this.landmark,
-    this.lat,
-    this.lng,
+    this.mapUrl,
     this.email,
     this.phones = const [],
   });
@@ -121,13 +117,9 @@ class RegistrationBranch {
         governorate: json['governorate'] as String,
         city: json['city'] as String,
         area: _text(json['area']),
-        street: json['street'] as String,
-        building: _text(json['building']),
-        floor: _text(json['floor']),
-        apartment: _text(json['apartment']),
+        addressDetails: json['addressDetails'] as String? ?? '',
         landmark: _text(json['landmark']),
-        lat: (json['lat'] as num?)?.toDouble(),
-        lng: (json['lng'] as num?)?.toDouble(),
+        mapUrl: _text(json['mapUrl']),
         email: _text(json['email']),
         phones: [for (final phone in json['phones'] as List? ?? const []) BranchPhone.fromJson(_map(phone))],
       );
@@ -137,17 +129,15 @@ class RegistrationBranch {
   final String governorate;
   final String city;
   final String? area;
-  final String street;
-  final String? building;
-  final String? floor;
-  final String? apartment;
+
+  /// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+  final String addressDetails;
   final String? landmark;
-  final double? lat;
-  final double? lng;
+
+  /// «لينك جوجل ماب», or null.
+  final String? mapUrl;
   final String? email;
   final List<BranchPhone> phones;
-
-  bool get hasLocation => lat != null && lng != null;
 }
 
 /// The registration view: everything the doctor submitted in A4.
@@ -229,10 +219,12 @@ class DoctorRegistration {
 
   bool get isPending => status == DoctorStatuses.pendingApproval;
 
-  DoctorRegistration copyWith({String? status, String? statusReason}) => DoctorRegistration(
+  /// The same registration with a new [status] and its [statusReason]
+  /// (null: none, so an approval clears an earlier rejection's reason).
+  DoctorRegistration withStatus(String status, {String? statusReason}) => DoctorRegistration(
         doctorId: doctorId,
-        status: status ?? this.status,
-        statusReason: statusReason ?? this.statusReason,
+        status: status,
+        statusReason: statusReason,
         submittedAt: submittedAt,
         approvedAt: approvedAt,
         fullName: fullName,
@@ -287,6 +279,37 @@ class RegistrationDetail {
 
   /// Newest first. A rejection here means the doctor resubmitted.
   final List<RegistrationReview> reviews;
+}
+
+/// `setDoctorStatus`'s answer (BR-G4; AD5 comes in Phase 7).
+class DoctorStatusView {
+  const DoctorStatusView({
+    required this.doctorId,
+    required this.fullName,
+    required this.status,
+    this.statusReason,
+    this.statusChangedAt,
+  });
+
+  factory DoctorStatusView.fromJson(Map<String, dynamic> json) => DoctorStatusView(
+        doctorId: json['doctorId'] as String,
+        fullName: json['fullName'] as String,
+        status: json['status'] as String,
+        statusReason: _text(json['statusReason']),
+        statusChangedAt: _timeOrNull(json['statusChangedAt']),
+      );
+
+  final String doctorId;
+  final String fullName;
+
+  /// [DoctorStatuses.active] or [DoctorStatuses.suspended].
+  final String status;
+
+  /// The suspension reason; null once active.
+  final String? statusReason;
+  final DateTime? statusChangedAt;
+
+  bool get isSuspended => status == DoctorStatuses.suspended;
 }
 
 /// The license file, streamed through the API (never a public URL).

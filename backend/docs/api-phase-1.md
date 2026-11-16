@@ -191,8 +191,8 @@ Notes:
   "examinationPricePiasters": 30000, "consultationPricePiasters": 15000,
   "branch": {
     "nameAr": "فرع المعادي", "nameEn": null, "governorate": "القاهرة", "city": "المعادي", "area": null,
-    "street": "شارع 9", "building": null, "floor": null, "apartment": null, "landmark": "بجوار المترو",
-    "lat": 29.96, "lng": 31.25, "email": null,
+    "addressDetails": "12 شارع 9، عمارة النور، الدور التالت، شقة 5", "landmark": "بجوار المترو",
+    "mapUrl": "https://maps.app.goo.gl/AbCd1234XyZ", "email": null,
     "phones": [ { "number": "02 2358 1234", "label": "landline", "isWhatsapp": false } ]
   },
   "acceptTerms": true,
@@ -215,9 +215,10 @@ Notes:
 | `examinationPricePiasters`, `consultationPricePiasters` | optional, 0–10,000,000 (100,000 EGP). Saved as the **doctor's** visit prices (6.15), which every branch without its own prices uses. | `OUT_OF_RANGE` |
 | `branch` | required | `REQUIRED` |
 | `branch.nameAr` | 2–60 | `REQUIRED`, `INVALID_VALUE` |
-| `branch.governorate`, `branch.city`, `branch.street` | required; ≤ 50, 60, 150 | `REQUIRED`, `TOO_LONG` |
-| `branch.area`, `branch.building`, `branch.floor`, `branch.apartment`, `branch.landmark` | optional; ≤ 60, 20, 20, 20, 150 | `TOO_LONG` |
-| `branch.lat`, `branch.lng` | both or neither; −90…90, −180…180 | `OUT_OF_RANGE`, `INVALID_VALUE` |
+| `branch.governorate`, `branch.city` | required; ≤ 50, 60 | `REQUIRED`, `TOO_LONG` |
+| `branch.addressDetails` | «العنوان بالتفصيل»: street, building, floor and apartment as one text (new lines allowed); required, ≤ 300, trimmed | `REQUIRED`, `TOO_LONG` |
+| `branch.area`, `branch.landmark` | optional; ≤ 60, 150 | `TOO_LONG` |
+| `branch.mapUrl` | optional «لينك جوجل ماب», ≤ 500. An `https` or `http` link to `maps.app.goo.gl/…`, `goo.gl/maps/…`, `maps.google.<tld>/…` or `(www.)google.<tld>/maps…` (`.com`, `.com.eg`, `.co.uk` …); only the form is checked, Google is never called. Text around the link is refused, so the app keeps just the link from a pasted share text. | `TOO_LONG`, `INVALID_MAP_LINK` |
 | `branch.email` | optional email | `INVALID_EMAIL` |
 | `branch.phones` | 1–5 | `PHONE_REQUIRED`, `INVALID_VALUE` |
 | `branch.phones[i].number` | Egyptian mobile, landline or hotline | `REQUIRED`, `INVALID_PHONE` |
@@ -244,7 +245,7 @@ Returned by `myRegistration`, `resubmitDoctorRegistration`, the admin detail and
   "licenseNumber": "45678", "licenseContentType": "image/jpeg",
   "fullNameEn": null, "titleEn": null, "degreesAr": null, "degreesEn": null,
   "examinationPricePiasters": 30000, "consultationPricePiasters": null,
-  "branch": { "id": "…", "nameAr": "…", "governorate": "…", "city": "…", "street": "…", "…": "…",
+  "branch": { "id": "…", "nameAr": "…", "governorate": "…", "city": "…", "addressDetails": "…", "mapUrl": null, "…": "…",
               "phones": [ { "number": "+20223581234", "label": "landline", "isWhatsapp": false } ] }
 }
 ```
@@ -291,6 +292,19 @@ Every admin route needs `role = admin`. AD14 routes need `adminRole = superAdmin
 | `GET /api/admin/doctorRegistrations/{doctorId}` | | 200 `{ "registration": <registration view>, "reviews": [ { decision: "approve"\|"reject", reason, reviewedBy, reviewedByName, at } ] }`, newest review first | 404 |
 | `GET /api/admin/doctorRegistrations/{doctorId}/license` | | 200 file stream. Writes a `doctorLicenseViewed` audit row. | 404 `NOT_FOUND` / `LICENSE_FILE_MISSING` |
 | `POST /api/admin/reviewDoctorRegistration` | `{ doctorId, decision: "approve"\|"reject", reason }`. `reason` (3–500) is required to reject. | 200 registration view (`active` or `rejected`). Notifies the doctor. | 400 `reason`: `REASON_REQUIRED`; 404; 409 `REGISTRATION_NOT_PENDING` (already reviewed, also when two admins answer at once) |
+
+### Doctor status (AD5, BR-G4), any admin
+
+`setDoctorStatus` is listed in Phase 7 (AD5). Its API came early, in Phase 2, so a suspension can be tested end to end; the AD5 screen and the automatic suspension for unpaid invoices (BR-G1, BR-G3) are still Phase 7.
+
+| Method and route | Request | Success | Errors |
+|---|---|---|---|
+| `POST /api/admin/setDoctorStatus` | `{ doctorId, status: "suspended"\|"active", reason }`. `active` reactivates. `reason` (3–500) is required both ways. | 200 `{ doctorId, fullName, status, statusReason, statusChangedAt }`. `statusReason` is the suspension reason, `null` once active. Asking for the status the doctor already has changes nothing. | 400 `reason`: `REASON_REQUIRED`, `TOO_LONG`; `status`: `INVALID_VALUE`; `doctorId`: `REQUIRED`. 404 (not a doctor). 409 `DOCTOR_STATUS_NOT_CHANGEABLE`, with `status`: the doctor is pending approval, rejected or disabled. |
+
+- It moves a doctor only between `active` and `suspended`. Two admins at the same moment run one after the other.
+- It applies at once: clinic endpoints read the doctor's status from the database on every request (spec 9.4). While suspended, the doctor and every assistant get 403 `DOCTOR_SUSPENDED` for the BR-G5 actions (adding or linking patients, new sessions; [api-phase-2.md](api-phase-2.md)), `clinic/me` shows `doctor.status: "suspended"`, and everything else works. Sign-in still works; the doctor's session has `doctorStatus: "suspended"` and `doctorStatusReason` (assistants get the status, never the reason).
+- Notifies the doctor and their active assistants (`doctorSuspended` / `doctorReactivated`, below) and writes a `doctorSuspended` or `doctorReactivated` audit row with `doctorId`, so AD15 can filter by doctor. These rows don't show in the clinic's activity log (D27).
+- There is no "disable" yet. A disabled doctor (`Doctors.Status = disabled`) already can't sign in (`ACCOUNT_DISABLED`) and their assistants get `CLINIC_NOT_ACTIVE`, but disabling must also cancel every future booking and tell the patients (spec 6.12.7, case 23), which needs the Phase 6 bookings, and the spec doesn't yet say how a disabled doctor comes back. It comes with AD5 in Phase 7.
 
 ### Admin users (AD14), super admin only
 
@@ -364,10 +378,12 @@ Rows in `Notifications` (both languages). The notification list, read state and 
 | `doctorRegistrationRejected` | the doctor | تم رفض طلبك / Your sign-up was not approved | `السبب: {reason}` | `/registration/rejected` | `{ doctorId }` |
 | `patientPasswordResetRequested` | each linked doctor, and their assistants with `patientsResetPassword` | طلب إعادة تعيين كلمة المرور / Password reset request | `المريض {name} طلب إعادة تعيين كلمة المرور` | `/patients/{patientId}` | `{ patientId, linkId }` |
 | `assistantPasswordResetRequested` | the assistant's doctor | same | `المساعد {name} طلب إعادة تعيين كلمة المرور` | `/assistants/{assistantId}` | `{ assistantId }` |
+| `doctorSuspended` | the doctor, and each active assistant | تم إيقاف الخدمة / Your clinic is suspended (assistants: The clinic is suspended) | Doctor: `السبب: {reason}`. Assistants: `تم إيقاف خدمة عيادة د. {name}: …`, without the reason | `/home` | `{ doctorId }` |
+| `doctorReactivated` | the doctor, and each active assistant | تم إعادة تفعيل الخدمة / Your clinic is active again | | `/home` | `{ doctorId }` |
 
 ## Audit actions
 
-`doctorRegistrationSubmitted`, `doctorRegistrationResubmitted`, `doctorRegistrationApproved`, `doctorRegistrationRejected` (details: `reason`), `doctorLicenseViewed`, `adminSeeded`, `adminCreated` (details: `adminRole`), `adminRoleChanged` (`before`, `after`), `adminDisabled`, `adminEnabled`, `adminProfileUpdated`, `settingsUpdated` (`fields`), `passwordSet`, `passwordChanged`, `passwordResetRequested` (`channel`: `email` or `doctor`), `passwordReset`, `accountLockedOut`, `refreshTokenReuseDetected`, `emailVerified`.
+`doctorRegistrationSubmitted`, `doctorRegistrationResubmitted`, `doctorRegistrationApproved`, `doctorRegistrationRejected` (details: `reason`), `doctorLicenseViewed`, `doctorSuspended` and `doctorReactivated` (`before`, `after`, `reason`), `adminSeeded`, `adminCreated` (details: `adminRole`), `adminRoleChanged` (`before`, `after`), `adminDisabled`, `adminEnabled`, `adminProfileUpdated`, `settingsUpdated` (`fields`), `passwordSet`, `passwordChanged`, `passwordResetRequested` (`channel`: `email` or `doctor`), `passwordReset`, `accountLockedOut`, `refreshTokenReuseDetected`, `emailVerified`.
 
 Audit rows never hold passwords, tokens or medical text. As a safety net, any detail whose name contains "password", "token" or "secret" is dropped.
 
@@ -383,6 +399,7 @@ Arabic texts in quotes are from the spec. The app owns the final wording in its 
 | `INVALID_MOBILE` | field | «رقم الموبايل غير صحيح» |
 | `INVALID_PHONE` | field | Not a valid phone number (landlines allowed) |
 | `PHONE_REQUIRED` | field | «أضف رقم تليفون واحد على الأقل» |
+| `INVALID_MAP_LINK` | field | A branch's `mapUrl` is not a Google Maps link («ده مش لينك جوجل ماب») |
 | `INVALID_EMAIL` | field | «البريد الإلكتروني غير صحيح» |
 | `INVALID_IDENTIFIER` | field | Neither an email nor an Egyptian mobile |
 | `INVALID_NAME` | field | «اكتب الاسم ثنائي على الأقل» |
@@ -394,7 +411,7 @@ Arabic texts in quotes are from the spec. The app owns the final wording in its 
 | `INVALID_SPECIALTY` | field | Not an active specialty |
 | `INVALID_VERSION` | field | Not `1.2.3` |
 | `UNKNOWN_SETTING` | field | Not a settings field |
-| `REASON_REQUIRED` | field | A rejection needs a reason |
+| `REASON_REQUIRED` | field | A rejection, a suspension or a reactivation needs a reason |
 | `FILE_TOO_LARGE`, `FILE_TYPE_NOT_ALLOWED`, `FILE_CONTENT_INVALID` | field | License file problems |
 | `INVALID_CREDENTIALS` | 401 | «رقم الهاتف/البريد أو كلمة المرور غير صحيحة» |
 | `UNAUTHENTICATED` | 401 | No token, or a bad one: refresh, then A3 |
@@ -418,6 +435,7 @@ Arabic texts in quotes are from the spec. The app owns the final wording in its 
 | `EMAIL_ALREADY_VERIFIED` | 409 | |
 | `REGISTRATION_NOT_EDITABLE` | 409 | Only a rejected registration can be resubmitted |
 | `REGISTRATION_NOT_PENDING` | 409 | Already reviewed |
+| `DOCTOR_STATUS_NOT_CHANGEABLE` | 409 | `setDoctorStatus`: only an active doctor can be suspended, only a suspended one reactivated. The answer has `status`. |
 | `CANNOT_CHANGE_OWN_ROLE`, `CANNOT_DISABLE_SELF`, `LAST_SUPER_ADMIN` | 409 | AD14 guards |
 | `REQUEST_TOO_LARGE` | 413 | The upload is too large |
 | `UNSUPPORTED_MEDIA_TYPE` | 415 | Send `multipart/form-data` |

@@ -71,7 +71,7 @@ public static partial class TestData
             db.Branches.Add(new Branch
             {
                 Id = branchId, DoctorId = userId, NameAr = "فرع المعادي", Governorate = "القاهرة", City = "المعادي",
-                Street = "شارع 9", IsDefault = true,
+                AddressDetails = "شارع 9", IsDefault = true,
                 BranchPhones = { new BranchPhone { Id = Guid.NewGuid(), Number = Mobile(), Label = "reception" } },
             });
             await db.SaveChangesAsync();
@@ -174,7 +174,7 @@ public static partial class TestData
             db.Branches.Add(new Branch
             {
                 Id = branchId, DoctorId = doctorId, NameAr = name, Governorate = "القاهرة", City = "مدينة نصر",
-                Street = "شارع عباس العقاد",
+                AddressDetails = "شارع عباس العقاد",
                 BranchPhones = { new BranchPhone { Id = Guid.NewGuid(), Number = Mobile(), Label = "reception" } },
             });
             await db.SaveChangesAsync();

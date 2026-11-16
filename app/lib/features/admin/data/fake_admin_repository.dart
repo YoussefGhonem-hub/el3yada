@@ -204,8 +204,8 @@ class FakeAdminRepository implements AdminRepository {
     if (!r.registration.isPending) throw _error(409, 'REGISTRATION_NOT_PENDING');
 
     final approve = decision == ReviewDecision.approve;
-    r.registration = r.registration.copyWith(
-      status: approve ? DoctorStatuses.active : DoctorStatuses.rejected,
+    r.registration = r.registration.withStatus(
+      approve ? DoctorStatuses.active : DoctorStatuses.rejected,
       statusReason: approve ? null : text,
     );
     r.reviews.add(RegistrationReview(decision: decision, reason: approve ? null : text, reviewedByName: _me.displayName, at: _now));
@@ -217,6 +217,47 @@ class FakeAdminRepository implements AdminRepository {
       details: approve ? null : {'reason': text},
     );
     return r.registration;
+  }
+
+  // ---------------------------------------------------------------------------
+  // BR-G4 (AD5 comes in Phase 7)
+
+  @override
+  Future<DoctorStatusView> setDoctorStatus(String doctorId, {required bool suspended, required String reason}) async {
+    await _step('setDoctorStatus');
+    final r = _registrations[doctorId] ?? (throw _error(404, 'NOT_FOUND'));
+    final text = reason.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (text.length < 3) throw _invalid({'reason': 'REASON_REQUIRED'});
+    if (text.length > 500) throw _invalid({'reason': 'TOO_LONG'});
+    final current = r.registration.status;
+    final target = suspended ? DoctorStatuses.suspended : DoctorStatuses.active;
+    if (current != target) {
+      if (current != DoctorStatuses.active && current != DoctorStatuses.suspended) {
+        throw ApiException(
+          kind: ApiErrorKind.http,
+          status: 409,
+          code: 'DOCTOR_STATUS_NOT_CHANGEABLE',
+          details: {'code': 'DOCTOR_STATUS_NOT_CHANGEABLE', 'status': current},
+        );
+      }
+      r.registration = r.registration.withStatus(target, statusReason: suspended ? text : null);
+      r.statusChangedAt = _now;
+      _addAudit(
+        suspended ? 'doctorSuspended' : 'doctorReactivated',
+        'doctor',
+        targetId: doctorId,
+        doctorId: doctorId,
+        details: {'before': current, 'after': target, 'reason': text},
+      );
+    }
+    final reg = r.registration;
+    return DoctorStatusView(
+      doctorId: doctorId,
+      fullName: reg.fullName,
+      status: reg.status,
+      statusReason: reg.statusReason,
+      statusChangedAt: r.statusChangedAt,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -508,13 +549,9 @@ class FakeAdminRepository implements AdminRepository {
         governorate: 'القاهرة',
         city: 'المعادي',
         area: 'دجلة',
-        street: 'شارع 9',
-        building: '14',
-        floor: '3',
-        apartment: '7',
+        addressDetails: 'شارع 9، عمارة 14، الدور 3، شقة 7',
         landmark: 'بجوار محطة مترو المعادي',
-        lat: 29.9602,
-        lng: 31.2569,
+        mapUrl: 'https://www.google.com/maps/search/?api=1&query=29.9602,31.2569',
         email: 'maadi.clinic@example.com',
         phones: [
           BranchPhone(number: '+20223581234', label: 'landline'),
@@ -538,9 +575,8 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة الدقي',
         governorate: 'الجيزة',
         city: 'الدقي',
-        street: 'شارع التحرير',
-        building: '102',
-        floor: '5',
+        addressDetails: '102 شارع التحرير، الدور الخامس',
+        mapUrl: 'https://maps.google.com/?q=30.0385,31.2107',
         phones: [BranchPhone(number: '+201112223344', label: 'reception', isWhatsapp: true)],
       ),
     ));
@@ -565,7 +601,7 @@ class FakeAdminRepository implements AdminRepository {
           nameAr: 'مركز سموحة للجلدية',
           governorate: 'الإسكندرية',
           city: 'سموحة',
-          street: 'شارع فوزي معاذ',
+          addressDetails: 'شارع فوزي معاذ',
           landmark: 'أمام نادي سموحة',
           phones: [
             BranchPhone(number: '+2034251234', label: 'landline'),
@@ -600,7 +636,7 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة ابتسامة',
         governorate: 'الدقهلية',
         city: 'المنصورة',
-        street: 'شارع الجمهورية',
+        addressDetails: 'شارع الجمهورية',
         phones: [BranchPhone(number: '+20502241234', label: 'landline')],
       ),
     ));
@@ -619,7 +655,7 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة بنها',
         governorate: 'القليوبية',
         city: 'بنها',
-        street: 'شارع فريد ندا',
+        addressDetails: 'شارع فريد ندا',
         phones: [BranchPhone(number: '+201555667788', label: 'mobile', isWhatsapp: true)],
       ),
     ));
@@ -642,7 +678,7 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة أسيوط',
         governorate: 'أسيوط',
         city: 'أسيوط',
-        street: 'شارع الجمهورية',
+        addressDetails: 'شارع الجمهورية',
         phones: [BranchPhone(number: '+20882331234', label: 'landline')],
       ),
     ));
@@ -808,4 +844,7 @@ class _FakeRegistration {
   final List<RegistrationReview> reviews;
   Uint8List? license;
   bool licenseMissing = false;
+
+  /// The last suspension or reactivation.
+  DateTime? statusChangedAt;
 }

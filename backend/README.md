@@ -4,7 +4,7 @@ The Web API and the SQL Server database for the el3yada app. The full product sp
 
 | Project | What it holds |
 |---|---|
-| `src/El3yada.Api` | ASP.NET Core Web API (.NET 10): controllers, `Program.cs`, settings (`Configuration/`), sign-in and tokens (`Auth/`), the audit log (`Audit/`), email (`Email/`), notification rows (`Notifications/`), doctor registration (`Doctors/`), AD13 settings fields (`Settings/`), the `seed-admin` command (`Commands/`), validation (`Validation/`), file storage (`Storage/`) |
+| `src/El3yada.Api` | ASP.NET Core Web API (.NET 10): controllers, `Program.cs`, settings (`Configuration/`), sign-in and tokens (`Auth/`), the audit log (`Audit/`), email (`Email/`), notification rows (`Notifications/`), doctor registration (`Doctors/`), AD13 settings fields (`Settings/`), the `seed-admin` and `add-booking` commands (`Commands/`), validation (`Validation/`), file storage (`Storage/`) |
 | `src/El3yada.Data` | EF Core: `AppDbContext`, one entity class per table (`Entities/`), migrations |
 | `tests/El3yada.Api.Tests` | xUnit. Unit tests for validation, settings checks and file storage, and integration tests in `Integration/` that run the real API on a throwaway migrated database |
 | `tests/El3yada.Data.Tests` | xUnit tests that build a fresh database from the migrations and check it |
@@ -57,6 +57,16 @@ dotnet run --project src/El3yada.Api -- seed-admin <email> [--name "First Last"]
 - `--name` defaults to "Super Admin" and must be two words, letters only.
 - In production, run it once on the server with the production environment variables set.
 - It writes an `adminSeeded` audit row. The handler is `SeedAdminCommand.ExecuteAsync`, which `SeedAdminCommandTests` calls directly.
+
+## A test booking: `add-booking` (Development only)
+
+```bash
+dotnet run --project src/El3yada.Api -- add-booking --branch <branchId> --patient <patientId> [--date YYYY-MM-DD]
+```
+
+- Bookings get their endpoints in Phase 6, but branches already count them (D28 "upcoming bookings") and refuse to close or be archived while they have some (`BRANCH_HAS_BOOKINGS`). This inserts one confirmed queue booking at 10:00 Cairo time on `--date` (default: tomorrow), for a patient of the branch's doctor, and prints its ID.
+- It refuses to run unless the environment is Development. `dotnet run` takes Development from the launch profile; the database is the one in `ConnectionStrings:Default`, so set `ConnectionStrings__Default` when it must be another database (the app's contract test does).
+- The handler is `AddBookingCommand.ExecuteAsync`, which `AddBookingCommandTests` calls directly.
 
 ## Run
 
@@ -231,6 +241,7 @@ Never edit a migration that is already on `main`. Add a new one instead.
 |---|---|
 | `InitialCreate`, `SeedReferenceData` | Phase 0: every table, the settings row and the starting specialties |
 | `AddRefreshTokenFamily` | Phase 1: `RefreshTokens.FamilyId` (UNIQUEIDENTIFIER NOT NULL) and index `IX_RefreshTokens_FamilyId`, for refresh-token rotation and reuse detection |
+| `BranchAddressDetailsAndMapUrl` | Phase 2: `Branches.Street`, `Building`, `Floor` and `Apartment` become `AddressDetails` (NVARCHAR(300) NOT NULL, «العنوان بالتفصيل»), and `Lat`/`Lng` become `MapUrl` (NVARCHAR(500) NULL, a Google Maps link). Existing rows are copied first: the parts joined with Arabic labels («شارع 9، عمارة 12، الدور 3، شقة 5»), and a pin as `https://www.google.com/maps/search/?api=1&query=<lat>,<lng>`. Down puts the whole text back in `Street` and the pin back from such a link |
 
 ### Rules to keep when you add tables or columns
 

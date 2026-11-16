@@ -14,7 +14,7 @@ import 'api_exception.dart';
 /// `{API_BASE_URL}/api/auth/me`. Wrap calls in `try`/`on DioException` and
 /// throw `ApiException.fromDio(error)`, as the repositories do.
 final dioProvider = Provider<Dio>((ref) {
-  final dio = _newDio();
+  final dio = _newDio(ref.watch(apiBaseUrlProvider));
   dio.interceptors.add(AuthInterceptor(ref, dio));
   return dio;
 });
@@ -22,7 +22,7 @@ final dioProvider = Provider<Dio>((ref) {
 /// The same client without the auth interceptor: for sign-in, refresh and
 /// logout, which must never start a refresh themselves.
 final plainDioProvider = Provider<Dio>((ref) {
-  final dio = _newDio();
+  final dio = _newDio(ref.watch(apiBaseUrlProvider));
   dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
     options.headers['Accept-Language'] = ref.read(appSettingsProvider).locale.languageCode;
     handler.next(options);
@@ -30,9 +30,13 @@ final plainDioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
-Dio _newDio() => Dio(
+/// `API_BASE_URL` from the build config. The contract test overrides it to
+/// run this whole stack against a local API.
+final apiBaseUrlProvider = Provider<String>((ref) => Env.apiBaseUrl);
+
+Dio _newDio(String baseUrl) => Dio(
       BaseOptions(
-        baseUrl: '${Env.apiBaseUrl}/api',
+        baseUrl: '$baseUrl/api',
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 30),
         headers: {'Accept': 'application/json'},

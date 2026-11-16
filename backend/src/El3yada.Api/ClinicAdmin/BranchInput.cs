@@ -35,10 +35,12 @@ public static class BranchChecklists
 /// <summary>Info tab: name (2–60), optional English name and short description.</summary>
 public sealed record BranchInfoInput(string? NameAr, string? NameEn, string? Description);
 
-/// <summary>Address and map tab. <c>lat</c> and <c>lng</c> come together or not at all.</summary>
+/// <summary>
+/// Address and map tab. <c>details</c> is «العنوان بالتفصيل» (street, building, floor, apartment in one text);
+/// <c>mapUrl</c> is an optional Google Maps link.
+/// </summary>
 public sealed record BranchAddressInput(
-    string? Governorate, string? City, string? Area, string? Street, string? Building, string? Floor,
-    string? Apartment, string? Landmark, decimal? Lat, decimal? Lng);
+    string? Governorate, string? City, string? Area, string? Details, string? Landmark, string? MapUrl);
 
 /// <summary>Contact tab: 1–5 phones (mobile, landline or hotline) and an optional email.</summary>
 public sealed record BranchContactInput(List<BranchPhoneData>? Phones, string? Email);
@@ -65,15 +67,9 @@ public sealed class BranchAddressInputValidator : AbstractValidator<BranchAddres
         RuleFor(x => x.Governorate).Required().MaxChars(50);
         RuleFor(x => x.City).Required().MaxChars(60);
         RuleFor(x => x.Area).MaxChars(60);
-        RuleFor(x => x.Street).Required().MaxChars(150);
-        RuleFor(x => x.Building).MaxChars(20);
-        RuleFor(x => x.Floor).MaxChars(20);
-        RuleFor(x => x.Apartment).MaxChars(20);
+        RuleFor(x => x.Details).Required().MaxChars(300);
         RuleFor(x => x.Landmark).MaxChars(150);
-        RuleFor(x => x.Lat).InclusiveBetween(-90m, 90m).WithErrorCode(ErrorCodes.OutOfRange)
-            .Must((address, lat) => lat.HasValue == address.Lng.HasValue)
-            .WithErrorCode(ErrorCodes.InvalidValue).WithMessage("Send both lat and lng, or neither.");
-        RuleFor(x => x.Lng).InclusiveBetween(-180m, 180m).WithErrorCode(ErrorCodes.OutOfRange);
+        RuleFor(x => x.MapUrl).MaxChars(MapLinks.MaxLength).GoogleMapsLink();
     }
 }
 
@@ -127,13 +123,9 @@ public static class BranchFields
         branch.Governorate = address.Governorate!.Trim();
         branch.City = address.City!.Trim();
         branch.Area = Text.TrimToNull(address.Area);
-        branch.Street = address.Street!.Trim();
-        branch.Building = Text.TrimToNull(address.Building);
-        branch.Floor = Text.TrimToNull(address.Floor);
-        branch.Apartment = Text.TrimToNull(address.Apartment);
+        branch.AddressDetails = address.Details!.Trim();
         branch.Landmark = Text.TrimToNull(address.Landmark);
-        branch.Lat = address.Lat;
-        branch.Lng = address.Lng;
+        branch.MapUrl = Text.TrimToNull(address.MapUrl);
     }
 
     /// <summary>Adds the phones to an empty <c>BranchPhones</c> (remove the old rows first) and sets the email.</summary>

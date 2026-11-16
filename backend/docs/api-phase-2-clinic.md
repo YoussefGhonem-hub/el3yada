@@ -81,9 +81,9 @@ Every branch of the doctor: the default first, then oldest first, archived ones 
   "closedMessage": "مغلق للتجديدات", "reopenDate": "2026-11-25", "assigned": true,
   "info": { "nameAr": "فرع الدقي", "nameEn": "Dokki", "description": "عيادة الأطفال بالدور الثاني" },
   "address": {
-    "governorate": "الجيزة", "city": "الدقي", "area": "ميدان المساحة", "street": "شارع التحرير",
-    "building": "12", "floor": "2", "apartment": "4", "landmark": "بجوار البنك الأهلي",
-    "lat": 30.038, "lng": 31.211
+    "governorate": "الجيزة", "city": "الدقي", "area": "ميدان المساحة",
+    "details": "12 شارع التحرير، الدور التاني، شقة 4", "landmark": "بجوار البنك الأهلي",
+    "mapUrl": "https://maps.app.goo.gl/AbCd1234XyZ"
   },
   "contact": {
     "phones": [
@@ -128,9 +128,10 @@ The fields and limits are the ones the first branch has at sign-up ([A4](api-pha
 | `info.nameEn` | optional, ≤ 60 | `TOO_LONG` |
 | `info.description` | optional, ≤ 500 | `TOO_LONG` |
 | `address` | required on create | `REQUIRED` |
-| `address.governorate`, `address.city`, `address.street` | required; ≤ 50, 60, 150 | `REQUIRED`, `TOO_LONG` |
-| `address.area`, `address.building`, `address.floor`, `address.apartment`, `address.landmark` | optional; ≤ 60, 20, 20, 20, 150 | `TOO_LONG` |
-| `address.lat`, `address.lng` | both or neither; −90…90, −180…180; stored with 6 decimals (answers show `30.038000`) | `OUT_OF_RANGE`, `INVALID_VALUE` |
+| `address.governorate`, `address.city` | required; ≤ 50, 60 | `REQUIRED`, `TOO_LONG` |
+| `address.details` | «العنوان بالتفصيل»: street, building, floor and apartment as one text (new lines allowed); required, ≤ 300 | `REQUIRED`, `TOO_LONG` |
+| `address.area`, `address.landmark` | optional; ≤ 60, 150 | `TOO_LONG` |
+| `address.mapUrl` | optional «لينك جوجل ماب», ≤ 500: the same rule as sign-up's [`branch.mapUrl`](api-phase-1.md#post-apidoctorscompletedoctorregistration-anonymous-rate-limited) (an `https` or `http` Google Maps link, checked by form only) | `TOO_LONG`, `INVALID_MAP_LINK` («ده مش لينك جوجل ماب») |
 | `contact` | required on create | `REQUIRED` |
 | `contact.phones` | 1–5 | `PHONE_REQUIRED` («أضف رقم تليفون واحد على الأقل»), `INVALID_VALUE` |
 | `contact.phones[i]` | not null | `REQUIRED` |
@@ -149,7 +150,7 @@ A group that is sent **replaces that group whole**: a field left out of it is cl
 ```json
 {
   "info": { "nameAr": "فرع الدقي", "nameEn": "Dokki", "description": null },
-  "address": { "governorate": "الجيزة", "city": "الدقي", "street": "شارع التحرير", "lat": 30.038, "lng": 31.211 },
+  "address": { "governorate": "الجيزة", "city": "الدقي", "details": "12 شارع التحرير", "mapUrl": "https://maps.app.goo.gl/AbCd1234XyZ" },
   "contact": { "phones": [ { "number": "02 3335 1234", "label": "landline", "isWhatsapp": false } ], "email": null },
   "clinicInfo": { "paymentMethods": ["cash", "card"], "amenities": [] }
 }
@@ -601,7 +602,7 @@ New in this part of Phase 2. The other codes are in [api-phase-1.md](api-phase-1
 | `PERIOD_LENGTH_OUT_OF_RANGE` | field | A period lasts 15 minutes to 16 hours |
 | `PERIODS_OVERLAP` | field | «الفترات متداخلة» |
 
-Also used here: `BRANCH_NOT_ALLOWED`, `PERMISSION_DENIED` (api-phase-2), and `REQUIRED`, `TOO_LONG`, `OUT_OF_RANGE`, `INVALID_VALUE`, `INVALID_NAME`, `INVALID_MOBILE`, `INVALID_PHONE`, `PHONE_REQUIRED`, `INVALID_EMAIL`, `INVALID_SPECIALTY`, `NOT_FOUND` (api-phase-1).
+Also used here: `BRANCH_NOT_ALLOWED`, `PERMISSION_DENIED` (api-phase-2), and `REQUIRED`, `TOO_LONG`, `OUT_OF_RANGE`, `INVALID_VALUE`, `INVALID_NAME`, `INVALID_MOBILE`, `INVALID_PHONE`, `PHONE_REQUIRED`, `INVALID_MAP_LINK`, `INVALID_EMAIL`, `INVALID_SPECIALTY`, `NOT_FOUND` (api-phase-1).
 
 ## Decisions where the spec is silent
 

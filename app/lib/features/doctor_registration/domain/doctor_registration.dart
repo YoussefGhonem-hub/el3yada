@@ -58,7 +58,8 @@ abstract class RegistrationData with _$RegistrationData {
 }
 
 /// The first branch, in the request and in the registration view ([id] only
-/// in the view).
+/// in the view). JSON with fields this class no longer has (the old street,
+/// building, floor, apartment, lat and lng) still reads: they are ignored.
 @freezed
 abstract class RegistrationBranch with _$RegistrationBranch {
   // ignore: invalid_annotation_target
@@ -70,15 +71,13 @@ abstract class RegistrationBranch with _$RegistrationBranch {
     @Default('') String governorate,
     @Default('') String city,
     String? area,
-    @Default('') String street,
-    String? building,
-    String? floor,
-    String? apartment,
+
+    /// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+    @Default('') String addressDetails,
     String? landmark,
 
-    /// Both or neither (the map pin is not in the app yet).
-    double? lat,
-    double? lng,
+    /// «لينك جوجل ماب», optional.
+    String? mapUrl,
     String? email,
     @Default(<BranchPhone>[]) List<BranchPhone> phones,
   }) = _RegistrationBranch;

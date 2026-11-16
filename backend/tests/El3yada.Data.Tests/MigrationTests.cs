@@ -88,7 +88,7 @@ public class MigrationTests(MigratedDatabase database) : IClassFixture<MigratedD
         var doctorId = await db.Branches.Where(b => b.Id == firstBranch).Select(b => b.DoctorId).SingleAsync();
         db.Branches.Add(new Branch
         {
-            Id = Guid.NewGuid(), DoctorId = doctorId, NameAr = "فرع مدينة نصر", Governorate = "القاهرة", City = "مدينة نصر", Street = "عباس العقاد",
+            Id = Guid.NewGuid(), DoctorId = doctorId, NameAr = "فرع مدينة نصر", Governorate = "القاهرة", City = "مدينة نصر", AddressDetails = "عباس العقاد",
         });
 
         await db.SaveChangesAsync();
@@ -129,7 +129,7 @@ public class MigrationTests(MigratedDatabase database) : IClassFixture<MigratedD
             NameAr = "فرع المعادي",
             Governorate = "القاهرة",
             City = "المعادي",
-            Street = "شارع 9",
+            AddressDetails = "شارع 9",
         };
         configure(branch);
         db.Branches.Add(branch);

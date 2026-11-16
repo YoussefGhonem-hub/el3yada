@@ -1,5 +1,6 @@
 import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/core/network/api_exception.dart';
+import 'package:el3yada/core/platform/external_links.dart';
 import 'package:el3yada/features/clinic_admin/data/fake_clinic_admin_repository.dart';
 import 'package:el3yada/features/clinic_admin/presentation/branches/branch_editor_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,22 @@ import '../support/clinic_admin_support.dart';
 
 /// D28 branches and D29 branch editor, through the offline clinic.
 void main() {
+  // Links "Open in Google Maps" opened; the opener answers [opens].
+  late List<Uri> opened;
+  var opens = true;
+  setUp(() {
+    opened = [];
+    opens = true;
+  });
+
   Future<void> doctor(WidgetTester tester, {void Function(FakeClinicAdminRepository fake)? configure, Size size = const Size(1400, 900)}) async {
-    await pumpApp(tester, size: size, extra: [fakeClinicAdminOverride(configure: configure)]);
+    await pumpApp(tester, size: size, extra: [
+      fakeClinicAdminOverride(configure: configure),
+      externalLinkOpenerProvider.overrideWithValue((uri) async {
+        opened.add(uri);
+        return opens;
+      }),
+    ]);
     await signIn(tester, 'doctor@el3yada.dev');
   }
 
@@ -57,7 +72,7 @@ void main() {
       await tester.tap(find.text('Cairo').last);
       await settle(tester);
       await tester.enterText(find.byKey(const ValueKey('address.city')), 'الزمالك');
-      await tester.enterText(find.byKey(const ValueKey('address.street')), 'شارع 26 يوليو');
+      await tester.enterText(find.byKey(const ValueKey('address.details')), '15 شارع 26 يوليو، الدور الرابع');
       await tester.enterText(find.byKey(const ValueKey('contact.phones.0')), '01012345678');
       await tester.tap(find.widgetWithText(FilledButton, 'Add branch'));
       await settle(tester);
@@ -163,6 +178,83 @@ void main() {
       expect(clinicAdminFake(tester).calls['updateBranch'], 1);
       expect(find.text('1 change not saved'), findsNothing);
       expect(find.text('فرع العباسية'), findsWidgets);
+    });
+
+    group('the address tab\'s Google Maps link', () {
+      final mapField = find.byKey(const ValueKey('address.mapUrl'));
+      final openButton = find.ancestor(
+        of: find.text('Open in Google Maps'),
+        matching: find.byWidgetPredicate((widget) => widget is ButtonStyleButton),
+      );
+      String linkText(WidgetTester tester) => tester.widget<TextField>(mapField).controller!.text;
+
+      Future<void> openAddressTab(WidgetTester tester) async {
+        await doctor(tester);
+        await open(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}?tab=address');
+        await tester.ensureVisible(mapField);
+      }
+
+      testWidgets('a pasted share text keeps only the link, which opens and is saved', (tester) async {
+        await openAddressTab(tester);
+        expect(find.text('Detailed address'), findsOneWidget);
+
+        await tester.enterText(mapField, 'عيادة مدينة نصر\nhttps://maps.app.goo.gl/NasrCity42');
+        await tester.pump();
+        expect(linkText(tester), 'https://maps.app.goo.gl/NasrCity42');
+
+        await tester.ensureVisible(openButton);
+        await tester.tap(openButton);
+        await settle(tester);
+        expect(opened, [Uri.parse('https://maps.app.goo.gl/NasrCity42')]);
+
+        await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+        await settle(tester);
+        expect(clinicAdminFake(tester).calls['updateBranch'], 1);
+        expect(linkText(tester), 'https://maps.app.goo.gl/NasrCity42');
+        expect(find.text('1 change not saved'), findsNothing);
+      });
+
+      testWidgets('a link that is not Google Maps shows the error and is not sent', (tester) async {
+        await openAddressTab(tester);
+
+        await tester.enterText(mapField, 'https://www.facebook.com/nasr.clinic');
+        await settle(tester);
+        expect(tester.widget<ButtonStyleButton>(openButton).onPressed, isNull);
+
+        await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+        await settle(tester);
+        expect(find.text("That's not a Google Maps link."), findsOneWidget);
+        expect(clinicAdminFake(tester).calls['updateBranch'], isNull);
+
+        // The server's answer for the field lands on it too.
+        clinicAdminFake(tester).failNext(
+          'updateBranch',
+          const ApiException(
+            kind: ApiErrorKind.http,
+            status: 400,
+            code: ApiCodes.validationFailed,
+            fieldCodes: {'address.mapUrl': 'INVALID_MAP_LINK'},
+          ),
+        );
+        await tester.enterText(mapField, 'https://maps.app.goo.gl/NasrCity42');
+        await settle(tester);
+        expect(find.text("That's not a Google Maps link."), findsNothing);
+        await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+        await settle(tester);
+        expect(find.text("That's not a Google Maps link."), findsOneWidget);
+      });
+
+      testWidgets('says so when Google Maps could not open', (tester) async {
+        opens = false;
+        await openAddressTab(tester);
+
+        await tester.ensureVisible(openButton);
+        await tester.tap(openButton);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(opened, [Uri.parse('https://maps.google.com/?q=30.0729,31.3456')]);
+        expect(find.text("Couldn't open Google Maps on this device."), findsOneWidget);
+      });
     });
 
     testWidgets('the server''s errors show on their period', (tester) async {

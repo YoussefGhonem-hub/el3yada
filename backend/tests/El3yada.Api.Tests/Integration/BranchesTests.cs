@@ -93,8 +93,11 @@ public sealed class BranchesTests(IntegrationHost host)
         Assert.Equal("عيادة الأطفال بالدور الثاني", body.GetProperty("info").Str("description"));
         var address = body.GetProperty("address");
         Assert.Equal("الجيزة", address.Str("governorate"));
+        Assert.Equal("١٢ شارع التحرير، الدور التاني، شقة ٤\n(الباب الشمال)", address.Str("details"));
         Assert.Equal("بجوار البنك الأهلي", address.Str("landmark"));
-        Assert.Equal(30.038m, address.GetProperty("lat").GetDecimal());
+        Assert.Equal("https://maps.app.goo.gl/Dokki12345", address.Str("mapUrl"));
+        Assert.False(address.TryGetProperty("street", out _));
+        Assert.False(address.TryGetProperty("lat", out _));
         var contact = body.GetProperty("contact");
         Assert.Equal("dokki@clinic.test", contact.Str("email"));
         var phones = contact.GetProperty("phones").EnumerateArray().ToList();
@@ -122,7 +125,7 @@ public sealed class BranchesTests(IntegrationHost host)
         var (status, body) = await client.PostAsync("/api/branches/createBranch", new
         {
             info = new { nameAr = "ف" },
-            address = new { governorate = "القاهرة", city = "", street = "شارع 9", lat = 30.1m },
+            address = new { governorate = "القاهرة", city = "", details = "   ", mapUrl = "https://www.facebook.com/maps/clinic" },
             contact = new { phones = Array.Empty<object>() },
             clinicInfo = new { paymentMethods = new[] { "bitcoin" } },
         });
@@ -130,16 +133,23 @@ public sealed class BranchesTests(IntegrationHost host)
         Assert.Equal(HttpStatusCode.BadRequest, status);
         Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("info.nameAr"));
         Assert.Equal(ErrorCodes.Required, body.FieldCode("address.city"));
-        Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("address.lat"));
+        Assert.Equal(ErrorCodes.Required, body.FieldCode("address.details"));
+        Assert.Equal(ErrorCodes.InvalidMapLink, body.FieldCode("address.mapUrl"));
         Assert.Equal(ErrorCodes.PhoneRequired, body.FieldCode("contact.phones"));
         Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("clinicInfo.paymentMethods"));
 
         (status, body) = await client.PostAsync("/api/branches/createBranch", new
         {
             info = new { nameAr = "فرع" },
-            address = new { governorate = "القاهرة", city = "المعادي", street = "شارع 9" },
+            address = new
+            {
+                governorate = "القاهرة", city = "المعادي", details = new string('ع', 301),
+                mapUrl = "https://maps.app.goo.gl/" + new string('x', 480),
+            },
             contact = new { phones = new[] { new { number = "123", label = "fax" }, new { number = "0100", label = "mobile" } } },
         });
+        Assert.Equal(ErrorCodes.TooLong, body.FieldCode("address.details"));
+        Assert.Equal(ErrorCodes.TooLong, body.FieldCode("address.mapUrl"));
         Assert.Equal(ErrorCodes.InvalidPhone, body.FieldCode("contact.phones[0].number"));
         Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("contact.phones[0].label"));
         Assert.Equal(ErrorCodes.InvalidPhone, body.FieldCode("contact.phones[1].number"));
@@ -199,7 +209,7 @@ public sealed class BranchesTests(IntegrationHost host)
         Assert.Equal(JsonValueKind.Null, body.GetProperty("info").GetProperty("nameEn").ValueKind);
         Assert.Equal(JsonValueKind.Null, body.GetProperty("contact").GetProperty("email").ValueKind);
         Assert.Equal(["19123"], body.GetProperty("contact").GetProperty("phones").EnumerateArray().Select(p => p.Str("number")));
-        Assert.Equal("شارع التحرير", body.GetProperty("address").Str("street"));
+        Assert.Equal("https://maps.app.goo.gl/Dokki12345", body.GetProperty("address").Str("mapUrl"));
         Assert.Equal(["cash", "instapay"], body.GetProperty("clinicInfo").GetProperty("paymentMethods").EnumerateArray().Select(m => m.GetString()));
         var audit = await TestData.ClinicAuditAsync(Factory, doctor.Id, AuditActions.BranchUpdated);
         Assert.Contains("contact", audit[0].DetailsJson);
@@ -207,6 +217,47 @@ public sealed class BranchesTests(IntegrationHost host)
         (status, body) = await client.PostAsync("/api/branches/updateBranch", new { branchId });
         Assert.Equal(HttpStatusCode.BadRequest, status);
         Assert.Equal(ErrorCodes.Required, body.FieldCode("body"));
+    }
+
+    [Fact]
+    public async Task The_address_group_replaces_the_details_and_a_map_link_left_out_is_cleared()
+    {
+        var doctor = await TestData.CreateDoctorAsync(Factory);
+        using var client = await Factory.SignedInClientAsync(doctor);
+        var (_, created) = await client.PostAsync("/api/branches/createBranch", TestData.NewBranchBody());
+        var branchId = created.Str("id");
+
+        var (status, body) = await client.PostAsync("/api/branches/updateBranch", new
+        {
+            branchId,
+            address = new { governorate = "الجيزة", city = "الدقي", details = "٥ شارع مصدق، الدور الأول" },
+        });
+
+        Assert.Equal(HttpStatusCode.OK, status);
+        var address = body.GetProperty("address");
+        Assert.Equal("٥ شارع مصدق، الدور الأول", address.Str("details"));
+        Assert.Equal(JsonValueKind.Null, address.GetProperty("mapUrl").ValueKind);
+        Assert.Equal(JsonValueKind.Null, address.GetProperty("area").ValueKind);
+
+        (status, body) = await client.PostAsync("/api/branches/updateBranch", new
+        {
+            branchId,
+            address = new
+            {
+                governorate = "الجيزة", city = "الدقي", details = "٥ شارع مصدق",
+                mapUrl = "https://www.google.com.eg/maps/place/Dokki/@30.038,31.211,17z",
+            },
+        });
+        Assert.Equal(HttpStatusCode.OK, status);
+        Assert.Equal("https://www.google.com.eg/maps/place/Dokki/@30.038,31.211,17z", body.GetProperty("address").Str("mapUrl"));
+
+        (status, body) = await client.PostAsync("/api/branches/updateBranch", new
+        {
+            branchId,
+            address = new { governorate = "الجيزة", city = "الدقي", details = "٥ شارع مصدق", mapUrl = "Clinic https://maps.app.goo.gl/abc" },
+        });
+        Assert.Equal(HttpStatusCode.BadRequest, status);
+        Assert.Equal(ErrorCodes.InvalidMapLink, body.FieldCode("address.mapUrl"));
     }
 
     [Fact]

@@ -35,6 +35,12 @@ abstract interface class AdminRepository {
     String? reason,
   });
 
+  /// BR-G4: suspends an active doctor ([suspended] true) or reactivates a
+  /// suspended one, with a [reason] (3–500 characters). Any admin. A doctor
+  /// who is pending, rejected or disabled answers 409
+  /// `DOCTOR_STATUS_NOT_CHANGEABLE`. The AD5 screen comes in Phase 7.
+  Future<DoctorStatusView> setDoctorStatus(String doctorId, {required bool suspended, required String reason});
+
   /// AD14 (super admin only).
   Future<List<AdminUser>> admins();
 
@@ -130,6 +136,14 @@ class ApiAdminRepository implements AdminRepository {
             'doctorId': doctorId,
             'decision': decision.name,
             'reason': ?reason,
+          })));
+
+  @override
+  Future<DoctorStatusView> setDoctorStatus(String doctorId, {required bool suspended, required String reason}) =>
+      _call(() async => DoctorStatusView.fromJson(await _post('/admin/setDoctorStatus', {
+            'doctorId': doctorId,
+            'status': suspended ? DoctorStatuses.suspended : DoctorStatuses.active,
+            'reason': reason,
           })));
 
   @override

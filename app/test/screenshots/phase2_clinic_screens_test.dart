@@ -103,6 +103,12 @@ void main() {
           goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}?tab=$tab');
           await settle(tester);
           await capture(tester, 'd29_${tab}_${width}_ar_$theme');
+          if (tab == 'address') {
+            // The Google Maps link and its button, under the fold on a phone.
+            await tester.ensureVisible(find.text('لينك جوجل ماب (اختياري)'));
+            await settle(tester);
+            await capture(tester, 'd29_address_map_link_${width}_ar_$theme');
+          }
         }
         // The BR-BR9 refusal: Nasr City has bookings.
         goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}');

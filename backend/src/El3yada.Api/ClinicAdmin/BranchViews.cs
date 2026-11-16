@@ -43,8 +43,7 @@ public sealed record BranchListView(
 public sealed record BranchInfoView(string NameAr, string? NameEn, string? Description);
 
 public sealed record BranchAddressView(
-    string Governorate, string City, string? Area, string Street, string? Building, string? Floor,
-    string? Apartment, string? Landmark, decimal? Lat, decimal? Lng);
+    string Governorate, string City, string? Area, string Details, string? Landmark, string? MapUrl);
 
 public sealed record BranchContactView(IReadOnlyList<BranchPhoneView> Phones, string? Email);
 
@@ -93,7 +92,7 @@ public static class BranchQueries
         return new BranchDetailsView(
             b.Id, b.IsDefault, b.Status, b.ClosedMessage, b.ReopenDate, caller.CanUseBranch(b.Id),
             new BranchInfoView(b.NameAr, b.NameEn, b.Description),
-            new BranchAddressView(b.Governorate, b.City, b.Area, b.Street, b.Building, b.Floor, b.Apartment, b.Landmark, b.Lat, b.Lng),
+            new BranchAddressView(b.Governorate, b.City, b.Area, b.AddressDetails, b.Landmark, b.MapUrl),
             new BranchContactView(row.Phones.Select(p => new BranchPhoneView(p.Number, p.Label, p.IsWhatsapp)).ToList(), b.Email),
             new BranchWorkingHoursView(b.BookingMode, b.DefaultCapacity, row.Periods.Select(BranchPeriodView.Of).ToList()),
             new BranchClinicInfoView(
@@ -111,7 +110,8 @@ public static class BranchQueries
 /// <summary>
 /// Bookings that still have to happen: pending, confirmed, checked in or with the doctor, from today (Cairo) on.
 /// They are D28's "upcoming bookings" and what BR-BR9 lists before a branch closes or is archived.
-/// Bookings come in Phase 6; until then there are none unless a test inserts them.
+/// Bookings come in Phase 6; until then there are none unless a test or the Development-only `add-booking` command
+/// (Commands/AddBookingCommand.cs) inserts them.
 /// </summary>
 public static class BranchBookings
 {

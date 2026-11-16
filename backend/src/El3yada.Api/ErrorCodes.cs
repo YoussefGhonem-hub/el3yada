@@ -53,6 +53,9 @@ public static partial class ErrorCodes
     /// <summary>A branch needs at least one phone number («أضف رقم تليفون واحد على الأقل»).</summary>
     public const string PhoneRequired = "PHONE_REQUIRED";
 
+    /// <summary>A branch's map link that is not a Google Maps link («ده مش لينك جوجل ماب»).</summary>
+    public const string InvalidMapLink = "INVALID_MAP_LINK";
+
     /// <summary>Not a valid email address («البريد الإلكتروني غير صحيح»).</summary>
     public const string InvalidEmail = "INVALID_EMAIL";
 

@@ -10,44 +10,73 @@ import 'package:el3yada/features/auth/domain/user_role.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'app_client.dart';
+import 'contract_support.dart';
+import 'phase2_branch_bookings.dart';
 import 'phase2_clinic_day.dart';
+import 'phase2_linked_patient.dart';
+import 'phase2_suspended_doctor.dart';
 
 /// Runs the app's real repositories against a running API, to check that the
 /// app reads every answer the way the API sends it. Off by default.
 ///
-/// Phase 1 (sign-in and tokens) is below. Phase 2 (one clinic day: sign-up
-/// and approval, branches, prices, patients, sessions, fees, an assistant,
-/// the activity log) is in `phase2_clinic_day.dart`. It runs after Phase 1 in
-/// this isolate, because both sign in as the seeded admin and the files of a
-/// directory run at the same time.
+/// Phase 1 (sign-in and tokens) is below. The Phase 2 groups run after it in
+/// this isolate, in this order, because they all sign in as the seeded admin
+/// and the files of a directory run at the same time:
+/// - `phase2_clinic_day.dart`: one clinic day (sign-up and approval, branches,
+///   prices, patients, sessions, fees, an assistant, the activity log). It
+///   fills in the `ClinicDay` (`contract_support.dart`) the groups after it use.
+/// - `phase2_linked_patient.dart`: a second clinic links that patient (BR-P3).
+/// - `phase2_branch_bookings.dart`: a booking on a branch (D28, BR-BR9), put in
+///   the database by the backend's Development-only `add-booking` command.
+/// - `phase2_suspended_doctor.dart`: the admin suspends and reactivates the
+///   doctor with `setDoctorStatus` (BR-G4, BR-G5, BR-G8).
+/// - `app_client.dart`: the app's own network stack (`dioProvider` and its
+///   interceptor, `AuthController`, `clinicContextProvider`): token refresh,
+///   and what the app does after `PERMISSION_DENIED`, `DOCTOR_SUSPENDED` and
+///   `ACCOUNT_DISABLED`.
 ///
 /// Use a throwaway database: the test changes the admin's password. Phase 2
 /// makes new accounts on every run. To run Phase 1 again on the same
 /// database, give the admin a new temporary password (`seed-admin … --reset`).
 ///
+/// The booking group runs `dotnet run --no-build --project src/El3yada.Api --
+/// add-booking --branch … --patient …` in `EL3YADA_BACKEND_DIR` (default
+/// `../backend`, from `app/`) with this process's environment. So build the
+/// backend first, and set `ConnectionStrings__Default` to the throwaway
+/// database for `flutter test` too: without it the group fails rather than
+/// write to the database in appsettings.Development.json.
+///
 /// ```
 /// # backend/, with the throwaway database in the variable for every command
 /// # (`dotnet ef database drop` has no --connection option)
 /// export ConnectionStrings__Default="Server=(localdb)\MSSQLLocalDB;Database=el3yada_contract_<random>;Trusted_Connection=True;TrustServerCertificate=True"
+/// dotnet build
 /// dotnet ef database update --project src/El3yada.Data --startup-project src/El3yada.Api
-/// dotnet run --project src/El3yada.Api -- seed-admin contract-admin@el3yada.dev   (prints the temporary password)
+/// dotnet run --no-build --project src/El3yada.Api -- seed-admin contract-admin@el3yada.dev   (prints the temporary password)
 /// RateLimits__LoginPerMinute=200 RateLimits__RegistrationPerHour=200 Auth__UserStateCacheSeconds=0 \
-///   dotnet run --project src/El3yada.Api --launch-profile http
+///   dotnet run --no-build --project src/El3yada.Api --launch-profile http
 ///
-/// # app/
+/// # app/, with the same ConnectionStrings__Default
 /// EL3YADA_API_URL=http://localhost:5001 EL3YADA_ADMIN_EMAIL=contract-admin@el3yada.dev \
 /// EL3YADA_ADMIN_PASSWORD=<temporary password> flutter test test/contract
+///
+/// # Again on the same database: a new temporary password for Phase 1, then the same flutter test
+/// dotnet run --no-build --project src/El3yada.Api -- seed-admin contract-admin@el3yada.dev --reset
 ///
 /// # backend/ afterwards: stop the API, then (same variable)
 /// dotnet ef database drop --force --project src/El3yada.Data --startup-project src/El3yada.Api
 /// ```
 ///
 /// The settings on the API's command line make runs repeatable:
-/// - One run signs in ten times and registers once from one IP: the default
-///   limits are ten sign-ins a minute and ten registrations an hour.
+/// - One run signs in about twenty times and signs up three doctors from one
+///   IP: the default limits are ten sign-ins a minute and ten registrations
+///   an hour.
 /// - `seed-admin --reset` changes the admin's security stamp from another
 ///   process, which the API sees only after `Auth:UserStateCacheSeconds`
 ///   (30 s by default; until then the new token answers `SESSION_REVOKED`).
+///   The same goes for the other changes the suspension and app-client
+///   groups make and check at once.
 void main() {
   final env = Platform.environment;
   final baseUrl = env['EL3YADA_API_URL'];
@@ -143,8 +172,9 @@ void main() {
     expect(AuthSession.fromJson(saved), session);
   }, skip: skip);
 
+  late final ClinicDay day;
   group('Phase 2, one clinic day:', () {
-    phase2ClinicDay(
+    day = phase2ClinicDay(
       baseUrl: baseUrl,
       adminEmail: email,
       adminTemporaryPassword: temporaryPassword,
@@ -152,6 +182,10 @@ void main() {
       skip: skip,
     );
   });
+  group('Phase 2, a patient of two clinics:', () => phase2LinkedPatient(day, skip: skip));
+  group('Phase 2, a booking on a branch:', () => phase2BranchBookings(day, skip: skip));
+  group('Phase 2, a suspended doctor:', () => phase2SuspendedDoctor(day, skip: skip));
+  group("Phase 2, the app's own client:", () => appClient(day, skip: skip));
 }
 
 class _MemoryPrefs implements SharedPreferencesLike {

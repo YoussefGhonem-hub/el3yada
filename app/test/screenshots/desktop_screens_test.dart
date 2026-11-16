@@ -58,8 +58,14 @@ void main() {
         await pumpApp(tester);
         if (tag == 'ar_light') {
           // The signature moment, frame by frame.
+          await tester.pump(const Duration(milliseconds: 350));
+          await capture(tester, 'desk_login_1_drawing_$tag');
+          // The login starts once the mark has drawn and start-up is done.
+          for (var i = 0; i < 80 && find.byType(TextFormField).evaluate().isEmpty; i++) {
+            await tester.pump(const Duration(milliseconds: 50));
+          }
           var elapsed = 0;
-          for (final (ms, name) in [(350, 'drawing'), (900, 'drawn'), (1500, 'rising'), (1850, 'settling')]) {
+          for (final (ms, name) in [(140, '2_gathering'), (380, '3_sliding'), (640, '4_stitching')]) {
             await tester.pump(Duration(milliseconds: ms - elapsed));
             elapsed = ms;
             await capture(tester, 'desk_login_${name}_$tag');

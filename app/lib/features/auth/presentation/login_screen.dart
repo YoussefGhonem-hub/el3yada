@@ -34,8 +34,8 @@ import '../domain/user_role.dart';
 /// instead of replacing it. That is the signature moment (spec 12): on the
 /// pine brand backdrop the logo writes itself in the centre, then rises and
 /// shrinks into the header while a white sheet with the form springs up
-/// under it (on wide windows the brand moves to the start side and the form
-/// slides in from the end). With reduced motion the form simply appears.
+/// under it. On wide windows (desktop) the login is a queue ticket instead,
+/// see [_WideEntrance]. With reduced motion the form simply appears.
 ///
 /// [showForm] false is the splash; it releases [splashGateProvider] once the
 /// logo has drawn, and the router then decides where to go.
@@ -136,6 +136,15 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> with SingleTick
             final w = constraints.maxWidth;
             final h = constraints.maxHeight;
             final wide = w >= EntranceScreen.wideLayout;
+            if (wide) {
+              return _WideEntrance(
+                reveal: _reveal,
+                size: Size(w, h),
+                brand: brand,
+                form: form,
+                showForm: widget.showForm,
+              );
+            }
 
             // Where the brand ends in the login.
             final brandWidth = wide ? math.max(360.0, w * 0.44) : w;
@@ -236,6 +245,277 @@ class _EntranceScreenState extends ConsumerState<EntranceScreen> with SingleTick
       ),
     );
   }
+}
+
+/// The login on wide windows (desktop): a queue ticket, like the app's side
+/// menu. On the splash the pine backdrop fills the window and the logo
+/// writes itself in the middle. Then the pine gathers into the ticket's
+/// stub, carrying the logo with it; the ticket's body slides out from under
+/// the stub with the form; and the tear line between them stitches itself
+/// from top to bottom while the notches open. Around the ticket is the app's
+/// own page colour. With reduced motion the ticket simply appears.
+class _WideEntrance extends StatelessWidget {
+  const _WideEntrance({
+    required this.reveal,
+    required this.size,
+    required this.brand,
+    required this.form,
+    required this.showForm,
+  });
+
+  /// 0 on the splash, 1 in the login.
+  final Animation<double> reveal;
+  final Size size;
+  final Widget brand;
+  final Widget form;
+  final bool showForm;
+
+  // Phases of the reveal.
+  static const _gather = Interval(0, 0.62, curve: SpringCurve(bounce: 0.12));
+  static const _slide = Interval(0.36, 1, curve: SpringCurve(bounce: 0.14));
+  static const _stitch = Interval(0.5, 0.95, curve: Curves.easeOutCubic);
+
+  static const double _radius = 28;
+  static const double _innerRadius = 6;
+
+  /// The tear line runs this far inside the stub, as in the side menu.
+  static const double _tearInset = 16;
+  static const double _notchRadius = 11;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final dark = theme.brightness == Brightness.dark;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    final w = size.width;
+    final h = size.height;
+    final window = Offset.zero & size;
+
+    // The ticket in left-to-right terms (stub on the left), mirrored for
+    // Arabic, where the stub is on the right.
+    final ticketWidth = math.min(w - 96, 1000.0);
+    final ticketHeight = math.min(h - 72, 640.0);
+    final left = (w - ticketWidth) / 2;
+    final top = (h - ticketHeight) / 2;
+    final stubWidth = (ticketWidth * 0.38).clamp(300.0, 400.0);
+    final stubEnd = Rect.fromLTWH(left, top, stubWidth, ticketHeight);
+    final bodyEnd = Rect.fromLTRB(stubEnd.right, top, left + ticketWidth, top + ticketHeight);
+    Rect mirror(Rect r) => rtl ? Rect.fromLTRB(w - r.right, r.top, w - r.left, r.bottom) : r;
+    double mirrorX(double x) => rtl ? w - x : x;
+
+    /// [r]'s corners: round on the ticket's outside, small where the stub
+    /// and the body meet.
+    RRect shape(Rect r, {required bool stub, required double progress}) {
+      final outer = Radius.circular(_radius * progress);
+      final inner = Radius.circular(_innerRadius * progress);
+      final roundLeft = stub != rtl;
+      return RRect.fromRectAndCorners(
+        mirror(r),
+        topLeft: roundLeft ? outer : inner,
+        bottomLeft: roundLeft ? outer : inner,
+        topRight: roundLeft ? inner : outer,
+        bottomRight: roundLeft ? inner : outer,
+      );
+    }
+
+    final bodyRadius = shape(Rect.fromLTWH(0, 0, bodyEnd.width, bodyEnd.height), stub: false, progress: 1);
+    final body = DecoratedBox(
+      decoration: BoxDecoration(
+        color: dark ? scheme.surfaceContainerLow : scheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.only(
+          topLeft: bodyRadius.tlRadius,
+          topRight: bodyRadius.trRadius,
+          bottomLeft: bodyRadius.blRadius,
+          bottomRight: bodyRadius.brRadius,
+        ),
+      ),
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 44),
+          child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 400), child: form),
+        ),
+      ),
+    );
+
+    return AnimatedBuilder(
+      animation: reveal,
+      builder: (context, _) {
+        final t = reveal.value;
+        final gather = _gather.transform(t);
+        final slide = _slide.transform(t);
+        final stitch = _stitch.transform(t);
+
+        // The pine gathers from the whole window into the stub.
+        final stubNow = Rect.lerp(window, stubEnd, gather)!;
+        final tearX = mirrorX(stubEnd.right - _tearInset);
+        final ticket = RRect.fromRectAndRadius(
+          Rect.fromLTRB(left, top, left + ticketWidth, top + ticketHeight),
+          const Radius.circular(_radius),
+        );
+
+        // The body is visible only beyond the stub's current inner edge, and
+        // slides out from under it.
+        final visibleBody = Rect.fromLTRB(
+          stubNow.right.clamp(bodyEnd.left, bodyEnd.right),
+          bodyEnd.top,
+          bodyEnd.right,
+          bodyEnd.bottom,
+        );
+        final shift = -(1 - slide) * bodyEnd.width * 0.5 * (rtl ? -1 : 1);
+
+        final centre = Offset.lerp(window.center, mirror(stubEnd).center, gather)!;
+        final brandScale = lerpDouble(1, 0.94, gather)!;
+
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: CustomPaint(
+                painter: _TicketGround(
+                  ground: scheme.surface,
+                  stub: shape(stubNow, stub: true, progress: gather.clamp(0.0, 1.0)),
+                  notches: [Offset(tearX, top), Offset(tearX, top + ticketHeight)],
+                  notchRadius: _notchRadius * stitch,
+                  ticket: ticket,
+                  shadow: Colors.black.withValues(alpha: (dark ? 0.35 : 0.12) * slide.clamp(0.0, 1.0)),
+                ),
+              ),
+            ),
+            Positioned.fromRect(
+              rect: mirror(visibleBody),
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: rtl ? Alignment.centerLeft : Alignment.centerRight,
+                  minWidth: bodyEnd.width,
+                  maxWidth: bodyEnd.width,
+                  minHeight: bodyEnd.height,
+                  maxHeight: bodyEnd.height,
+                  child: Transform.translate(
+                    offset: Offset(shift, 0),
+                    child: Opacity(opacity: slide.clamp(0.0, 1.0), child: body),
+                  ),
+                ),
+              ),
+            ),
+            // The tear line stitches itself down the stub.
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: _TearStitch(
+                    x: tearX,
+                    top: top + _notchRadius + 8,
+                    bottom: top + ticketHeight - _notchRadius - 8,
+                    progress: stitch,
+                    color: Colors.white.withValues(alpha: 0.32),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: centre.dx - 160,
+              width: 320,
+              top: centre.dy - 130,
+              height: 260,
+              child: Transform.scale(scale: brandScale, child: brand),
+            ),
+            PositionedDirectional(
+              end: 20,
+              top: 20,
+              child: Opacity(
+                opacity: slide.clamp(0.0, 1.0),
+                child: IgnorePointer(ignoring: !showForm, child: const DesktopQuickSettings()),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// The page colour around the ticket: everything but the stub (with its two
+/// notches) is covered, and the ticket casts a soft shadow on it.
+class _TicketGround extends CustomPainter {
+  _TicketGround({
+    required this.ground,
+    required this.stub,
+    required this.notches,
+    required this.notchRadius,
+    required this.ticket,
+    required this.shadow,
+  });
+
+  final Color ground;
+  final RRect stub;
+  final List<Offset> notches;
+  final double notchRadius;
+  final RRect ticket;
+  final Color shadow;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final window = Path()..addRect(Offset.zero & size);
+    var hole = Path()..addRRect(stub);
+    if (notchRadius > 0.5) {
+      final cuts = Path();
+      for (final notch in notches) {
+        cuts.addOval(Rect.fromCircle(center: notch, radius: notchRadius));
+      }
+      hole = Path.combine(PathOperation.difference, hole, cuts);
+    }
+    canvas.drawPath(Path.combine(PathOperation.difference, window, hole), Paint()..color = ground);
+
+    if (shadow.a > 0) {
+      canvas
+        ..save()
+        ..clipPath(Path.combine(PathOperation.difference, window, Path()..addRRect(ticket)))
+        ..drawRRect(
+          ticket.shift(const Offset(0, 18)),
+          Paint()
+            ..color = shadow
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 28),
+        )
+        ..restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(_TicketGround oldDelegate) =>
+      oldDelegate.ground != ground ||
+      oldDelegate.stub != stub ||
+      oldDelegate.notchRadius != notchRadius ||
+      oldDelegate.ticket != ticket ||
+      oldDelegate.shadow != shadow;
+}
+
+/// Dashes drawn down from [top] as [progress] goes from 0 to 1.
+class _TearStitch extends CustomPainter {
+  _TearStitch({required this.x, required this.top, required this.bottom, required this.progress, required this.color});
+
+  final double x;
+  final double top;
+  final double bottom;
+  final double progress;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (progress <= 0) return;
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+    final end = top + (bottom - top) * progress.clamp(0.0, 1.0);
+    const dash = 6.0;
+    const gap = 5.0;
+    for (var y = top; y + dash <= end; y += dash + gap) {
+      canvas.drawLine(Offset(x, y), Offset(x, y + dash), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_TearStitch oldDelegate) =>
+      oldDelegate.x != x || oldDelegate.progress != progress || oldDelegate.color != color;
 }
 
 /// The logo in its glass medallion, the app name written on with a light

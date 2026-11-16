@@ -1,3 +1,4 @@
+import 'package:el3yada/app/app.dart';
 import 'package:el3yada/app/router.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/settings/app_settings.dart';
@@ -20,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../support/admin_support.dart';
 import '../support/app_flow.dart';
+import '../support/app_overrides.dart';
 import '../support/clinic_admin_support.dart';
 
 const _items = [
@@ -306,6 +308,50 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('ع'), findsNothing);
       expect(find.text('EN'), findsOneWidget);
+    });
+  });
+
+  group('desktop login (a queue ticket)', () {
+    for (final arabic in [false, true]) {
+      testWidgets('the brand sits on the stub at the start, the form beside it (arabic: $arabic)', (tester) async {
+        await pumpApp(
+          tester,
+          platform: AppPlatform.desktop,
+          size: const Size(1280, 800),
+          prefs: {'settings.locale': arabic ? 'ar' : 'en'},
+        );
+        final brand = tester.getCenter(find.text(arabic ? 'العيادة' : 'el3yada'));
+        final form = tester.getCenter(find.byType(TextFormField).first);
+        expect(arabic ? brand.dx > form.dx : brand.dx < form.dx, isTrue);
+        expect(find.byType(DesktopQuickSettings), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
+    testWidgets('after the splash the pine gathers into the stub before the form shows', (tester) async {
+      tester.view.physicalSize = const Size(1280, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(ProviderScope(
+        overrides: await appOverrides(platform: AppPlatform.desktop),
+        child: const El3yadaApp(),
+      ));
+      // The splash: the mark writes itself, no form yet.
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(TextFormField), findsNothing);
+      for (var i = 0; i < 80 && find.byType(TextFormField).evaluate().isEmpty; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      // The form arrives while the ticket's body slides out (still faint).
+      final opacity = tester.widget<Opacity>(
+        find.ancestor(of: find.byType(TextFormField).first, matching: find.byType(Opacity)).first,
+      );
+      expect(opacity.opacity, lessThan(1));
+      await settle(tester);
+      expect(
+        tester.widget<Opacity>(find.ancestor(of: find.byType(TextFormField).first, matching: find.byType(Opacity)).first).opacity,
+        1,
+      );
     });
   });
 }

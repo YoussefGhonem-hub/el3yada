@@ -1,15 +1,9 @@
-import 'dart:convert';
-import 'dart:math';
-
-import 'package:dio/dio.dart';
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/features/admin/data/admin_repository.dart';
 import 'package:el3yada/features/admin/domain/admin_models.dart' show ReviewDecision;
-import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:el3yada/features/auth/domain/auth_session.dart';
 import 'package:el3yada/features/auth/domain/login_result.dart';
 import 'package:el3yada/features/auth/domain/user_role.dart';
-import 'package:el3yada/features/clinic/data/clinic_repository.dart';
 import 'package:el3yada/features/clinic/domain/clinic_permissions.dart';
 import 'package:el3yada/features/clinic_admin/data/clinic_admin_repository.dart';
 import 'package:el3yada/features/clinic_admin/domain/activity_models.dart';
@@ -17,13 +11,11 @@ import 'package:el3yada/features/clinic_admin/domain/assistant_models.dart';
 import 'package:el3yada/features/clinic_admin/domain/branch_models.dart';
 import 'package:el3yada/features/clinic_admin/domain/json_read.dart';
 import 'package:el3yada/features/doctor_registration/data/registration_repository.dart';
-import 'package:el3yada/features/doctor_registration/domain/doctor_registration.dart';
-import 'package:el3yada/features/doctor_registration/domain/license_file.dart';
-import 'package:el3yada/features/patients/data/patients_repository.dart';
 import 'package:el3yada/features/patients/domain/patient_models.dart';
-import 'package:el3yada/features/sessions/data/sessions_repository.dart';
 import 'package:el3yada/features/sessions/domain/session_models.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'contract_support.dart';
 
 /// Phase 2 against a running API: one clinic day through the app's real
 /// repositories (backend/docs/api-phase-2*.md). A doctor signs up and the
@@ -35,18 +27,18 @@ import 'package:flutter_test/flutter_test.dart';
 /// isolate: both sign in as the seeded admin, and the files of a directory
 /// run at the same time. Every run makes its own doctor, patients and
 /// assistant (unique email and mobile numbers), so it can run again on the
-/// same database.
-void phase2ClinicDay({
+/// same database. Returns what the groups after it need ([ClinicDay]).
+ClinicDay phase2ClinicDay({
   required String? baseUrl,
   required String? adminEmail,
   required String? adminTemporaryPassword,
   required String adminPassword,
   required String? skip,
 }) {
-  final random = Random();
-  final run = '${DateTime.now().millisecondsSinceEpoch}${random.nextInt(1000)}';
-  String mobile() => '010${List.generate(8, (_) => random.nextInt(10)).join()}';
-  String e164(String local) => '+2${local.replaceAll(' ', '')}';
+  final clinicDay = ClinicDay(baseUrl);
+  final run = contractRunId();
+  const mobile = contractMobile;
+  const e164 = contractE164;
 
   final doctorEmail = 'contract-doctor-$run@el3yada.dev';
   final doctorPhone = mobile();
@@ -57,13 +49,13 @@ void phase2ClinicDay({
   final assistantPhone = mobile();
   const assistantPassword = 'Assist1234';
 
-  Map<String, dynamic> device(String who) => {'deviceId': 'contract-$who-$run', 'platform': 'android', 'appVersion': '1.0.0'};
+  Map<String, dynamic> device(String who) => contractDevice(who, run);
 
   // Lazy: without the variables the tests skip, and a client needs a valid URL.
-  late final plain = _client(baseUrl);
-  late final admin = _Account(baseUrl, plain);
-  late final doctor = _Account(baseUrl, plain);
-  late final assistant = _Account(baseUrl, plain);
+  late final plain = clinicDay.plain;
+  late final admin = clinicDay.admin;
+  late final doctor = clinicDay.doctor;
+  late final assistant = ContractAccount(baseUrl, plain);
 
   // Shared by the steps, which run in order.
   late String doctorUserId;
@@ -87,30 +79,17 @@ void phase2ClinicDay({
     expect(specialties.first.nameAr, isNotEmpty);
 
     final pending = await registration.register(
-      RegistrationData(
+      doctorRegistration(
         fullName: 'سامي عبد الله',
+        fullNameEn: 'Sami Abdallah',
         email: doctorEmail.toUpperCase(),
         phone: doctorPhone,
         password: doctorPassword,
-        locale: 'ar',
-        title: 'استشاري',
-        specialtyId: specialties.first.id,
         licenseNumber: licenseNumber,
-        fullNameEn: 'Sami Abdallah',
-        examinationPricePiasters: 30000,
-        consultationPricePiasters: 15000,
-        branch: const RegistrationBranch(
-          nameAr: 'فرع المعادي',
-          governorate: 'القاهرة',
-          city: 'المعادي',
-          addressDetails: 'شارع 9',
-          landmark: 'بجوار المترو',
-          phones: [BranchPhone(number: '02 2358 1234', label: BranchPhone.landline)],
-        ),
-        acceptTerms: true,
+        specialtyId: specialties.first.id,
         device: device('doctor'),
       ),
-      LicenseFile(bytes: base64Decode(_onePixelPng), name: 'license.png', contentType: LicenseFile.png),
+      contractLicense(),
     );
     expect(pending.role, UserRole.doctor);
     expect(pending.doctorStatus, DoctorStatus.pendingApproval);
@@ -128,7 +107,7 @@ void phase2ClinicDay({
     // The admin finds the sign-up and approves it. Email verification
     // doesn't block anything (api-phase-1.md, "emailVerified").
     admin.token =
-        (await _signInAdmin(admin, adminEmail!, adminTemporaryPassword!, adminPassword, device('admin'))).accessToken;
+        (await signInAdmin(admin, adminEmail!, adminTemporaryPassword!, adminPassword, device('admin'))).accessToken;
     final adminRepository = ApiAdminRepository(admin.dio);
     final queue = await adminRepository.doctorRegistrations(search: doctorEmail);
     final summary = queue.items.singleWhere((row) => row.doctorId == doctorId);
@@ -147,6 +126,11 @@ void phase2ClinicDay({
     expect(session.doctorStatus, DoctorStatus.active);
     expect(session.mustChangePassword, isFalse);
     doctor.token = session.accessToken;
+    clinicDay
+      ..run = run
+      ..doctorEmail = doctorEmail
+      ..doctorPassword = doctorPassword
+      ..doctorId = doctorId;
   }, skip: skip);
 
   test('the doctor sets up the clinic: branches, hours, prices, notifications, profile', () async {
@@ -365,6 +349,10 @@ void phase2ClinicDay({
     expect(profile.licenseNumber, licenseNumber);
     expect(profile.status, 'active');
     expect(profile.updatedAt, isNotNull);
+    clinicDay
+      ..today = today
+      ..maadiId = maadiId
+      ..dokkiId = dokkiId;
   }, skip: skip);
 
   test('patients: lookup, add, view, medical profile, register', () async {
@@ -511,6 +499,9 @@ void phase2ClinicDay({
     final back = await patients.setArchived(patientId, archived: false);
     expect(back.archived, isFalse);
     expect(back.archivedAt, isNull);
+    clinicDay
+      ..patientId = patientId
+      ..patientPhone = newPhone;
   }, skip: skip);
 
   test('sessions: an examination, consultations to the limit, edits, delete, lists and fees', () async {
@@ -1074,52 +1065,11 @@ void phase2ClinicDay({
     expect(people.singleWhere((p) => p.userId == assistantUserId).status, AssistantStatuses.removed);
     expect(people.singleWhere((p) => p.userId == assistantUserId).name, 'سارة محمود علي');
   }, skip: skip);
+
+  return clinicDay;
 }
 
-/// Signs in as the seeded admin: with [password] when an earlier run (or
-/// the Phase 1 test) already set it, else with the temporary password and A9.
-Future<AuthSession> _signInAdmin(
-  _Account admin,
-  String email,
-  String temporaryPassword,
-  String password,
-  Map<String, dynamic> device,
-) async {
-  try {
-    final result = await admin.auth.login(identifier: email, password: password, device: device);
-    return (result as SignedIn).session;
-  } on ApiException catch (error) {
-    if (error.code != ApiCodes.invalidCredentials) rethrow;
-  }
-  final first = await admin.auth.login(identifier: email, password: temporaryPassword, device: device);
-  admin.token = (first as SignedIn).session.accessToken;
-  return admin.auth.setNewPassword(newPassword: password, device: device);
-}
-
-Dio _client(String? baseUrl) =>
-    Dio(BaseOptions(baseUrl: '$baseUrl/api', headers: {'Accept': 'application/json'}));
-
-/// One signed-in person: their own client, token and repositories.
-class _Account {
-  _Account(String? baseUrl, Dio plain) : dio = _client(baseUrl) {
-    dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-      if (token != null) options.headers['Authorization'] = 'Bearer $token';
-      handler.next(options);
-    }));
-    auth = ApiAuthRepository(dio, plain);
-  }
-
-  final Dio dio;
-  String? token;
-  late final ApiAuthRepository auth;
-  late final clinic = ApiClinicRepository(dio);
-  late final clinicAdmin = ApiClinicAdminRepository(dio);
-  late final patients = ApiPatientsRepository(dio);
-  late final sessions = ApiSessionsRepository(dio);
-}
-
-TypeMatcher<ApiException> _apiError(int status, String code) =>
-    isA<ApiException>().having((e) => e.status, 'status', status).having((e) => e.code, 'code', code);
+const _apiError = apiError;
 
 DateTime _day(String key) => parseDay(key);
 
@@ -1128,7 +1078,3 @@ int _age(String today, int year, int month, int day) {
   final birthdayPassed = now.month > month || (now.month == month && now.day >= day);
   return now.year - year - (birthdayPassed ? 0 : 1);
 }
-
-/// A 1×1 PNG: a real image, for the license part.
-const _onePixelPng =
-    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';

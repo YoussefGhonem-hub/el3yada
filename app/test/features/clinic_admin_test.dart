@@ -442,6 +442,9 @@ void main() {
       expect(bookings.totalCount, 3);
       expect(bookings.bookings.single.isGuest, isTrue);
       expect(bookings.bookings.single.localDate, DateTime(2026, 11, 17));
+      // The whole answer too, like any ApiException (the start time isn't in the model).
+      expect(bookings.details['totalCount'], 3);
+      expect(((bookings.details['bookings']! as List).single as Map)['startUtc'], '2026-11-17T08:00:00.000Z');
       expect(sent.single.data, {'branchId': 'b1', 'status': 'archived'});
     });
 

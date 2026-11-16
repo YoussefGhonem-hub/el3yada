@@ -110,7 +110,8 @@ public static class BranchQueries
 /// <summary>
 /// Bookings that still have to happen: pending, confirmed, checked in or with the doctor, from today (Cairo) on.
 /// They are D28's "upcoming bookings" and what BR-BR9 lists before a branch closes or is archived.
-/// Bookings come in Phase 6; until then there are none unless a test inserts them.
+/// Bookings come in Phase 6; until then there are none unless a test or the Development-only `add-booking` command
+/// (Commands/AddBookingCommand.cs) inserts them.
 /// </summary>
 public static class BranchBookings
 {

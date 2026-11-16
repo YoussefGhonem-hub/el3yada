@@ -354,4 +354,28 @@ void main() {
       );
     });
   });
+
+  // A desktop window made narrow keeps the desktop type scale with the
+  // tablet rail or the phone bar; nothing may overflow.
+  for (final size in [const Size(900, 700), const Size(520, 800)]) {
+    testWidgets('a narrow desktop window (${size.width.toInt()} wide) lays out without overflow', (tester) async {
+      await pumpApp(
+        tester,
+        platform: AppPlatform.desktop,
+        size: size,
+        prefs: const {'settings.locale': 'ar'},
+        extra: [fakeClinicAdminOverride()],
+      );
+      await tester.enterText(find.byType(TextFormField).at(0), 'doctor@el3yada.dev');
+      await tester.enterText(find.byType(TextFormField).at(1), 'dev');
+      await tester.tap(find.byType(FilledButton).first);
+      await settle(tester);
+      expect(tester.takeException(), isNull);
+      for (final path in ['/doctor/patients', '/doctor/branches', '/doctor/settings', '/doctor/more']) {
+        goTo(tester, path);
+        await settle(tester);
+        expect(tester.takeException(), isNull, reason: path);
+      }
+    });
+  }
 }

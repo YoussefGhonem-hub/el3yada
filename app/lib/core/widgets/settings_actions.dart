@@ -42,21 +42,20 @@ class DesktopQuickSettings extends ConsumerWidget {
           selected: on,
           pressedScale: 0.88,
           borderRadius: BorderRadius.circular(_segment / 2),
-          child: SizedBox.square(
-            dimension: _segment,
-            child: Center(
-              child: TweenAnimationBuilder<Color?>(
-                tween: ColorTween(end: on ? scheme.onPrimary : scheme.onSurfaceVariant),
-                duration: Motion.fast,
-                builder: (context, color, _) => Icon(
-                  switch (mode) {
-                    ThemeMode.light => Icons.light_mode_rounded,
-                    ThemeMode.dark => Icons.dark_mode_rounded,
-                    ThemeMode.system => Icons.brightness_auto_rounded,
-                  },
-                  size: 19,
-                  color: color,
-                ),
+          child: _HoverDisc(
+            size: _segment,
+            color: on ? null : scheme.onSurface.withValues(alpha: 0.08),
+            child: TweenAnimationBuilder<Color?>(
+              tween: ColorTween(end: on ? scheme.onPrimary : scheme.onSurfaceVariant),
+              duration: Motion.fast,
+              builder: (context, color, _) => Icon(
+                switch (mode) {
+                  ThemeMode.light => Icons.light_mode_rounded,
+                  ThemeMode.dark => Icons.dark_mode_rounded,
+                  ThemeMode.system => Icons.brightness_auto_rounded,
+                },
+                size: 19,
+                color: color,
               ),
             ),
           ),
@@ -113,6 +112,39 @@ class DesktopQuickSettings extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// A round [size] slot that tints with [color] under the mouse (null: never).
+class _HoverDisc extends StatefulWidget {
+  const _HoverDisc({required this.size, required this.color, required this.child});
+
+  final double size;
+  final Color? color;
+  final Widget child;
+
+  @override
+  State<_HoverDisc> createState() => _HoverDiscState();
+}
+
+class _HoverDiscState extends State<_HoverDisc> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+        onEnter: (_) => setState(() => _hovered = true),
+        onExit: (_) => setState(() => _hovered = false),
+        child: AnimatedContainer(
+          duration: Motion.fast,
+          width: widget.size,
+          height: widget.size,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _hovered && widget.color != null ? widget.color : Colors.transparent,
+          ),
+          child: widget.child,
+        ),
+      );
 }
 
 /// Language switch (ع / EN), appearance menu and log out, for app bars.

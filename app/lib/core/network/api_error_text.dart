@@ -68,6 +68,8 @@ extension ApiErrorText on AppLocalizations {
         'INVALID_MOBILE' => errorInvalidMobile,
         // Branch and support phones: landlines and hotlines are allowed too.
         'INVALID_PHONE' => regErrorInvalidPhone,
+        // A branch's map link (sign-up step 3 and D29).
+        'INVALID_MAP_LINK' => mapLinkInvalid,
         'INVALID_IDENTIFIER' => errorInvalidIdentifier,
         'WEAK_PASSWORD' => errorWeakPassword,
         'PASSWORD_SAME_AS_OLD' => errorPasswordSameAsOld,

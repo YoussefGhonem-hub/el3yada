@@ -635,16 +635,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regCityLabel => 'City or area';
 
   @override
-  String get regStreetLabel => 'Street address';
+  String get addressDetailsLabel => 'Detailed address';
 
   @override
-  String get regBuildingLabel => 'Building';
+  String get addressDetailsHint =>
+      'For example: 12 Street 9, Al Nour building, 3rd floor, apartment 5';
 
   @override
-  String get regFloorLabel => 'Floor';
+  String get mapLinkLabel => 'Google Maps link (optional)';
 
   @override
-  String get regApartmentLabel => 'Apartment';
+  String get mapLinkHelp =>
+      'In Google Maps, open the clinic\'s place, tap Share, then Copy link, and paste it here.';
+
+  @override
+  String get mapLinkShort => 'Google Maps';
+
+  @override
+  String get mapLinkOpen => 'Open in Google Maps';
+
+  @override
+  String get mapLinkClear => 'Remove the link';
+
+  @override
+  String get mapLinkInvalid => 'That\'s not a Google Maps link.';
+
+  @override
+  String get mapLinkOpenFailed => 'Couldn\'t open Google Maps on this device.';
 
   @override
   String get regLandmarkLabel => 'Landmark (optional)';
@@ -731,21 +748,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get regPhonesLabel => 'Phone numbers';
-
-  @override
-  String regBuildingValue(String value) {
-    return 'Building $value';
-  }
-
-  @override
-  String regFloorValue(String value) {
-    return 'Floor $value';
-  }
-
-  @override
-  String regApartmentValue(String value) {
-    return 'Apartment $value';
-  }
 
   @override
   String get regListSeparator => ', ';
@@ -1237,21 +1239,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminFieldConsultPrice => 'Consultation';
 
   @override
-  String adminAddressBuilding(String value) {
-    return 'Building $value';
-  }
-
-  @override
-  String adminAddressFloor(String value) {
-    return 'Floor $value';
-  }
-
-  @override
-  String adminAddressApartment(String value) {
-    return 'Apartment $value';
-  }
-
-  @override
   String get adminPhoneMobile => 'Mobile';
 
   @override
@@ -1259,9 +1246,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminPhoneReception => 'Reception';
-
-  @override
-  String get adminOpenMap => 'Open the location on the map';
 
   @override
   String adminReviewApprovedBy(String name) {
@@ -2687,34 +2671,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get branchEmailLabel => 'Clinic email (optional)';
-
-  @override
-  String get branchMapPin => 'Map pin';
-
-  @override
-  String get branchMapPinHint =>
-      'In Google Maps, press and hold the clinic\'s place, copy the two numbers and paste them here.';
-
-  @override
-  String get branchLatitude => 'Latitude';
-
-  @override
-  String get branchLongitude => 'Longitude';
-
-  @override
-  String get branchTestInMaps => 'Test in Google Maps';
-
-  @override
-  String get branchClearPin => 'Remove the pin';
-
-  @override
-  String get branchMapsFailed => 'Couldn\'t open Google Maps on this device.';
-
-  @override
-  String get branchErrorPinPair => 'Enter both numbers, or neither.';
-
-  @override
-  String get branchErrorPinRange => 'Not a valid coordinate.';
 
   @override
   String get branchPaymentMethods => 'Payment at the clinic';

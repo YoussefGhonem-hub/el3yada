@@ -11,6 +11,7 @@ import 'package:el3yada/features/clinic_admin/domain/price_models.dart';
 import 'package:el3yada/features/clinic_admin/domain/weekly_hours.dart';
 import 'package:el3yada/features/clinic_admin/presentation/activity/activity_text.dart';
 import 'package:el3yada/features/clinic_admin/presentation/assistants/assistant_editor.dart';
+import 'package:el3yada/features/clinic_admin/presentation/branches/branch_drafts.dart';
 import 'package:el3yada/l10n/gen/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,8 +53,9 @@ void main() {
         'assigned': true,
         'info': {'nameAr': 'فرع الدقي', 'nameEn': 'Dokki', 'description': 'عيادة الأطفال بالدور الثاني'},
         'address': {
-          'governorate': 'الجيزة', 'city': 'الدقي', 'area': 'ميدان المساحة', 'street': 'شارع التحرير', 'building': '12',
-          'floor': '2', 'apartment': '4', 'landmark': 'بجوار البنك الأهلي', 'lat': 30.038000, 'lng': 31.211,
+          'governorate': 'الجيزة', 'city': 'الدقي', 'area': 'ميدان المساحة',
+          'details': '12 شارع التحرير، الدور التاني، شقة 4', 'landmark': 'بجوار البنك الأهلي',
+          'mapUrl': 'https://maps.app.goo.gl/AbCd1234XyZ',
         },
         'contact': {
           'phones': [
@@ -79,8 +81,9 @@ void main() {
       expect(branch.temporarilyClosed, isTrue);
       expect(branch.reopenDate, DateTime(2026, 11, 25));
       expect(branch.name('en'), 'Dokki');
-      expect(branch.address.lat, 30.038);
-      expect(branch.address.hasPin, isTrue);
+      expect(branch.address.details, '12 شارع التحرير، الدور التاني، شقة 4');
+      expect(branch.address.mapUrl, 'https://maps.app.goo.gl/AbCd1234XyZ');
+      expect(branch.address.toJson().keys, ['governorate', 'city', 'area', 'details', 'landmark', 'mapUrl']);
       expect(branch.contact.phones.last.isWhatsapp, isTrue);
       expect(branch.workingHours.queueMode, isTrue);
       expect(branch.clinicInfo.prices.usesDoctorPrices, isFalse);
@@ -302,6 +305,45 @@ void main() {
     });
   });
 
+  group('D29 address (the same rules as BranchInput.cs)', () {
+    test('governorate, city and the detailed address are required; the map link is optional', () {
+      final draft = AddressDraft();
+      addTearDown(draft.dispose);
+      expect(draft.check(), {
+        'address.governorate': BranchProblem.required,
+        'address.city': BranchProblem.required,
+        'address.details': BranchProblem.required,
+      });
+
+      draft
+        ..setGovernorate('الجيزة')
+        ..city.text = 'الدقي'
+        ..details.text = '  12 شارع التحرير، الدور التاني\nشقة 4  ';
+      expect(draft.check(), isEmpty);
+      final address = draft.build();
+      expect(address.details, '12 شارع التحرير، الدور التاني\nشقة 4');
+      expect(address.mapUrl, isNull);
+    });
+
+    test('the map link must be Google Maps; a pasted share text keeps only the link', () {
+      final draft = AddressDraft(const BranchAddress(governorate: 'الجيزة', city: 'الدقي', details: 'شارع التحرير'));
+      addTearDown(draft.dispose);
+
+      draft.mapUrl.text = 'https://example.com/maps/clinic';
+      expect(draft.check(), {'address.mapUrl': BranchProblem.invalidMapLink});
+      draft.mapUrl.text = 'https://maps.app.goo.gl/${'x' * 500}';
+      expect(draft.check(), {'address.mapUrl': BranchProblem.tooLong});
+      draft.details.text = 'ع' * 301;
+      expect(draft.check()['address.details'], BranchProblem.tooLong);
+
+      draft
+        ..details.text = 'شارع التحرير'
+        ..mapUrl.text = 'عيادة الدقي https://maps.app.goo.gl/AbCd1234';
+      expect(draft.build().mapUrl, 'https://maps.app.goo.gl/AbCd1234');
+      expect(draft.changes, 1);
+    });
+  });
+
   group('D26 presets and dependencies', () {
     test('a new assistant starts as Reception', () {
       final form = AssistantForm();
@@ -457,11 +499,12 @@ void main() {
         expect(en.apiError(error), isNot(en.errorUnknown), reason: code);
         expect(ar.apiError(error), isNot(ar.errorUnknown), reason: code);
       }
-      for (final code in ['INVALID_BRANCH', 'PERIOD_END_BEFORE_START', 'PERIOD_LENGTH_OUT_OF_RANGE', 'PERIODS_OVERLAP']) {
+      for (final code in ['INVALID_BRANCH', 'PERIOD_END_BEFORE_START', 'PERIOD_LENGTH_OUT_OF_RANGE', 'PERIODS_OVERLAP', 'INVALID_MAP_LINK']) {
         expect(en.fieldError(code), isNotNull, reason: code);
         expect(ar.fieldError(code), isNotNull, reason: code);
       }
       expect(ar.fieldError('PERIODS_OVERLAP'), 'الفترات متداخلة');
+      expect(ar.fieldError('INVALID_MAP_LINK'), 'ده مش لينك جوجل ماب.');
       expect(ar.apiError(const ApiException(kind: ApiErrorKind.http, code: 'ASSISTANT_LIMIT_REACHED')), 'وصلت للحد الأقصى لعدد المساعدين');
     });
 

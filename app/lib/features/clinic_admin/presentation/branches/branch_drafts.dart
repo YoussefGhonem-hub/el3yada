@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 
 import '../../../../core/validation/egyptian_phone.dart';
+import '../../../../core/validation/map_links.dart';
 import '../../../../core/validation/validators.dart';
 import '../../domain/branch_models.dart';
 import '../../domain/weekly_hours.dart';
 
 /// Why a branch field isn't accepted, before the API is asked (the same
 /// rules as `BranchInput.cs`). Screens turn these into ARB messages.
-enum BranchProblem { required, nameLength, tooLong, invalidPhone, phoneRequired, invalidEmail, pinPair, pinRange }
+enum BranchProblem { required, nameLength, tooLong, invalidPhone, phoneRequired, invalidEmail, invalidMapLink }
 
 /// The editable state of one D29 group. A draft starts from the saved
 /// group ([fill]), reports whether it changed ([changes]) and what is
@@ -81,8 +82,8 @@ class InfoDraft extends BranchDraft {
   }
 }
 
-/// Address and map: governorate, city and street required; the pin is
-/// both coordinates or neither.
+/// Address and map: governorate, city and the detailed address required;
+/// the Google Maps link is optional.
 class AddressDraft extends BranchDraft {
   AddressDraft([BranchAddress? saved]) {
     if (saved != null) fill(saved);
@@ -92,39 +93,33 @@ class AddressDraft extends BranchDraft {
     'governorate': 50,
     'city': 60,
     'area': 60,
-    'street': 150,
-    'building': 20,
-    'floor': 20,
-    'apartment': 20,
+    'details': 300,
     'landmark': 150,
+    'mapUrl': MapLinks.maxLength,
   };
 
   String? governorate;
   final city = TextEditingController();
   final area = TextEditingController();
-  final street = TextEditingController();
-  final building = TextEditingController();
-  final floor = TextEditingController();
-  final apartment = TextEditingController();
+
+  /// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+  final details = TextEditingController();
   final landmark = TextEditingController();
-  final lat = TextEditingController();
-  final lng = TextEditingController();
+
+  /// «لينك جوجل ماب».
+  final mapUrl = TextEditingController();
   BranchAddress? _saved;
 
-  List<TextEditingController> get _texts => [city, area, street, building, floor, apartment, landmark, lat, lng];
+  List<TextEditingController> get _texts => [city, area, details, landmark, mapUrl];
 
   void fill(BranchAddress address) {
     _saved = address;
     governorate = address.governorate;
     city.text = address.city;
     area.text = address.area ?? '';
-    street.text = address.street;
-    building.text = address.building ?? '';
-    floor.text = address.floor ?? '';
-    apartment.text = address.apartment ?? '';
+    details.text = address.details;
     landmark.text = address.landmark ?? '';
-    lat.text = address.lat == null ? '' : _coordinate(address.lat!);
-    lng.text = address.lng == null ? '' : _coordinate(address.lng!);
+    mapUrl.text = address.mapUrl ?? '';
     notifyListeners();
   }
 
@@ -133,52 +128,13 @@ class AddressDraft extends BranchDraft {
     notifyListeners();
   }
 
-  /// "30.038000" → "30.038".
-  static String _coordinate(double value) {
-    var text = value.toStringAsFixed(6);
-    while (text.contains('.') && (text.endsWith('0') || text.endsWith('.'))) {
-      text = text.substring(0, text.length - 1);
-    }
-    return text;
-  }
-
-  static double? parseCoordinate(String text) {
-    final value = Validators.normalizeDigits(text.trim()).replaceAll('٫', '.');
-    return value.isEmpty ? null : double.tryParse(value);
-  }
-
-  /// A pasted "30.038, 31.211" (as Google Maps copies it) fills both.
-  bool splitPastedPin(String text) {
-    final parts = Validators.normalizeDigits(text).split(RegExp(r'[,،\s]+')).where((p) => p.isNotEmpty).toList();
-    if (parts.length != 2) return false;
-    final a = double.tryParse(parts[0]);
-    final b = double.tryParse(parts[1]);
-    if (a == null || b == null) return false;
-    lat.text = parts[0];
-    lng.text = parts[1];
-    return true;
-  }
-
-  double? get latValue => parseCoordinate(lat.text);
-  double? get lngValue => parseCoordinate(lng.text);
-
-  bool get hasValidPin {
-    final a = latValue;
-    final b = lngValue;
-    return a != null && b != null && a.abs() <= 90 && b.abs() <= 180;
-  }
-
   BranchAddress build() => BranchAddress(
         governorate: (governorate ?? '').trim(),
         city: city.text.trim(),
         area: _optional(area.text),
-        street: street.text.trim(),
-        building: _optional(building.text),
-        floor: _optional(floor.text),
-        apartment: _optional(apartment.text),
+        details: details.text.trim(),
         landmark: _optional(landmark.text),
-        lat: latValue,
-        lng: lngValue,
+        mapUrl: _optional(MapLinks.extract(mapUrl.text)),
       );
 
   @override
@@ -202,29 +158,20 @@ class AddressDraft extends BranchDraft {
 
     required('governorate', governorate ?? '');
     required('city', city.text);
-    required('street', street.text);
+    required('details', details.text);
     for (final (field, controller) in [
       ('city', city),
       ('area', area),
-      ('street', street),
-      ('building', building),
-      ('floor', floor),
-      ('apartment', apartment),
+      ('details', details),
       ('landmark', landmark),
+      ('mapUrl', mapUrl),
     ]) {
       if (controller.text.trim().length > maxLength[field]!) problems['address.$field'] = BranchProblem.tooLong;
     }
-    final hasLat = lat.text.trim().isNotEmpty;
-    final hasLng = lng.text.trim().isNotEmpty;
-    if (hasLat || hasLng) {
-      final a = latValue;
-      final b = lngValue;
-      if (hasLat != hasLng) {
-        problems[hasLat ? 'address.lng' : 'address.lat'] = BranchProblem.pinPair;
-      } else {
-        if (a == null || a.abs() > 90) problems['address.lat'] = BranchProblem.pinRange;
-        if (b == null || b.abs() > 180) problems['address.lng'] = BranchProblem.pinRange;
-      }
+    // What is sent: just the link, when the pasted text has words around it.
+    final link = MapLinks.extract(mapUrl.text);
+    if (link.isNotEmpty && !problems.containsKey('address.mapUrl') && !MapLinks.isGoogleMaps(link)) {
+      problems['address.mapUrl'] = BranchProblem.invalidMapLink;
     }
     return problems;
   }

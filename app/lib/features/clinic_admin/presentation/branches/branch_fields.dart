@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/network/api_error_text.dart';
+import '../../../../core/widgets/map_link_field.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../doctor_registration/domain/reference_lists.dart';
 import '../../../doctor_registration/domain/specialty.dart' show matchesNames;
@@ -41,8 +41,7 @@ extension BranchProblemText on AppLocalizations {
         BranchProblem.invalidPhone => regErrorInvalidPhone,
         BranchProblem.phoneRequired => regErrorPhoneRequired,
         BranchProblem.invalidEmail => errorInvalidEmail,
-        BranchProblem.pinPair => branchErrorPinPair,
-        BranchProblem.pinRange => branchErrorPinRange,
+        BranchProblem.invalidMapLink => mapLinkInvalid,
       };
 }
 
@@ -102,8 +101,8 @@ class InfoFields extends StatelessWidget {
   }
 }
 
-/// Address and map. There is no map package in the app yet, so the pin is
-/// typed (or pasted from Google Maps) and checked with "Test in Google Maps".
+/// Address and map: governorate, city, area, «العنوان بالتفصيل», landmark,
+/// and the Google Maps link with "Open in Google Maps".
 class AddressFields extends StatelessWidget {
   const AddressFields({super.key, required this.draft, required this.errors, this.enabled = true});
 
@@ -137,14 +136,20 @@ class AddressFields extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final language = Localizations.localeOf(context).languageCode;
     final governorate = draft.governorate;
-    Widget text(String field, TextEditingController controller, String label, {IconData? icon, String? hint}) => TextField(
+    Widget text(String field, TextEditingController controller, String label, {IconData? icon, String? hint, bool multiline = false}) =>
+        TextField(
           key: ValueKey('address.$field'),
           controller: controller,
           enabled: enabled,
-          textInputAction: TextInputAction.next,
+          keyboardType: multiline ? TextInputType.multiline : null,
+          textInputAction: multiline ? TextInputAction.newline : TextInputAction.next,
+          minLines: multiline ? 2 : null,
+          maxLines: multiline ? 4 : 1,
           decoration: InputDecoration(
             labelText: label,
             hintText: hint,
+            hintMaxLines: 2,
+            alignLabelWithHint: multiline,
             prefixIcon: icon == null ? null : Icon(icon),
             errorText: errors.of(l10n, 'address.$field', max: AddressDraft.maxLength[field]),
             errorMaxLines: 2,
@@ -171,107 +176,18 @@ class AddressFields extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        text('street', draft.street, l10n.regStreetLabel, icon: Icons.signpost_outlined),
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: text('building', draft.building, l10n.regBuildingLabel)),
-            const SizedBox(width: 8),
-            Expanded(child: text('floor', draft.floor, l10n.regFloorLabel)),
-            const SizedBox(width: 8),
-            Expanded(child: text('apartment', draft.apartment, l10n.regApartmentLabel)),
-          ],
-        ),
+        text('details', draft.details, l10n.addressDetailsLabel,
+            icon: Icons.signpost_outlined, hint: l10n.addressDetailsHint, multiline: true),
         const SizedBox(height: 16),
         text('landmark', draft.landmark, l10n.regLandmarkLabel, icon: Icons.place_outlined, hint: l10n.regLandmarkHint),
-        const SizedBox(height: 20),
-        _PinFields(draft: draft, errors: errors, enabled: enabled),
-      ],
-    );
-  }
-}
-
-class _PinFields extends StatelessWidget {
-  const _PinFields({required this.draft, required this.errors, required this.enabled});
-
-  final AddressDraft draft;
-  final FieldErrors errors;
-  final bool enabled;
-
-  static final _coordinateCharacters = FilteringTextInputFormatter.allow(RegExp(r'[0-9٠-٩.٫,،\s-]'));
-
-  Future<void> _test(BuildContext context) async {
-    final uri = Uri.parse('https://www.google.com/maps/search/?api=1&query=${draft.latValue},${draft.lngValue}');
-    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication).catchError((_) => false);
-    if (!opened && context.mounted) showAdminSnack(context, AppLocalizations.of(context).branchMapsFailed, error: true);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    Widget coordinate(String field, TextEditingController controller, String label) => TextField(
-          key: ValueKey('address.$field'),
-          controller: controller,
+        const SizedBox(height: 16),
+        MapLinkField(
+          fieldKey: const ValueKey('address.mapUrl'),
+          controller: draft.mapUrl,
+          errorText: errors.of(l10n, 'address.mapUrl', max: AddressDraft.maxLength['mapUrl']),
           enabled: enabled,
-          textDirection: TextDirection.ltr,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-          inputFormatters: [_coordinateCharacters],
-          onChanged: (value) {
-            if (value.contains(',') || value.contains('،')) draft.splitPastedPin(value);
-          },
-          decoration: InputDecoration(labelText: label, hintText: field == 'lat' ? '30.0444' : '31.2357', errorText: errors.of(l10n, 'address.$field'), errorMaxLines: 2),
-        );
-    return DecoratedBox(
-      decoration: BoxDecoration(color: scheme.surfaceContainer, borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.pin_drop_outlined, color: scheme.primary),
-                const SizedBox(width: 8),
-                Expanded(child: Text(l10n.branchMapPin, style: theme.textTheme.titleSmall)),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(l10n.branchMapPinHint, style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
-            const SizedBox(height: 12),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: coordinate('lat', draft.lat, l10n.branchLatitude)),
-                const SizedBox(width: 8),
-                Expanded(child: coordinate('lng', draft.lng, l10n.branchLongitude)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: draft.hasValidPin ? () => _test(context) : null,
-                  icon: const Icon(Icons.map_outlined),
-                  label: Text(l10n.branchTestInMaps),
-                ),
-                if (enabled && (draft.lat.text.isNotEmpty || draft.lng.text.isNotEmpty))
-                  TextButton(
-                    onPressed: () {
-                      draft.lat.clear();
-                      draft.lng.clear();
-                    },
-                    child: Text(l10n.branchClearPin),
-                  ),
-              ],
-            ),
-          ],
         ),
-      ),
+      ],
     );
   }
 }

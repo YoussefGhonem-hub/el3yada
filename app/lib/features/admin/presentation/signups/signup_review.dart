@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/format/app_format.dart';
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/theme/motion.dart';
+import '../../../../core/widgets/map_link_field.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../core/widgets/state_switcher.dart';
@@ -593,17 +593,11 @@ class _BranchSection extends StatelessWidget {
 
   final RegistrationBranch branch;
 
+  /// The detailed address as the doctor wrote it, then area, city and
+  /// governorate on their own line.
   String _address(AppLocalizations l10n) {
-    final parts = [
-      branch.street,
-      if (branch.building != null) l10n.adminAddressBuilding(branch.building!),
-      if (branch.floor != null) l10n.adminAddressFloor(branch.floor!),
-      if (branch.apartment != null) l10n.adminAddressApartment(branch.apartment!),
-      ?branch.area,
-      branch.city,
-      branch.governorate,
-    ];
-    return parts.join(l10n.adminListSeparator);
+    final place = [?branch.area, branch.city, branch.governorate].join(l10n.adminListSeparator);
+    return [branch.addressDetails.trim(), place].where((part) => part.isNotEmpty).join('\n');
   }
 
   @override
@@ -622,6 +616,13 @@ class _BranchSection extends StatelessWidget {
           ]),
           const SizedBox(height: 16),
           InfoRow(label: l10n.adminFieldAddress, value: _address(l10n)),
+          if (branch.mapUrl != null) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: OpenMapLinkButton(url: branch.mapUrl),
+            ),
+          ],
           const SizedBox(height: 16),
           ResponsiveGrid(children: [
             InfoRow(label: l10n.adminFieldLandmark, value: branch.landmark),
@@ -654,20 +655,6 @@ class _BranchSection extends StatelessWidget {
               ],
             ),
           ),
-          if (branch.hasLocation) ...[
-            const SizedBox(height: 8),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: TextButton.icon(
-                onPressed: () => launchUrl(
-                  Uri.parse('https://www.google.com/maps/search/?api=1&query=${branch.lat},${branch.lng}'),
-                  mode: LaunchMode.externalApplication,
-                ),
-                icon: const Icon(Icons.map_outlined),
-                label: Text(l10n.adminOpenMap),
-              ),
-            ),
-          ],
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/motion.dart';
+import '../../../../core/widgets/map_link_field.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../application/registration_form.dart';
 import '../../domain/doctor_registration.dart';
@@ -14,8 +15,8 @@ import '../widgets/form_parts.dart';
 import '../widgets/search_picker.dart';
 import 'step_scaffold.dart';
 
-/// A4 step 3: the first branch (name, address, 1–5 phones) and the visit
-/// prices (optional, spec 6.15). The map pin is not in the app yet.
+/// A4 step 3: the first branch (name, address, Google Maps link, 1–5
+/// phones) and the visit prices (optional, spec 6.15).
 class BranchStep extends RegistrationStep {
   const BranchStep({super.key, required super.form, super.enabled, super.banner});
 
@@ -32,11 +33,9 @@ class _BranchStepState extends RegistrationStepState<BranchStep> {
         RegField.branchName,
         RegField.governorate,
         RegField.city,
-        RegField.street,
-        RegField.building,
-        RegField.floor,
-        RegField.apartment,
+        RegField.addressDetails,
         RegField.landmark,
+        RegField.mapUrl,
         RegField.phones,
         for (var i = 0; i < form.phones.length; i++) RegField.phoneNumber(i),
         RegField.examinationPrice,
@@ -69,7 +68,6 @@ class _BranchStepState extends RegistrationStepState<BranchStep> {
     final l10n = AppLocalizations.of(context);
     final language = Localizations.localeOf(context).languageCode;
     final governorate = form.governorate;
-    const short = TextInputAction.next;
 
     return stepBody(
       children: [
@@ -98,22 +96,13 @@ class _BranchStepState extends RegistrationStepState<BranchStep> {
             ),
             textField(RegField.city, form.city, label: l10n.regCityLabel, icon: Icons.location_city_outlined),
             textField(
-              RegField.street,
-              form.street,
-              label: l10n.regStreetLabel,
+              RegField.addressDetails,
+              form.addressDetails,
+              label: l10n.addressDetailsLabel,
+              hint: l10n.addressDetailsHint,
               icon: Icons.signpost_outlined,
-              keyboardType: TextInputType.streetAddress,
-              autofill: const [AutofillHints.streetAddressLine1],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: textField(RegField.building, form.building, label: l10n.regBuildingLabel, action: short)),
-                const SizedBox(width: 8),
-                Expanded(child: textField(RegField.floor, form.floor, label: l10n.regFloorLabel, action: short)),
-                const SizedBox(width: 8),
-                Expanded(child: textField(RegField.apartment, form.apartment, label: l10n.regApartmentLabel, action: short)),
-              ],
+              autofill: const [AutofillHints.fullStreetAddress],
+              multiline: true,
             ),
             textField(
               RegField.landmark,
@@ -121,6 +110,15 @@ class _BranchStepState extends RegistrationStepState<BranchStep> {
               label: l10n.regLandmarkLabel,
               hint: l10n.regLandmarkHint,
               icon: Icons.place_outlined,
+            ),
+            anchor(
+              RegField.mapUrl,
+              MapLinkField(
+                fieldKey: const ValueKey(RegField.mapUrl),
+                controller: form.mapUrl,
+                errorText: errorText(RegField.mapUrl),
+                enabled: widget.enabled,
+              ),
             ),
           ],
         ),

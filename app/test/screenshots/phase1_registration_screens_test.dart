@@ -96,6 +96,9 @@ void main() {
       await tapText(tester, 'التالي');
       await capture(tester, 'a4_3_branch_ar_$theme');
       await fillBranch(tester);
+      await tester.ensureVisible(find.text('العنوان بالتفصيل'));
+      await settle(tester);
+      await capture(tester, 'a4_3_branch_address_ar_$theme');
       await tester.ensureVisible(find.text('أرقام تليفون العيادة'));
       await settle(tester);
       await capture(tester, 'a4_3_branch_phones_ar_$theme');
@@ -126,7 +129,11 @@ void main() {
       await decodeImages(tester);
       await capture(tester, 'a4_2_professional_desktop_ar_$theme');
       await tapText(tester, 'التالي');
+      await capture(tester, 'a4_3_branch_desktop_ar_$theme');
       await fillBranch(tester);
+      await tester.ensureVisible(find.text('العنوان بالتفصيل'));
+      await settle(tester);
+      await capture(tester, 'a4_3_branch_address_desktop_ar_$theme');
       await tapText(tester, 'التالي');
       await decodeImages(tester);
       await capture(tester, 'a4_4_review_desktop_ar_$theme');
@@ -281,11 +288,10 @@ Future<void> fillBranch(WidgetTester tester) async {
   await openPicker(tester, 'المحافظة');
   await tapText(tester, 'القاهرة');
   await enter(tester, 'المدينة أو الحي', 'المعادي');
-  await enter(tester, 'الشارع والعنوان', '12 شارع 9');
-  await enter(tester, 'العمارة', '12');
-  await enter(tester, 'الدور', '3');
-  await enter(tester, 'الشقة', '5');
+  await enter(tester, 'العنوان بالتفصيل', '12 شارع 9، عمارة النور، الدور التالت، شقة 5');
   await enter(tester, 'علامة مميزة (اختياري)', 'بجوار محطة المترو');
+  // The share sheet's text: only the link is kept.
+  await enter(tester, 'لينك جوجل ماب (اختياري)', 'عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234XyZ');
   await enter(tester, 'الرقم 1', '02 2358 1234');
   await tapText(tester, 'إضافة رقم');
   await enter(tester, 'الرقم 2', '01012345678');

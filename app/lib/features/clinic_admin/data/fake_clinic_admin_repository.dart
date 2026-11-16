@@ -3,6 +3,7 @@ import 'dart:math';
 import '../../../core/data/paged.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/validation/egyptian_phone.dart';
+import '../../../core/validation/map_links.dart';
 import '../../../core/validation/validators.dart';
 import '../../auth/data/auth_repository.dart';
 import '../../auth/domain/auth_session.dart';
@@ -269,10 +270,14 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
   Map<String, String> _checkAddress(BranchAddress address) => {
         if (address.governorate.trim().isEmpty) 'address.governorate': 'REQUIRED',
         if (address.city.trim().isEmpty) 'address.city': 'REQUIRED',
-        if (address.street.trim().isEmpty) 'address.street': 'REQUIRED',
-        if ((address.lat == null) != (address.lng == null)) 'address.lat': 'INVALID_VALUE',
-        if (address.lat != null && (address.lat! < -90 || address.lat! > 90)) 'address.lat': 'OUT_OF_RANGE',
-        if (address.lng != null && (address.lng! < -180 || address.lng! > 180)) 'address.lng': 'OUT_OF_RANGE',
+        if (address.details.trim().isEmpty)
+          'address.details': 'REQUIRED'
+        else if (address.details.trim().length > 300)
+          'address.details': 'TOO_LONG',
+        if ((address.mapUrl ?? '').trim().length > MapLinks.maxLength)
+          'address.mapUrl': 'TOO_LONG'
+        else if ((address.mapUrl ?? '').trim().isNotEmpty && !MapLinks.isGoogleMaps(address.mapUrl!))
+          'address.mapUrl': 'INVALID_MAP_LINK',
       };
 
   Map<String, String> _checkContact(BranchContact contact) => {
@@ -297,13 +302,9 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
         governorate: a.governorate.trim(),
         city: a.city.trim(),
         area: _trim(a.area),
-        street: a.street.trim(),
-        building: _trim(a.building),
-        floor: _trim(a.floor),
-        apartment: _trim(a.apartment),
+        details: a.details.trim(),
         landmark: _trim(a.landmark),
-        lat: a.lat == null ? null : double.parse(a.lat!.toStringAsFixed(6)),
-        lng: a.lng == null ? null : double.parse(a.lng!.toStringAsFixed(6)),
+        mapUrl: _trim(a.mapUrl),
       );
 
   static BranchContact _cleanContact(BranchContact c) => BranchContact(
@@ -934,13 +935,9 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
           governorate: 'القاهرة',
           city: 'المعادي',
           area: 'دجلة',
-          street: 'شارع 9',
-          building: '15',
-          floor: '3',
-          apartment: '7',
+          details: 'شارع 9، عمارة 15، الدور 3، شقة 7',
           landmark: 'بجوار محطة مترو المعادي',
-          lat: 29.960306,
-          lng: 31.257092,
+          mapUrl: 'https://www.google.com/maps/search/?api=1&query=29.960306,31.257092',
         ),
         contact: const BranchContact(
           phones: [
@@ -967,10 +964,9 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
           governorate: 'القاهرة',
           city: 'مدينة نصر',
           area: 'الحي السابع',
-          street: 'شارع عباس العقاد',
-          building: '42',
-          floor: '1',
+          details: '42 شارع عباس العقاد، الدور الأول\nالمدخل من الشارع الجانبي',
           landmark: 'أمام سيتي ستارز',
+          mapUrl: 'https://maps.google.com/?q=30.0729,31.3456',
         ),
         contact: const BranchContact(phones: [BranchContactPhone(number: '+201112223344', label: PhoneLabels.reception, isWhatsapp: true)]),
         periods: [
@@ -987,7 +983,7 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
         id: dokkiBranchId,
         status: BranchStatuses.archived,
         info: const BranchInfo(nameAr: 'فرع الدقي', nameEn: 'Dokki'),
-        address: const BranchAddress(governorate: 'الجيزة', city: 'الدقي', area: 'ميدان المساحة', street: 'شارع التحرير', building: '12'),
+        address: const BranchAddress(governorate: 'الجيزة', city: 'الدقي', area: 'ميدان المساحة', details: 'شارع التحرير، عمارة 12'),
         contact: const BranchContact(phones: [BranchContactPhone(number: '+20233351234', label: PhoneLabels.landline)]),
         paymentMethods: const ['cash'],
         createdAt: ago(days: 300),

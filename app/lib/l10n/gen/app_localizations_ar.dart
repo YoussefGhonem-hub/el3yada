@@ -629,16 +629,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get regCityLabel => 'المدينة أو الحي';
 
   @override
-  String get regStreetLabel => 'الشارع والعنوان';
+  String get addressDetailsLabel => 'العنوان بالتفصيل';
 
   @override
-  String get regBuildingLabel => 'العمارة';
+  String get addressDetailsHint =>
+      'مثال: 12 شارع 9، عمارة النور، الدور التالت، شقة 5';
 
   @override
-  String get regFloorLabel => 'الدور';
+  String get mapLinkLabel => 'لينك جوجل ماب (اختياري)';
 
   @override
-  String get regApartmentLabel => 'الشقة';
+  String get mapLinkHelp =>
+      'افتح مكان العيادة في جوجل ماب، واضغط «مشاركة» ثم «نسخ الرابط»، والصقه هنا.';
+
+  @override
+  String get mapLinkShort => 'جوجل ماب';
+
+  @override
+  String get mapLinkOpen => 'افتح في جوجل ماب';
+
+  @override
+  String get mapLinkClear => 'إزالة اللينك';
+
+  @override
+  String get mapLinkInvalid => 'ده مش لينك جوجل ماب.';
+
+  @override
+  String get mapLinkOpenFailed => 'تعذّر فتح جوجل ماب على هذا الجهاز.';
 
   @override
   String get regLandmarkLabel => 'علامة مميزة (اختياري)';
@@ -726,21 +743,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get regPhonesLabel => 'أرقام التليفون';
-
-  @override
-  String regBuildingValue(String value) {
-    return 'عمارة $value';
-  }
-
-  @override
-  String regFloorValue(String value) {
-    return 'الدور $value';
-  }
-
-  @override
-  String regApartmentValue(String value) {
-    return 'شقة $value';
-  }
 
   @override
   String get regListSeparator => '، ';
@@ -1235,21 +1237,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminFieldConsultPrice => 'الاستشارة';
 
   @override
-  String adminAddressBuilding(String value) {
-    return 'عقار $value';
-  }
-
-  @override
-  String adminAddressFloor(String value) {
-    return 'الدور $value';
-  }
-
-  @override
-  String adminAddressApartment(String value) {
-    return 'شقة $value';
-  }
-
-  @override
   String get adminPhoneMobile => 'موبايل';
 
   @override
@@ -1257,9 +1244,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminPhoneReception => 'الاستقبال';
-
-  @override
-  String get adminOpenMap => 'افتح الموقع على الخريطة';
 
   @override
   String adminReviewApprovedBy(String name) {
@@ -2685,34 +2669,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get branchEmailLabel => 'بريد العيادة (اختياري)';
-
-  @override
-  String get branchMapPin => 'الموقع على الخريطة';
-
-  @override
-  String get branchMapPinHint =>
-      'في خرائط Google اضغط مطولاً على مكان العيادة، وانسخ الرقمين والصقهما هنا.';
-
-  @override
-  String get branchLatitude => 'خط العرض';
-
-  @override
-  String get branchLongitude => 'خط الطول';
-
-  @override
-  String get branchTestInMaps => 'تجربة في خرائط Google';
-
-  @override
-  String get branchClearPin => 'إزالة الموقع';
-
-  @override
-  String get branchMapsFailed => 'تعذّر فتح خرائط Google على هذا الجهاز.';
-
-  @override
-  String get branchErrorPinPair => 'أدخل الرقمين معاً أو اتركهما فارغين.';
-
-  @override
-  String get branchErrorPinRange => 'إحداثي غير صحيح.';
 
   @override
   String get branchPaymentMethods => 'طرق الدفع في العيادة';

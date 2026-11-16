@@ -102,15 +102,11 @@ class RegistrationBranch {
     required this.nameAr,
     required this.governorate,
     required this.city,
-    required this.street,
+    required this.addressDetails,
     this.nameEn,
     this.area,
-    this.building,
-    this.floor,
-    this.apartment,
     this.landmark,
-    this.lat,
-    this.lng,
+    this.mapUrl,
     this.email,
     this.phones = const [],
   });
@@ -121,13 +117,9 @@ class RegistrationBranch {
         governorate: json['governorate'] as String,
         city: json['city'] as String,
         area: _text(json['area']),
-        street: json['street'] as String,
-        building: _text(json['building']),
-        floor: _text(json['floor']),
-        apartment: _text(json['apartment']),
+        addressDetails: json['addressDetails'] as String? ?? '',
         landmark: _text(json['landmark']),
-        lat: (json['lat'] as num?)?.toDouble(),
-        lng: (json['lng'] as num?)?.toDouble(),
+        mapUrl: _text(json['mapUrl']),
         email: _text(json['email']),
         phones: [for (final phone in json['phones'] as List? ?? const []) BranchPhone.fromJson(_map(phone))],
       );
@@ -137,17 +129,15 @@ class RegistrationBranch {
   final String governorate;
   final String city;
   final String? area;
-  final String street;
-  final String? building;
-  final String? floor;
-  final String? apartment;
+
+  /// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+  final String addressDetails;
   final String? landmark;
-  final double? lat;
-  final double? lng;
+
+  /// «لينك جوجل ماب», or null.
+  final String? mapUrl;
   final String? email;
   final List<BranchPhone> phones;
-
-  bool get hasLocation => lat != null && lng != null;
 }
 
 /// The registration view: everything the doctor submitted in A4.

@@ -380,8 +380,9 @@ $RegistrationBranchCopyWith<$Res> get branch {
 /// @nodoc
 mixin _$RegistrationBranch {
 
- String? get id; String get nameAr; String? get nameEn; String get governorate; String get city; String? get area; String get street; String? get building; String? get floor; String? get apartment; String? get landmark;/// Both or neither (the map pin is not in the app yet).
- double? get lat; double? get lng; String? get email; List<BranchPhone> get phones;
+ String? get id; String get nameAr; String? get nameEn; String get governorate; String get city; String? get area;/// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+ String get addressDetails; String? get landmark;/// «لينك جوجل ماب», optional.
+ String? get mapUrl; String? get email; List<BranchPhone> get phones;
 /// Create a copy of RegistrationBranch
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -394,16 +395,16 @@ $RegistrationBranchCopyWith<RegistrationBranch> get copyWith => _$RegistrationBr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationBranch&&(identical(other.id, id) || other.id == id)&&(identical(other.nameAr, nameAr) || other.nameAr == nameAr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.governorate, governorate) || other.governorate == governorate)&&(identical(other.city, city) || other.city == city)&&(identical(other.area, area) || other.area == area)&&(identical(other.street, street) || other.street == street)&&(identical(other.building, building) || other.building == building)&&(identical(other.floor, floor) || other.floor == floor)&&(identical(other.apartment, apartment) || other.apartment == apartment)&&(identical(other.landmark, landmark) || other.landmark == landmark)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other.phones, phones));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegistrationBranch&&(identical(other.id, id) || other.id == id)&&(identical(other.nameAr, nameAr) || other.nameAr == nameAr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.governorate, governorate) || other.governorate == governorate)&&(identical(other.city, city) || other.city == city)&&(identical(other.area, area) || other.area == area)&&(identical(other.addressDetails, addressDetails) || other.addressDetails == addressDetails)&&(identical(other.landmark, landmark) || other.landmark == landmark)&&(identical(other.mapUrl, mapUrl) || other.mapUrl == mapUrl)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other.phones, phones));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,nameAr,nameEn,governorate,city,area,street,building,floor,apartment,landmark,lat,lng,email,const DeepCollectionEquality().hash(phones));
+int get hashCode => Object.hash(runtimeType,id,nameAr,nameEn,governorate,city,area,addressDetails,landmark,mapUrl,email,const DeepCollectionEquality().hash(phones));
 
 @override
 String toString() {
-  return 'RegistrationBranch(id: $id, nameAr: $nameAr, nameEn: $nameEn, governorate: $governorate, city: $city, area: $area, street: $street, building: $building, floor: $floor, apartment: $apartment, landmark: $landmark, lat: $lat, lng: $lng, email: $email, phones: $phones)';
+  return 'RegistrationBranch(id: $id, nameAr: $nameAr, nameEn: $nameEn, governorate: $governorate, city: $city, area: $area, addressDetails: $addressDetails, landmark: $landmark, mapUrl: $mapUrl, email: $email, phones: $phones)';
 }
 
 
@@ -414,7 +415,7 @@ abstract mixin class $RegistrationBranchCopyWith<$Res>  {
   factory $RegistrationBranchCopyWith(RegistrationBranch value, $Res Function(RegistrationBranch) _then) = _$RegistrationBranchCopyWithImpl;
 @useResult
 $Res call({
- String? id, String nameAr, String? nameEn, String governorate, String city, String? area, String street, String? building, String? floor, String? apartment, String? landmark, double? lat, double? lng, String? email, List<BranchPhone> phones
+ String? id, String nameAr, String? nameEn, String governorate, String city, String? area, String addressDetails, String? landmark, String? mapUrl, String? email, List<BranchPhone> phones
 });
 
 
@@ -431,7 +432,7 @@ class _$RegistrationBranchCopyWithImpl<$Res>
 
 /// Create a copy of RegistrationBranch
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? nameAr = null,Object? nameEn = freezed,Object? governorate = null,Object? city = null,Object? area = freezed,Object? street = null,Object? building = freezed,Object? floor = freezed,Object? apartment = freezed,Object? landmark = freezed,Object? lat = freezed,Object? lng = freezed,Object? email = freezed,Object? phones = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? nameAr = null,Object? nameEn = freezed,Object? governorate = null,Object? city = null,Object? area = freezed,Object? addressDetails = null,Object? landmark = freezed,Object? mapUrl = freezed,Object? email = freezed,Object? phones = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,nameAr: null == nameAr ? _self.nameAr : nameAr // ignore: cast_nullable_to_non_nullable
@@ -439,14 +440,10 @@ as String,nameEn: freezed == nameEn ? _self.nameEn : nameEn // ignore: cast_null
 as String?,governorate: null == governorate ? _self.governorate : governorate // ignore: cast_nullable_to_non_nullable
 as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
 as String,area: freezed == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
-as String?,street: null == street ? _self.street : street // ignore: cast_nullable_to_non_nullable
-as String,building: freezed == building ? _self.building : building // ignore: cast_nullable_to_non_nullable
-as String?,floor: freezed == floor ? _self.floor : floor // ignore: cast_nullable_to_non_nullable
-as String?,apartment: freezed == apartment ? _self.apartment : apartment // ignore: cast_nullable_to_non_nullable
-as String?,landmark: freezed == landmark ? _self.landmark : landmark // ignore: cast_nullable_to_non_nullable
-as String?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
-as double?,lng: freezed == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
-as double?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,addressDetails: null == addressDetails ? _self.addressDetails : addressDetails // ignore: cast_nullable_to_non_nullable
+as String,landmark: freezed == landmark ? _self.landmark : landmark // ignore: cast_nullable_to_non_nullable
+as String?,mapUrl: freezed == mapUrl ? _self.mapUrl : mapUrl // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,phones: null == phones ? _self.phones : phones // ignore: cast_nullable_to_non_nullable
 as List<BranchPhone>,
   ));
@@ -533,10 +530,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String nameAr,  String? nameEn,  String governorate,  String city,  String? area,  String street,  String? building,  String? floor,  String? apartment,  String? landmark,  double? lat,  double? lng,  String? email,  List<BranchPhone> phones)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String nameAr,  String? nameEn,  String governorate,  String city,  String? area,  String addressDetails,  String? landmark,  String? mapUrl,  String? email,  List<BranchPhone> phones)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RegistrationBranch() when $default != null:
-return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,_that.area,_that.street,_that.building,_that.floor,_that.apartment,_that.landmark,_that.lat,_that.lng,_that.email,_that.phones);case _:
+return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,_that.area,_that.addressDetails,_that.landmark,_that.mapUrl,_that.email,_that.phones);case _:
   return orElse();
 
 }
@@ -554,10 +551,10 @@ return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String nameAr,  String? nameEn,  String governorate,  String city,  String? area,  String street,  String? building,  String? floor,  String? apartment,  String? landmark,  double? lat,  double? lng,  String? email,  List<BranchPhone> phones)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String nameAr,  String? nameEn,  String governorate,  String city,  String? area,  String addressDetails,  String? landmark,  String? mapUrl,  String? email,  List<BranchPhone> phones)  $default,) {final _that = this;
 switch (_that) {
 case _RegistrationBranch():
-return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,_that.area,_that.street,_that.building,_that.floor,_that.apartment,_that.landmark,_that.lat,_that.lng,_that.email,_that.phones);case _:
+return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,_that.area,_that.addressDetails,_that.landmark,_that.mapUrl,_that.email,_that.phones);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -574,10 +571,10 @@ return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String nameAr,  String? nameEn,  String governorate,  String city,  String? area,  String street,  String? building,  String? floor,  String? apartment,  String? landmark,  double? lat,  double? lng,  String? email,  List<BranchPhone> phones)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String nameAr,  String? nameEn,  String governorate,  String city,  String? area,  String addressDetails,  String? landmark,  String? mapUrl,  String? email,  List<BranchPhone> phones)?  $default,) {final _that = this;
 switch (_that) {
 case _RegistrationBranch() when $default != null:
-return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,_that.area,_that.street,_that.building,_that.floor,_that.apartment,_that.landmark,_that.lat,_that.lng,_that.email,_that.phones);case _:
+return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,_that.area,_that.addressDetails,_that.landmark,_that.mapUrl,_that.email,_that.phones);case _:
   return null;
 
 }
@@ -589,7 +586,7 @@ return $default(_that.id,_that.nameAr,_that.nameEn,_that.governorate,_that.city,
 
 @JsonSerializable(includeIfNull: false, explicitToJson: true)
 class _RegistrationBranch implements RegistrationBranch {
-  const _RegistrationBranch({this.id, this.nameAr = '', this.nameEn, this.governorate = '', this.city = '', this.area, this.street = '', this.building, this.floor, this.apartment, this.landmark, this.lat, this.lng, this.email, final  List<BranchPhone> phones = const <BranchPhone>[]}): _phones = phones;
+  const _RegistrationBranch({this.id, this.nameAr = '', this.nameEn, this.governorate = '', this.city = '', this.area, this.addressDetails = '', this.landmark, this.mapUrl, this.email, final  List<BranchPhone> phones = const <BranchPhone>[]}): _phones = phones;
   factory _RegistrationBranch.fromJson(Map<String, dynamic> json) => _$RegistrationBranchFromJson(json);
 
 @override final  String? id;
@@ -598,14 +595,11 @@ class _RegistrationBranch implements RegistrationBranch {
 @override@JsonKey() final  String governorate;
 @override@JsonKey() final  String city;
 @override final  String? area;
-@override@JsonKey() final  String street;
-@override final  String? building;
-@override final  String? floor;
-@override final  String? apartment;
+/// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+@override@JsonKey() final  String addressDetails;
 @override final  String? landmark;
-/// Both or neither (the map pin is not in the app yet).
-@override final  double? lat;
-@override final  double? lng;
+/// «لينك جوجل ماب», optional.
+@override final  String? mapUrl;
 @override final  String? email;
  final  List<BranchPhone> _phones;
 @override@JsonKey() List<BranchPhone> get phones {
@@ -628,16 +622,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegistrationBranch&&(identical(other.id, id) || other.id == id)&&(identical(other.nameAr, nameAr) || other.nameAr == nameAr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.governorate, governorate) || other.governorate == governorate)&&(identical(other.city, city) || other.city == city)&&(identical(other.area, area) || other.area == area)&&(identical(other.street, street) || other.street == street)&&(identical(other.building, building) || other.building == building)&&(identical(other.floor, floor) || other.floor == floor)&&(identical(other.apartment, apartment) || other.apartment == apartment)&&(identical(other.landmark, landmark) || other.landmark == landmark)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lng, lng) || other.lng == lng)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other._phones, _phones));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegistrationBranch&&(identical(other.id, id) || other.id == id)&&(identical(other.nameAr, nameAr) || other.nameAr == nameAr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.governorate, governorate) || other.governorate == governorate)&&(identical(other.city, city) || other.city == city)&&(identical(other.area, area) || other.area == area)&&(identical(other.addressDetails, addressDetails) || other.addressDetails == addressDetails)&&(identical(other.landmark, landmark) || other.landmark == landmark)&&(identical(other.mapUrl, mapUrl) || other.mapUrl == mapUrl)&&(identical(other.email, email) || other.email == email)&&const DeepCollectionEquality().equals(other._phones, _phones));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,nameAr,nameEn,governorate,city,area,street,building,floor,apartment,landmark,lat,lng,email,const DeepCollectionEquality().hash(_phones));
+int get hashCode => Object.hash(runtimeType,id,nameAr,nameEn,governorate,city,area,addressDetails,landmark,mapUrl,email,const DeepCollectionEquality().hash(_phones));
 
 @override
 String toString() {
-  return 'RegistrationBranch(id: $id, nameAr: $nameAr, nameEn: $nameEn, governorate: $governorate, city: $city, area: $area, street: $street, building: $building, floor: $floor, apartment: $apartment, landmark: $landmark, lat: $lat, lng: $lng, email: $email, phones: $phones)';
+  return 'RegistrationBranch(id: $id, nameAr: $nameAr, nameEn: $nameEn, governorate: $governorate, city: $city, area: $area, addressDetails: $addressDetails, landmark: $landmark, mapUrl: $mapUrl, email: $email, phones: $phones)';
 }
 
 
@@ -648,7 +642,7 @@ abstract mixin class _$RegistrationBranchCopyWith<$Res> implements $Registration
   factory _$RegistrationBranchCopyWith(_RegistrationBranch value, $Res Function(_RegistrationBranch) _then) = __$RegistrationBranchCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String nameAr, String? nameEn, String governorate, String city, String? area, String street, String? building, String? floor, String? apartment, String? landmark, double? lat, double? lng, String? email, List<BranchPhone> phones
+ String? id, String nameAr, String? nameEn, String governorate, String city, String? area, String addressDetails, String? landmark, String? mapUrl, String? email, List<BranchPhone> phones
 });
 
 
@@ -665,7 +659,7 @@ class __$RegistrationBranchCopyWithImpl<$Res>
 
 /// Create a copy of RegistrationBranch
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? nameAr = null,Object? nameEn = freezed,Object? governorate = null,Object? city = null,Object? area = freezed,Object? street = null,Object? building = freezed,Object? floor = freezed,Object? apartment = freezed,Object? landmark = freezed,Object? lat = freezed,Object? lng = freezed,Object? email = freezed,Object? phones = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? nameAr = null,Object? nameEn = freezed,Object? governorate = null,Object? city = null,Object? area = freezed,Object? addressDetails = null,Object? landmark = freezed,Object? mapUrl = freezed,Object? email = freezed,Object? phones = null,}) {
   return _then(_RegistrationBranch(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,nameAr: null == nameAr ? _self.nameAr : nameAr // ignore: cast_nullable_to_non_nullable
@@ -673,14 +667,10 @@ as String,nameEn: freezed == nameEn ? _self.nameEn : nameEn // ignore: cast_null
 as String?,governorate: null == governorate ? _self.governorate : governorate // ignore: cast_nullable_to_non_nullable
 as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
 as String,area: freezed == area ? _self.area : area // ignore: cast_nullable_to_non_nullable
-as String?,street: null == street ? _self.street : street // ignore: cast_nullable_to_non_nullable
-as String,building: freezed == building ? _self.building : building // ignore: cast_nullable_to_non_nullable
-as String?,floor: freezed == floor ? _self.floor : floor // ignore: cast_nullable_to_non_nullable
-as String?,apartment: freezed == apartment ? _self.apartment : apartment // ignore: cast_nullable_to_non_nullable
-as String?,landmark: freezed == landmark ? _self.landmark : landmark // ignore: cast_nullable_to_non_nullable
-as String?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
-as double?,lng: freezed == lng ? _self.lng : lng // ignore: cast_nullable_to_non_nullable
-as double?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,addressDetails: null == addressDetails ? _self.addressDetails : addressDetails // ignore: cast_nullable_to_non_nullable
+as String,landmark: freezed == landmark ? _self.landmark : landmark // ignore: cast_nullable_to_non_nullable
+as String?,mapUrl: freezed == mapUrl ? _self.mapUrl : mapUrl // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String?,phones: null == phones ? _self._phones : phones // ignore: cast_nullable_to_non_nullable
 as List<BranchPhone>,
   ));

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
+import 'package:el3yada/core/platform/external_links.dart';
 import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:el3yada/features/auth/domain/auth_session.dart';
 import 'package:el3yada/features/doctor_registration/data/license_picker.dart';
@@ -91,6 +92,9 @@ class _Harness {
   late final FakeRegistrationRepository registration;
   final picker = FakeLicensePicker(PickedLicense(name: 'card.png', size: _png.length, read: () async => _png));
 
+  /// Links "Open in Google Maps" opened.
+  final opened = <Uri>[];
+
   Future<void> pump(
     WidgetTester tester, {
     Size size = const Size(420, 900),
@@ -106,6 +110,10 @@ class _Harness {
         extra: [
           registrationRepositoryProvider.overrideWithValue(registration),
           licensePickerProvider.overrideWithValue(picker),
+          externalLinkOpenerProvider.overrideWithValue((uri) async {
+            opened.add(uri);
+            return true;
+          }),
         ],
       ),
       child: const El3yadaApp(),
@@ -158,7 +166,7 @@ Future<void> fillBranch(WidgetTester tester) async {
   await openPicker(tester, 'Governorate');
   await tapText(tester, 'Cairo');
   await enter(tester, 'City or area', 'Maadi');
-  await enter(tester, 'Street address', '9 Street');
+  await enter(tester, 'Detailed address', '12 Street 9, 3rd floor, apartment 5');
   await enter(tester, 'Number 1', '02 2358 1234');
 }
 
@@ -273,7 +281,7 @@ void main() {
         kind: ApiErrorKind.http,
         status: 400,
         code: ApiCodes.validationFailed,
-        fieldCodes: {'licenseNumber': 'INVALID_LICENSE_NUMBER', 'branch.street': 'TOO_LONG'},
+        fieldCodes: {'licenseNumber': 'INVALID_LICENSE_NUMBER', 'branch.addressDetails': 'TOO_LONG'},
       ),
     );
     final app = _Harness(registration: registration);
@@ -300,6 +308,42 @@ void main() {
     await next(tester);
     expect(find.text('Step 3 of 4'), findsOneWidget);
     expect(find.text('This is too long.'), findsOneWidget);
+  });
+
+  testWidgets('A4 step 3: a pasted share text keeps only the link, a wrong link is refused, and the link opens',
+      (tester) async {
+    const label = 'Google Maps link (optional)';
+    final app = _Harness();
+    await app.pump(tester);
+    await openRegistration(tester);
+    await fillAccount(tester);
+    await next(tester);
+    await fillProfessional(tester);
+    await next(tester);
+    await fillBranch(tester);
+
+    await enter(tester, label, 'https://www.facebook.com/maadi.clinic');
+    await next(tester);
+    expect(find.text('Step 3 of 4'), findsOneWidget);
+    expect(find.text("That's not a Google Maps link."), findsOneWidget);
+
+    // The share sheet's text: the name, then the link.
+    await enter(tester, label, 'Maadi Clinic\nhttps://maps.app.goo.gl/AbCd1234');
+    await settle(tester);
+    final link = tester.widget<TextField>(find.byKey(const ValueKey('branch.mapUrl')));
+    expect(link.controller!.text, 'https://maps.app.goo.gl/AbCd1234');
+    expect(find.text("That's not a Google Maps link."), findsNothing);
+
+    await tapText(tester, 'Open in Google Maps');
+    expect(app.opened, [Uri.parse('https://maps.app.goo.gl/AbCd1234')]);
+
+    await next(tester);
+    expect(find.text('Step 4 of 4'), findsOneWidget);
+    await tester.ensureVisible(find.byType(Checkbox));
+    await tester.tap(find.byType(Checkbox));
+    await tapText(tester, 'Send for review');
+    expect(app.registration.lastData?.branch.mapUrl, 'https://maps.app.goo.gl/AbCd1234');
+    expect(app.registration.lastData?.branch.addressDetails, '12 Street 9, 3rd floor, apartment 5');
   });
 
   testWidgets('A4: an email that is already registered is marked on step 1', (tester) async {

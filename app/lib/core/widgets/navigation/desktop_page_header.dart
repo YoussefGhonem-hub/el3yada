@@ -8,7 +8,8 @@ import 'side_menu.dart';
 /// picker, quick settings) at the end. On a menu root there is no Back and
 /// the start stays empty: the page's own title follows below.
 ///
-/// Back arrives with a short fade and grow, and leaves the same way.
+/// Back arrives with a short fade and grow, and leaves the same way (a fade
+/// alone with reduced motion).
 class DesktopPageHeader extends StatelessWidget {
   const DesktopPageHeader({super.key, this.back, this.trailing = const []});
 
@@ -18,6 +19,7 @@ class DesktopPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reduced = Motion.of(context).reduced;
     return Padding(
       // Lines up with the side menu's top edge.
       padding: const EdgeInsetsDirectional.fromSTEB(24, AppSideMenu.margin, 20, 4),
@@ -31,13 +33,16 @@ class DesktopPageHeader extends StatelessWidget {
                 reverseDuration: Motion.fastExit,
                 switchInCurve: Motion.spring,
                 switchOutCurve: Motion.exitCurveReversed,
+                // With reduced motion Back only fades.
                 transitionBuilder: (child, animation) => FadeTransition(
                   opacity: animation,
-                  child: ScaleTransition(
-                    alignment: AlignmentDirectional.centerStart.resolve(Directionality.of(context)),
-                    scale: animation.drive(Tween(begin: 0.85, end: 1)),
-                    child: child,
-                  ),
+                  child: reduced
+                      ? child
+                      : ScaleTransition(
+                          alignment: AlignmentDirectional.centerStart.resolve(Directionality.of(context)),
+                          scale: animation.drive(Tween(begin: 0.85, end: 1)),
+                          child: child,
+                        ),
                 ),
                 layoutBuilder: (current, previous) => Stack(
                   alignment: AlignmentDirectional.centerStart,

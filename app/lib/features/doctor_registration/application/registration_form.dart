@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../core/validation/egyptian_phone.dart';
+import '../../../core/validation/map_links.dart';
 import '../../../core/validation/validators.dart';
 import '../domain/doctor_registration.dart';
 import '../domain/license_file.dart';
@@ -26,11 +27,9 @@ abstract final class RegField {
   static const branchName = 'branch.nameAr';
   static const governorate = 'branch.governorate';
   static const city = 'branch.city';
-  static const street = 'branch.street';
-  static const building = 'branch.building';
-  static const floor = 'branch.floor';
-  static const apartment = 'branch.apartment';
+  static const addressDetails = 'branch.addressDetails';
   static const landmark = 'branch.landmark';
+  static const mapUrl = 'branch.mapUrl';
   static const phones = 'branch.phones';
   static String phoneNumber(int index) => 'branch.phones[$index].number';
   static const examinationPrice = 'examinationPricePiasters';
@@ -65,6 +64,7 @@ abstract final class RegErrors {
   static const invalidValue = 'INVALID_VALUE';
   static const passwordsDontMatch = 'PASSWORDS_DONT_MATCH';
   static const invalidAmount = 'INVALID_AMOUNT';
+  static const invalidMapLink = 'INVALID_MAP_LINK';
 }
 
 /// One branch phone row in step 3.
@@ -98,11 +98,9 @@ class RegistrationForm extends ChangeNotifier {
       (licenseNumber, RegField.licenseNumber),
       (branchName, RegField.branchName),
       (city, RegField.city),
-      (street, RegField.street),
-      (building, RegField.building),
-      (floor, RegField.floor),
-      (apartment, RegField.apartment),
+      (addressDetails, RegField.addressDetails),
       (landmark, RegField.landmark),
+      (mapUrl, RegField.mapUrl),
       (examinationPrice, RegField.examinationPrice),
       (consultationPrice, RegField.consultationPrice),
     ]) {
@@ -140,11 +138,13 @@ class RegistrationForm extends ChangeNotifier {
   /// The Arabic name from [Governorates], or a value the API already had.
   String? governorate;
   final city = TextEditingController();
-  final street = TextEditingController();
-  final building = TextEditingController();
-  final floor = TextEditingController();
-  final apartment = TextEditingController();
+
+  /// «العنوان بالتفصيل»: street, building, floor and apartment in one text.
+  final addressDetails = TextEditingController();
   final landmark = TextEditingController();
+
+  /// «لينك جوجل ماب», optional.
+  final mapUrl = TextEditingController();
   final List<PhoneEntry> phones = [];
   final examinationPrice = TextEditingController();
   final consultationPrice = TextEditingController();
@@ -360,11 +360,18 @@ class RegistrationForm extends ChangeNotifier {
         );
         if (governorate == null || governorate!.trim().isEmpty) errors[RegField.governorate] = RegErrors.required;
         check(RegField.city, requiredText(city, max: limits['city']));
-        check(RegField.street, requiredText(street, max: limits['street']));
-        check(RegField.building, optionalText(building, limits['building']!));
-        check(RegField.floor, optionalText(floor, limits['floor']!));
-        check(RegField.apartment, optionalText(apartment, limits['apartment']!));
+        check(RegField.addressDetails, requiredText(addressDetails, max: limits['addressDetails']));
         check(RegField.landmark, optionalText(landmark, limits['landmark']!));
+        // What is sent: just the link, when the pasted text has words around it.
+        final link = MapLinks.extract(mapUrl.text);
+        check(
+          RegField.mapUrl,
+          link.length > limits['mapUrl']!
+              ? RegErrors.tooLong
+              : link.isNotEmpty && !MapLinks.isGoogleMaps(link)
+                  ? RegErrors.invalidMapLink
+                  : null,
+        );
         for (final (index, entry) in phones.indexed) {
           check(
             RegField.phoneNumber(index),
@@ -406,6 +413,9 @@ class RegistrationForm extends ChangeNotifier {
       return value.isEmpty ? null : value;
     }
 
+    // Just the link, when the pasted text has words around it.
+    final mapLink = MapLinks.extract(mapUrl.text);
+
     return RegistrationData(
       fullName: RegistrationRules.collapseSpaces(fullName.text),
       email: email.text.trim().toLowerCase(),
@@ -427,11 +437,9 @@ class RegistrationForm extends ChangeNotifier {
         nameAr: branchName.text.trim(),
         governorate: governorate!.trim(),
         city: city.text.trim(),
-        street: street.text.trim(),
-        building: optional(building),
-        floor: optional(floor),
-        apartment: optional(apartment),
+        addressDetails: addressDetails.text.trim(),
         landmark: optional(landmark),
+        mapUrl: mapLink.isEmpty ? null : mapLink,
         phones: [
           for (final entry in phones)
             BranchPhone(
@@ -470,11 +478,9 @@ class RegistrationForm extends ChangeNotifier {
     branchName.text = branch.nameAr;
     governorate = branch.governorate.trim().isEmpty ? null : (Governorates.find(branch.governorate)?.ar ?? branch.governorate);
     city.text = branch.city;
-    street.text = branch.street;
-    building.text = branch.building ?? '';
-    floor.text = branch.floor ?? '';
-    apartment.text = branch.apartment ?? '';
+    addressDetails.text = branch.addressDetails;
     landmark.text = branch.landmark ?? '';
+    mapUrl.text = branch.mapUrl ?? '';
     for (final entry in phones) {
       entry.number.dispose();
     }
@@ -540,11 +546,9 @@ class RegistrationForm extends ChangeNotifier {
       licenseNumber,
       branchName,
       city,
-      street,
-      building,
-      floor,
-      apartment,
+      addressDetails,
       landmark,
+      mapUrl,
       examinationPrice,
       consultationPrice,
       for (final entry in phones) entry.number,

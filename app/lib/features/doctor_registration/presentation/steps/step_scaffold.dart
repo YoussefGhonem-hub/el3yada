@@ -104,14 +104,17 @@ abstract class RegistrationStepState<T extends RegistrationStep> extends Consume
     TextCapitalization capitalization = TextCapitalization.none,
     int? maxLength,
     ValueChanged<String>? onSubmitted,
+    bool multiline = false,
   }) =>
       anchor(
         key,
         TextField(
           controller: controller,
           enabled: widget.enabled,
-          keyboardType: keyboardType,
-          textInputAction: action,
+          keyboardType: multiline ? TextInputType.multiline : keyboardType,
+          textInputAction: multiline ? TextInputAction.newline : action,
+          minLines: multiline ? 2 : null,
+          maxLines: multiline ? 4 : 1,
           textDirection: ltr ? TextDirection.ltr : null,
           obscureText: obscure,
           autocorrect: !obscure && !ltr,
@@ -123,6 +126,8 @@ abstract class RegistrationStepState<T extends RegistrationStep> extends Consume
           decoration: InputDecoration(
             labelText: label,
             hintText: hint,
+            hintMaxLines: multiline ? 2 : null,
+            alignLabelWithHint: multiline,
             hintTextDirection: ltr ? TextDirection.ltr : null,
             helperText: helper,
             helperMaxLines: 3,

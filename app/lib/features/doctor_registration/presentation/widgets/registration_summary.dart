@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/validation/egyptian_phone.dart';
+import '../../../../core/validation/map_links.dart';
 import '../../../../core/validation/validators.dart';
+import '../../../../core/widgets/map_link_field.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../application/registration_form.dart';
 import '../../domain/doctor_registration.dart';
@@ -24,11 +26,9 @@ class SummaryData {
     required this.branchName,
     required this.governorate,
     required this.city,
-    required this.street,
-    this.building,
-    this.floor,
-    this.apartment,
+    required this.addressDetails,
     this.landmark,
+    this.mapUrl,
     required this.phones,
     this.examinationPricePiasters,
     this.consultationPricePiasters,
@@ -64,11 +64,9 @@ class SummaryData {
       branchName: form.branchName.text.trim(),
       governorate: _governorate(form.governorate ?? '', languageCode),
       city: form.city.text.trim(),
-      street: form.street.text.trim(),
-      building: optional(form.building),
-      floor: optional(form.floor),
-      apartment: optional(form.apartment),
+      addressDetails: form.addressDetails.text.trim(),
       landmark: optional(form.landmark),
+      mapUrl: MapLinks.isGoogleMaps(form.mapUrl.text) ? MapLinks.extract(form.mapUrl.text) : null,
       phones: [
         for (final entry in form.phones)
           BranchPhone(
@@ -98,11 +96,9 @@ class SummaryData {
       branchName: languageCode == 'en' && (branch.nameEn?.isNotEmpty ?? false) ? branch.nameEn! : branch.nameAr,
       governorate: _governorate(branch.governorate, languageCode),
       city: branch.city,
-      street: branch.street,
-      building: branch.building,
-      floor: branch.floor,
-      apartment: branch.apartment,
+      addressDetails: branch.addressDetails,
       landmark: branch.landmark,
+      mapUrl: branch.mapUrl,
       phones: [
         for (final phone in branch.phones) phone.copyWith(number: EgyptianPhone.display(phone.number)),
       ],
@@ -124,7 +120,7 @@ class SummaryData {
     branchName: 'فرع المعادي',
     governorate: 'القاهرة',
     city: 'المعادي',
-    street: 'شارع 9، المعادي',
+    addressDetails: '12 شارع 9، الدور الثالث، شقة 5',
     phones: [BranchPhone(number: '0223581234')],
     examinationPricePiasters: 30000,
     consultationPricePiasters: 15000,
@@ -143,11 +139,11 @@ class SummaryData {
   final String branchName;
   final String governorate;
   final String city;
-  final String street;
-  final String? building;
-  final String? floor;
-  final String? apartment;
+  final String addressDetails;
   final String? landmark;
+
+  /// A Google Maps link, or null.
+  final String? mapUrl;
   final List<BranchPhone> phones;
   final int? examinationPricePiasters;
   final int? consultationPricePiasters;
@@ -168,14 +164,8 @@ class RegistrationSummary extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final d = data;
     final separator = l10n.regListSeparator;
-    final unit = [
-      if (d.building != null) l10n.regBuildingValue(d.building!),
-      if (d.floor != null) l10n.regFloorValue(d.floor!),
-      if (d.apartment != null) l10n.regApartmentValue(d.apartment!),
-    ].join(separator);
     final address = [
-      d.street,
-      if (unit.isNotEmpty) unit,
+      d.addressDetails,
       [d.city, d.governorate].where((part) => part.isNotEmpty).join(separator),
     ].where((part) => part.isNotEmpty).join('\n');
 
@@ -206,6 +196,15 @@ class RegistrationSummary extends StatelessWidget {
         _Row(l10n.regBranchNameLabel, d.branchName),
         _Row(l10n.regAddressLabel, address),
         if (d.landmark != null && d.landmark!.isNotEmpty) _Row(l10n.regLandmarkShort, d.landmark),
+        if (d.mapUrl != null)
+          _Row(
+            l10n.mapLinkShort,
+            null,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: OpenMapLinkButton(url: d.mapUrl),
+            ),
+          ),
         _Row(l10n.regPhonesLabel, null, child: _Phones(phones: d.phones)),
         _Row(
           l10n.regExaminationPrice,

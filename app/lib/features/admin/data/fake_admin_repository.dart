@@ -549,13 +549,9 @@ class FakeAdminRepository implements AdminRepository {
         governorate: 'القاهرة',
         city: 'المعادي',
         area: 'دجلة',
-        street: 'شارع 9',
-        building: '14',
-        floor: '3',
-        apartment: '7',
+        addressDetails: 'شارع 9، عمارة 14، الدور 3، شقة 7',
         landmark: 'بجوار محطة مترو المعادي',
-        lat: 29.9602,
-        lng: 31.2569,
+        mapUrl: 'https://www.google.com/maps/search/?api=1&query=29.9602,31.2569',
         email: 'maadi.clinic@example.com',
         phones: [
           BranchPhone(number: '+20223581234', label: 'landline'),
@@ -579,9 +575,8 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة الدقي',
         governorate: 'الجيزة',
         city: 'الدقي',
-        street: 'شارع التحرير',
-        building: '102',
-        floor: '5',
+        addressDetails: '102 شارع التحرير، الدور الخامس',
+        mapUrl: 'https://maps.google.com/?q=30.0385,31.2107',
         phones: [BranchPhone(number: '+201112223344', label: 'reception', isWhatsapp: true)],
       ),
     ));
@@ -606,7 +601,7 @@ class FakeAdminRepository implements AdminRepository {
           nameAr: 'مركز سموحة للجلدية',
           governorate: 'الإسكندرية',
           city: 'سموحة',
-          street: 'شارع فوزي معاذ',
+          addressDetails: 'شارع فوزي معاذ',
           landmark: 'أمام نادي سموحة',
           phones: [
             BranchPhone(number: '+2034251234', label: 'landline'),
@@ -641,7 +636,7 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة ابتسامة',
         governorate: 'الدقهلية',
         city: 'المنصورة',
-        street: 'شارع الجمهورية',
+        addressDetails: 'شارع الجمهورية',
         phones: [BranchPhone(number: '+20502241234', label: 'landline')],
       ),
     ));
@@ -660,7 +655,7 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة بنها',
         governorate: 'القليوبية',
         city: 'بنها',
-        street: 'شارع فريد ندا',
+        addressDetails: 'شارع فريد ندا',
         phones: [BranchPhone(number: '+201555667788', label: 'mobile', isWhatsapp: true)],
       ),
     ));
@@ -683,7 +678,7 @@ class FakeAdminRepository implements AdminRepository {
         nameAr: 'عيادة أسيوط',
         governorate: 'أسيوط',
         city: 'أسيوط',
-        street: 'شارع الجمهورية',
+        addressDetails: 'شارع الجمهورية',
         phones: [BranchPhone(number: '+20882331234', label: 'landline')],
       ),
     ));

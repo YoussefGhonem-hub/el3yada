@@ -1,3 +1,4 @@
+import '../../../core/validation/map_links.dart';
 import '../../../core/validation/validators.dart';
 
 /// A4 field rules (spec section 11), the same as the API's
@@ -16,11 +17,9 @@ abstract final class RegistrationRules {
     'nameAr': 60,
     'governorate': 50,
     'city': 60,
-    'street': 150,
-    'building': 20,
-    'floor': 20,
-    'apartment': 20,
+    'addressDetails': 300,
     'landmark': 150,
+    'mapUrl': MapLinks.maxLength,
   };
 
   static final _spaces = RegExp(r'\s+');

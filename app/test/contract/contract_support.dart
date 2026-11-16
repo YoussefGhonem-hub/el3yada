@@ -143,7 +143,7 @@ RegistrationData doctorRegistration({
         nameAr: 'فرع المعادي',
         governorate: 'القاهرة',
         city: 'المعادي',
-        street: 'شارع 9',
+        addressDetails: 'شارع 9',
         landmark: 'بجوار المترو',
         phones: [BranchPhone(number: '02 2358 1234', label: BranchPhone.landline)],
       ),

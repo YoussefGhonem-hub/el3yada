@@ -33,7 +33,8 @@ RegistrationForm filledForm({bool resubmit = false}) {
   form.branchName.text = 'فرع المعادي';
   form.setGovernorate('القاهرة');
   form.city.text = 'المعادي';
-  form.street.text = 'شارع 9';
+  form.addressDetails.text = ' 12 شارع 9، الدور التالت، شقة 5 ';
+  form.mapUrl.text = 'https://maps.app.goo.gl/AbCd1234';
   form.phones.first.number.text = '02 2358 1234';
   form.examinationPrice.text = '300';
   form.consultationPrice.text = '150.5';
@@ -149,7 +150,7 @@ void main() {
         'branch.nameAr': 'REQUIRED',
         'branch.governorate': 'REQUIRED',
         'branch.city': 'REQUIRED',
-        'branch.street': 'REQUIRED',
+        'branch.addressDetails': 'REQUIRED',
         'branch.phones[0].number': 'REQUIRED',
       });
       expect(form.validateStep(3), {'acceptTerms': 'TERMS_NOT_ACCEPTED'});
@@ -170,6 +171,8 @@ void main() {
       form.confirmPassword.text = 'other123';
       form.phones.first.number.text = '12';
       form.examinationPrice.text = '1.234';
+      form.addressDetails.text = 'ع' * 301;
+      form.mapUrl.text = 'https://www.facebook.com/clinic';
       expect(form.validateStep(0), {
         'fullName': 'INVALID_NAME',
         'email': 'INVALID_EMAIL',
@@ -177,6 +180,8 @@ void main() {
         'confirmPassword': 'PASSWORDS_DONT_MATCH',
       });
       expect(form.validateStep(2), {
+        'branch.addressDetails': 'TOO_LONG',
+        'branch.mapUrl': 'INVALID_MAP_LINK',
         'branch.phones[0].number': 'INVALID_PHONE',
         'examinationPricePiasters': 'INVALID_AMOUNT',
       });
@@ -184,7 +189,7 @@ void main() {
 
     test('typing in a field clears its error and the first step with an error is found', () {
       final form = filledForm();
-      form.setErrors({'branch.street': 'TOO_LONG', 'email': 'EMAIL_ALREADY_REGISTERED'});
+      form.setErrors({'branch.addressDetails': 'TOO_LONG', 'email': 'EMAIL_ALREADY_REGISTERED'});
       expect(form.firstStepWithError(), 0);
       form.email.text = 'other@example.com';
       expect(form.errorOf('email'), isNull);
@@ -212,7 +217,8 @@ void main() {
           'nameAr': 'فرع المعادي',
           'governorate': 'القاهرة',
           'city': 'المعادي',
-          'street': 'شارع 9',
+          'addressDetails': '12 شارع 9، الدور التالت، شقة 5',
+          'mapUrl': 'https://maps.app.goo.gl/AbCd1234',
           'phones': [
             {'number': '+20223581234', 'label': 'reception', 'isWhatsapp': false},
           ],
@@ -247,9 +253,8 @@ void main() {
           governorate: 'Cairo',
           city: 'المعادي',
           area: 'دجلة',
-          street: 'شارع 9',
-          lat: 29.96,
-          lng: 31.25,
+          addressDetails: 'شارع 9، عمارة 12',
+          mapUrl: 'https://www.google.com/maps/search/?api=1&query=29.960000,31.250000',
           phones: [BranchPhone(number: '+20223581234', label: 'landline', isWhatsapp: true)],
         ),
       );
@@ -271,8 +276,44 @@ void main() {
       final branch = (json['branch'] as Map).cast<String, dynamic>();
       expect(branch['nameEn'], 'Maadi');
       expect(branch['area'], 'دجلة');
-      expect(branch['lat'], 29.96);
+      expect(branch['addressDetails'], 'شارع 9، عمارة 12');
+      expect(branch['mapUrl'], 'https://www.google.com/maps/search/?api=1&query=29.960000,31.250000');
       expect(branch.containsKey('id'), isFalse);
+    });
+
+    test('a branch in the old shape (street, building, lat, lng) still reads; the old fields are dropped', () {
+      final branch = RegistrationBranch.fromJson({
+        'id': 'b1',
+        'nameAr': 'فرع المعادي',
+        'governorate': 'القاهرة',
+        'city': 'المعادي',
+        'street': 'شارع 9',
+        'building': '12',
+        'floor': '3',
+        'apartment': '5',
+        'lat': 29.96,
+        'lng': 31.25,
+        'phones': [
+          {'number': '+20223581234'},
+        ],
+      });
+      expect(branch.nameAr, 'فرع المعادي');
+      expect(branch.addressDetails, '');
+      expect(branch.mapUrl, isNull);
+
+      // A7 then asks for the detailed address again instead of failing.
+      final form = RegistrationForm(resubmit: true)
+        ..prefill(DoctorRegistration(specialty: const Specialty(id: 'sp-gp'), branch: branch));
+      expect(form.validateStep(2), {'branch.addressDetails': 'REQUIRED'});
+      expect(form.toData(locale: 'ar').toJson()['branch'], isNot(contains('street')));
+    });
+
+    test('a pasted share text sends only the link', () {
+      final form = filledForm()..mapUrl.text = 'عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234';
+      expect(form.validateStep(2), isEmpty);
+      expect(form.toData(locale: 'ar').branch.mapUrl, 'https://maps.app.goo.gl/AbCd1234');
+      form.mapUrl.text = '  ';
+      expect(form.toData(locale: 'ar').branch.mapUrl, isNull);
     });
   });
 

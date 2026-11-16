@@ -183,9 +183,9 @@ ClinicDay phase2ClinicDay({
     expect(details.id, maadiId);
     expect(details.isDefault, isTrue);
     expect(details.info.nameAr, 'فرع المعادي');
-    expect(details.address.street, 'شارع 9');
+    expect(details.address.details, 'شارع 9');
     expect(details.address.landmark, 'بجوار المترو');
-    expect(details.address.hasPin, isFalse);
+    expect(details.address.mapUrl, isNull);
     expect(details.contact.phones.single.number, '+20223581234');
     expect(details.contact.phones.single.label, PhoneLabels.landline);
     expect(details.workingHours.periods, isEmpty);
@@ -202,10 +202,8 @@ ClinicDay phase2ClinicDay({
       address: const BranchAddress(
         governorate: 'الجيزة',
         city: 'الدقي',
-        street: 'شارع التحرير',
-        building: '12',
-        lat: 30.038,
-        lng: 31.211,
+        details: '12 شارع التحرير',
+        mapUrl: 'https://maps.app.goo.gl/AbCd1234XyZ',
       ),
       contact: BranchContact(
         phones: [BranchContactPhone(number: mobile(), label: PhoneLabels.mobile, isWhatsapp: true)],
@@ -219,9 +217,8 @@ ClinicDay phase2ClinicDay({
     expect(dokki.assigned, isTrue);
     expect(dokki.info.nameEn, 'Dokki');
     expect(dokki.info.description, 'الدور الثاني');
-    expect(dokki.address.building, '12');
-    expect(dokki.address.lat, closeTo(30.038, 1e-6));
-    expect(dokki.address.lng, closeTo(31.211, 1e-6));
+    expect(dokki.address.details, '12 شارع التحرير');
+    expect(dokki.address.mapUrl, 'https://maps.app.goo.gl/AbCd1234XyZ');
     expect(dokki.contact.email, 'dokki@clinic.example');
     expect(dokki.contact.phones.single.number, startsWith('+2010'));
     expect(dokki.contact.phones.single.isWhatsapp, isTrue);
@@ -258,7 +255,7 @@ ClinicDay phase2ClinicDay({
     final renamed =
         await repository.updateBranch(dokkiId, info: const BranchInfo(nameAr: 'فرع الدقي', nameEn: 'Dokki'));
     expect(renamed.info.description, isNull);
-    expect(renamed.address.building, '12');
+    expect(renamed.address.details, '12 شارع التحرير');
     expect(renamed.workingHours.periods, hasLength(4));
 
     // A closure with a message and a reopening date, then open again.

@@ -198,58 +198,42 @@ class BranchInfo {
   Map<String, dynamic> toJson() => {'nameAr': nameAr, 'nameEn': nameEn, 'description': description};
 }
 
-/// D29 Address and map tab. [lat] and [lng] come together or not at all.
+/// D29 Address and map tab: governorate, city, area, «العنوان بالتفصيل»
+/// ([details]: street, building, floor and apartment as one text), the
+/// landmark and an optional Google Maps link ([mapUrl]).
 class BranchAddress {
   const BranchAddress({
     required this.governorate,
     required this.city,
     this.area,
-    required this.street,
-    this.building,
-    this.floor,
-    this.apartment,
+    required this.details,
     this.landmark,
-    this.lat,
-    this.lng,
+    this.mapUrl,
   });
 
   factory BranchAddress.fromJson(Map<String, dynamic> json) => BranchAddress(
         governorate: json['governorate'] as String,
         city: json['city'] as String,
         area: readText(json['area']),
-        street: json['street'] as String,
-        building: readText(json['building']),
-        floor: readText(json['floor']),
-        apartment: readText(json['apartment']),
+        details: json['details'] as String? ?? '',
         landmark: readText(json['landmark']),
-        lat: readDouble(json['lat']),
-        lng: readDouble(json['lng']),
+        mapUrl: readText(json['mapUrl']),
       );
 
   final String governorate;
   final String city;
   final String? area;
-  final String street;
-  final String? building;
-  final String? floor;
-  final String? apartment;
+  final String details;
   final String? landmark;
-  final double? lat;
-  final double? lng;
-
-  bool get hasPin => lat != null && lng != null;
+  final String? mapUrl;
 
   Map<String, dynamic> toJson() => {
         'governorate': governorate,
         'city': city,
         'area': area,
-        'street': street,
-        'building': building,
-        'floor': floor,
-        'apartment': apartment,
+        'details': details,
         'landmark': landmark,
-        'lat': lat,
-        'lng': lng,
+        'mapUrl': mapUrl,
       };
 }
 

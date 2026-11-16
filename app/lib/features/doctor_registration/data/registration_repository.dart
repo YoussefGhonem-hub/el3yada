@@ -276,11 +276,9 @@ class FakeRegistrationRepository implements RegistrationRepository {
         nameAr: 'فرع المعادي',
         governorate: 'القاهرة',
         city: 'المعادي',
-        street: 'شارع 9',
-        building: '12',
-        floor: '3',
-        apartment: '5',
+        addressDetails: '12 شارع 9، الدور الثالث، شقة 5',
         landmark: 'بجوار محطة المترو',
+        mapUrl: 'https://www.google.com/maps/search/?api=1&query=29.960306,31.257092',
         phones: [
           BranchPhone(number: '+20223581234', label: BranchPhone.landline),
           BranchPhone(number: '+201012345678', label: BranchPhone.mobile, isWhatsapp: true),

@@ -32,10 +32,9 @@ public sealed class RegistrationTests(IntegrationHost host)
             ["nameAr"] = "فرع المعادي",
             ["governorate"] = "القاهرة",
             ["city"] = "المعادي",
-            ["street"] = "شارع 9",
+            ["addressDetails"] = "١٢ شارع 9، الدور التالت، شقة ٥",
             ["landmark"] = "بجوار المترو",
-            ["lat"] = 29.96m,
-            ["lng"] = 31.25m,
+            ["mapUrl"] = "https://maps.app.goo.gl/Maadi9",
             ["phones"] = new object[]
             {
                 new { number = "02 2358 1234", label = "landline", isWhatsapp = false },
@@ -101,7 +100,8 @@ public sealed class RegistrationTests(IntegrationHost host)
         Assert.Equal(2, mine.GetProperty("extraSpecialtyIds").GetArrayLength());
         var branch = mine.GetProperty("branch");
         Assert.Equal(["+20223581234", "+201012345678"], branch.GetProperty("phones").EnumerateArray().Select(p => p.Str("number")));
-        Assert.Equal(29.96m, branch.GetProperty("lat").GetDecimal());
+        Assert.Equal("١٢ شارع 9، الدور التالت، شقة ٥", branch.Str("addressDetails"));
+        Assert.Equal("https://maps.app.goo.gl/Maadi9", branch.Str("mapUrl"));
         Assert.False(mine.TryGetProperty("licenseDocPath", out _));
         using var ownLicense = await doctor.GetAsync("/api/doctors/myRegistration/license");
         Assert.Equal(HttpStatusCode.OK, ownLicense.StatusCode);
@@ -221,7 +221,7 @@ public sealed class RegistrationTests(IntegrationHost host)
         data["acceptTerms"] = false;
         data["extraSpecialtyIds"] = new[] { specialty };
         data["examinationPricePiasters"] = 10_000_001;
-        data["branch"] = new { nameAr = "ف", governorate = "", city = "المعادي", street = "شارع 9", phones = Array.Empty<object>() };
+        data["branch"] = new { nameAr = "ف", governorate = "", city = "المعادي", mapUrl = "https://example.com/maps/x", phones = Array.Empty<object>() };
 
         var (status, body) = await RegisterAsync(data, LicenseJpeg);
 
@@ -237,6 +237,8 @@ public sealed class RegistrationTests(IntegrationHost host)
         Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("examinationPricePiasters"));
         Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("branch.nameAr"));
         Assert.Equal(ErrorCodes.Required, body.FieldCode("branch.governorate"));
+        Assert.Equal(ErrorCodes.Required, body.FieldCode("branch.addressDetails"));
+        Assert.Equal(ErrorCodes.InvalidMapLink, body.FieldCode("branch.mapUrl"));
         Assert.Equal(ErrorCodes.PhoneRequired, body.FieldCode("branch.phones"));
     }
 
@@ -251,7 +253,7 @@ public sealed class RegistrationTests(IntegrationHost host)
         var (specialtyStatus, badSpecialty) = await RegisterAsync(Data(TestData.Email(), Guid.NewGuid()), LicenseJpeg);
         var (takenStatus, taken) = await RegisterAsync(Data(existing.Identifier, specialty), LicenseJpeg);
         var bad = Data(TestData.Email(), specialty);
-        bad["branch"] = new { nameAr = "فرع", governorate = "الجيزة", city = "الدقي", street = "التحرير", phones = new[] { new { number = "999" } } };
+        bad["branch"] = new { nameAr = "فرع", governorate = "الجيزة", city = "الدقي", addressDetails = "التحرير", phones = new[] { new { number = "999" } } };
         var (phoneStatus, phone) = await RegisterAsync(bad, LicenseJpeg);
         using var json = await Factory.Client().PostAsJsonAsyncRaw("/api/doctors/completeDoctorRegistration", Data(TestData.Email(), specialty));
 

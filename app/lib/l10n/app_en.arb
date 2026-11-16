@@ -1450,5 +1450,7 @@
   "sessionErrorAmountNotEditable": "The amount can be changed only on the day of the session.",
   "sessionNoClinical": "No clinical notes yet.",
   "sessionConsultationShort": "{count} of {max}",
-  "@sessionConsultationShort": {"description":"Consultations since the last examination, D6 summary.","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}}
+  "@sessionConsultationShort": {"description":"Consultations since the last examination, D6 summary.","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}},
+  "backToSection": "Back to {section}",
+  "@backToSection": {"description":"Screen-reader name of the desktop Back pill, which shows the section it returns to.","placeholders":{"section":{"type":"String"}}}
 }

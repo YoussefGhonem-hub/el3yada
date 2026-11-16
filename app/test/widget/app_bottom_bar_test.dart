@@ -181,7 +181,12 @@ void main() {
   });
 
   testWidgets('the tablet rail and the desktop menu keep the sliding indicator', (tester) async {
-    Rect pill() => tester.getRect(find.descendant(of: find.byType(SlidingIndicator), matching: find.byType(DecoratedBox)));
+    // The rail's SlidingIndicator, or the desktop menu's pill (with its punch).
+    Rect pill() {
+      final rail = find.byType(SlidingIndicator);
+      final indicator = rail.evaluate().isNotEmpty ? rail : find.byKey(AppSideMenu.indicatorKey);
+      return tester.getRect(find.descendant(of: indicator, matching: find.byType(DecoratedBox)).first);
+    }
     for (final vertical in [
       (int selected, ValueChanged<int> onSelected) => AppNavRail(items: _items, selectedIndex: selected, onSelected: onSelected),
       (int selected, ValueChanged<int> onSelected) => AppSideMenu(items: _items, selectedIndex: selected, onSelected: onSelected),

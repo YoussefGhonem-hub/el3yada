@@ -16,6 +16,8 @@ import '../theme/motion.dart';
 ///   shows.
 /// - [beat]: while the mark stays on screen, the plus beats gently
 ///   ("lub-dub") every few seconds. Off with reduced motion.
+/// - [beatOnHover]: the plus beats once when the mouse comes over the mark
+///   (desktop), instead of on a loop. Off with reduced motion.
 /// - [hero]: wraps the mark in a `Hero` with [heroTag]. Use it on one widget
 ///   per screen.
 /// - [onDrawn]: called when the drawing has finished (at once when static),
@@ -28,6 +30,7 @@ class AppLogoMark extends StatefulWidget {
     this.size = 72,
     this.animate = false,
     this.beat = false,
+    this.beatOnHover = false,
     this.hero = false,
     this.onDrawn,
     this.letterColor,
@@ -43,6 +46,7 @@ class AppLogoMark extends StatefulWidget {
   final double size;
   final bool animate;
   final bool beat;
+  final bool beatOnHover;
   final bool hero;
   final VoidCallback? onDrawn;
   final Color? letterColor;
@@ -56,6 +60,19 @@ class _AppLogoMarkState extends State<AppLogoMark> with TickerProviderStateMixin
   AnimationController? _draw;
   AnimationController? _beat;
   bool _planned = false;
+
+  /// One heartbeat on hover ([AppLogoMark.beatOnHover]): runs once through
+  /// the first part of a period, the "lub" and the "dub".
+  AnimationController? _hover;
+  Animation<double>? _hoverBeat;
+  static const _onePulse = 0.26;
+
+  void _beatOnce() {
+    final hover = _hover;
+    if (hover == null || _beat != null || Motion.of(context).reduced) return;
+    if ((_draw?.isAnimating ?? false) || hover.isAnimating) return;
+    hover.forward(from: 0);
+  }
 
   // Phases of the drawing, as parts of [AppLogoMark.drawDuration].
   static const _strokePart = Interval(0, 0.55, curve: Motion.standardCurve);
@@ -74,6 +91,9 @@ class _AppLogoMarkState extends State<AppLogoMark> with TickerProviderStateMixin
 
     if (widget.beat && Motion.of(context).loops) {
       _beat = AnimationController(vsync: this, duration: _beatPeriod);
+    } else if (widget.beatOnHover) {
+      final hover = _hover = AnimationController(vsync: this, duration: _beatPeriod * _onePulse);
+      _hoverBeat = hover.drive(Tween(begin: 0, end: _onePulse));
     }
 
     if (!widget.animate || reduced) {
@@ -99,6 +119,7 @@ class _AppLogoMarkState extends State<AppLogoMark> with TickerProviderStateMixin
   void dispose() {
     _draw?.dispose();
     _beat?.dispose();
+    _hover?.dispose();
     super.dispose();
   }
 
@@ -110,10 +131,11 @@ class _AppLogoMarkState extends State<AppLogoMark> with TickerProviderStateMixin
         letter: widget.letterColor ?? Theme.of(context).colorScheme.primary,
         plus: widget.plusColor ?? context.el3yadaColors.brandAccent,
         draw: _draw,
-        beat: _beat,
+        beat: _beat ?? _hoverBeat,
       ),
     );
-    if (_draw != null || _beat != null) mark = RepaintBoundary(child: mark);
+    if (_draw != null || _beat != null || _hover != null) mark = RepaintBoundary(child: mark);
+    if (_hover != null) mark = MouseRegion(onEnter: (_) => _beatOnce(), child: mark);
     if (widget.hero) mark = Hero(tag: AppLogoMark.heroTag, child: mark);
     return ExcludeSemantics(child: mark);
   }

@@ -1253,5 +1253,6 @@
   "sessionErrorBranchArchived": "هذا الفرع مؤرشف. اختر فرعاً آخر.",
   "sessionErrorAmountNotEditable": "لا يمكن تعديل المبلغ إلا في يوم الزيارة.",
   "sessionNoClinical": "لا توجد بيانات طبية بعد.",
-  "sessionConsultationShort": "{count} من {max}"
+  "sessionConsultationShort": "{count} من {max}",
+  "backToSection": "رجوع إلى {section}"
 }

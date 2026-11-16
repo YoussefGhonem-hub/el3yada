@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import '../../core/theme/motion.dart';
 import '../../core/widgets/app_logo.dart';
 import '../../core/widgets/navigation/app_back_button.dart';
 import '../../core/widgets/navigation/app_bottom_bar.dart';
+import '../../core/widgets/navigation/desktop_page_header.dart';
 import '../../core/widgets/navigation/nav_item.dart';
 import '../../core/widgets/navigation/nav_rail.dart';
 import '../../core/widgets/navigation/side_menu.dart';
@@ -237,26 +239,59 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
         );
 
     if (width >= Breakpoints.desktop) {
+      // Desktop: no top bar. The side menu (the ticket's stub) holds the
+      // brand and the account; the page has its own header with Back, named
+      // after the section it returns to, the branch and quick settings.
       final all = visible;
-      return Scaffold(
-        appBar: appBar,
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AppSideMenu(
-              items: [for (final d in all) itemFor(d)],
-              selectedIndex: all.indexWhere((d) => location.startsWith(d.path)),
-              onSelected: (i) => context.go(all[i].path),
-              header: displayName.isEmpty
-                  ? null
-                  : Padding(
-                      padding: const EdgeInsetsDirectional.only(start: 16, bottom: 12),
-                      child: Text(displayName, style: Theme.of(context).textTheme.titleSmall),
+      final firstSecondary = all.indexWhere((d) => !d.primary);
+      final backLabel = shell.destinationAt(top)?.label(l10n) ?? MaterialLocalizations.of(context).backButtonTooltip;
+      return CallbackShortcuts(
+        bindings: {
+          // Alt+Left goes back, as in a browser.
+          if (backTo != null)
+            const SingleActivator(LogicalKeyboardKey.arrowLeft, alt: true): () =>
+                AppBackButton.goBack(context, fallback: backTo),
+        },
+        child: Scaffold(
+          body: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppSideMenu(
+                items: [for (final d in all) itemFor(d)],
+                selectedIndex: all.indexWhere((d) => location.startsWith(d.path)),
+                onSelected: (i) => context.go(all[i].path),
+                breaks: {if (firstSecondary > 0) firstSecondary},
+                header: SideMenuBrand(
+                  title: l10n.appTitle,
+                  subtitle: clinic != null ? l10n.clinicOfDoctor(clinic.doctor.name(languageCode)) : shell.role.label(l10n),
+                ),
+                footer: session == null
+                    ? null
+                    : SideMenuAccount(
+                        name: displayName,
+                        initial: InitialAvatar.initialOf(displayName),
+                        role: shell.role.label(l10n),
+                        onProfile: profilePath == null ? null : () => context.go(profilePath),
+                        onSignOut: () => ref.read(authControllerProvider.notifier).logout(),
+                      ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    DesktopPageHeader(
+                      back: backTo == null ? null : AppBackButton(key: ValueKey(backLabel), fallback: backTo, label: backLabel),
+                      trailing: [
+                        if (_isClinic) const _DesktopPill(child: BranchPicker()),
+                        const DesktopQuickSettings(),
+                      ],
                     ),
-            ),
-            const VerticalDivider(width: 1),
-            Expanded(child: content),
-          ],
+                    Expanded(child: content),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -418,6 +453,34 @@ class _PillButtons extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           shape: StadiumBorder(side: BorderSide(color: scheme.outlineVariant)),
           textStyle: const TextStyle(fontFamily: AppTheme.fontFamily, fontSize: 13, fontWeight: FontWeight.w500),
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
+/// The desktop header's branch picker: a pill like the quick settings next
+/// to it, with the store icon in the brand colour.
+class _DesktopPill extends StatelessWidget {
+  const _DesktopPill({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return TextButtonTheme(
+      data: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          backgroundColor: scheme.surfaceContainerLow,
+          foregroundColor: scheme.onSurface,
+          iconColor: scheme.primary,
+          minimumSize: const Size(48, DesktopQuickSettings.height),
+          padding: const EdgeInsetsDirectional.fromSTEB(14, 0, 10, 0),
+          shape: StadiumBorder(side: BorderSide(color: scheme.outlineVariant)),
+          textStyle: theme.textTheme.labelLarge,
         ),
       ),
       child: child,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../l10n/gen/app_localizations.dart';
 import '../../theme/motion.dart';
 import '../pressable.dart';
 
@@ -14,8 +15,12 @@ import '../pressable.dart';
 /// Inside a role area the top bar shows it on every screen that isn't a menu
 /// root (see `RoleScaffold`), so screens don't add their own. Screens outside
 /// the role areas get it from their `AppBar`.
+///
+/// With a [label] (desktop, at the top of the page) it is a pill that names
+/// where it goes: the arrow on a filled disc, then the section's name. Under
+/// the mouse the pill tints and the arrow leans back.
 class AppBackButton extends StatelessWidget {
-  const AppBackButton({super.key, this.fallback, this.onPressed, this.size = 40});
+  const AppBackButton({super.key, this.fallback, this.onPressed, this.size = 40, this.label});
 
   /// Where Back goes when there is nothing to pop.
   final String? fallback;
@@ -24,6 +29,9 @@ class AppBackButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   final double size;
+
+  /// The section Back returns to, shown next to the arrow.
+  final String? label;
 
   /// Pops like the system Back, or goes to [fallback].
   static Future<void> goBack(BuildContext context, {String? fallback}) async {
@@ -38,6 +46,18 @@ class AppBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final tooltip = MaterialLocalizations.of(context).backButtonTooltip;
+    final label = this.label;
+    if (label != null) {
+      return Tooltip(
+        message: tooltip,
+        child: _BackPill(
+          label: label,
+          semanticLabel: AppLocalizations.of(context).backToSection(label),
+          size: size,
+          onTap: onPressed ?? () => goBack(context, fallback: fallback),
+        ),
+      );
+    }
     return Tooltip(
       message: tooltip,
       child: Pressable(
@@ -46,6 +66,135 @@ class AppBackButton extends StatelessWidget {
         pressedScale: 0.88,
         borderRadius: BorderRadius.circular(size / 2),
         child: _BackFace(size: size, scheme: scheme),
+      ),
+    );
+  }
+}
+
+/// The arrow sliding in from the far side, once, when Back first shows.
+class _EnteringArrow extends StatefulWidget {
+  const _EnteringArrow({required this.child, this.lean = 0});
+
+  final Widget child;
+
+  /// Extra travel backwards in dp (the hover lean).
+  final double lean;
+
+  @override
+  State<_EnteringArrow> createState() => _EnteringArrowState();
+}
+
+class _EnteringArrowState extends State<_EnteringArrow> with SingleTickerProviderStateMixin {
+  late final AnimationController _enter = AnimationController(vsync: this, duration: Motion.slow);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_enter.isDismissed) {
+      if (Motion.of(context).reduced) {
+        _enter.value = 1;
+      } else {
+        _enter.forward();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _enter.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    // Backwards is to the left in English, to the right in Arabic.
+    final back = rtl ? 1.0 : -1.0;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(end: Motion.of(context).reduced ? 0 : widget.lean),
+      duration: Motion.fast,
+      curve: Motion.spring,
+      builder: (context, lean, child) => AnimatedBuilder(
+        animation: _enter,
+        builder: (context, child) {
+          final t = Motion.springBouncy.transform(_enter.value);
+          return Transform.translate(
+            offset: Offset((1 - t) * -back * 10 + back * lean, 0),
+            child: Opacity(opacity: _enter.value, child: child),
+          );
+        },
+        child: child,
+      ),
+      child: widget.child,
+    );
+  }
+}
+
+class _BackPill extends StatefulWidget {
+  const _BackPill({required this.label, required this.semanticLabel, required this.size, required this.onTap});
+
+  final String label;
+  final String semanticLabel;
+  final double size;
+  final VoidCallback onTap;
+
+  @override
+  State<_BackPill> createState() => _BackPillState();
+}
+
+class _BackPillState extends State<_BackPill> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final size = widget.size;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: Pressable(
+        onTap: widget.onTap,
+        semanticLabel: widget.semanticLabel,
+        pressedScale: 0.95,
+        borderRadius: BorderRadius.circular(size / 2),
+        child: AnimatedContainer(
+          duration: Motion.fast,
+          curve: Motion.enterCurve,
+          height: size,
+          padding: const EdgeInsetsDirectional.fromSTEB(5, 5, 18, 5),
+          decoration: ShapeDecoration(
+            color: _hovered ? Color.alphaBlend(scheme.primary.withValues(alpha: 0.08), scheme.surfaceContainerLow) : scheme.surfaceContainerLow,
+            shape: StadiumBorder(
+              side: BorderSide(color: _hovered ? scheme.primary.withValues(alpha: 0.5) : scheme.outlineVariant),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: size - 10,
+                height: size - 10,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: scheme.primary),
+                child: _EnteringArrow(
+                  lean: _hovered ? 3 : 0,
+                  child: Icon(Icons.arrow_back_rounded, size: 18, color: scheme.onPrimary),
+                ),
+              ),
+              const SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 240),
+                child: Text(
+                  widget.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(color: scheme.onSurface),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

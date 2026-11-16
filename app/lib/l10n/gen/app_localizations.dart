@@ -7617,6 +7617,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} of {max}'**
   String sessionConsultationShort(int count, int max);
+
+  /// Screen-reader name of the desktop Back pill, which shows the section it returns to.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to {section}'**
+  String backToSection(String section);
 }
 
 class _AppLocalizationsDelegate

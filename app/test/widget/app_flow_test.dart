@@ -1,5 +1,6 @@
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/widgets/navigation/app_bottom_bar.dart';
+import 'package:el3yada/core/widgets/navigation/side_menu.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,7 +18,10 @@ void main() {
     await pumpApp(tester, platform: AppPlatform.desktop);
     await signIn(tester, 'doctor@el3yada.dev');
 
-    expect(find.text('el3yada · Doctor'), findsOneWidget);
+    // The side menu holds the brand and the account; there is no top bar.
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.descendant(of: find.byType(SideMenuBrand), matching: find.text('el3yada')), findsOneWidget);
+    expect(find.descendant(of: find.byType(SideMenuAccount), matching: find.text('Doctor')), findsOneWidget);
     // The home until the live board (D34) arrives in Phase 6.
     expect(find.text('Search patient'), findsOneWidget);
     expect(find.text('Branches'), findsOneWidget); // side menu shows every item

@@ -4435,4 +4435,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String sessionConsultationShort(int count, int max) {
     return '$count من $max';
   }
+
+  @override
+  String backToSection(String section) {
+    return 'رجوع إلى $section';
+  }
 }

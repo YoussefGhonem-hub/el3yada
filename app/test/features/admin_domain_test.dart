@@ -1,4 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:el3yada/core/format/app_format.dart';
+import 'package:el3yada/core/network/api_exception.dart';
+import 'package:el3yada/features/admin/data/admin_repository.dart';
 import 'package:el3yada/features/admin/data/fake_admin_repository.dart';
 import 'package:el3yada/features/admin/data/sample_license.dart';
 import 'package:el3yada/features/admin/domain/admin_models.dart';
@@ -156,6 +159,30 @@ void main() {
       );
     });
 
+    test('suspends an active doctor and reactivates them, with a reason (BR-G4)', () async {
+      final fake = FakeAdminRepository(delay: Duration.zero);
+      await expectLater(fake.setDoctorStatus('doc-tarek', suspended: true, reason: ' ab '), throwsA(_code('REASON_REQUIRED')));
+
+      final suspended = await fake.setDoctorStatus('doc-tarek', suspended: true, reason: ' فاتورة   أكتوبر ');
+      expect(suspended.isSuspended, isTrue);
+      expect(suspended.statusReason, 'فاتورة أكتوبر');
+      expect(suspended.statusChangedAt, isNotNull);
+      final active = await fake.setDoctorStatus('doc-tarek', suspended: false, reason: 'تم السداد');
+      expect(active.status, DoctorStatuses.active);
+      expect(active.statusReason, isNull);
+      expect((await fake.doctorRegistration('doc-tarek')).registration.statusReason, isNull);
+
+      // A sign-up waiting for review is neither active nor suspended.
+      await expectLater(
+        fake.setDoctorStatus('doc-sami', suspended: true, reason: 'سبب الإيقاف'),
+        throwsA(isA<ApiException>()
+            .having((e) => e.code, 'code', 'DOCTOR_STATUS_NOT_CHANGEABLE')
+            .having((e) => e.details['status'], 'status', DoctorStatuses.pendingApproval)),
+      );
+      final audit = await fake.auditLogs(const AuditFilter(), pageSize: 100);
+      expect(audit.items.map((e) => e.action), containsAll(['doctorSuspended', 'doctorReactivated']));
+    });
+
     test('settings history only records real changes', () async {
       final fake = FakeAdminRepository(delay: Duration.zero);
       final before = (await fake.settingsHistory()).totalCount;
@@ -166,6 +193,31 @@ void main() {
       expect(history.items.first.before, '7');
       expect(history.items.first.after, '9');
     });
+  });
+
+  test('setDoctorStatus sends the status and the reason, and reads the answer', () async {
+    final sent = <RequestOptions>[];
+    final dio = Dio()
+      ..interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+        sent.add(options);
+        handler.resolve(Response(requestOptions: options, statusCode: 200, data: <String, dynamic>{
+          'doctorId': 'd1',
+          'fullName': 'سامي عبد الله',
+          'status': 'suspended',
+          'statusReason': 'فاتورة أكتوبر',
+          'statusChangedAt': '2026-11-16T10:00:00.000Z',
+        }));
+      }));
+
+    final view = await ApiAdminRepository(dio).setDoctorStatus('d1', suspended: true, reason: 'فاتورة أكتوبر');
+
+    expect(sent.single.path, '/admin/setDoctorStatus');
+    expect(sent.single.data, {'doctorId': 'd1', 'status': 'suspended', 'reason': 'فاتورة أكتوبر'});
+    expect(view.doctorId, 'd1');
+    expect(view.fullName, 'سامي عبد الله');
+    expect(view.isSuspended, isTrue);
+    expect(view.statusReason, 'فاتورة أكتوبر');
+    expect(view.statusChangedAt, DateTime.utc(2026, 11, 16, 10));
   });
 
   test('sample license files are a real PNG and a real PDF', () {

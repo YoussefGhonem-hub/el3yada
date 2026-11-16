@@ -20,8 +20,9 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
 try
 {
-    // `dotnet run -- seed-admin <email>` runs a one-time command instead of the web server.
-    var isCommand = SeedAdminCommand.IsInvocation(args);
+    // `dotnet run -- seed-admin <email>` (and, in Development only, `add-booking …`) runs a one-time command
+    // instead of the web server.
+    var isCommand = SeedAdminCommand.IsInvocation(args) || AddBookingCommand.IsInvocation(args);
     var builder = WebApplication.CreateBuilder(isCommand ? [] : args);
 
     // Serilog: console and a daily file, set in the "Serilog" section of appsettings*.json.
@@ -79,7 +80,9 @@ try
 
     if (isCommand)
     {
-        Environment.ExitCode = await SeedAdminCommand.RunAsync(app.Services, args, Console.Out);
+        Environment.ExitCode = AddBookingCommand.IsInvocation(args)
+            ? await AddBookingCommand.RunAsync(app.Services, args, Console.Out)
+            : await SeedAdminCommand.RunAsync(app.Services, args, Console.Out);
         return;
     }
 

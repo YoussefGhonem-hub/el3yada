@@ -18,6 +18,7 @@ public sealed class AdminTests(IntegrationHost host)
     [InlineData("POST", "/api/admin/createAdmin")]
     [InlineData("POST", "/api/admin/updateSettings")]
     [InlineData("POST", "/api/admin/reviewDoctorRegistration")]
+    [InlineData("POST", "/api/admin/setDoctorStatus")]
     public async Task Admin_endpoints_need_a_token_and_an_admin(string method, string url)
     {
         var doctor = await TestData.CreateDoctorAsync(Factory);

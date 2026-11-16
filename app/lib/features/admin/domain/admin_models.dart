@@ -229,10 +229,12 @@ class DoctorRegistration {
 
   bool get isPending => status == DoctorStatuses.pendingApproval;
 
-  DoctorRegistration copyWith({String? status, String? statusReason}) => DoctorRegistration(
+  /// The same registration with a new [status] and its [statusReason]
+  /// (null: none, so an approval clears an earlier rejection's reason).
+  DoctorRegistration withStatus(String status, {String? statusReason}) => DoctorRegistration(
         doctorId: doctorId,
-        status: status ?? this.status,
-        statusReason: statusReason ?? this.statusReason,
+        status: status,
+        statusReason: statusReason,
         submittedAt: submittedAt,
         approvedAt: approvedAt,
         fullName: fullName,
@@ -287,6 +289,37 @@ class RegistrationDetail {
 
   /// Newest first. A rejection here means the doctor resubmitted.
   final List<RegistrationReview> reviews;
+}
+
+/// `setDoctorStatus`'s answer (BR-G4; AD5 comes in Phase 7).
+class DoctorStatusView {
+  const DoctorStatusView({
+    required this.doctorId,
+    required this.fullName,
+    required this.status,
+    this.statusReason,
+    this.statusChangedAt,
+  });
+
+  factory DoctorStatusView.fromJson(Map<String, dynamic> json) => DoctorStatusView(
+        doctorId: json['doctorId'] as String,
+        fullName: json['fullName'] as String,
+        status: json['status'] as String,
+        statusReason: _text(json['statusReason']),
+        statusChangedAt: _timeOrNull(json['statusChangedAt']),
+      );
+
+  final String doctorId;
+  final String fullName;
+
+  /// [DoctorStatuses.active] or [DoctorStatuses.suspended].
+  final String status;
+
+  /// The suspension reason; null once active.
+  final String? statusReason;
+  final DateTime? statusChangedAt;
+
+  bool get isSuspended => status == DoctorStatuses.suspended;
 }
 
 /// The license file, streamed through the API (never a public URL).

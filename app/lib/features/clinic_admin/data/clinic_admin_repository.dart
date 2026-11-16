@@ -27,9 +27,10 @@ abstract final class ClinicAdminCodes {
 }
 
 /// `BRANCH_HAS_BOOKINGS` (BR-BR9): the bookings that stop a closure or an
-/// archive, earliest first (at most 100 of [totalCount]).
+/// archive, earliest first (at most 100 of [totalCount]). [details] is the
+/// whole answer, as for any [ApiException].
 class BranchHasBookingsException extends ApiException {
-  const BranchHasBookingsException({required this.bookings, required this.totalCount, super.cause})
+  const BranchHasBookingsException({required this.bookings, required this.totalCount, super.cause, super.details})
       : super(kind: ApiErrorKind.http, status: 409, code: ClinicAdminCodes.branchHasBookings);
 
   final List<BranchBooking> bookings;
@@ -277,6 +278,7 @@ class ApiClinicAdminRepository implements ClinicAdminRepository {
           bookings: [for (final row in readList(data['bookings'])) BranchBooking.fromJson(row)],
           totalCount: data['totalCount'] as int? ?? 0,
           cause: error,
+          details: data.cast<String, Object?>(),
         );
       }
       throw ApiException.fromDio(error);

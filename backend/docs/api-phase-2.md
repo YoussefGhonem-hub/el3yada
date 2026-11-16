@@ -34,6 +34,8 @@ The app hides what the caller can't do (spec 7.6), so these answers are a safety
 
 **Blocked while suspended** (BR-G5): adding or linking patients, creating sessions, uploading files, prescriptions, sending chat messages. Everything else (reading, editing a session's clinical fields, profile, settings, branches, prices, assistants) still works.
 
+An admin suspends or reactivates a doctor by hand with `POST /api/admin/setDoctorStatus` (BR-G4, [api-phase-1.md](api-phase-1.md#doctor-status-ad5-br-g4-any-admin)); it applies on the next request. Billing suspends and reactivates automatically from Phase 7.
+
 **Permission keys** (spec 6.10), the same in `clinic/me`, in assistant endpoints and in `PERMISSION_DENIED`: `patientsManage`, `patientsResetPassword`, `sessionsCreate`, `sessionsDelete`, `clinicalView`, `clinicalEditProfile`, `filesManage`, `prescriptionsPrint`, `prescriptionsDraft`, `chat`, `billingView`, `billingPay`, `appointmentsView`, `appointmentsManage`, `scheduleManage`, `revenueView`, `pricesManage`.
 
 **Presets:** `reception`, `clinical`, `officeManager`, `custom`. **Dependencies:** `clinicalEditProfile` and `prescriptionsDraft` need `clinicalView`; `billingPay` needs `billingView`; `appointmentsManage` needs `appointmentsView`; `scheduleManage` needs `appointmentsManage`.

@@ -23,19 +23,13 @@ public partial class Branch
 
     public string? Area { get; set; }
 
-    public string Street { get; set; } = null!;
-
-    public string? Building { get; set; }
-
-    public string? Floor { get; set; }
-
-    public string? Apartment { get; set; }
+    /// <summary>«العنوان بالتفصيل»: street, building, floor and apartment as the doctor writes them (up to 300 characters).</summary>
+    public string AddressDetails { get; set; } = null!;
 
     public string? Landmark { get; set; }
 
-    public decimal? Lat { get; set; }
-
-    public decimal? Lng { get; set; }
+    /// <summary>«لينك جوجل ماب»: a Google Maps link (up to 500 characters), checked by form only.</summary>
+    public string? MapUrl { get; set; }
 
     public string? Email { get; set; }
 

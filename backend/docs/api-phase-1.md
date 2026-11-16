@@ -191,8 +191,8 @@ Notes:
   "examinationPricePiasters": 30000, "consultationPricePiasters": 15000,
   "branch": {
     "nameAr": "فرع المعادي", "nameEn": null, "governorate": "القاهرة", "city": "المعادي", "area": null,
-    "street": "شارع 9", "building": null, "floor": null, "apartment": null, "landmark": "بجوار المترو",
-    "lat": 29.96, "lng": 31.25, "email": null,
+    "addressDetails": "12 شارع 9، عمارة النور، الدور التالت، شقة 5", "landmark": "بجوار المترو",
+    "mapUrl": "https://maps.app.goo.gl/AbCd1234XyZ", "email": null,
     "phones": [ { "number": "02 2358 1234", "label": "landline", "isWhatsapp": false } ]
   },
   "acceptTerms": true,
@@ -215,9 +215,10 @@ Notes:
 | `examinationPricePiasters`, `consultationPricePiasters` | optional, 0–10,000,000 (100,000 EGP). Saved as the **doctor's** visit prices (6.15), which every branch without its own prices uses. | `OUT_OF_RANGE` |
 | `branch` | required | `REQUIRED` |
 | `branch.nameAr` | 2–60 | `REQUIRED`, `INVALID_VALUE` |
-| `branch.governorate`, `branch.city`, `branch.street` | required; ≤ 50, 60, 150 | `REQUIRED`, `TOO_LONG` |
-| `branch.area`, `branch.building`, `branch.floor`, `branch.apartment`, `branch.landmark` | optional; ≤ 60, 20, 20, 20, 150 | `TOO_LONG` |
-| `branch.lat`, `branch.lng` | both or neither; −90…90, −180…180 | `OUT_OF_RANGE`, `INVALID_VALUE` |
+| `branch.governorate`, `branch.city` | required; ≤ 50, 60 | `REQUIRED`, `TOO_LONG` |
+| `branch.addressDetails` | «العنوان بالتفصيل»: street, building, floor and apartment as one text (new lines allowed); required, ≤ 300, trimmed | `REQUIRED`, `TOO_LONG` |
+| `branch.area`, `branch.landmark` | optional; ≤ 60, 150 | `TOO_LONG` |
+| `branch.mapUrl` | optional «لينك جوجل ماب», ≤ 500. An `https` or `http` link to `maps.app.goo.gl/…`, `goo.gl/maps/…`, `maps.google.<tld>/…` or `(www.)google.<tld>/maps…` (`.com`, `.com.eg`, `.co.uk` …); only the form is checked, Google is never called. Text around the link is refused, so the app keeps just the link from a pasted share text. | `TOO_LONG`, `INVALID_MAP_LINK` |
 | `branch.email` | optional email | `INVALID_EMAIL` |
 | `branch.phones` | 1–5 | `PHONE_REQUIRED`, `INVALID_VALUE` |
 | `branch.phones[i].number` | Egyptian mobile, landline or hotline | `REQUIRED`, `INVALID_PHONE` |
@@ -244,7 +245,7 @@ Returned by `myRegistration`, `resubmitDoctorRegistration`, the admin detail and
   "licenseNumber": "45678", "licenseContentType": "image/jpeg",
   "fullNameEn": null, "titleEn": null, "degreesAr": null, "degreesEn": null,
   "examinationPricePiasters": 30000, "consultationPricePiasters": null,
-  "branch": { "id": "…", "nameAr": "…", "governorate": "…", "city": "…", "street": "…", "…": "…",
+  "branch": { "id": "…", "nameAr": "…", "governorate": "…", "city": "…", "addressDetails": "…", "mapUrl": null, "…": "…",
               "phones": [ { "number": "+20223581234", "label": "landline", "isWhatsapp": false } ] }
 }
 ```
@@ -383,6 +384,7 @@ Arabic texts in quotes are from the spec. The app owns the final wording in its 
 | `INVALID_MOBILE` | field | «رقم الموبايل غير صحيح» |
 | `INVALID_PHONE` | field | Not a valid phone number (landlines allowed) |
 | `PHONE_REQUIRED` | field | «أضف رقم تليفون واحد على الأقل» |
+| `INVALID_MAP_LINK` | field | A branch's `mapUrl` is not a Google Maps link («ده مش لينك جوجل ماب») |
 | `INVALID_EMAIL` | field | «البريد الإلكتروني غير صحيح» |
 | `INVALID_IDENTIFIER` | field | Neither an email nor an Egyptian mobile |
 | `INVALID_NAME` | field | «اكتب الاسم ثنائي على الأقل» |

@@ -52,6 +52,12 @@ public static partial class RuleBuilderExtensions
             .WithErrorCode(ErrorCodes.WeakPassword)
             .WithMessage("The password must be at least 8 characters and contain a letter and a number.");
 
+    /// <summary>A Google Maps link (<see cref="MapLinks.IsGoogleMaps"/>). Null and empty pass.</summary>
+    public static IRuleBuilderOptions<T, string?> GoogleMapsLink<T>(this IRuleBuilder<T, string?> rule) =>
+        rule.Must(value => string.IsNullOrWhiteSpace(value) || MapLinks.IsGoogleMaps(value))
+            .WithErrorCode(ErrorCodes.InvalidMapLink)
+            .WithMessage("Paste a Google Maps link (maps.app.goo.gl/…, google.com/maps/…).");
+
     /// <summary>One of <paramref name="allowed"/> (case-sensitive, as stored).</summary>
     public static IRuleBuilderOptions<T, string?> OneOf<T>(this IRuleBuilder<T, string?> rule, params string[] allowed) =>
         rule.Must(value => value is null || allowed.Contains(value, StringComparer.Ordinal))

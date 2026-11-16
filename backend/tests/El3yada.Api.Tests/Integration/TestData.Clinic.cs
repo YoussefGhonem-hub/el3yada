@@ -17,8 +17,9 @@ public static partial class TestData
         info = new { nameAr, nameEn = "Dokki", description = "عيادة الأطفال بالدور الثاني" },
         address = new
         {
-            governorate = "الجيزة", city = "الدقي", area = "ميدان المساحة", street = "شارع التحرير", building = "12",
-            floor = "2", apartment = "4", landmark = "بجوار البنك الأهلي", lat = 30.038m, lng = 31.211m,
+            governorate = "الجيزة", city = "الدقي", area = "ميدان المساحة",
+            details = "  ١٢ شارع التحرير، الدور التاني، شقة ٤\n(الباب الشمال)  ", landmark = "بجوار البنك الأهلي",
+            mapUrl = " https://maps.app.goo.gl/Dokki12345 ",
         },
         contact = new
         {

@@ -441,13 +441,9 @@ public sealed class DoctorRegistrationController(
         branch.Governorate = data.Governorate!.Trim();
         branch.City = data.City!.Trim();
         branch.Area = Text.TrimToNull(data.Area);
-        branch.Street = data.Street!.Trim();
-        branch.Building = Text.TrimToNull(data.Building);
-        branch.Floor = Text.TrimToNull(data.Floor);
-        branch.Apartment = Text.TrimToNull(data.Apartment);
+        branch.AddressDetails = data.AddressDetails!.Trim();
         branch.Landmark = Text.TrimToNull(data.Landmark);
-        branch.Lat = data.Lat;
-        branch.Lng = data.Lng;
+        branch.MapUrl = Text.TrimToNull(data.MapUrl);
         branch.Email = Text.TrimToNull(data.Email) is { } email ? Text.NormalizeEmail(email) : null;
         var order = 0;
         foreach (var phone in data.Phones!)

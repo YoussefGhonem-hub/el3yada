@@ -58,13 +58,13 @@ public sealed record BranchData
     public string? Governorate { get; init; }
     public string? City { get; init; }
     public string? Area { get; init; }
-    public string? Street { get; init; }
-    public string? Building { get; init; }
-    public string? Floor { get; init; }
-    public string? Apartment { get; init; }
+
+    /// <summary>«العنوان بالتفصيل»: street, building, floor and apartment in one text (D29's <c>address.details</c>).</summary>
+    public string? AddressDetails { get; init; }
     public string? Landmark { get; init; }
-    public decimal? Lat { get; init; }
-    public decimal? Lng { get; init; }
+
+    /// <summary>Optional Google Maps link (D29's <c>address.mapUrl</c>).</summary>
+    public string? MapUrl { get; init; }
     public string? Email { get; init; }
     public List<BranchPhoneData>? Phones { get; init; }
 }
@@ -143,16 +143,10 @@ public sealed class BranchDataValidator : AbstractValidator<BranchData>
         RuleFor(x => x.Governorate).Required().MaxChars(50);
         RuleFor(x => x.City).Required().MaxChars(60);
         RuleFor(x => x.Area).MaxChars(60);
-        RuleFor(x => x.Street).Required().MaxChars(150);
-        RuleFor(x => x.Building).MaxChars(20);
-        RuleFor(x => x.Floor).MaxChars(20);
-        RuleFor(x => x.Apartment).MaxChars(20);
+        RuleFor(x => x.AddressDetails).Required().MaxChars(300);
         RuleFor(x => x.Landmark).MaxChars(150);
+        RuleFor(x => x.MapUrl).MaxChars(MapLinks.MaxLength).GoogleMapsLink();
         RuleFor(x => x.Email).Email();
-        RuleFor(x => x.Lat).InclusiveBetween(-90m, 90m).WithErrorCode(ErrorCodes.OutOfRange)
-            .Must((branch, lat) => lat.HasValue == branch.Lng.HasValue)
-            .WithErrorCode(ErrorCodes.InvalidValue).WithMessage("Send both lat and lng, or neither.");
-        RuleFor(x => x.Lng).InclusiveBetween(-180m, 180m).WithErrorCode(ErrorCodes.OutOfRange);
         RuleFor(x => x.Phones)
             .Must(phones => phones is { Count: > 0 }).WithErrorCode(ErrorCodes.PhoneRequired).WithMessage("Add at least one phone number.")
             .Must(phones => phones is null || phones.Count <= 5).WithErrorCode(ErrorCodes.InvalidValue).WithMessage("At most 5 phone numbers.");
@@ -230,13 +224,9 @@ public sealed record DoctorRegistrationView
                 Governorate = b.Governorate,
                 City = b.City,
                 Area = b.Area,
-                Street = b.Street,
-                Building = b.Building,
-                Floor = b.Floor,
-                Apartment = b.Apartment,
+                AddressDetails = b.AddressDetails,
                 Landmark = b.Landmark,
-                Lat = b.Lat,
-                Lng = b.Lng,
+                MapUrl = b.MapUrl,
                 Email = b.Email,
                 Phones = b.BranchPhones.OrderBy(p => p.SortOrder)
                     .Select(p => new BranchPhoneView(p.Number, p.Label, p.IsWhatsapp)).ToList(),
@@ -281,13 +271,9 @@ public sealed record BranchView
     public required string Governorate { get; init; }
     public required string City { get; init; }
     public string? Area { get; init; }
-    public required string Street { get; init; }
-    public string? Building { get; init; }
-    public string? Floor { get; init; }
-    public string? Apartment { get; init; }
+    public required string AddressDetails { get; init; }
     public string? Landmark { get; init; }
-    public decimal? Lat { get; init; }
-    public decimal? Lng { get; init; }
+    public string? MapUrl { get; init; }
     public string? Email { get; init; }
     public required IReadOnlyList<BranchPhoneView> Phones { get; init; }
 }

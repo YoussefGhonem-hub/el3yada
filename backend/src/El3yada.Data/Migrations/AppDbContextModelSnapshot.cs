@@ -678,13 +678,14 @@ namespace El3yada.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("(newsequentialid())");
 
-                    b.Property<string>("AmenitiesJson")
+                    b.Property<string>("AddressDetails")
+                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("Apartment")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("AmenitiesJson")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Area")
                         .HasMaxLength(60)
@@ -704,10 +705,6 @@ namespace El3yada.Data.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(5)")
                         .HasDefaultValue("queue");
-
-                    b.Property<string>("Building")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -752,10 +749,6 @@ namespace El3yada.Data.Migrations
                     b.Property<int?>("ExaminationPricePiasters")
                         .HasColumnType("int");
 
-                    b.Property<string>("Floor")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<int>("FreeCancelMinutes")
                         .HasColumnType("int")
                         .HasDefaultValue(120);
@@ -773,11 +766,9 @@ namespace El3yada.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<decimal?>("Lat")
-                        .HasColumnType("decimal(9, 6)");
-
-                    b.Property<decimal?>("Lng")
-                        .HasColumnType("decimal(9, 6)");
+                    b.Property<string>("MapUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("MaxReschedules")
                         .HasColumnType("int")
@@ -846,11 +837,6 @@ namespace El3yada.Data.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(17)")
                         .HasDefaultValue("active");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasPrecision(3)

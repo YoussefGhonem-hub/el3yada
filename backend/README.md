@@ -231,6 +231,7 @@ Never edit a migration that is already on `main`. Add a new one instead.
 |---|---|
 | `InitialCreate`, `SeedReferenceData` | Phase 0: every table, the settings row and the starting specialties |
 | `AddRefreshTokenFamily` | Phase 1: `RefreshTokens.FamilyId` (UNIQUEIDENTIFIER NOT NULL) and index `IX_RefreshTokens_FamilyId`, for refresh-token rotation and reuse detection |
+| `BranchAddressDetailsAndMapUrl` | Phase 2: `Branches.Street`, `Building`, `Floor` and `Apartment` become `AddressDetails` (NVARCHAR(300) NOT NULL, «العنوان بالتفصيل»), and `Lat`/`Lng` become `MapUrl` (NVARCHAR(500) NULL, a Google Maps link). Existing rows are copied first: the parts joined with Arabic labels («شارع 9، عمارة 12، الدور 3، شقة 5»), and a pin as `https://www.google.com/maps/search/?api=1&query=<lat>,<lng>`. Down puts the whole text back in `Street` and the pin back from such a link |
 
 ### Rules to keep when you add tables or columns
 

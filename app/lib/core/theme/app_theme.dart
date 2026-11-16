@@ -117,6 +117,27 @@ class El3yadaColors extends ThemeExtension<El3yadaColors> {
     skeletonHighlight: Color(0xFF2A4842),
   );
 
+  /// Dark mode on desktop: graphite surfaces, so green marks only what
+  /// matters (the menu, the selection, the main action). The menu keeps a
+  /// deep pine; the meaning colours stay as they are.
+  static const desktopDark = El3yadaColors(
+    examination: Color(0xFF1E3A66),
+    onExamination: Color(0xFFD6E4FF),
+    consultation: Color(0xFF15452E),
+    onConsultation: Color(0xFFC2EDD5),
+    allergy: Color(0xFF5C1712),
+    onAllergy: Color(0xFFFFDAD6),
+    attention: Color(0xFFFF8A7D),
+    onAttention: AppColors.ink,
+    brandAccent: Color(0xFFE3F1EC),
+    navBar: Color(0xFF0E2D28),
+    onNavBar: Color(0xFFAFCCC4),
+    navIndicator: AppColors.mint,
+    onNavIndicator: AppColors.pine,
+    skeleton: Color(0xFF232928),
+    skeletonHighlight: Color(0xFF2F3634),
+  );
+
   @override
   El3yadaColors copyWith({
     Color? examination,
@@ -262,6 +283,47 @@ abstract final class AppTheme {
     surfaceTint: AppColors.mint,
   );
 
+  /// Dark mode on desktop (Windows, macOS, Linux): neutral graphite instead
+  /// of green-tinted surfaces and text. Mint stays the primary colour, so
+  /// green shows up only on actions, the selection and focus.
+  static const ColorScheme desktopDarkScheme = ColorScheme(
+    brightness: Brightness.dark,
+    primary: AppColors.mint,
+    onPrimary: Color(0xFF06231C),
+    primaryContainer: Color(0xFF1C3631),
+    onPrimaryContainer: Color(0xFFBFF0E1),
+    secondary: Color(0xFF8FD5C4),
+    onSecondary: Color(0xFF06231C),
+    secondaryContainer: Color(0xFF234640),
+    onSecondaryContainer: Color(0xFFC5EDE3),
+    tertiary: Color(0xFFFF9A8C),
+    onTertiary: Color(0xFF4A100A),
+    tertiaryContainer: Color(0xFF5E241D),
+    onTertiaryContainer: Color(0xFFFFDAD5),
+    error: Color(0xFFFFB4AB),
+    onError: Color(0xFF690005),
+    errorContainer: Color(0xFF8C1D18),
+    onErrorContainer: Color(0xFFFFDAD6),
+    surface: Color(0xFF141817),
+    onSurface: Color(0xFFE7ECEA),
+    onSurfaceVariant: Color(0xFFA6B0AD),
+    surfaceDim: Color(0xFF141817),
+    surfaceBright: Color(0xFF353C3A),
+    surfaceContainerLowest: Color(0xFF101413),
+    surfaceContainerLow: Color(0xFF1C2120),
+    surfaceContainer: Color(0xFF202625),
+    surfaceContainerHigh: Color(0xFF272D2C),
+    surfaceContainerHighest: Color(0xFF2F3634),
+    outline: Color(0xFF7E8A87),
+    outlineVariant: Color(0xFF323A38),
+    shadow: Color(0xFF000000),
+    scrim: Color(0xFF000000),
+    inverseSurface: Color(0xFFE7ECEA),
+    onInverseSurface: Color(0xFF1C2120),
+    inversePrimary: AppColors.pine,
+    surfaceTint: AppColors.mint,
+  );
+
   /// Built once: the themes hold callbacks (field colours by state, the
   /// back icon), which never compare equal, so a theme built on every
   /// rebuild would make `MaterialApp` animate between identical themes.
@@ -269,17 +331,52 @@ abstract final class AppTheme {
 
   static ThemeData dark() => _dark;
 
+  /// Desktop (Windows, macOS, Linux): a larger type scale for reading at
+  /// arm's length, standard density, and graphite surfaces in dark mode.
+  /// Chosen in `El3yadaApp` by the platform, never by the window width.
+  static ThemeData desktopLight() => _desktopLight;
+
+  static ThemeData desktopDark() => _desktopDark;
+
   static final ThemeData _light = _build(lightScheme, El3yadaColors.light);
   static final ThemeData _dark = _build(darkScheme, El3yadaColors.dark);
+  static final ThemeData _desktopLight = _build(lightScheme, El3yadaColors.light, desktop: true);
+  static final ThemeData _desktopDark = _build(desktopDarkScheme, El3yadaColors.desktopDark, desktop: true);
 
-  static ThemeData _build(ColorScheme scheme, El3yadaColors colors) {
+  /// The desktop type scale: about a major second (x1.125) per step around
+  /// 15 px body text, wider steps between the headline sizes. Alexandria is
+  /// wide, so 15 reads like 16 in most faces.
+  static const TextTheme desktopTextTheme = TextTheme(
+    displayLarge: TextStyle(fontSize: 54, fontWeight: FontWeight.w600),
+    displayMedium: TextStyle(fontSize: 44, fontWeight: FontWeight.w600),
+    displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
+    headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+    headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+    headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+    titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+    titleMedium: TextStyle(fontSize: 16.5, fontWeight: FontWeight.w500),
+    titleSmall: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+    bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+    bodyMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+    bodySmall: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+    labelLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+    labelMedium: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+    labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+  );
+
+  static ThemeData _build(ColorScheme scheme, El3yadaColors colors, {bool desktop = false}) {
     const pill = StadiumBorder();
     final field = BorderRadius.circular(14);
+    // Menus, dialogs and sheets sit above the page: in dark mode on desktop
+    // they are a lighter graphite, not a darker one.
+    final raised = desktop && scheme.brightness == Brightness.dark
+        ? scheme.surfaceContainerHigh
+        : scheme.surfaceContainerLowest;
     // Alexandria is a wide face, so sizes sit a step below Material's, like
     // Facebook's and LinkedIn's: 15 for body text, 20 for screen titles.
     // Semibold (600) only for headings and titles; body text stays regular.
     // No letter spacing: it breaks Arabic joins.
-    const textTheme = TextTheme(
+    const phoneTextTheme = TextTheme(
       displayLarge: TextStyle(fontSize: 44, fontWeight: FontWeight.w600),
       displayMedium: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
       displaySmall: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
@@ -296,16 +393,20 @@ abstract final class AppTheme {
       labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
       labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
     );
+    final textTheme = desktop ? desktopTextTheme : phoneTextTheme;
     // Compact buttons, as in Facebook and LinkedIn: 44 dp pills with 14 sp
-    // semibold text (taps still get a 48 dp target).
-    const buttonText = TextStyle(fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w600);
-    const buttonPadding = EdgeInsets.symmetric(horizontal: 20);
+    // semibold text (taps still get a 48 dp target). Desktop: 15 sp.
+    final buttonText = TextStyle(fontFamily: fontFamily, fontSize: desktop ? 15 : 14, fontWeight: FontWeight.w600);
+    final buttonPadding = EdgeInsets.symmetric(horizontal: desktop ? 22 : 20);
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
       fontFamily: fontFamily,
       textTheme: textTheme,
+      // Flutter makes desktop compact by default; the larger type needs the
+      // standard spacing, and tests then see what Windows shows.
+      visualDensity: desktop ? VisualDensity.standard : null,
       extensions: [colors],
       // Flat top bars that sit on the page colour, also when content scrolls
       // under them. Titles are bold and start-aligned.
@@ -318,7 +419,7 @@ abstract final class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(
           fontFamily: fontFamily,
-          fontSize: 18,
+          fontSize: desktop ? 20 : 18,
           height: 1.3,
           fontWeight: FontWeight.w600,
           color: scheme.onSurface,
@@ -380,7 +481,7 @@ abstract final class AppTheme {
         filled: true,
         fillColor: scheme.surfaceContainerLowest,
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: desktop ? 16 : 14),
         border: OutlineInputBorder(borderRadius: field),
         enabledBorder: OutlineInputBorder(
           borderRadius: field,
@@ -413,24 +514,46 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: scheme.surfaceContainerLowest,
+        backgroundColor: raised,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: scheme.surfaceContainerLowest,
+        backgroundColor: raised,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       ),
       popupMenuTheme: PopupMenuThemeData(
-        color: scheme.surfaceContainerLowest,
+        color: raised,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
+      // Drop-down menus (the branch picker) on desktop: rounded, like the
+      // popup menus.
+      menuTheme: desktop
+          ? MenuThemeData(
+              style: MenuStyle(
+                backgroundColor: WidgetStatePropertyAll(raised),
+                surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8)),
+              ),
+            )
+          : null,
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(color: scheme.inverseSurface, borderRadius: BorderRadius.circular(10)),
-        textStyle: TextStyle(fontFamily: fontFamily, color: scheme.onInverseSurface, fontSize: 12),
+        textStyle: TextStyle(fontFamily: fontFamily, color: scheme.onInverseSurface, fontSize: desktop ? 13 : 12),
+        // With a mouse, tooltips wait for the pointer to rest.
+        waitDuration: desktop ? const Duration(milliseconds: 400) : null,
       ),
+      // Thin rounded scrollbars on desktop, where they always show.
+      scrollbarTheme: desktop
+          ? ScrollbarThemeData(
+              thickness: const WidgetStatePropertyAll(6),
+              radius: const Radius.circular(3),
+              thumbColor: WidgetStatePropertyAll(scheme.onSurfaceVariant.withValues(alpha: 0.35)),
+            )
+          : null,
       // Forward and back: horizontal shared axis, mirrored in Arabic.
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {

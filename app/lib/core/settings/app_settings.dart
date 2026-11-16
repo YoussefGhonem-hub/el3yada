@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../platform/app_platform.dart';
+
 /// Overridden in `main()` with the real instance.
 final sharedPreferencesProvider = Provider<SharedPreferences>(
   (ref) => throw UnimplementedError('Override sharedPreferencesProvider in main()'),
@@ -49,12 +51,16 @@ class AppSettingsController extends Notifier<AppSettings> {
       locale: Locale(savedLocale ?? _deviceLanguage()),
       themeMode: ThemeMode.values.firstWhere(
         (mode) => mode.name == savedTheme,
-        orElse: () => ThemeMode.system,
+        orElse: () => defaultThemeMode(ref.watch(appPlatformProvider)),
       ),
       // Installs from before A2 already saved a language: don't ask again.
       languageChosen: (prefs.getBool(_languageChosenKey) ?? false) || savedLocale != null,
     );
   }
+
+  /// Appearance until the user picks one: light on desktop (clinic desks,
+  /// whatever Windows is set to), the device's choice on phones.
+  static ThemeMode defaultThemeMode(AppPlatform platform) => platform.isDesktop ? ThemeMode.light : ThemeMode.system;
 
   /// A2: shows the app in [locale] without saving it yet.
   void setLocaleForPreview(Locale locale) => state = state.copyWith(locale: locale);

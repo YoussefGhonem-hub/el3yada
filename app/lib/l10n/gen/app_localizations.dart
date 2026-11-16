@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get loginTitle;
 
+  /// A3: the heading on the sign-in sheet, above the fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get loginWelcome;
+
+  /// A3: the line under the heading. Every role signs in here.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue.'**
+  String get loginWelcomeBody;
+
   /// No description provided for @identifierLabel.
   ///
   /// In en, this message translates to:

@@ -1,3 +1,4 @@
+import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/features/admin/presentation/signups/license_viewer.dart';
@@ -69,7 +70,7 @@ void main() {
           await tester.tap(find.textContaining('منى حسن'));
           await settle(tester);
           await capture(tester, 'ad3_review_pdf_${width}_ar_$theme');
-          await tester.tap(find.byType(BackButton));
+          await tester.tap(find.byType(AppBackButton));
           await settle(tester);
         }
         await tester.tap(find.textContaining('سامي عبد الله').first);

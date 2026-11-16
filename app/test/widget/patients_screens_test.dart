@@ -1,3 +1,4 @@
+import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/features/admin/presentation/widgets/admin_widgets.dart' show SectionCard;
 import 'package:el3yada/features/patients/data/fake_clinic_records.dart';
 import 'package:el3yada/features/sessions/domain/session_models.dart';
@@ -419,7 +420,7 @@ void main() {
       await tester.enterText(find.widgetWithText(TextFormField, 'Full name'), 'منى حسن على');
       await tester.pump();
       expect(find.text('Changes not saved'), findsOneWidget);
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(AppBackButton));
       await settle(tester);
       expect(find.text('Discard your changes?'), findsOneWidget);
       await tester.tap(find.text('Discard'));

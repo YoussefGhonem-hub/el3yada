@@ -3,6 +3,8 @@
   "appTitle": "العيادة",
   "appTagline": "عيادتك منظمة.",
   "loginTitle": "تسجيل الدخول",
+  "loginWelcome": "أهلاً بعودتك",
+  "loginWelcomeBody": "سجّل دخولك للمتابعة.",
   "identifierLabel": "رقم الموبايل أو البريد الإلكتروني",
   "passwordLabel": "كلمة المرور",
   "showPassword": "إظهار كلمة المرور",

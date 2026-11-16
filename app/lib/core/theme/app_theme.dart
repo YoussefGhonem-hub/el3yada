@@ -262,52 +262,175 @@ abstract final class AppTheme {
     surfaceTint: AppColors.mint,
   );
 
-  static ThemeData light() => _build(lightScheme, El3yadaColors.light);
+  /// Built once: the themes hold callbacks (field colours by state, the
+  /// back icon), which never compare equal, so a theme built on every
+  /// rebuild would make `MaterialApp` animate between identical themes.
+  static ThemeData light() => _light;
 
-  static ThemeData dark() => _build(darkScheme, El3yadaColors.dark);
+  static ThemeData dark() => _dark;
+
+  static final ThemeData _light = _build(lightScheme, El3yadaColors.light);
+  static final ThemeData _dark = _build(darkScheme, El3yadaColors.dark);
 
   static ThemeData _build(ColorScheme scheme, El3yadaColors colors) {
-    final rounded16 = RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
+    const pill = StadiumBorder();
+    final field = BorderRadius.circular(14);
+    // Alexandria is a wide face, so sizes sit a step below Material's, like
+    // Facebook's and LinkedIn's: 15 for body text, 20 for screen titles.
+    // Semibold (600) only for headings and titles; body text stays regular.
+    // No letter spacing: it breaks Arabic joins.
+    const textTheme = TextTheme(
+      displayLarge: TextStyle(fontSize: 44, fontWeight: FontWeight.w600),
+      displayMedium: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
+      displaySmall: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+      headlineLarge: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+      headlineMedium: TextStyle(fontSize: 23, fontWeight: FontWeight.w600),
+      headlineSmall: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+      titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+      titleSmall: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500),
+      bodyLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+      bodyMedium: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w400),
+      bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+      labelLarge: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w500),
+      labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+      labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+    );
+    // Compact buttons, as in Facebook and LinkedIn: 44 dp pills with 14 sp
+    // semibold text (taps still get a 48 dp target).
+    const buttonText = TextStyle(fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w600);
+    const buttonPadding = EdgeInsets.symmetric(horizontal: 20);
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
       fontFamily: fontFamily,
+      textTheme: textTheme,
       extensions: [colors],
+      // Flat top bars that sit on the page colour, also when content scrolls
+      // under them. Titles are bold and start-aligned.
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+          fontFamily: fontFamily,
+          fontSize: 18,
+          height: 1.3,
+          fontWeight: FontWeight.w600,
+          color: scheme.onSurface,
+        ),
+      ),
+      // Every automatic Back (screens outside the role areas) uses the same
+      // rounded arrow as AppBackButton; it mirrors in Arabic.
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (context) => const Icon(Icons.arrow_back_rounded),
+      ),
       cardTheme: CardThemeData(
         color: scheme.surfaceContainerLow,
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(minimumSize: const Size(64, 52), shape: rounded16),
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(64, 44),
+          padding: buttonPadding,
+          shape: pill,
+          textStyle: buttonText,
+          iconSize: 18,
+        ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size(64, 52),
-          shape: rounded16,
-          side: BorderSide(color: scheme.primary, width: 2),
+          minimumSize: const Size(64, 44),
+          padding: buttonPadding,
+          shape: pill,
+          side: BorderSide(color: scheme.primary, width: 1.2),
+          textStyle: buttonText,
+          iconSize: 18,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+        style: TextButton.styleFrom(
+          minimumSize: const Size(48, 40),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          shape: pill,
+          textStyle: buttonText.copyWith(fontWeight: FontWeight.w500),
+          iconSize: 18,
+        ),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: SegmentedButton.styleFrom(
+          minimumSize: const Size(48, 40),
+          textStyle: buttonText.copyWith(fontWeight: FontWeight.w500),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
+        elevation: 2,
+        highlightElevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: scheme.surfaceContainerLowest,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(borderRadius: field),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: scheme.outline),
+          borderRadius: field,
+          borderSide: BorderSide(color: scheme.outline, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: field,
           borderSide: BorderSide(color: scheme.primary, width: 2),
+        ),
+        // The field's icons turn brand colour while it has focus.
+        prefixIconColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.focused) ? scheme.primary : scheme.onSurfaceVariant,
+        ),
+        floatingLabelStyle: WidgetStateTextStyle.resolveWith(
+          (states) => TextStyle(
+            fontWeight: FontWeight.w500,
+            color: states.contains(WidgetState.error)
+                ? scheme.error
+                : states.contains(WidgetState.focused)
+                    ? scheme.primary
+                    : scheme.onSurfaceVariant,
+          ),
         ),
       ),
       chipTheme: ChipThemeData(shape: const StadiumBorder(), side: BorderSide.none),
       dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: scheme.inverseSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: scheme.surfaceContainerLowest,
+        surfaceTintColor: Colors.transparent,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: scheme.surfaceContainerLowest,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: scheme.surfaceContainerLowest,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      tooltipTheme: TooltipThemeData(
+        decoration: BoxDecoration(color: scheme.inverseSurface, borderRadius: BorderRadius.circular(10)),
+        textStyle: TextStyle(fontFamily: fontFamily, color: scheme.onInverseSurface, fontSize: 12),
+      ),
       // Forward and back: horizontal shared axis, mirrored in Arabic.
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {

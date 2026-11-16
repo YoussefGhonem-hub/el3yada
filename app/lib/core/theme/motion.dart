@@ -33,6 +33,14 @@ final class Motion {
   /// True when entrances and decorative motion must be skipped.
   final bool reduced;
 
+  /// Whether endless decorative loops run: the brand backdrop's drifting
+  /// lights and the logo's heartbeat. Tests turn it off
+  /// (test/flutter_test_config.dart) so `pumpAndSettle` can settle.
+  static bool ambientLoops = true;
+
+  /// True when an endless decorative loop may run here.
+  bool get loops => ambientLoops && !reduced;
+
   // ---------------------------------------------------------------------------
   // Durations
 

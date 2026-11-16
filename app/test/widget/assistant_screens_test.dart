@@ -1,3 +1,4 @@
+import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/core/widgets/pressable.dart';
 import 'package:el3yada/core/widgets/temporary_password_dialog.dart';
 import 'package:el3yada/features/clinic/domain/clinic_permissions.dart';
@@ -226,7 +227,7 @@ void main() {
 
       await tester.enterText(find.byKey(const ValueKey('assistant.fullName')), 'سارة');
       await tester.pump();
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(AppBackButton));
       await settle(tester);
       expect(find.text('Discard your changes?'), findsOneWidget);
     });

@@ -1,5 +1,5 @@
 import 'package:el3yada/core/platform/app_platform.dart';
-import 'package:el3yada/core/widgets/navigation/floating_nav_bar.dart';
+import 'package:el3yada/core/widgets/navigation/app_bottom_bar.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,7 +35,7 @@ void main() {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, '01000000002');
 
-    expect(find.byType(FloatingNavBar), findsOneWidget);
+    expect(find.byType(AppBottomBar), findsOneWidget);
     expect(find.text('Screen P1 in spec.md'), findsOneWidget);
   });
 

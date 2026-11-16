@@ -1697,18 +1697,22 @@ Error messages appear in the user's current language. The table shows the Arabic
   - **Motion tokens**, defined once in `app/lib/core/theme/motion.dart` and never typed inline: `fast` 150 ms (press, toggles), `normal` 250 ms (state changes, navigation bar), `slow` 400 ms (screen entrances, signature moments). Arrivals use decelerating or spring curves. Exits take about 65% of the entrance time and accelerate.
   - **Screen transitions:** forward and back use a horizontal shared-axis transition, mirrored in Arabic. Opening an item from a list uses a container transform where it fits (a patient card grows into the profile D6, an appointment into P17). Switching tabs uses fade-through.
   - **One signature moment per screen, at most.** For example:
-    - **Splash (A1) and Login (A3):** the ع = 3 logo draws its stroke, then moves (Hero) into the login header. The form slides up. Sign in morphs into a progress indicator, then into a check before the home screen opens. Wrong credentials shake the form once.
+    - **Splash (A1) and Login (A3):** on the pine brand backdrop (soft lights drifting, faint plus signs floating up), the ع = 3 logo writes itself with a glowing pen tip, the plus spins in on a spring, and two rings spread from it like a heartbeat. The logo then rises and shrinks into the header while a white sheet with the form springs up under it; the fields rise in one after another. While the logo stays on screen its plus beats gently every few seconds. Sign in morphs into a progress indicator, then into a check before the home screen opens. Wrong credentials shake the form once. The language choice (A2) uses the same backdrop and sheet.
     - **Patient home (P1):** the queue-ticket card slides in, and the "now serving" number rolls when it changes.
     - **Live board (D34):** cards slide between columns, a new booking pulses once, and the counters roll.
     - **Success** (booking confirmed P15, prescription sent D15, payment submitted D20): a short Lottie check, 1.5 s at most.
     - **Empty states:** a small illustration (Lottie or SVG) with the message and its action, never plain text alone.
   - **Loading:** lists and cards show skeleton placeholders shaped like the content, not a centred spinner. Spinners appear only inside buttons. Actions that finish in under 300 ms show no loader.
   - **Mobile bottom navigation bar:** a custom widget, not the stock `NavigationBar` or a third-party package.
-    - A floating pill, 16 dp from the screen edges and above the system gesture area, with fully rounded corners and a soft shadow. It uses the primary (pine) surface in light mode and an elevated surface in dark mode.
-    - Every item keeps its icon and label. The selected item sits on a mint indicator that slides between items on a spring. Its icon switches from outline to filled with a small bounce, and its label turns bold.
+    - A full-width bar with rounded top corners, on the primary (pine) surface in light mode and an elevated surface in dark mode. It reaches down behind the system gesture area.
+    - Icons only, no text labels (Youssef's call, 2026-11-16). Each label is the icon's tooltip and what screen readers hear.
+    - The app's logo sits raised in the middle, in a white disc cut into the bar's top edge. It opens the dashboard (the home for users without one) and glows mint while that screen is open. The other items split evenly on both sides of it.
+    - The selected icon switches from outline to filled, turns mint with a soft glow, and bounces a little. Nothing behind it changes: no pill or highlight.
     - Unread badges (chats) pop in with a scale animation. A tap gives a light haptic on Android and iOS.
     - In Arabic, the item order and the slide direction mirror. The bar hides while the keyboard is open. **[S]** It slides away while scrolling down and returns on scroll up.
-    - Tablets use a navigation rail, and desktops the side menu, each with the same sliding indicator.
+    - Tablets use a navigation rail, and desktops the side menu, each with labels and a sliding indicator.
+  - **Sizes:** compact, like Facebook and LinkedIn. Buttons are 44 dp pills with 14 sp semibold text (taps still get a 48 dp target). Body text is 15 sp regular, screen titles 20 sp semibold. Semibold is for headings and titles only. Menu tiles are 60 dp rows.
+  - **Back on every screen:** one Back button (a round white button with an arrow that mirrors in Arabic), always in the same place: the start of the top bar. Inside a role area it shows on every screen above a menu root, whether the screen has an address or was opened without one (a card that expands into its detail), and on items reached from More (it returns to More). Menu roots show the app's mark there instead. It does what the system Back does, so unsaved changes are still guarded. Screens outside the role areas use the same arrow in their own top bar.
   - **Accessibility and performance:**
     - When the device asks for reduced motion (`MediaQuery.disableAnimations`), entrances and decorative motion are skipped or become a plain fade. State changes still crossfade.
     - Animations never block input and stop as soon as the user taps or swipes.

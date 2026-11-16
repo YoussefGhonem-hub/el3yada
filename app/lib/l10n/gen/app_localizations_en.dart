@@ -18,6 +18,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Sign in';
 
   @override
+  String get loginWelcome => 'Welcome back';
+
+  @override
+  String get loginWelcomeBody => 'Sign in to continue.';
+
+  @override
   String get identifierLabel => 'Mobile number or email';
 
   @override

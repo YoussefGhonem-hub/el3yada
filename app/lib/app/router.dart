@@ -18,6 +18,7 @@ import '../features/shell/fade_through_branches.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_scaffold.dart';
 import '../features/shell/role_shells.dart';
+import '../features/shell/shell_navigator_watch.dart';
 import '../features/startup/presentation/legal_screen.dart';
 import '../features/startup/presentation/maintenance_screen.dart';
 import '../features/startup/presentation/update_screen.dart';
@@ -45,6 +46,13 @@ export 'routes.dart';
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _RouterRefresh(ref);
   ref.onDispose(refresh.dispose);
+  // Each role area's top bar shows Back above a tab's root (RoleScaffold).
+  final watches = {for (final shell in RoleShell.all) shell.role: ShellNavigatorWatch()};
+  ref.onDispose(() {
+    for (final watch in watches.values) {
+      watch.dispose();
+    }
+  });
 
   return GoRouter(
     initialLocation: AppRoutes.splash,
@@ -84,6 +92,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (context, state, navigationShell) => RoleScaffold(
             shell: shell,
             location: state.uri.path,
+            navigatorWatch: watches[shell.role],
+            branchIndex: navigationShell.currentIndex,
             child: navigationShell,
           ),
           navigatorContainerBuilder: (context, navigationShell, children) => FadeThroughBranches(
@@ -91,8 +101,9 @@ final routerProvider = Provider<GoRouter>((ref) {
             children: children,
           ),
           branches: [
-            for (final destination in shell.destinations)
+            for (final (index, destination) in shell.destinations.indexed)
               StatefulShellBranch(
+                observers: [watches[shell.role]!.observerFor(index)],
                 routes: [
                   GoRoute(
                     path: destination.path,
@@ -106,6 +117,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             if (shell.secondary.isNotEmpty)
               StatefulShellBranch(
+                observers: [watches[shell.role]!.observerFor(shell.destinations.length)],
                 routes: [
                   GoRoute(
                     path: shell.morePath,

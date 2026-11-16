@@ -1,6 +1,7 @@
 import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/theme/motion.dart';
-import 'package:el3yada/core/widgets/navigation/floating_nav_bar.dart';
+import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
+import 'package:el3yada/core/widgets/navigation/app_bottom_bar.dart';
 import 'package:el3yada/core/widgets/navigation/nav_item.dart';
 import 'package:el3yada/core/widgets/navigation/nav_rail.dart';
 import 'package:el3yada/features/shell/role_scaffold.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
+import '../support/app_flow.dart';
 import '../support/app_overrides.dart';
 import '../support/harness.dart';
 
@@ -41,7 +43,7 @@ Future<void> _pumpScaffold(
 }
 
 bool _barHidden(WidgetTester tester) => tester
-    .widget<IgnorePointer>(find.descendant(of: find.byType(FloatingNavBar), matching: find.byType(IgnorePointer)).first)
+    .widget<IgnorePointer>(find.descendant(of: find.byType(AppBottomBar), matching: find.byType(IgnorePointer)).first)
     .ignoring;
 
 void main() {
@@ -60,10 +62,10 @@ void main() {
 
   testWidgets('content scrolls behind the floating bar and lists get its height as padding', (tester) async {
     await _pumpScaffold(tester, shell: RoleShell.patient, location: '/patient/home');
-    final bar = tester.getRect(find.byType(FloatingNavBar));
+    final bar = tester.getRect(find.byType(AppBottomBar));
     final list = tester.getRect(find.byType(ListView));
     expect(list.bottom, greaterThanOrEqualTo(bar.bottom), reason: 'extendBody');
-    expect(bar.height, FloatingNavBar.barHeight + FloatingNavBar.edgeMargin);
+    expect(bar.height, AppBottomBar.barHeight);
 
     // Scrolled to the end, the last row stops above the bar.
     await tester.fling(find.byType(ListView), const Offset(0, -6000), 4000);
@@ -88,13 +90,14 @@ void main() {
     expect(find.text('4'), findsOneWidget);
     expect(find.semantics.byLabel('Chats, 4 unread'), findsOne);
     expect(find.semantics.byLabel('More, New'), findsOne);
-    expect(find.text('Live'), findsOneWidget, reason: 'the bar uses the short label');
+    expect(find.byTooltip('Live'), findsOneWidget, reason: 'the bar uses the short label');
+    expect(find.byTooltip('Dashboard'), findsOneWidget, reason: 'the logo in the middle');
     handle.dispose();
   });
 
   testWidgets('the tablet rail runs the full height with the full labels', (tester) async {
     await _pumpScaffold(tester, shell: RoleShell.doctor, location: '/doctor/patients', size: const Size(800, 1000));
-    expect(find.byType(FloatingNavBar), findsNothing);
+    expect(find.byType(AppBottomBar), findsNothing);
     final rail = tester.getRect(find.byType(AppNavRail));
     final body = tester.getRect(find.byType(ListView));
     expect(rail.height, body.height);
@@ -117,7 +120,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Screen P1 in spec.md'), findsOneWidget);
 
-    await tester.tap(find.descendant(of: find.byType(FloatingNavBar), matching: find.text('Appointments')));
+    await tester.tap(find.descendant(of: find.byType(AppBottomBar), matching: find.byTooltip('Appointments')));
     await tester.pump();
     await tester.pump(Motion.normal ~/ 5);
     expect(find.text('Screen P1 in spec.md'), findsOneWidget, reason: 'old tab fading out');
@@ -127,5 +130,44 @@ void main() {
     expect(find.text('Screen P1 in spec.md'), findsNothing);
     expect(find.text('Screen P1 in spec.md', skipOffstage: false), findsOneWidget);
     expect(find.text('Screen P16 in spec.md'), findsOneWidget);
+  });
+
+  group('Back in the top bar', () {
+    test('goes up from a detail screen, and to More from an item under it', () {
+      final doctor = RoleShell.doctor;
+      expect(doctor.backTarget('/doctor/live', menuShowsAll: false), isNull, reason: 'a bar item');
+      expect(doctor.backTarget('/doctor/more', menuShowsAll: false), isNull);
+      expect(doctor.backTarget('/doctor/patients/42', menuShowsAll: false), '/doctor/patients');
+      expect(doctor.backTarget('/doctor/patients/42/edit', menuShowsAll: true), '/doctor/patients');
+      expect(doctor.backTarget('/doctor/branches', menuShowsAll: false), '/doctor/more');
+      expect(doctor.backTarget('/doctor/branches', menuShowsAll: true), isNull, reason: 'the side menu shows it');
+    });
+
+    testWidgets('shows on an item under More, not on a bar item', (tester) async {
+      await _pumpScaffold(tester, shell: RoleShell.doctor, location: '/doctor/live');
+      expect(find.byType(AppBackButton), findsNothing);
+
+      await _pumpScaffold(tester, shell: RoleShell.doctor, location: '/doctor/branches');
+      expect(find.byType(AppBackButton), findsOneWidget);
+    });
+
+    testWidgets('a card that expands into a patient gets one Back, in the top bar', (tester) async {
+      await pumpApp(tester, size: const Size(400, 800));
+      await signIn(tester, 'doctor@el3yada.dev');
+      await tester.tap(find.descendant(of: find.byType(AppBottomBar), matching: find.byTooltip('Patients')));
+      await settle(tester);
+      expect(find.byType(AppBackButton), findsNothing);
+
+      // The register's cards open the patient without an address.
+      await tester.tap(find.text('هدى عبد الله محمد').first);
+      await settle(tester);
+      expect(find.text('File summary'), findsOneWidget);
+      expect(find.byType(AppBackButton), findsOneWidget);
+
+      await tester.tap(find.byType(AppBackButton));
+      await settle(tester);
+      expect(find.text('File summary'), findsNothing);
+      expect(find.byType(AppBackButton), findsNothing);
+    });
   });
 }

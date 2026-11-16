@@ -12,6 +12,7 @@ import '../../../admin/presentation/widgets/admin_widgets.dart';
 import '../../../clinic/application/clinic_providers.dart';
 import '../../../clinic/domain/clinic_context.dart';
 import '../../../sessions/domain/session_models.dart';
+import '../../../../core/widgets/navigation/app_back_button.dart';
 
 export '../../../admin/presentation/widgets/admin_widgets.dart'
     show AdminErrorView, InfoRow, InitialAvatar, PillTone, ResponsiveGrid, SectionCard, StatusPill, confirmAction, showAdminSnack;
@@ -252,7 +253,10 @@ class ClinicHeader extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (backFallback != null) ...[ClinicBackButton(fallback: backFallback!), const SizedBox(width: 4)],
+        if (backFallback != null && !ShellBackScope.handlesBack(context)) ...[
+          ClinicBackButton(fallback: backFallback!),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,16 +298,8 @@ class ClinicBackButton extends StatelessWidget {
   final String fallback;
 
   @override
-  Widget build(BuildContext context) => BackButton(
-        onPressed: () {
-          final navigator = Navigator.of(context);
-          if (navigator.canPop()) {
-            navigator.maybePop();
-          } else {
-            context.go(fallback);
-          }
-        },
-      );
+  Widget build(BuildContext context) =>
+      ShellBackScope.handlesBack(context) ? const SizedBox.shrink() : AppBackButton(fallback: fallback);
 }
 
 /// Waits for the clinic (`GET /api/clinic/me`): what the caller may see and

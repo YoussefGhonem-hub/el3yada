@@ -18,6 +18,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginTitle => 'تسجيل الدخول';
 
   @override
+  String get loginWelcome => 'أهلاً بعودتك';
+
+  @override
+  String get loginWelcomeBody => 'سجّل دخولك للمتابعة.';
+
+  @override
   String get identifierLabel => 'رقم الموبايل أو البريد الإلكتروني';
 
   @override

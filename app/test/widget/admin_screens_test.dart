@@ -1,3 +1,4 @@
+import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
@@ -213,7 +214,7 @@ void main() {
       await tester.tap(find.textContaining('كريم مصطفى'));
       await _settle(tester);
       expect(find.text('Sign-up request'), findsOneWidget);
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(AppBackButton));
       await _settle(tester);
       expect(find.text('Sign-up request'), findsNothing);
       expect(find.text('6 requests waiting'), findsOneWidget);

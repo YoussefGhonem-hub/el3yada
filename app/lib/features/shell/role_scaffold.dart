@@ -261,9 +261,11 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
                 selectedIndex: all.indexWhere((d) => location.startsWith(d.path)),
                 onSelected: (i) => context.go(all[i].path),
                 breaks: {if (firstSecondary > 0) firstSecondary},
+                // The clinic under the name; admins see their role on the
+                // account card below.
                 header: SideMenuBrand(
                   title: l10n.appTitle,
-                  subtitle: clinic != null ? l10n.clinicOfDoctor(clinic.doctor.name(languageCode)) : shell.role.label(l10n),
+                  subtitle: clinic == null ? null : l10n.clinicOfDoctor(clinic.doctor.name(languageCode)),
                 ),
                 footer: session == null
                     ? null

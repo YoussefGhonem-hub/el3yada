@@ -218,7 +218,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Screenshots:** `EL3YADA_SCREENSHOTS=1 flutter test test/screenshots` now writes every Phase 2 screen too (314 images).
 
-**Contract test:** `flutter test test/contract` (off by default; how to run it is at the top of `api_contract_test.dart`) now also runs one clinic day through the app's real Phase 2 repositories against a running API: sign-up and approval, branches, prices, patients, sessions, fees, a reception assistant, and the activity log. It passed on 16 Nov with no mismatches. Not covered yet: linking a patient from another clinic, a suspended doctor, `BRANCH_HAS_BOOKINGS`, and the app's own client (token refresh, reloading the clinic after a refusal).
+**Contract test:** `flutter test test/contract` (off by default; how to run it is at the top of `api_contract_test.dart`) now also runs one clinic day through the app's real Phase 2 repositories against a running API: sign-up and approval, branches, prices, patients, sessions, fees, a reception assistant, and the activity log. After it, a second clinic links that patient (BR-P3), a booking put in by the Development-only `add-booking` command shows on the branch card and stops closing and archiving (`BRANCH_HAS_BOOKINGS`), the admin suspends and reactivates the doctor (`setDoctorStatus`, below in Phase 7), and the app's own client (the Riverpod providers, the auth interceptor and `clinicContextProvider`) refreshes a stale token, reloads the clinic after `PERMISSION_DENIED` and `DOCTOR_SUSPENDED`, and signs out to A10 on `ACCOUNT_DISABLED`. It passed twice on one database on 16 Nov with no mismatches.
 
 **Tables:** Patients, DoctorPatients, PatientMedicalProfileItems, Sessions, SessionPrivateNotes, DailyStats, MonthlyStats, Branches, BranchPhones, BranchPeriods, PriceHistory, Assistants, AssistantBranches, AuditLogs, Notifications (rows only; delivery comes in Phase 5).
 
@@ -336,6 +336,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 - [ ] `dailyBillingCheck` (00:10): reminders, `overdue`, suspension (BR-G1). `statsReconcile` [S].
 - [ ] `submitPayment` (screenshots), `reviewPayment` (approve / reject, reactivation check BR-G3).
 - [ ] `adjustInvoice`, `waiveInvoice`, `markInvoicePaid`, `extendInvoiceDueDate`, `setDoctorStatus`, `getDoctorActivity` (masked patient names).
+  - *Done early (Phase 2), API only:* `setDoctorStatus` suspends and reactivates by hand with a reason (BR-G4), notifies the doctor and assistants and writes the audit row (`backend/docs/api-phase-1.md`); the app has it in `AdminRepository`. Not done: the AD5 screen, "disable" (it must cancel future bookings, so it waits for Phase 6), and the automatic suspension and reactivation (`dailyBillingCheck`, BR-G1, BR-G3).
 - [ ] Suspension limits applied everywhere (BR-G5, BR-G8): read-only plus payment for the doctor and assistants, patients keep read access.
 - [ ] `buildDailyMetrics` (02:30), `getDashboard`, `getRevenueReport`. Money fields are removed for callers without revenue access (BR-REV1).
 

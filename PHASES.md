@@ -176,7 +176,7 @@ The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md
 
 The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md) (who may call what, `GET /api/clinic/me`), [api-phase-2-patients.md](backend/docs/api-phase-2-patients.md) and [api-phase-2-clinic.md](backend/docs/api-phase-2-clinic.md).
 
-**API** (508 tests: 7 data and 501 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
+**API** (565 tests: 8 data and 557 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
 - [x] `createPatient` (link an existing number with BR-P3, file number, temporary password shown once), `updatePatientPhone`, `resetPatientPassword`, archive [S].
   - Also `lookupPhone` for D5. Linking needs the phone alone. A clinic that linked an existing patient sees only the name, phone, gender and date of birth (`ownsDetails`); the optional details stay with the clinic that created the account. A doctor's password reset also lifts the 15-minute login block on the number.
 - [x] Medical profile read and update (allergies, chronic diseases, medications, surgeries, family history, notes).

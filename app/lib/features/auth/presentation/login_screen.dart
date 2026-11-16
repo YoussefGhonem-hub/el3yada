@@ -330,10 +330,21 @@ class _WideEntrance extends StatelessWidget {
           bottomRight: bodyRadius.brRadius,
         ),
       ),
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 44),
-          child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 400), child: form),
+      // A long form (the test accounts in dev builds) scrolls inside the
+      // body and fades out at its edges instead of being cut.
+      child: ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (bounds) => const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0x00FFFFFF), Colors.white, Colors.white, Color(0x00FFFFFF)],
+          stops: [0, 0.05, 0.93, 1],
+        ).createShader(bounds),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 44),
+            child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 400), child: form),
+          ),
         ),
       ),
     );

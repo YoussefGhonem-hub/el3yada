@@ -854,6 +854,22 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
   /// A patient by name (tests).
   String patientIdByName(String fullName) => _accounts.values.firstWhere((a) => a.fullName == fullName).id;
 
+  /// Whether [patientId] is one of this clinic's patients (the offline
+  /// medical files check it, like the API's link check).
+  bool hasPatient(String patientId) => _links.containsKey(patientId);
+
+  /// Whether [sessionId] is one of [patientId]'s live sessions.
+  bool hasSession(String patientId, String sessionId) =>
+      _live().any((s) => s.id == sessionId && s.patientId == patientId);
+
+  /// A live session's type and time, for a record's visit link.
+  ({SessionType type, DateTime at})? sessionInfo(String sessionId) {
+    for (final s in _live()) {
+      if (s.id == sessionId) return (type: s.type, at: s.at);
+    }
+    return null;
+  }
+
   /// A patient's live sessions, newest first (tests).
   List<String> sessionIdsOf(String patientId) {
     final sessions = _live().where((s) => s.patientId == patientId).toList()..sort((a, b) => b.at.compareTo(a.at));

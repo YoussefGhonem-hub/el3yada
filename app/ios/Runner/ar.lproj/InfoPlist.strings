@@ -1,0 +1,3 @@
+/* Arabic usage strings (spec 6.3). Add this file to the Runner target in Xcode (Localization: Arabic). */
+"NSCameraUsageDescription" = "يستخدم تطبيق العيادة الكاميرا لمسح وتصوير المستندات الطبية وكارنيه النقابة أو الترخيص.";
+"NSPhotoLibraryUsageDescription" = "يفتح تطبيق العيادة صورك لتضيف مستندات طبية أو صورة كارنيه النقابة أو الترخيص.";

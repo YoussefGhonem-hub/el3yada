@@ -10,6 +10,12 @@ abstract final class ClinicAdminRoutes {
   /// D37.
   static const doctorPrices = '/doctor/settings/prices';
 
+  /// D22 prescription header and print settings.
+  static const doctorRxSettings = '/doctor/settings/rx';
+
+  /// D23 [S] templates and favourites.
+  static const doctorTemplates = '/doctor/settings/templates';
+
   /// AS12.
   static const assistantSettings = '/assistant/settings';
 

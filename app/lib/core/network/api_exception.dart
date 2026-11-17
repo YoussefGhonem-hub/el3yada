@@ -148,4 +148,10 @@ abstract final class ApiCodes {
   static const branchArchived = 'BRANCH_ARCHIVED';
   static const amountNotEditable = 'AMOUNT_NOT_EDITABLE';
   static const sessionNotDeletable = 'SESSION_NOT_DELETABLE';
+
+  // Prescriptions (backend/docs/api-phase-3-prescriptions.md).
+  static const prescriptionNotEditable = 'PRESCRIPTION_NOT_EDITABLE';
+  static const prescriptionNotSent = 'PRESCRIPTION_NOT_SENT';
+  static const prescriptionEmpty = 'PRESCRIPTION_EMPTY';
+  static const invalidCopySource = 'INVALID_COPY_SOURCE';
 }

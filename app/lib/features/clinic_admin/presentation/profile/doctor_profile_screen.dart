@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/format/app_format.dart';
 import '../../../../core/network/api_error_text.dart';
@@ -585,8 +586,8 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
         SettingsTile(
           icon: Icons.receipt_outlined,
           title: l10n.profilePrescriptionHeaderTitle,
-          subtitle: l10n.profilePrescriptionHeaderLater,
-          trailing: StatusPill(label: l10n.settingsLaterPhase),
+          subtitle: l10n.rxSettingsTileHint,
+          onTap: () => context.go(ClinicAdminRoutes.doctorRxSettings),
         ),
       ],
     );

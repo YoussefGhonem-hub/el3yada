@@ -7,6 +7,7 @@ import '../records/presentation/edit_record_screen.dart';
 import '../records/presentation/record_viewer_screen.dart';
 import '../records/presentation/upload_record_screen.dart';
 import '../home/presentation/dashboard_screen.dart';
+import '../prescriptions/presentation/prescription_view.dart';
 import '../sessions/domain/session_models.dart';
 import '../sessions/presentation/monthly_summary_screen.dart';
 import '../sessions/presentation/new_session_screen.dart';
@@ -83,6 +84,18 @@ final Map<String, List<RouteBase>> clinicDestinationRoutes = {
                   patientId: state.pathParameters['patientId']!,
                   recordId: state.pathParameters['recordId']!,
                 ),
+              ),
+            ],
+          ),
+          // D13–D15, AS7, AS8.
+          GoRoute(
+            path: 'prescriptions/:prescriptionId',
+            builder: (context, state) => PrescriptionPage(prescriptionId: state.pathParameters['prescriptionId']!),
+            routes: [
+              GoRoute(
+                path: 'preview',
+                builder: (context, state) =>
+                    PrescriptionPage(prescriptionId: state.pathParameters['prescriptionId']!, preview: true),
               ),
             ],
           ),

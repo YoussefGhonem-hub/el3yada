@@ -405,7 +405,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     if (query.search.length > 60) _invalid({'search': 'TOO_LONG'});
 
     final today = _today();
-    final words = SearchNormalizer.normalize(query.search).split(' ').where((w) => w.isNotEmpty).toList();
+    final words = searchWords(query.search);
     final rows = <({_Account account, _Link link, _Visits visits})>[];
     for (final link in _links.values) {
       if (link.archived != query.archived) continue;
@@ -445,7 +445,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
           RegisterSort.lastVisit => a.visits.last!.at.compareTo(b.visits.last!.at),
           RegisterSort.fileNumber => a.link.fileNumber.compareTo(b.link.fileNumber),
           RegisterSort.name =>
-            SearchNormalizer.normalize(a.account.fullName).compareTo(SearchNormalizer.normalize(b.account.fullName)),
+            normalizeForSearch(a.account.fullName).compareTo(normalizeForSearch(b.account.fullName)),
           RegisterSort.phone => a.account.phone.compareTo(b.account.phone),
           RegisterSort.age => _age(a.account.dateOfBirth).compareTo(_age(b.account.dateOfBirth)),
           RegisterSort.gender => a.account.gender.name.compareTo(b.account.gender.name),
@@ -870,6 +870,25 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     return null;
   }
 
+  /// A live session's patient, Cairo day, type, branch, diagnosis and
+  /// follow-up, for the offline prescriptions (BR-RX1), or null.
+  ({String patientId, DateTime day, SessionType type, String branchId, String? diagnosis, DateTime? followUpDate})?
+      sessionBasics(String sessionId) {
+    for (final s in _live()) {
+      if (s.id == sessionId) {
+        return (
+          patientId: s.patientId,
+          day: _cairoDay(s.at),
+          type: s.type,
+          branchId: s.branchId,
+          diagnosis: s.diagnosis,
+          followUpDate: s.followUpDate,
+        );
+      }
+    }
+    return null;
+  }
+
   /// A patient's live sessions, newest first (tests).
   List<String> sessionIdsOf(String patientId) {
     final sessions = _live().where((s) => s.patientId == patientId).toList()..sort((a, b) => b.at.compareTo(a.at));
@@ -1209,7 +1228,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
 
   bool _matches(List<String> words, _Account account, _Link link) {
     if (words.isEmpty) return true;
-    final name = SearchNormalizer.normalize(account.fullName);
+    final name = normalizeForSearch(account.fullName);
     final phone = account.phone.replaceAll('+20', '0');
     for (final word in words) {
       final digits = RegExp(r'^\d+$').hasMatch(word);

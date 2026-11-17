@@ -92,6 +92,14 @@ Each feature follows the same layers: `domain/` (models), `data/` (API), `applic
 - **Strings:** never hard-code text. Add the key to both `app_en.arb` and `app_ar.arb`, then run `flutter gen-l10n` (it also runs on build).
 - **Colours:** never hard-code colours. Use `Theme.of(context).colorScheme` or `context.el3yadaColors` (examination, consultation, allergy, attention). The palette comes from the chosen design: pine `#0F4C45`, mint ground `#E6F2EC`, mint `#7CE0C3`, coral `#FF6B5A` for "new" dots, ink `#12312C`. Dark mode has its own tokens in `AppTheme.darkScheme`.
 - **Font:** Alexandria, bundled in `assets/fonts/` (Arabic and Latin). Arabic text in PDFs uses Noto Sans Arabic instead, because the PDF library needs glyphs Alexandria lacks (see `test/prototypes/font_coverage_test.dart`).
+- **Search:** catalog and picker search use `package:catalog_core` (`../packages/catalog_core`), the same normalization the catalog builder indexes with (spec A.6). `core/search/search_normalizer.dart` re-exports it; never write a second normalizer.
+
+### Prescription PDFs
+
+- **Who builds them:** the doctor's app, in `features/prescriptions/pdf/rx_pdf.dart` (spec 6.4.1), and uploads the PDF when sending. Every reprint prints that stored PDF, so the paper and the patient's copy always match (BR-RX5).
+- **Fonts:** the PDF copy of Noto Sans Arabic gets a compact line box (`RxPdfFonts.compactLineMetrics`); its own 2.11 em line height doesn't fit the A5 layout. Fonts are subset: an A5 prescription without logo and signature is about 200 KB, and the 1000 px PNGs add their own size.
+- **Print all:** the `pdf` package can't merge PDFs, so the session's stored PDFs are rasterized at 300 dpi (`Printing.raster`) and placed one per page in a single print job (`combineForPrint`).
+- **Checking the layout:** `EL3YADA_SCREENSHOTS=1 flutter test test/screenshots/phase3_prescriptions_screens_test.dart` also writes sample PDFs (A5 Arabic, 12 items on two pages, English, a request, pre-printed paper, A4) to `build/screenshots/`. AC-15 still needs a print on a real printer.
 - **API models:** freezed + json_serializable, like `AuthSession`. After changing a model, run `dart run build_runner build` and commit the generated `*.freezed.dart` and `*.g.dart` files. CI fails if they are out of date.
 - **Layout:** below 600 px wide is phone (floating bottom bar), 600–1024 is tablet (rail), and 1024+ is desktop (side menu). See `RoleScaffold`. On phones the body runs behind the bar (`extendBody`): lists get the bar's height from `MediaQuery` padding, so don't set a fixed bottom padding on a list without adding `MediaQuery.paddingOf(context).bottom`.
 - **Screens:** every screen has an ID in `spec.md` (D34, AS1, P1, AD1 …). Placeholder pages show it until the screen is built.

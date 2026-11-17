@@ -33,6 +33,10 @@ dependencies:
   path_provider: ^2.1.6
   pdf: ^3.13.1
   printing: ^5.15.1
+  # Search normalization and the strength parser shared with the catalog
+  # builder (spec Appendix A.6), so both sides always match.
+  catalog_core:
+    path: ../packages/catalog_core
   share_plus: ^13.3.1
   shared_preferences: ^2.5.6
   skeletonizer: ^3.0.0
@@ -57,6 +61,9 @@ flutter:
   # assets/lottie/SOURCES.txt.
   assets:
     - assets/lottie/
+    # Arabic text in prescription PDFs (spec 6.4.1); the app's own text uses Alexandria.
+    - assets/fonts/NotoSansArabic-Regular.ttf
+    - assets/fonts/NotoSansArabic-Bold.ttf
 
   # Alexandria (SIL Open Font License, assets/fonts/OFL-Alexandria.txt) covers
   # Arabic and Latin, so both languages look the same on every platform and

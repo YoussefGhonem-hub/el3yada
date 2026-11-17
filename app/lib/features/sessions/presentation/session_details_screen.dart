@@ -23,6 +23,8 @@ import '../domain/session_models.dart';
 import '../domain/session_rules.dart';
 import 'new_session_screen.dart' show FollowUpPicker, PrivateNoteField;
 import 'widgets/vitals_editor.dart';
+import '../../prescriptions/presentation/rx_sections.dart';
+import '../../prescriptions/presentation/widgets/rx_widgets.dart' show RxAbilities;
 
 /// D9: everything the caller may see about one session.
 ///
@@ -171,6 +173,9 @@ class _DetailsState extends ConsumerState<_Details> {
         );
         final clinical = session.clinical == null ? null : enter(_ClinicalCard(session: session, onSaved: _updated));
         final note = session.can.privateNote ? enter(_PrivateNoteCard(sessionId: session.sessionId)) : null;
+        // D9: the session's prescriptions and requests (D13–D15, AS8).
+        final prescriptions =
+            widget.clinic.canReadRx ? enter(SessionPrescriptionsCard(session: session, clinic: widget.clinic)) : null;
         final delete = enter(_DeleteArea(session: session, clinic: widget.clinic, busy: _deleting, onDelete: _delete));
 
         final List<Widget> children;
@@ -194,7 +199,15 @@ class _DetailsState extends ConsumerState<_Details> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Expanded(child: clinical ?? const SizedBox.shrink()),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ?clinical,
+                      if (prescriptions != null) ...[if (clinical != null) const SizedBox(height: 16), prescriptions],
+                    ],
+                  ),
+                ),
               ],
             ),
           ];
@@ -204,6 +217,7 @@ class _DetailsState extends ConsumerState<_Details> {
             const SizedBox(height: 16),
             summary,
             if (clinical != null) ...[const SizedBox(height: 16), clinical],
+            if (prescriptions != null) ...[const SizedBox(height: 16), prescriptions],
             if (note != null) ...[const SizedBox(height: 16), note],
             const SizedBox(height: 16),
             delete,

@@ -37,7 +37,7 @@ dotnet run --project src/El3yada.Api -- seed-admin you@example.com --name "First
 
 These commands:
 
-- create the `el3yada_dev` database with all 55 tables, the platform settings and the starting specialties;
+- create the `el3yada_dev` database with all 56 tables, the platform settings and the starting specialties;
 - give your machine its own JWT signing key;
 - create your first super admin, printing a temporary password once.
 

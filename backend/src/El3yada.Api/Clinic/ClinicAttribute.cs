@@ -15,6 +15,8 @@ namespace El3yada.Api.Clinic;
 /// <item>The doctor is pending approval or rejected: 403 <c>DOCTOR_PENDING_APPROVAL</c> or <c>DOCTOR_REJECTED</c> (A6, A7).
 /// For an assistant, a clinic that is not active or an assistant who is not active: 403 <c>CLINIC_NOT_ACTIVE</c>
 /// or <c>ACCOUNT_DISABLED</c> (the sign-in check usually catches these first).</item>
+/// <item>The clinic's free trial has ended (BR-T4): 403 <c>TRIAL_ENDED</c>, for every endpoint without
+/// <see cref="AllowedAfterTrialAttribute"/>.</item>
 /// <item><see cref="DoctorOnly"/> and the caller is an assistant (BR-AS5): 403 <c>PERMISSION_DENIED</c>.</item>
 /// <item>The assistant lacks <see cref="Permission"/>: 403 <c>PERMISSION_DENIED</c>, with <c>permission</c> in the answer.</item>
 /// <item><see cref="BlockedWhileSuspended"/> and the doctor is suspended (BR-G5, BR-G8): 403 <c>DOCTOR_SUSPENDED</c>.</item>
@@ -64,6 +66,14 @@ public sealed class ClinicAttribute(string? permission = null) : Attribute, IAsy
             if (Refusal(caller) is { } refusal)
             {
                 context.Result = refusal(http);
+                return;
+            }
+
+            var now = http.RequestServices.GetRequiredService<TimeProvider>().GetUtcNow().UtcDateTime;
+            if (Doctors.Trial.HasEnded(caller.TrialEndsAt, now)
+                && !context.ActionDescriptor.EndpointMetadata.OfType<AllowedAfterTrialAttribute>().Any())
+            {
+                context.Result = Forbidden(http, ErrorCodes.TrialEnded, "The clinic's free trial has ended. Contact us to activate the service.");
                 return;
             }
 

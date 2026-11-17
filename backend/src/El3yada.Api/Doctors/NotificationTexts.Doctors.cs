@@ -5,6 +5,43 @@ public static partial class NotificationTexts
 {
     public const string DoctorSuspended = "doctorSuspended";
     public const string DoctorReactivated = "doctorReactivated";
+    public const string DoctorServiceActivated = "doctorServiceActivated";
+    public const string DoctorTrialExtended = "doctorTrialExtended";
+
+    /// <summary>To the doctor: the service is on after the free trial (BR-T5).</summary>
+    public static NotificationText ServiceActivated() => new(
+        DoctorServiceActivated,
+        "تم تفعيل الخدمة",
+        "Your service is active",
+        "تم تفعيل الخدمة، ويمكنك الآن استخدام العيادة كالمعتاد.",
+        "Your service is active. You can use your clinic as usual.");
+
+    /// <summary>To each active assistant.</summary>
+    public static NotificationText ServiceActivatedForAssistant(string doctorName) => new(
+        DoctorServiceActivated,
+        "تم تفعيل الخدمة",
+        "The clinic's service is active",
+        $"تم تفعيل خدمة عيادة د. {doctorName}، ويمكنك الآن استخدام العيادة كالمعتاد.",
+        $"Dr {doctorName}'s clinic is active. You can use it as usual.");
+
+    /// <summary>To the doctor: the free trial now ends on <paramref name="until"/> (a Cairo date).</summary>
+    public static NotificationText TrialExtended(DateTime until) => new(
+        DoctorTrialExtended,
+        "تم مد الفترة التجريبية",
+        "Your free trial is extended",
+        $"تم مد الفترة التجريبية المجانية حتى {CairoDate(until)}.",
+        $"Your free trial now runs until {CairoDate(until)}.");
+
+    /// <summary>To each active assistant.</summary>
+    public static NotificationText TrialExtendedForAssistant(string doctorName, DateTime until) => new(
+        DoctorTrialExtended,
+        "تم مد الفترة التجريبية",
+        "The clinic's free trial is extended",
+        $"تم مد الفترة التجريبية لعيادة د. {doctorName} حتى {CairoDate(until)}.",
+        $"Dr {doctorName}'s clinic's free trial now runs until {CairoDate(until)}.");
+
+    /// <summary>YYYY-MM-DD in Cairo time, the same in both languages.</summary>
+    private static string CairoDate(DateTime utc) => Common.CairoTime.DayOf(utc).ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
     /// <summary>To the doctor: «تم إيقاف الخدمة» with the admin's reason.</summary>
     public static NotificationText Suspended(string reason) => new(

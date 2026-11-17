@@ -10,6 +10,7 @@ import 'package:el3yada/features/doctor_registration/data/license_picker.dart';
 import 'package:el3yada/features/doctor_registration/data/registration_repository.dart';
 import 'package:el3yada/features/doctor_registration/domain/doctor_registration.dart';
 import 'package:el3yada/features/doctor_registration/domain/license_file.dart';
+import 'package:el3yada/features/doctor_registration/presentation/welcome_dialog.dart';
 import 'package:el3yada/features/doctor_registration/presentation/widgets/search_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -176,7 +177,8 @@ Future<void> openRegistration(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('A4: each step is checked before Next, Back keeps the data, and Submit opens A6', (tester) async {
+  testWidgets('A4: each step is checked before Next, Back keeps the data, and Submit welcomes the doctor home',
+      (tester) async {
     final app = _Harness();
     await app.pump(tester);
     await openRegistration(tester);
@@ -234,16 +236,24 @@ void main() {
     expect(find.text('Cardiology'), findsOneWidget);
     expect(find.text('0223581234'), findsOneWidget);
     expect(find.text('EGP 300'), findsOneWidget);
-    await tapText(tester, 'Send for review');
+    await tapText(tester, 'Create my account');
     expect(find.text('Accept the Terms and the Privacy Policy to continue.'), findsOneWidget);
     await tester.ensureVisible(find.byType(Checkbox));
     await tester.tap(find.byType(Checkbox));
     await settle(tester);
-    await tapText(tester, 'Send for review');
+    await tapText(tester, 'Create my account');
 
-    // A6, with the data that was sent.
-    expect(find.text('Your account is being reviewed'), findsOneWidget);
-    expect(find.text('Maadi branch'), findsOneWidget);
+    // No review: the doctor is active at once, in a 14-day free trial (spec 6.16).
+    expect(find.byType(WelcomeDialog), findsOneWidget);
+    expect(find.text('Welcome to el3yada'), findsOneWidget);
+    expect(find.text('You have a free trial for 14 days.'), findsOneWidget);
+    expect(find.text('Your account is being reviewed'), findsNothing);
+    expect(app.auth.current?.doctorStatus, DoctorStatus.active);
+    expect(app.auth.current?.trial?.daysLeft, 14);
+    await tapText(tester, 'Get started');
+    // The doctor's home (D34 until the live board arrives in Phase 6).
+    expect(find.byType(WelcomeDialog), findsNothing);
+    expect(find.text('Search patient'), findsOneWidget);
     final sent = app.registration.lastData!;
     expect(sent.phone, '+201012345678');
     expect(sent.title, 'استشاري');
@@ -295,7 +305,7 @@ void main() {
     await next(tester);
     await tester.ensureVisible(find.byType(Checkbox));
     await tester.tap(find.byType(Checkbox));
-    await tapText(tester, 'Send for review');
+    await tapText(tester, 'Create my account');
 
     expect(find.text('Step 2 of 4'), findsOneWidget);
     expect(find.text('Check the highlighted fields.'), findsOneWidget);
@@ -341,7 +351,7 @@ void main() {
     expect(find.text('Step 4 of 4'), findsOneWidget);
     await tester.ensureVisible(find.byType(Checkbox));
     await tester.tap(find.byType(Checkbox));
-    await tapText(tester, 'Send for review');
+    await tapText(tester, 'Create my account');
     expect(app.registration.lastData?.branch.mapUrl, 'https://maps.app.goo.gl/AbCd1234');
     expect(app.registration.lastData?.branch.addressDetails, '12 Street 9, 3rd floor, apartment 5');
   });
@@ -358,7 +368,7 @@ void main() {
     await next(tester);
     await tester.ensureVisible(find.byType(Checkbox));
     await tester.tap(find.byType(Checkbox));
-    await tapText(tester, 'Send for review');
+    await tapText(tester, 'Create my account');
 
     expect(find.text('Step 1 of 4'), findsOneWidget);
     expect(find.text('An account with this email already exists.'), findsOneWidget);

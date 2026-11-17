@@ -97,8 +97,11 @@ class AuthInterceptor extends Interceptor {
       if (code == ApiCodes.permissionDenied || code == ApiCodes.doctorSuspended) {
         _ref.read(clinicContextProvider.notifier).reload().ignore();
       }
-      // The doctor's status changed (rare: an approval was reversed): the router follows the account.
-      if (code == ApiCodes.doctorPendingApproval || code == ApiCodes.doctorRejected) _auth.reloadAccount().ignore();
+      // The doctor's status changed (rare: an approval was reversed), or the
+      // clinic's free trial ended (A15): the router follows the account.
+      if (code == ApiCodes.doctorPendingApproval || code == ApiCodes.doctorRejected || code == ApiCodes.trialEnded) {
+        _auth.reloadAccount().ignore();
+      }
       // Disabled while signed in, or the clinic closed: sign out and show A10.
       if (AuthBlock.codes.contains(code)) _auth.signOutBlocked(code!).ignore();
       return handler.next(error);

@@ -193,10 +193,18 @@ class FakeAuthRepository implements AuthRepository {
     'disabled@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. موقوف', blockCode: ApiCodes.accountDisabled),
     // Suspended for an overdue invoice: signs in, sees the banner (BR-G5).
     'suspended@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. متأخر في السداد', doctorStatus: DoctorStatus.suspended),
+    // Free trial (spec 6.16): two days left (the banner), and ended (A15).
+    'trial@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. في الفترة التجريبية',
+        doctorStatus: DoctorStatus.active, trialDaysLeft: 2),
+    'trial-ended@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. انتهت فترته التجريبية',
+        doctorStatus: DoctorStatus.active, trialDaysLeft: 0),
     // Reception preset, one branch (FakeClinicRepository).
     '+201000000001': const FakeAccount(UserRole.assistant, 'مساعد تجريبي', doctorStatus: DoctorStatus.active),
     // Office manager preset, every branch.
     '+201000000005': const FakeAccount(UserRole.assistant, 'مدير العيادة', doctorStatus: DoctorStatus.active),
+    // An assistant whose doctor's free trial ended (A15).
+    '+201000000006': const FakeAccount(UserRole.assistant, 'مساعد عيادة انتهت تجربتها',
+        doctorStatus: DoctorStatus.active, trialDaysLeft: 0),
     '+201000000002': const FakeAccount(UserRole.patient, 'مريض تجريبي'),
     '+201000000003': const FakeAccount(UserRole.patient, 'مريض بحسابين', alsoAssistant: true),
     '+201000000004': const FakeAccount(UserRole.patient, 'مريض جديد', mustChangePassword: true, mustAcceptTerms: true),
@@ -340,6 +348,7 @@ class FakeAccount {
     this.mustChangePassword = false,
     this.mustAcceptTerms = false,
     this.alsoAssistant = false,
+    this.trialDaysLeft,
   });
 
   final UserRole role;
@@ -354,6 +363,19 @@ class FakeAccount {
 
   /// The same number also has an assistant account ("log in as").
   final bool alsoAssistant;
+
+  /// The clinic's free trial: null for none (the service is active), 0 for
+  /// one that ended yesterday, otherwise the days left.
+  final int? trialDaysLeft;
+
+  TrialInfo? get _trial {
+    final days = trialDaysLeft;
+    if (days == null) return null;
+    final now = DateTime.now().toUtc();
+    return days <= 0
+        ? TrialInfo(endsAt: now.subtract(const Duration(days: 1)), ended: true)
+        : TrialInfo(endsAt: now.add(Duration(days: days, hours: -1)), daysLeft: days);
+  }
 
   AuthSession session(String identifier) => AuthSession(
         userId: 'dev-${role.name}-${identifier.hashCode.abs()}',
@@ -372,6 +394,7 @@ class FakeAccount {
         email: identifier.contains('@') ? identifier : null,
         emailVerified: emailVerified,
         phone: identifier.startsWith('+') ? identifier : null,
+        trial: _trial,
         accessToken: 'dev-access-token',
         refreshToken: 'dev-refresh-token',
       );

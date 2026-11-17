@@ -8,4 +8,10 @@ public static partial class AuditActions
 
     /// <summary>BR-G4, by hand. Details: <c>before</c>, <c>after</c>, <c>reason</c>.</summary>
     public const string DoctorReactivated = "doctorReactivated";
+
+    /// <summary>The admin turned the service on after the free trial (BR-T5). Details: <c>{ trialEndsAtBefore }</c>.</summary>
+    public const string DoctorServiceActivated = "doctorServiceActivated";
+
+    /// <summary>The admin extended the free trial (BR-T5). Details: <c>{ before, after, days }</c>.</summary>
+    public const string DoctorTrialExtended = "doctorTrialExtended";
 }

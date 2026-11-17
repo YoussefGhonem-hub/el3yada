@@ -431,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @navSignups.
   ///
   /// In en, this message translates to:
-  /// **'Sign-up requests'**
+  /// **'Doctors'**
   String get navSignups;
 
   /// No description provided for @navAccounts.
@@ -965,7 +965,7 @@ abstract class AppLocalizations {
   /// No description provided for @regSubmit.
   ///
   /// In en, this message translates to:
-  /// **'Send for review'**
+  /// **'Create my account'**
   String get regSubmit;
 
   /// No description provided for @regResubmit.
@@ -1421,7 +1421,7 @@ abstract class AppLocalizations {
   /// No description provided for @regReviewIntro.
   ///
   /// In en, this message translates to:
-  /// **'Check your details, then send them for review.'**
+  /// **'Check your details, then create your account.'**
   String get regReviewIntro;
 
   /// No description provided for @regReviewIntroResubmit.
@@ -2030,12 +2030,6 @@ abstract class AppLocalizations {
   /// **'Fix the highlighted fields, then save.'**
   String get adminFixErrors;
 
-  /// No description provided for @adminSignupsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{No requests waiting} =1{1 request waiting} other{{count} requests waiting}}'**
-  String adminSignupsCount(int count);
-
   /// No description provided for @adminSignupsSearchHint.
   ///
   /// In en, this message translates to:
@@ -2069,19 +2063,19 @@ abstract class AppLocalizations {
   /// No description provided for @adminSignupsEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No sign-up requests waiting'**
+  /// **'No doctors yet'**
   String get adminSignupsEmptyTitle;
 
   /// No description provided for @adminSignupsEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'New doctors\' requests show up here as soon as they register.'**
+  /// **'Doctors show up here as soon as they sign up.'**
   String get adminSignupsEmptyBody;
 
   /// No description provided for @adminSignupsNoMatchTitle.
   ///
   /// In en, this message translates to:
-  /// **'No requests match your search'**
+  /// **'No doctors match your search'**
   String get adminSignupsNoMatchTitle;
 
   /// No description provided for @adminSignupsNoMatchBody.
@@ -2093,7 +2087,7 @@ abstract class AppLocalizations {
   /// No description provided for @adminSelectRequest.
   ///
   /// In en, this message translates to:
-  /// **'Choose a request to review it'**
+  /// **'Choose a doctor to see their account'**
   String get adminSelectRequest;
 
   /// No description provided for @adminSubmittedShort.
@@ -7623,6 +7617,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to {section}'**
   String backToSection(String section);
+
+  /// No description provided for @trialEndedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your free trial has ended'**
+  String get trialEndedTitle;
+
+  /// No description provided for @trialEndedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us to activate the service and keep using el3yada. Your patients and records are kept safe.'**
+  String get trialEndedBody;
+
+  /// No description provided for @trialEndedTitleAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'The clinic\'s free trial has ended'**
+  String get trialEndedTitleAssistant;
+
+  /// No description provided for @trialEndedBodyAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the doctor to contact us to activate the service. Then you can carry on as usual.'**
+  String get trialEndedBodyAssistant;
+
+  /// No description provided for @trialCheckAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get trialCheckAgain;
+
+  /// No description provided for @trialStillEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'The service isn\'t active yet.'**
+  String get trialStillEnded;
+
+  /// BR-T6: the shell banner in the last days of the free trial.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Your free trial ends today} =1{1 day left in your free trial} other{{days} days left in your free trial}}'**
+  String trialBanner(int days);
+
+  /// No description provided for @trialContactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us'**
+  String get trialContactUs;
+
+  /// No description provided for @errorTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial has ended. Contact us to activate the service.'**
+  String get errorTrialEnded;
+
+  /// No description provided for @sessionFeeFreeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Free (trial)'**
+  String get sessionFeeFreeTrial;
+
+  /// No description provided for @sessionPlatformFeeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'No platform fee (free trial)'**
+  String get sessionPlatformFeeFree;
+
+  /// No description provided for @sessionConfirmFeeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'No fee: the clinic is in its free trial.'**
+  String get sessionConfirmFeeFree;
+
+  /// No description provided for @sessionSavedBodyFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} for {patient}. No fee (free trial).'**
+  String sessionSavedBodyFree(String type, String patient);
+
+  /// No description provided for @adminErrorServiceAlreadyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor\'s service is already active, so there\'s no trial to extend.'**
+  String get adminErrorServiceAlreadyActive;
+
+  /// No description provided for @adminErrorDoctorStatusNotChangeable.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be done for a doctor who is pending, rejected or disabled.'**
+  String get adminErrorDoctorStatusNotChangeable;
+
+  /// No description provided for @adminSettingTrialDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Free trial'**
+  String get adminSettingTrialDays;
+
+  /// No description provided for @adminAppliesToNewDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to doctors approved after the change'**
+  String get adminAppliesToNewDoctors;
+
+  /// No description provided for @adminDoctorsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All doctors'**
+  String get adminDoctorsFilterAll;
+
+  /// No description provided for @adminSignupsFilterTrialRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'In free trial'**
+  String get adminSignupsFilterTrialRunning;
+
+  /// No description provided for @adminSignupsFilterTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial ended'**
+  String get adminSignupsFilterTrialEnded;
+
+  /// No description provided for @adminDoctorsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doctors} =1{1 doctor} other{{count} doctors}}'**
+  String adminDoctorsCount(int count);
+
+  /// No description provided for @adminTrialListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctors here'**
+  String get adminTrialListEmpty;
+
+  /// No description provided for @adminTrialListEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctors show up here by the state of their free trial.'**
+  String get adminTrialListEmptyBody;
+
+  /// No description provided for @adminServiceActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Service active'**
+  String get adminServiceActive;
+
+  /// No description provided for @adminTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial ended'**
+  String get adminTrialEnded;
+
+  /// No description provided for @adminTrialDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Trial: ends today} =1{Trial: 1 day left} other{Trial: {days} days left}}'**
+  String adminTrialDaysLeft(int days);
+
+  /// No description provided for @adminSectionTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Free trial'**
+  String get adminSectionTrial;
+
+  /// No description provided for @adminServiceActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The service is active. Sessions carry the platform fees.'**
+  String get adminServiceActiveBody;
+
+  /// No description provided for @adminTrialRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial ends on {date}. Sessions until then carry no fee.'**
+  String adminTrialRunningBody(String date);
+
+  /// No description provided for @adminTrialEndedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial ended on {date}. The doctor and their assistants can\'t use the clinic until you activate the service or extend the trial.'**
+  String adminTrialEndedBody(String date);
+
+  /// No description provided for @adminActivateService.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate service'**
+  String get adminActivateService;
+
+  /// No description provided for @adminActivateServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate the service for Dr. {name}?'**
+  String adminActivateServiceTitle(String name);
+
+  /// No description provided for @adminActivateServiceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial ends now, and platform fees apply to every session from now on.'**
+  String get adminActivateServiceBody;
+
+  /// No description provided for @adminServiceActivatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Service activated for Dr. {name}.'**
+  String adminServiceActivatedMessage(String name);
+
+  /// No description provided for @adminExtendTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend trial'**
+  String get adminExtendTrial;
+
+  /// No description provided for @adminExtendTrialTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend Dr. {name}\'s free trial'**
+  String adminExtendTrialTitle(String name);
+
+  /// No description provided for @adminExtendTrialBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The days are added to the end of the trial, or to today if it has ended.'**
+  String get adminExtendTrialBody;
+
+  /// No description provided for @adminExtendTrialDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get adminExtendTrialDays;
+
+  /// No description provided for @adminTrialExtendedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name}\'s free trial now ends on {date}.'**
+  String adminTrialExtendedMessage(String name, String date);
+
+  /// No description provided for @adminAuditServiceActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Activated a doctor\'s service'**
+  String get adminAuditServiceActivated;
+
+  /// No description provided for @adminAuditTrialExtended.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Extended a doctor\'s free trial by 1 day} other{Extended a doctor\'s free trial by {days} days}}'**
+  String adminAuditTrialExtended(int days);
+
+  /// No description provided for @adminActionServiceActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Service activated'**
+  String get adminActionServiceActivated;
+
+  /// No description provided for @adminActionTrialExtended.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial extended'**
+  String get adminActionTrialExtended;
+
+  /// No description provided for @regWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to el3yada'**
+  String get regWelcomeTitle;
+
+  /// The welcome after sign-up: the free trial length (spec 6.16).
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{You have a free trial for 1 day.} other{You have a free trial for {days} days.}}'**
+  String regWelcomeTrial(int days);
+
+  /// No description provided for @regWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your patients and record sessions with no platform fees during the trial.'**
+  String get regWelcomeBody;
+
+  /// No description provided for @regWelcomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get regWelcomeStart;
+
+  /// No description provided for @adminDoctorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor account'**
+  String get adminDoctorTitle;
+
+  /// No description provided for @emailBannerDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide for now'**
+  String get emailBannerDismiss;
+
+  /// No description provided for @settingsVerifyEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email address'**
+  String get settingsVerifyEmail;
 }
 
 class _AppLocalizationsDelegate

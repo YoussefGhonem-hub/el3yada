@@ -24,6 +24,10 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.permissionDenied => errorPermissionDenied,
       ApiCodes.doctorSuspended => errorDoctorSuspended,
       ApiCodes.branchNotAllowed => errorBranchNotAllowed,
+      // Free trial (backend/docs/api-free-trial.md).
+      ApiCodes.trialEnded => errorTrialEnded,
+      ApiCodes.serviceAlreadyActive => adminErrorServiceAlreadyActive,
+      ApiCodes.doctorStatusNotChangeable => adminErrorDoctorStatusNotChangeable,
       // Branches, assistants (backend/docs/api-phase-2-clinic.md).
       'BRANCH_LIMIT_REACHED' => branchErrorLimitReached,
       'CANNOT_ARCHIVE_DEFAULT_BRANCH' => branchErrorArchiveDefault,

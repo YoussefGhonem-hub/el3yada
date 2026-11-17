@@ -140,6 +140,22 @@ void main() {
       expect((await store.read())?.doctorStatus, DoctorStatus.active);
     });
 
+    test('the trial comes from the API too, and an ended one is noticed', () async {
+      final store = MemoryTokenStore();
+      await store.write(_doctor(status: DoctorStatus.active));
+      final auth = _ScriptedAuth(account: {
+        'doctorStatus': 'active',
+        'trial': {'endsAt': '2026-11-01T10:00:00.000Z', 'ended': true, 'daysLeft': 0},
+      });
+
+      final container = await makeContainer(store: store, auth: auth);
+
+      final session = container.read(authControllerProvider).value!;
+      expect(session.trial?.endsAt, DateTime.utc(2026, 11, 1, 10));
+      expect(session.trialEnded, isTrue);
+      expect((await store.read())?.trialEnded, isTrue, reason: 'saved with the session');
+    });
+
     test('offline, the saved session is used as it is', () async {
       final store = MemoryTokenStore();
       await store.write(_doctor(status: DoctorStatus.pendingApproval));

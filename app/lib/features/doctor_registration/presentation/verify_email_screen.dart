@@ -21,7 +21,9 @@ import '../../auth/data/auth_repository.dart';
 /// browser, not the app), "I've verified" (reloads the account), and Resend
 /// with a visible 60-second cooldown (the server's 429
 /// `VERIFICATION_EMAIL_COOLDOWN` and its `Retry-After` set it too). Once
-/// verified, the success check plays and Continue goes back to A6.
+/// verified, the success check plays and Continue goes back: to the home
+/// for an active doctor (pushed from the shell's banner or D24), or to A6
+/// for a legacy sign-up still under review.
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   const VerifyEmailScreen({super.key});
 

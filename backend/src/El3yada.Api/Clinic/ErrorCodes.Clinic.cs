@@ -14,4 +14,11 @@ public static partial class ErrorCodes
 
     /// <summary>403: the branch is not one of the assistant's branches (BR-AS13).</summary>
     public const string BranchNotAllowed = "BRANCH_NOT_ALLOWED";
+
+    /// <summary>
+    /// 403: the clinic's free trial has ended (BR-T4). Every clinic endpoint but <c>clinic/me</c> answers it, for
+    /// the doctor and every assistant, until the admin activates the service or extends the trial. The app reloads
+    /// the account and shows A15.
+    /// </summary>
+    public const string TrialEnded = "TRIAL_ENDED";
 }

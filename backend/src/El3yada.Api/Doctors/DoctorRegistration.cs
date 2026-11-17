@@ -171,6 +171,10 @@ public sealed record DoctorRegistrationView
     public required DateTime SubmittedAt { get; init; }
 
     public DateTime? ApprovedAt { get; init; }
+
+    /// <summary>The free trial (spec 6.16), or null: not approved yet, or the service is active.</summary>
+    public TrialView? Trial { get; init; }
+
     public required string FullName { get; init; }
     public string? Email { get; init; }
     public bool EmailVerified { get; init; }
@@ -194,13 +198,13 @@ public sealed record DoctorRegistrationView
     public int? ConsultationPricePiasters { get; init; }
     public BranchView? Branch { get; init; }
 
-    public static async Task<DoctorRegistrationView?> LoadAsync(AppDbContext db, Guid doctorId, CancellationToken cancellationToken)
+    public static async Task<DoctorRegistrationView?> LoadAsync(AppDbContext db, Guid doctorId, DateTime now, CancellationToken cancellationToken)
     {
         var row = await db.Doctors.AsNoTracking()
             .Where(d => d.UserId == doctorId)
             .Select(d => new
             {
-                d.UserId, d.Status, d.StatusReason, d.StatusChangedAt, d.CreatedAt, d.ApprovedAt,
+                d.UserId, d.Status, d.StatusReason, d.StatusChangedAt, d.CreatedAt, d.ApprovedAt, d.TrialEndsAt,
                 d.FullName, d.User.Email, d.User.EmailVerifiedAt, d.User.Phone, d.User.Locale,
                 d.Title, d.TitleEn, d.FullNameEn, d.DegreesAr, d.DegreesEn, d.LicenseNumber, d.LicenseDocPath,
                 d.ExaminationPricePiasters, d.ConsultationPricePiasters,
@@ -240,6 +244,7 @@ public sealed record DoctorRegistrationView
             StatusReason = row.StatusReason,
             SubmittedAt = row.StatusChangedAt ?? row.CreatedAt,
             ApprovedAt = row.ApprovedAt,
+            Trial = TrialView.Of(row.TrialEndsAt, now),
             FullName = row.FullName,
             Email = row.Email,
             EmailVerified = row.EmailVerifiedAt is not null,

@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using El3yada.Api.Auth;
 using Microsoft.EntityFrameworkCore;
 using SkiaSharp;
 
@@ -73,7 +74,7 @@ public sealed class RegistrationTests(IntegrationHost host)
     }
 
     [Fact]
-    public async Task Registration_waits_for_approval_then_the_doctor_reaches_the_app()
+    public async Task Registration_opens_the_clinic_at_once_with_a_free_trial()
     {
         var specialties = new[] { await TestData.AnySpecialtyAsync(Factory), await TestData.AnySpecialtyAsync(Factory, 1), await TestData.AnySpecialtyAsync(Factory, 2) };
         var admin = await TestData.CreateAdminAsync(Factory, Auth.AdminRoles.Admin);
@@ -84,12 +85,22 @@ public sealed class RegistrationTests(IntegrationHost host)
         Assert.Equal(HttpStatusCode.Created, status);
         Assert.Equal("signedIn", session.Str("result"));
         Assert.Equal("doctor", session.Str("role"));
-        Assert.Equal("pendingApproval", session.Str("doctorStatus"));
+        Assert.Equal("active", session.Str("doctorStatus"));
+        var trialDays = await TestData.WithDbAsync(Factory, db => db.AppSettings.Select(s => s.TrialDays).SingleAsync());
+        Assert.Equal(trialDays, session.GetProperty("trial").GetProperty("daysLeft").GetInt32());
+        Assert.False(session.GetProperty("trial").GetProperty("ended").GetBoolean());
         Assert.False(session.GetProperty("emailVerified").GetBoolean());
         var doctorId = Guid.Parse(session.Str("userId"));
         using var doctor = Factory.Client(session.Str("accessToken"));
 
-        // A6: the doctor sees what they sent.
+        // No approval step: the clinic works straight away.
+        var (clinicStatus, clinic) = await doctor.GetJsonAsync("/api/clinic/me");
+        Assert.Equal(HttpStatusCode.OK, clinicStatus);
+        Assert.Equal(0, clinic.GetProperty("fees").GetProperty("examinationFeePiasters").GetInt32());
+        var (registerStatus, _) = await doctor.GetJsonAsync("/api/patients/register");
+        Assert.Equal(HttpStatusCode.OK, registerStatus);
+
+        // The doctor can still read what they sent.
         var (mineStatus, mine) = await doctor.GetJsonAsync("/api/doctors/myRegistration");
         Assert.Equal(HttpStatusCode.OK, mineStatus);
         Assert.Equal("سامي عبد الله", mine.Str("fullName"));
@@ -116,11 +127,16 @@ public sealed class RegistrationTests(IntegrationHost host)
         Assert.NotNull(row.User.AcceptedTermsAt);
         Assert.True(await TestData.WithDbAsync(Factory, db => db.Notifications.AnyAsync(n => n.RecipientUserId == admin.Id && n.Type == "doctorRegistrationReceived" && n.DataJson!.Contains(doctorId.ToString()))));
         Assert.True(await TestData.WithDbAsync(Factory, db => db.AuditLogs.AnyAsync(a => a.Action == "doctorRegistrationSubmitted" && a.DoctorId == doctorId)));
+        var welcome = await TestData.WithDbAsync(Factory, db => db.Notifications.SingleAsync(n => n.RecipientUserId == doctorId && n.Type == "doctorWelcome"));
+        Assert.Contains("فترة تجريبية مجانية", welcome.BodyAr);
+        Assert.Equal(DoctorStatuses.Active, row.Status);
+        Assert.NotNull(row.ApprovedAt);
+        Assert.Null(row.ApprovedBy);
         await TestData.WaitForEmailAsync(Factory, email, "emailVerify");
 
         // AD2 and AD3 for the admin.
         using var adminClient = await Factory.SignedInClientAsync(admin);
-        var (listStatus, list) = await adminClient.GetJsonAsync($"/api/admin/doctorRegistrations?search={Uri.EscapeDataString(email)}");
+        var (listStatus, list) = await adminClient.GetJsonAsync($"/api/admin/doctorRegistrations?status=all&trial=running&search={Uri.EscapeDataString(email)}");
         Assert.Equal(HttpStatusCode.OK, listStatus);
         var item = Assert.Single(list.GetProperty("items").EnumerateArray());
         Assert.Equal(doctorId.ToString(), item.Str("doctorId"));
@@ -135,15 +151,10 @@ public sealed class RegistrationTests(IntegrationHost host)
         Assert.Equal(LicenseJpeg, await license.Content.ReadAsByteArrayAsync());
         Assert.True(await TestData.WithDbAsync(Factory, db => db.AuditLogs.AnyAsync(a => a.Action == "doctorLicenseViewed" && a.ActorUserId == admin.Id)));
 
-        // Approve.
+        // Nothing to review: the doctor is not waiting for anyone.
         var (approveStatus, approved) = await adminClient.PostAsync("/api/admin/reviewDoctorRegistration", new { doctorId, decision = "approve" });
-        Assert.Equal(HttpStatusCode.OK, approveStatus);
-        Assert.Equal("active", approved.Str("status"));
-        var (againStatus, again) = await adminClient.PostAsync("/api/admin/reviewDoctorRegistration", new { doctorId, decision = "reject", reason = "late" });
-        Assert.Equal(HttpStatusCode.Conflict, againStatus);
-        Assert.Equal(ErrorCodes.RegistrationNotPending, again.Code());
-        Assert.True(await TestData.WithDbAsync(Factory, db => db.Notifications.AnyAsync(n => n.RecipientUserId == doctorId && n.Type == "doctorRegistrationApproved")));
-        Assert.True(await TestData.WithDbAsync(Factory, db => db.AuditLogs.AnyAsync(a => a.Action == "doctorRegistrationApproved" && a.TargetId == doctorId.ToString() && a.ActorUserId == admin.Id)));
+        Assert.Equal(HttpStatusCode.Conflict, approveStatus);
+        Assert.Equal(ErrorCodes.RegistrationNotPending, approved.Code());
 
         var (meStatus, me) = await doctor.GetJsonAsync("/api/auth/me");
         Assert.Equal(HttpStatusCode.OK, meStatus);
@@ -160,6 +171,11 @@ public sealed class RegistrationTests(IntegrationHost host)
         var email = TestData.Email("rejected");
         var (_, session) = await RegisterAsync(Data(email, specialty), LicenseJpeg);
         var doctorId = Guid.Parse(session.Str("userId"));
+        // A doctor who signed up before the free trial replaced approval (spec 6.16) is still waiting for review.
+        await TestData.WithDbAsync(Factory, db => db.Doctors.Where(d => d.UserId == doctorId).ExecuteUpdateAsync(set => set
+            .SetProperty(d => d.Status, DoctorStatuses.PendingApproval)
+            .SetProperty(d => d.ApprovedAt, (DateTime?)null)
+            .SetProperty(d => d.TrialEndsAt, (DateTime?)null)));
         using var doctor = Factory.Client(session.Str("accessToken"));
         using var adminClient = await Factory.SignedInClientAsync(admin);
         var oldPath = await TestData.WithDbAsync(Factory, db => db.Doctors.Where(d => d.UserId == doctorId).Select(d => d.LicenseDocPath).SingleAsync());

@@ -147,6 +147,7 @@ abstract final class SettingFields {
     SettingFieldSpec('gracePeriodDays', SettingKind.integer, SettingGroup.billing, max: 31, appliesToNewOnly: true),
     SettingFieldSpec('maxConsecutiveConsultations', SettingKind.integer, SettingGroup.billing,
         min: 1, max: 5, appliesToNewOnly: true),
+    SettingFieldSpec('trialDays', SettingKind.integer, SettingGroup.billing, min: 1, max: 90, appliesToNewOnly: true),
     SettingFieldSpec('instapayAddress', SettingKind.text, SettingGroup.payment, maxLength: 200),
     SettingFieldSpec('instapayAccountName', SettingKind.text, SettingGroup.payment, maxLength: 100),
     SettingFieldSpec('instapayInstructionsAr', SettingKind.text, SettingGroup.payment,

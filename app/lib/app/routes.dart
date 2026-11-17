@@ -35,6 +35,9 @@ abstract final class AppRoutes {
   /// A10.
   static const blocked = '/blocked';
 
+  /// A15: the clinic's free trial ended (spec 6.16).
+  static const trialEnded = '/trial-ended';
+
   /// A11.
   static const update = '/update';
 

@@ -29,9 +29,14 @@ abstract interface class RegistrationRepository {
   /// `GET /api/specialties`: the active specialties in the admin's order.
   Future<List<Specialty>> specialties();
 
-  /// A4 Submit: creates the account with status `pendingApproval` and
-  /// answers with its session (the app then opens A6).
+  /// A4 Submit: creates the account and answers with its session. A new
+  /// doctor is `active` at once with a running free trial
+  /// (backend/docs/api-free-trial.md); the app welcomes them and opens the
+  /// home. There is no approval step any more.
   Future<AuthSession> register(RegistrationData data, LicenseFile license);
+
+  // A6 and A7 below stay for doctors who signed up before that change and
+  // are still pending or rejected.
 
   /// A6 and A7: the signed-in doctor's registration.
   Future<DoctorRegistration> myRegistration();
@@ -124,7 +129,8 @@ class ApiRegistrationRepository implements RegistrationRepository {
 /// Offline registration for development and tests, used with
 /// [FakeAuthRepository] when `USE_FAKE_AUTH` is true. It keeps the latest
 /// registration in memory and updates the fake signed-in account, so A4 →
-/// A6 → Refresh and A7 → resubmit → A6 work without a server.
+/// the home (active, in a [trialDays]-day free trial) and, for the legacy
+/// accounts, A6 → Refresh and A7 → resubmit → A6 work without a server.
 ///
 /// `taken@el3yada.dev` answers 409 `EMAIL_ALREADY_REGISTERED`.
 class FakeRegistrationRepository implements RegistrationRepository {
@@ -136,6 +142,9 @@ class FakeRegistrationRepository implements RegistrationRepository {
   final Duration delay;
 
   static const takenEmail = 'taken@el3yada.dev';
+
+  /// The `trialDays` setting's default: a new doctor's free trial.
+  static const trialDays = 14;
 
   static const specialtyList = [
     Specialty(id: 'sp-internal', nameAr: 'باطنة', nameEn: 'Internal Medicine'),
@@ -190,15 +199,19 @@ class FakeRegistrationRepository implements RegistrationRepository {
       displayName: data.fullName,
       role: UserRole.doctor,
       doctorId: userId,
-      doctorStatus: DoctorStatus.pendingApproval,
+      doctorStatus: DoctorStatus.active,
       email: data.email.trim().toLowerCase(),
       emailVerified: false,
       phone: Validators.normalizeEgyptianMobile(data.phone),
       locale: data.locale,
+      trial: TrialInfo(
+        endsAt: DateTime.now().toUtc().add(const Duration(days: trialDays)),
+        daysLeft: trialDays,
+      ),
       accessToken: 'dev-access-token',
       refreshToken: 'dev-refresh-token',
     );
-    _registrations[userId] = _view(userId, data, license.contentType, DoctorStatus.pendingApproval);
+    _registrations[userId] = _view(userId, data, license.contentType, DoctorStatus.active);
     _licenses[userId] = license;
     auth?.current = session;
     return session;

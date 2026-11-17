@@ -7917,6 +7917,630 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verify your email address'**
   String get settingsVerifyEmail;
+
+  /// No description provided for @patientTabFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get patientTabFiles;
+
+  /// No description provided for @recordCategoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get recordCategoryAll;
+
+  /// No description provided for @recordCategoryRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get recordCategoryRadiology;
+
+  /// No description provided for @recordCategoryLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests'**
+  String get recordCategoryLab;
+
+  /// No description provided for @recordCategoryPrescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescriptions'**
+  String get recordCategoryPrescription;
+
+  /// No description provided for @recordCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get recordCategoryOther;
+
+  /// No description provided for @recordChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} {count}'**
+  String recordChip(String name, int count);
+
+  /// No description provided for @recordOtherReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical report'**
+  String get recordOtherReport;
+
+  /// No description provided for @recordOtherReferral.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral'**
+  String get recordOtherReferral;
+
+  /// No description provided for @recordOtherSickLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Sick leave'**
+  String get recordOtherSickLeave;
+
+  /// No description provided for @recordOtherEcg.
+  ///
+  /// In en, this message translates to:
+  /// **'ECG'**
+  String get recordOtherEcg;
+
+  /// No description provided for @recordOtherEegEmg.
+  ///
+  /// In en, this message translates to:
+  /// **'EEG / EMG'**
+  String get recordOtherEegEmg;
+
+  /// No description provided for @recordOtherEndoscopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Endoscopy'**
+  String get recordOtherEndoscopy;
+
+  /// No description provided for @recordOtherConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Consent form'**
+  String get recordOtherConsent;
+
+  /// No description provided for @recordOtherCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Another type (type it)'**
+  String get recordOtherCustom;
+
+  /// No description provided for @recordOtherNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No type'**
+  String get recordOtherNone;
+
+  /// No description provided for @recordsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No files yet'**
+  String get recordsEmptyTitle;
+
+  /// No description provided for @recordsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan or upload lab results, X-rays and other papers. The patient sees them in their app.'**
+  String get recordsEmptyBody;
+
+  /// No description provided for @recordsEmptyCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No files in this category'**
+  String get recordsEmptyCategory;
+
+  /// No description provided for @recordAddFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload files'**
+  String get recordAddFiles;
+
+  /// No description provided for @recordScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get recordScan;
+
+  /// No description provided for @recordDropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop the files to upload them'**
+  String get recordDropHint;
+
+  /// No description provided for @recordFilesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file} other{{count} files}}'**
+  String recordFilesCount(int count);
+
+  /// No description provided for @recordPagesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 page} other{{count} pages}}'**
+  String recordPagesCount(int count);
+
+  /// No description provided for @sizeBytes.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} B'**
+  String sizeBytes(String value);
+
+  /// No description provided for @sizeKb.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} KB'**
+  String sizeKb(String value);
+
+  /// No description provided for @sizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} MB'**
+  String sizeMb(String value);
+
+  /// No description provided for @recordUploadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload files'**
+  String get recordUploadTitle;
+
+  /// No description provided for @recordScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a document'**
+  String get recordScanTitle;
+
+  /// No description provided for @recordEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit file details'**
+  String get recordEditTitle;
+
+  /// No description provided for @recordFieldCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get recordFieldCategory;
+
+  /// No description provided for @recordFieldOtherType.
+  ///
+  /// In en, this message translates to:
+  /// **'Document type (optional)'**
+  String get recordFieldOtherType;
+
+  /// No description provided for @recordFieldOtherTypeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get recordFieldOtherTypeText;
+
+  /// No description provided for @recordFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (optional)'**
+  String get recordFieldTitle;
+
+  /// No description provided for @recordTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If left empty: {title}'**
+  String recordTitleHint(String title);
+
+  /// No description provided for @recordFieldDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Document date'**
+  String get recordFieldDate;
+
+  /// No description provided for @recordFieldNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get recordFieldNotes;
+
+  /// No description provided for @recordFieldSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Link to a visit'**
+  String get recordFieldSession;
+
+  /// No description provided for @recordNoSession.
+  ///
+  /// In en, this message translates to:
+  /// **'No visit'**
+  String get recordNoSession;
+
+  /// No description provided for @recordSessionOption.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} · {date}'**
+  String recordSessionOption(String type, String date);
+
+  /// No description provided for @recordCategoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category'**
+  String get recordCategoryRequired;
+
+  /// No description provided for @recordFilesHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get recordFilesHeading;
+
+  /// No description provided for @recordDetailsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get recordDetailsHeading;
+
+  /// No description provided for @recordAddMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Add files'**
+  String get recordAddMore;
+
+  /// No description provided for @recordFromFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose files'**
+  String get recordFromFiles;
+
+  /// No description provided for @recordFromCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get recordFromCamera;
+
+  /// No description provided for @recordFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get recordFromGallery;
+
+  /// No description provided for @recordSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to the patient\'s file'**
+  String get recordSave;
+
+  /// No description provided for @recordSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to the patient\'s file'**
+  String get recordSaved;
+
+  /// No description provided for @recordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'File details saved'**
+  String get recordUpdated;
+
+  /// No description provided for @recordPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Making it smaller…'**
+  String get recordPreparing;
+
+  /// No description provided for @recordUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {percent}%'**
+  String recordUploading(int percent);
+
+  /// No description provided for @recordUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get recordUploaded;
+
+  /// No description provided for @recordUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed'**
+  String get recordUploadFailed;
+
+  /// No description provided for @recordRemoveFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get recordRemoveFile;
+
+  /// No description provided for @recordTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'File larger than allowed ({mb} MB)'**
+  String recordTooLarge(int mb);
+
+  /// No description provided for @recordSavedSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduced from {from} to {to}'**
+  String recordSavedSpace(String from, String to);
+
+  /// No description provided for @recordWaitForUploads.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for every file to upload, or remove the ones that failed.'**
+  String get recordWaitForUploads;
+
+  /// No description provided for @recordNeedFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one file'**
+  String get recordNeedFiles;
+
+  /// No description provided for @recordUploadExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is no longer waiting. Upload it again.'**
+  String get recordUploadExpired;
+
+  /// No description provided for @recordErrorInvalidSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one of this patient\'s visits'**
+  String get recordErrorInvalidSession;
+
+  /// No description provided for @recordErrorInvalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'The document date can\'t be in the future'**
+  String get recordErrorInvalidDate;
+
+  /// No description provided for @recordErrorTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'One file can hold at most 20 attachments'**
+  String get recordErrorTooMany;
+
+  /// No description provided for @recordNoFilesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No files added yet'**
+  String get recordNoFilesYet;
+
+  /// No description provided for @recordScanReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the pages'**
+  String get recordScanReviewTitle;
+
+  /// No description provided for @recordScanAddPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan more pages'**
+  String get recordScanAddPages;
+
+  /// No description provided for @recordScanPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {number}'**
+  String recordScanPage(int number);
+
+  /// No description provided for @recordScanMoveEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Move earlier'**
+  String get recordScanMoveEarlier;
+
+  /// No description provided for @recordScanMoveLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Move later'**
+  String get recordScanMoveLater;
+
+  /// No description provided for @recordScanDeletePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete page'**
+  String get recordScanDeletePage;
+
+  /// No description provided for @recordScanMakePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Make one PDF'**
+  String get recordScanMakePdf;
+
+  /// No description provided for @recordScanBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the PDF…'**
+  String get recordScanBuilding;
+
+  /// No description provided for @recordScanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The scanner isn\'t available on this device.'**
+  String get recordScanUnavailable;
+
+  /// No description provided for @recordScanDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow camera access in the settings to scan.'**
+  String get recordScanDenied;
+
+  /// No description provided for @recordScanFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The scan didn\'t work. Try again.'**
+  String get recordScanFailed;
+
+  /// No description provided for @recordDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get recordDetails;
+
+  /// No description provided for @recordOpenWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Open with…'**
+  String get recordOpenWith;
+
+  /// No description provided for @recordDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get recordDownload;
+
+  /// No description provided for @recordShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get recordShare;
+
+  /// No description provided for @recordEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get recordEdit;
+
+  /// No description provided for @recordDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get recordDelete;
+
+  /// No description provided for @recordDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this file?'**
+  String get recordDeleteTitle;
+
+  /// No description provided for @recordDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears from the patient\'s file, for you and for the patient.'**
+  String get recordDeleteBody;
+
+  /// No description provided for @recordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'File deleted'**
+  String get recordDeleted;
+
+  /// No description provided for @recordDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'File saved'**
+  String get recordDownloaded;
+
+  /// No description provided for @recordCantOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this device opens this type of file.'**
+  String get recordCantOpen;
+
+  /// No description provided for @recordNoPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'This type of file opens in another app.'**
+  String get recordNoPreview;
+
+  /// No description provided for @recordPdfFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This PDF couldn\'t be shown here. Open it with another app.'**
+  String get recordPdfFailed;
+
+  /// No description provided for @recordAttachmentOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{index} of {count}'**
+  String recordAttachmentOf(int index, int count);
+
+  /// No description provided for @recordAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {date}'**
+  String recordAdded(String date);
+
+  /// No description provided for @recordSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get recordSize;
+
+  /// No description provided for @recordSourceScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanned'**
+  String get recordSourceScan;
+
+  /// No description provided for @recordSourceUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get recordSourceUpload;
+
+  /// No description provided for @recordSourceChat.
+  ///
+  /// In en, this message translates to:
+  /// **'From the chat'**
+  String get recordSourceChat;
+
+  /// No description provided for @recordVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get recordVisit;
+
+  /// No description provided for @recordPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous file'**
+  String get recordPrevious;
+
+  /// No description provided for @recordNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next file'**
+  String get recordNext;
+
+  /// No description provided for @recordLoadingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening the file…'**
+  String get recordLoadingFile;
+
+  /// No description provided for @activityRecordCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a file to the patient\'s record'**
+  String get activityRecordCreated;
+
+  /// No description provided for @activityRecordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited a file\'s details'**
+  String get activityRecordUpdated;
+
+  /// No description provided for @activityRecordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a file'**
+  String get activityRecordDeleted;
+
+  /// No description provided for @activityActionRecordCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'File added'**
+  String get activityActionRecordCreated;
+
+  /// No description provided for @activityActionRecordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'File edited'**
+  String get activityActionRecordUpdated;
+
+  /// No description provided for @activityActionRecordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'File deleted'**
+  String get activityActionRecordDeleted;
 }
 
 class _AppLocalizationsDelegate

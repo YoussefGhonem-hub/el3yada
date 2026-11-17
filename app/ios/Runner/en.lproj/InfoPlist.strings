@@ -1,0 +1,3 @@
+/* English usage strings (spec 6.3). Add this file to the Runner target in Xcode (Localization: English). */
+"NSCameraUsageDescription" = "el3yada uses the camera to scan and photograph medical documents, and your syndicate card or license.";
+"NSPhotoLibraryUsageDescription" = "el3yada opens your photos so you can add medical documents, or a picture of your syndicate card or license.";

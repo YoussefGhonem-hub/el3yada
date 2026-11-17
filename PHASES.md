@@ -239,7 +239,7 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Goal:** doctors scan and upload medical files, write prescriptions and lab/radiology requests with specialty-based search, and print or send them.
 
-**API** (606 tests: 8 data and 598 API, run against a migrated LocalDB database. Contracts: [api-phase-3-files.md](backend/docs/api-phase-3-files.md), [api-phase-3-prescriptions.md](backend/docs/api-phase-3-prescriptions.md), [api-phase-3-catalogs.md](backend/docs/api-phase-3-catalogs.md).)
+**API** (617 tests: 8 data and 609 API, run against a migrated LocalDB database. Contracts: [api-phase-3-files.md](backend/docs/api-phase-3-files.md), [api-phase-3-prescriptions.md](backend/docs/api-phase-3-prescriptions.md), [api-phase-3-catalogs.md](backend/docs/api-phase-3-catalogs.md).)
 - [x] Authenticated upload and download for medical records (size limit `MaxUploadMb`, thumbnails, soft delete).
   - Two steps: `uploadFile` then `createRecord`, so every file gets its own progress and retry.
   - Every file is optimized for storage: images are cut to 2560 px, saved as JPEG quality 80 and stripped of GPS data, and other files are gzip-compressed when that helps.
@@ -258,15 +258,24 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
   - Downloads support ranges, so D0 can resume.
   - The General profile is an inactive "General" specialty row.
   - `dotnet run -- seed-specialty-profiles <csv>` loads the builder's `specialty-profiles.csv`.
-  - The expected `schema_version` is 1 (`CatalogSchema.ExpectedVersion`); align it with the builder.
-- [ ] Catalog builder (spec 9.5 and Appendix A), including `class-to-group.csv` and `aliases.csv`. This is the biggest manual task, so start it early in the phase.
+  - The expected `schema_version` is 1 (`CatalogSchema.ExpectedVersion`), the version the builder writes.
+  - The dev database has the 20 default profiles (402 items) from the builder's file.
+- [x] Catalog builder (spec 9.5 and Appendix A): `tools/catalog-builder`, with shared search code in `packages/catalog_core`. Details and decisions: [tools/catalog-builder/README.md](tools/catalog-builder/README.md).
+  - Catalog v1 (drug dataset June 2026, LOINC 2.83): 24,715 medicines, 43,459 lab tests, 6,941 radiology procedures. 6.9 MB to download (19.4 MB unpacked).
+  - Every AC-18 search check passes, including «بنادول», plus all 316 priority aliases in English and Arabic.
+  - The source files and the built file stay out of git (LOINC licence, A.7). Put LOINC under `tools/catalog-builder/sources/loinc/<release>/`.
+  - **Before publishing v1:** a doctor or pharmacist reviews the groups, the class mapping, the profiles and the Arabic names (README, "What needs a doctor's review"); the EDA spot check (A.3.8); and open questions 32 and 33 in the spec.
 
 **App**
-- [ ] D10 scan (mobile only), D11 upload (drag and drop on desktop), D12 file viewer (black background, zoom, PDF).
+- [x] D10 scan (mobile only), D11 upload (drag and drop on desktop), D12 file viewer (black background, zoom, PDF), and the D6 Files tab.
+  - Files are made smaller on the device before upload too (images at most 2560 px, JPEG 80, no EXIF; scans as one PDF of JPEG 75 pages), and each file shows how much it saved.
+  - Not yet tried on a real device: the document scanner and camera permission, real drag and drop, "Open with", the share sheet and save dialog, and drawing real PDFs.
+  - iOS: add `ar.lproj/InfoPlist.strings` and `en.lproj/InfoPlist.strings` to the Runner target in Xcode.
 - [ ] D13 medication editor and D14 investigations editor with catalog search sections (BR-CAT4–CAT8), D15 preview and send (PDF, print, print all, share).
 - [ ] D22 prescription header and print settings with live preview and test print. D23 templates and favourites [S].
 - [ ] D0 preparing the catalog (download with progress, works in the background).
-- [ ] AS6 files, AS7 draft editor [S], AS8 sent prescription (print and share only).
+- [x] AS6 files (the Files tab for an assistant with `filesManage`; deleting stays doctor-only).
+- [ ] AS7 draft editor [S], AS8 sent prescription (print and share only).
 - [ ] AD19 specialty profiles, AD20 catalogs.
 
 **Tables:** MedicalRecords, MedicalRecordAttachments, Prescriptions, PrescriptionMedicationItems, PrescriptionInvestigationItems, PrescriptionTemplates, DoctorItemHistory, Doctors (Rx* columns), CatalogVersions, CatalogCustomItems, CatalogReports, Specialties, SpecialtyProfileItems.

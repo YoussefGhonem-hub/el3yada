@@ -25,6 +25,9 @@ _AuthSession _$AuthSessionFromJson(Map<String, dynamic> json) => _AuthSession(
   phone: json['phone'] as String?,
   locale: json['locale'] as String? ?? 'ar',
   themeMode: json['themeMode'] as String? ?? 'system',
+  trial: json['trial'] == null
+      ? null
+      : TrialInfo.fromJson(json['trial'] as Map<String, dynamic>),
   accessToken: json['accessToken'] as String,
   accessTokenExpiresAt: json['accessTokenExpiresAt'] == null
       ? null
@@ -52,6 +55,7 @@ Map<String, dynamic> _$AuthSessionToJson(
   'phone': instance.phone,
   'locale': instance.locale,
   'themeMode': instance.themeMode,
+  'trial': instance.trial,
   'accessToken': instance.accessToken,
   'accessTokenExpiresAt': instance.accessTokenExpiresAt?.toIso8601String(),
   'refreshToken': instance.refreshToken,
@@ -72,3 +76,16 @@ const _$DoctorStatusEnumMap = {
   DoctorStatus.suspended: 'suspended',
   DoctorStatus.disabled: 'disabled',
 };
+
+_TrialInfo _$TrialInfoFromJson(Map<String, dynamic> json) => _TrialInfo(
+  endsAt: DateTime.parse(json['endsAt'] as String),
+  ended: json['ended'] as bool? ?? false,
+  daysLeft: (json['daysLeft'] as num?)?.toInt() ?? 0,
+);
+
+Map<String, dynamic> _$TrialInfoToJson(_TrialInfo instance) =>
+    <String, dynamic>{
+      'endsAt': instance.endsAt.toIso8601String(),
+      'ended': instance.ended,
+      'daysLeft': instance.daysLeft,
+    };

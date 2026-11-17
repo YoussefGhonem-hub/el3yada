@@ -38,12 +38,20 @@ class ClinicContextController extends AsyncNotifier<ClinicContext?> {
 
 /// The parts of the session that decide whether the clinic can load, or null
 /// when it can't (the API would refuse `clinic/me`).
-({String userId, UserRole role, DoctorStatus? status})? _clinicKey(AuthSession? session) {
+({String userId, UserRole role, DoctorStatus? status, DateTime? trialEndsAt, bool trialEnded})? _clinicKey(
+  AuthSession? session,
+) {
   if (session == null || session.mustChangePassword) return null;
   if (session.role != UserRole.doctor && session.role != UserRole.assistant) return null;
   final status = session.doctorStatus;
   if (session.role == UserRole.doctor && status != DoctorStatus.active && status != DoctorStatus.suspended) return null;
-  return (userId: session.userId, role: session.role, status: status);
+  return (
+    userId: session.userId,
+    role: session.role,
+    status: status,
+    trialEndsAt: session.trial?.endsAt,
+    trialEnded: session.trialEnded,
+  );
 }
 
 /// The current branch (BR-BR3): new sessions, walk-ins and today's lists use

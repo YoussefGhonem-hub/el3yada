@@ -74,17 +74,21 @@ void main() {
         .setMockMethodCallHandler(SystemChannels.platform, null);
   });
 
-  group('AD2 / AD3 sign-up requests', () {
-    testWidgets('desktop: newest first, the first opens beside the list, approve moves to the next one',
+  // New doctors are active at once (backend/docs/api-free-trial.md); the
+  // offline data keeps six legacy sign-ups still waiting for review.
+  group('AD2 / AD3 doctors', () {
+    testWidgets('desktop: every doctor newest first; approving a legacy sign-up keeps them open, now in a trial',
         (tester) async {
       await _signedInAdmin(tester);
       await _open(tester, '/admin/signups');
 
-      expect(find.text('6 requests waiting'), findsOneWidget);
+      expect(find.text('Doctors'), findsWidgets);
+      expect(find.text('8 doctors'), findsOneWidget);
+      expect(_inList(find.text('Waiting for review')), findsWidgets, reason: 'legacy sign-ups show their status');
       final mona = tester.getTopLeft(find.textContaining('منى حسن').first);
       final sami = tester.getTopLeft(find.textContaining('سامي عبد الله').first);
       expect(mona.dy, lessThan(sami.dy), reason: 'newest first');
-      expect(find.text('New'), findsNWidgets(2), reason: 'sent in the last day');
+      expect(find.text('New'), findsNWidgets(2), reason: 'signed up in the last day');
 
       // The first request is open in the detail pane, with everything submitted.
       expect(find.text('Sign-up request'), findsOneWidget);
@@ -98,11 +102,13 @@ void main() {
       await _settle(tester);
 
       expect(find.text('Dr. منى حسن الشريف is approved and can now use el3yada.'), findsOneWidget);
-      expect(find.text('5 requests waiting'), findsOneWidget);
-      expect(_inList(find.textContaining('منى حسن')), findsNothing);
-      // The next request opened by itself.
-      expect(find.text('45678'), findsOneWidget);
-      expect(find.text('Syndicate card'), findsOneWidget);
+      expect(find.text('8 doctors'), findsOneWidget);
+      expect(_inList(find.textContaining('منى حسن')), findsOneWidget);
+      // She stays open, now an active doctor whose free trial started.
+      expect(find.text('Doctor account'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Approve'), findsNothing);
+      expect(find.text('78-2201'), findsOneWidget);
+      expect(find.text('Trial: 14 days left'), findsNWidgets(2), reason: 'in the list and in the trial section');
       final fake = adminFake(tester);
       expect((await fake.doctorRegistration('doc-mona')).registration.status, DoctorStatuses.active);
     });
@@ -158,7 +164,7 @@ void main() {
       await _settle(tester);
 
       expect(find.text('This request was already reviewed, maybe by another admin.'), findsOneWidget);
-      expect(find.text('5 requests waiting'), findsOneWidget);
+      expect(find.text('8 doctors'), findsOneWidget);
     });
 
     testWidgets('search narrows the list and an empty result offers to clear it', (tester) async {
@@ -168,20 +174,21 @@ void main() {
       await tester.enterText(find.byType(TextField).first, '31207');
       await tester.pump(const Duration(milliseconds: 400));
       await _settle(tester);
-      expect(find.text('1 request waiting'), findsOneWidget);
+      expect(find.text('1 doctor'), findsOneWidget);
       expect(find.textContaining('كريم مصطفى'), findsWidgets);
 
       await tester.enterText(find.byType(TextField).first, 'nobody');
       await tester.pump(const Duration(milliseconds: 400));
       await _settle(tester);
-      expect(find.text('No requests match your search'), findsOneWidget);
+      expect(find.text('No doctors match your search'), findsOneWidget);
       await tester.tap(find.widgetWithText(FilledButton, 'Clear search'));
       await tester.pump(const Duration(milliseconds: 400));
       await _settle(tester);
-      expect(find.text('6 requests waiting'), findsOneWidget);
+      expect(find.text('8 doctors'), findsOneWidget);
     });
 
-    testWidgets('phone: a card opens the review; after approving, the list comes back without it', (tester) async {
+    testWidgets('phone: a card opens the review; after approving, the list shows the doctor active in a trial',
+        (tester) async {
       await _signedInAdmin(tester, size: _phone);
       await _open(tester, '/admin/signups');
 
@@ -201,8 +208,9 @@ void main() {
       await _settle(tester);
 
       expect(find.text('Sign-up request'), findsNothing);
-      expect(_inList(find.textContaining('سامي عبد الله')), findsNothing);
-      expect(find.text('5 requests waiting'), findsOneWidget);
+      expect(_inList(find.textContaining('سامي عبد الله')), findsOneWidget);
+      expect(find.text('8 doctors'), findsOneWidget);
+      expect(_inList(find.text('Trial: 14 days left')), findsOneWidget, reason: 'his trial started');
     });
 
     testWidgets('with reduced motion the review still opens (a plain fade) and works', (tester) async {
@@ -217,7 +225,7 @@ void main() {
       await tester.tap(find.byType(AppBackButton));
       await _settle(tester);
       expect(find.text('Sign-up request'), findsNothing);
-      expect(find.text('6 requests waiting'), findsOneWidget);
+      expect(find.text('8 doctors'), findsOneWidget);
     });
 
     testWidgets('a resubmitted request shows the earlier rejection', (tester) async {

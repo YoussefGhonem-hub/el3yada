@@ -9,4 +9,7 @@ public static partial class ErrorCodes
     /// the doctor's current status.
     /// </summary>
     public const string DoctorStatusNotChangeable = "DOCTOR_STATUS_NOT_CHANGEABLE";
+
+    /// <summary>409: <c>extendDoctorTrial</c> for a doctor whose service is already active: there is no trial (BR-T5).</summary>
+    public const string ServiceAlreadyActive = "SERVICE_ALREADY_ACTIVE";
 }

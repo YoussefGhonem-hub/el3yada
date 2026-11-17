@@ -30,6 +30,8 @@ class FakeCaller {
     required this.permissions,
     this.branchIds,
     this.suspended = false,
+    this.freeTrial = false,
+    this.trialEnded = false,
   });
 
   /// The doctor or assistant of [clinic]. Every offline doctor works on the
@@ -41,6 +43,8 @@ class FakeCaller {
         permissions: clinic.permissions,
         branchIds: clinic.isDoctor ? null : {for (final b in clinic.workBranches) b.id},
         suspended: clinic.isSuspended,
+        freeTrial: clinic.freeTrial,
+        trialEnded: clinic.trial?.ended ?? false,
       );
 
   final bool isDoctor;
@@ -51,6 +55,12 @@ class FakeCaller {
   /// The assistant's branches (BR-AS13); null for the doctor (every branch).
   final Set<String>? branchIds;
   final bool suspended;
+
+  /// The clinic's free trial is running: sessions carry no fee (BR-T3).
+  final bool freeTrial;
+
+  /// The trial ended: every clinic call answers TRIAL_ENDED (BR-T4).
+  final bool trialEnded;
 
   bool can(String permission) => isDoctor || permissions.contains(permission);
 
@@ -527,7 +537,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     final last = _visits(patientId).last;
     TypeOption option(SessionType type, {required bool allowed}) => TypeOption(
           allowed: allowed,
-          platformFeePiasters: _fee(type),
+          platformFeePiasters: _fee(type, who),
           visitPricePiasters: _price(branchId, type),
           priceSource: branchPrices[branchId]?[type] != null ? 'branch' : (doctorPrices[type] != null ? 'doctor' : null),
         );
@@ -599,7 +609,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
       type: draft.type,
       at: _now().toUtc(),
       branchId: draft.branchId,
-      feePiasters: _fee(draft.type),
+      feePiasters: _fee(draft.type, who),
       listPricePiasters: price,
       amountPiasters: amount,
       paymentMethod: draft.paymentMethod,
@@ -881,7 +891,11 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     return null;
   }
 
-  int _fee(SessionType type) => type == SessionType.examination ? examinationFeePiasters : consultationFeePiasters;
+  int _fee(SessionType type, [FakeCaller? who]) => who?.freeTrial ?? false
+      ? 0
+      : type == SessionType.examination
+          ? examinationFeePiasters
+          : consultationFeePiasters;
 
   int? _price(String branchId, SessionType type) => branchPrices[branchId]?[type] ?? doctorPrices[type];
 
@@ -891,6 +905,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
   FakeCaller _caller() {
     final who = caller();
     if (who == null) throw const ApiException(kind: ApiErrorKind.http, status: 403, code: ApiCodes.forbidden);
+    if (who.trialEnded) throw const ApiException(kind: ApiErrorKind.http, status: 403, code: ApiCodes.trialEnded);
     return who;
   }
 

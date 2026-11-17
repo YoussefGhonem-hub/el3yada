@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 
+import '../../auth/domain/auth_session.dart' show TrialInfo;
+
 export '../../../core/data/paged.dart';
+export '../../auth/domain/auth_session.dart' show TrialInfo;
 
 /// Models for the Phase 1 admin endpoints (AD2, AD3, AD13–AD15, AD18).
 /// The contract is backend/docs/api-phase-1.md, section "Admin"; the
@@ -13,6 +16,7 @@ DateTime _time(Object? value) => DateTime.parse(value! as String).toUtc();
 DateTime? _timeOrNull(Object? value) => value == null ? null : _time(value);
 String? _text(Object? value) => value is String && value.isNotEmpty ? value : null;
 Map<String, dynamic> _map(Object? value) => (value as Map).cast<String, dynamic>();
+TrialInfo? _trial(Object? value) => value == null ? null : TrialInfo.fromJson(_map(value));
 
 /// `{ id, nameAr, nameEn }`.
 class SpecialtyRef {
@@ -41,6 +45,7 @@ class RegistrationSummary {
     this.governorate,
     this.city,
     this.emailVerified = true,
+    this.trial,
   });
 
   factory RegistrationSummary.fromJson(Map<String, dynamic> json) => RegistrationSummary(
@@ -54,6 +59,7 @@ class RegistrationSummary {
         submittedAt: _time(json['submittedAt']),
         createdAt: _time(json['createdAt']),
         emailVerified: json['emailVerified'] as bool? ?? true,
+        trial: _trial(json['trial']),
       );
 
   final String doctorId;
@@ -63,6 +69,9 @@ class RegistrationSummary {
   final String? governorate;
   final String? city;
   final String status;
+
+  /// The free trial of an approved doctor (spec 6.16); null when none.
+  final TrialInfo? trial;
 
   /// The latest submission: the first one, or the last resubmission.
   final DateTime submittedAt;
@@ -165,6 +174,7 @@ class DoctorRegistration {
     this.examinationPricePiasters,
     this.consultationPricePiasters,
     this.branch,
+    this.trial,
   });
 
   factory DoctorRegistration.fromJson(Map<String, dynamic> json) => DoctorRegistration(
@@ -192,6 +202,7 @@ class DoctorRegistration {
         examinationPricePiasters: json['examinationPricePiasters'] as int?,
         consultationPricePiasters: json['consultationPricePiasters'] as int?,
         branch: json['branch'] == null ? null : RegistrationBranch.fromJson(_map(json['branch'])),
+        trial: _trial(json['trial']),
       );
 
   final String doctorId;
@@ -217,14 +228,29 @@ class DoctorRegistration {
   final int? consultationPricePiasters;
   final RegistrationBranch? branch;
 
+  /// The free trial after approval (spec 6.16): running, ended, or null when
+  /// the service is active (or the doctor isn't approved yet).
+  final TrialInfo? trial;
+
   bool get isPending => status == DoctorStatuses.pendingApproval;
+
+  /// Approved: the admin can activate the service or extend the trial.
+  bool get isApproved => status == DoctorStatuses.active || status == DoctorStatuses.suspended;
+
+  /// The same registration with another [trial].
+  DoctorRegistration withTrial(TrialInfo? trial) => _copy(status: status, statusReason: statusReason, trial: trial);
 
   /// The same registration with a new [status] and its [statusReason]
   /// (null: none, so an approval clears an earlier rejection's reason).
-  DoctorRegistration withStatus(String status, {String? statusReason}) => DoctorRegistration(
+  DoctorRegistration withStatus(String status, {String? statusReason}) =>
+      _copy(status: status, statusReason: statusReason, trial: trial);
+
+  DoctorRegistration _copy({required String status, required String? statusReason, required TrialInfo? trial}) =>
+      DoctorRegistration(
         doctorId: doctorId,
         status: status,
         statusReason: statusReason,
+        trial: trial,
         submittedAt: submittedAt,
         approvedAt: approvedAt,
         fullName: fullName,
@@ -311,6 +337,29 @@ class DoctorStatusView {
 
   bool get isSuspended => status == DoctorStatuses.suspended;
 }
+
+/// `activateDoctorService` and `extendDoctorTrial`'s answer
+/// (backend/docs/api-free-trial.md).
+class DoctorTrialView {
+  const DoctorTrialView({required this.doctorId, required this.fullName, required this.status, this.trial});
+
+  factory DoctorTrialView.fromJson(Map<String, dynamic> json) => DoctorTrialView(
+        doctorId: json['doctorId'] as String,
+        fullName: json['fullName'] as String,
+        status: json['status'] as String,
+        trial: _trial(json['trial']),
+      );
+
+  final String doctorId;
+  final String fullName;
+  final String status;
+
+  /// Null once the service is active.
+  final TrialInfo? trial;
+}
+
+/// AD2's trial filter: `running` or `ended` (`status=all`).
+enum TrialFilter { running, ended }
 
 /// The license file, streamed through the API (never a public URL).
 class LicenseFile {
@@ -463,6 +512,8 @@ abstract final class AuditActions {
     'doctorRegistrationApproved',
     'doctorRegistrationRejected',
     'doctorLicenseViewed',
+    'doctorServiceActivated',
+    'doctorTrialExtended',
     'adminSeeded',
     'adminCreated',
     'adminRoleChanged',

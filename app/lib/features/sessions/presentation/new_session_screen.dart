@@ -295,6 +295,7 @@ class _NewSessionFlowState extends ConsumerState<_NewSessionFlow> {
       context: context,
       builder: (context) => _FeeConfirmDialog(
         type: type,
+        freeTrial: widget.clinic.freeTrial,
         feePiasters: info.option(type).platformFeePiasters,
         patientName: patient?.fullName,
         branchName: widget.clinic.branch(_branchId)?.name(Localizations.localeOf(context).languageCode),
@@ -313,7 +314,7 @@ class _NewSessionFlowState extends ConsumerState<_NewSessionFlow> {
       isDismissible: false,
       enableDrag: false,
       useSafeArea: true,
-      builder: (context) => _AfterSaveSheet(session: session, isDoctor: _isDoctor),
+      builder: (context) => _AfterSaveSheet(session: session, isDoctor: _isDoctor, freeTrial: widget.clinic.freeTrial),
     );
     if (!mounted) return;
     final detail = switch (widget.origin) {
@@ -535,7 +536,13 @@ class _NewSessionFlowState extends ConsumerState<_NewSessionFlow> {
                       const SizedBox(height: 16),
                       StaggeredEntrance(
                         index: 2,
-                        child: _TypeCards(info: info, rule: rule, selected: _type, onSelect: _select),
+                        child: _TypeCards(
+                          info: info,
+                          rule: rule,
+                          selected: _type,
+                          onSelect: _select,
+                          freeTrial: widget.clinic.freeTrial,
+                        ),
                       ),
                     ],
                   ),
@@ -586,9 +593,11 @@ class _NewSessionFlowState extends ConsumerState<_NewSessionFlow> {
                         if (info != null)
                           Expanded(
                             child: Text(
-                              l10n.sessionPlatformFeeShort(
-                                AppFormat.egp(context, info.option(type).platformFeePiasters),
-                              ),
+                              widget.clinic.freeTrial
+                                  ? l10n.sessionFeeFreeTrial
+                                  : l10n.sessionPlatformFeeShort(
+                                      AppFormat.egp(context, info.option(type).platformFeePiasters),
+                                    ),
                               style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                             ),
                           ),
@@ -890,7 +899,13 @@ class _RuleNotice extends StatelessWidget {
 
 /// The two big ticket cards, side by side when there's room.
 class _TypeCards extends StatelessWidget {
-  const _TypeCards({required this.info, required this.rule, required this.selected, required this.onSelect});
+  const _TypeCards({
+    required this.info,
+    required this.rule,
+    required this.selected,
+    required this.onSelect,
+    this.freeTrial = false,
+  });
 
   static Widget placeholder() {
     const option = TypeOption(allowed: true, platformFeePiasters: 3000, visitPricePiasters: 30000);
@@ -912,6 +927,9 @@ class _TypeCards extends StatelessWidget {
   final SessionType? selected;
   final ValueChanged<SessionType> onSelect;
 
+  /// The clinic's free trial runs: no platform fee (BR-T3).
+  final bool freeTrial;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -920,6 +938,7 @@ class _TypeCards extends StatelessWidget {
       option: info.examination,
       selected: selected == SessionType.examination,
       onTap: () => onSelect(SessionType.examination),
+      freeTrial: freeTrial,
     );
     if (!rule.offerConsultation) return exam;
     final consult = TypeTicket(
@@ -928,6 +947,7 @@ class _TypeCards extends StatelessWidget {
       selected: selected == SessionType.consultation,
       onTap: rule.consultationEnabled ? () => onSelect(SessionType.consultation) : null,
       blockedMessage: rule.block == ConsultationBlock.limitReached ? l10n.sessionConsultationLimit(rule.max) : null,
+      freeTrial: freeTrial,
     );
     return LayoutBuilder(
       builder: (context, constraints) => constraints.maxWidth >= 560
@@ -960,10 +980,14 @@ class TypeTicket extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.blockedMessage,
+    this.freeTrial = false,
   });
 
   final SessionType type;
   final TypeOption option;
+
+  /// The clinic's free trial runs: «بدون رسوم منصة» instead of the fee (BR-T3).
+  final bool freeTrial;
   final bool selected;
 
   /// Null when the type can't be picked now.
@@ -987,12 +1011,14 @@ class TypeTicket extends StatelessWidget {
     final onTint = enabled ? (exam ? colors.onExamination : colors.onConsultation) : scheme.onSurfaceVariant;
     final label = sessionTypeLabel(l10n, type);
     final price = option.visitPricePiasters;
-    final fee = AppFormat.egp(context, option.platformFeePiasters);
+    final feeText = freeTrial
+        ? l10n.sessionPlatformFeeFree
+        : l10n.sessionPlatformFee(AppFormat.egp(context, option.platformFeePiasters));
 
     final semantics = [
       label,
       price == null ? l10n.sessionNoPriceShort : l10n.sessionVisitPrice(AppFormat.egp(context, price)),
-      l10n.sessionPlatformFee(fee),
+      feeText,
       ?blockedMessage,
     ].join(l10n.adminListSeparator);
 
@@ -1072,7 +1098,7 @@ class TypeTicket extends StatelessWidget {
                         ],
                         const SizedBox(height: 10),
                         Text(
-                          l10n.sessionPlatformFee(fee),
+                          feeText,
                           style: theme.textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
@@ -1267,6 +1293,7 @@ class FollowUpPicker extends StatelessWidget {
 class _FeeConfirmDialog extends StatelessWidget {
   const _FeeConfirmDialog({
     required this.type,
+    required this.freeTrial,
     required this.feePiasters,
     required this.patientName,
     required this.branchName,
@@ -1275,6 +1302,7 @@ class _FeeConfirmDialog extends StatelessWidget {
   });
 
   final SessionType type;
+  final bool freeTrial;
   final int feePiasters;
   final String? patientName;
   final String? branchName;
@@ -1369,7 +1397,7 @@ class _FeeConfirmDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              Text(l10n.sessionConfirmFee(fee), style: theme.textTheme.titleMedium),
+              Text(freeTrial ? l10n.sessionConfirmFeeFree : l10n.sessionConfirmFee(fee), style: theme.textTheme.titleMedium),
               const SizedBox(height: 6),
               const Divider(),
               if (patientName != null) row(Icons.person_outline, l10n.sessionConfirmPatient, patientName!),
@@ -1422,10 +1450,11 @@ class _FeeConfirmDialog extends StatelessWidget {
 enum _AfterSave { done, view }
 
 class _AfterSaveSheet extends StatelessWidget {
-  const _AfterSaveSheet({required this.session, required this.isDoctor});
+  const _AfterSaveSheet({required this.session, required this.isDoctor, this.freeTrial = false});
 
   final SessionView session;
   final bool isDoctor;
+  final bool freeTrial;
 
   @override
   Widget build(BuildContext context) {
@@ -1453,11 +1482,13 @@ class _AfterSaveSheet extends StatelessWidget {
                 Text(l10n.sessionSaved, textAlign: TextAlign.center, style: theme.textTheme.headlineSmall),
                 const SizedBox(height: 6),
                 Text(
-                  l10n.sessionSavedBody(
-                    sessionTypeLabel(l10n, session.type),
-                    session.patientName,
-                    AppFormat.egp(context, session.platformFeePiasters),
-                  ),
+                  freeTrial && session.platformFeePiasters == 0
+                      ? l10n.sessionSavedBodyFree(sessionTypeLabel(l10n, session.type), session.patientName)
+                      : l10n.sessionSavedBody(
+                          sessionTypeLabel(l10n, session.type),
+                          session.patientName,
+                          AppFormat.egp(context, session.platformFeePiasters),
+                        ),
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                 ),

@@ -14,10 +14,14 @@ import 'fake_admin_repository.dart';
 /// The Phase 1 admin endpoints (backend/docs/api-phase-1.md, "Admin").
 /// Every method throws [ApiException].
 abstract interface class AdminRepository {
-  /// AD2. [sort] is `newest` or `oldest` (the API's default queue order).
+  /// AD2, the doctors: every doctor (`status=all`), or with [trial] those
+  /// whose free trial is running or has ended. New doctors are active at
+  /// once (backend/docs/api-free-trial.md); only legacy sign-ups are still
+  /// pending or rejected. [sort] is `newest` or `oldest`.
   Future<Paged<RegistrationSummary>> doctorRegistrations({
     String? search,
     String sort = 'newest',
+    TrialFilter? trial,
     int page = 1,
     int pageSize = 25,
   });
@@ -28,7 +32,8 @@ abstract interface class AdminRepository {
   /// AD3 license viewer. The API writes a `doctorLicenseViewed` audit row.
   Future<LicenseFile> doctorLicense(String doctorId);
 
-  /// `reviewDoctorRegistration`. [reason] (3–500 characters) is required to reject.
+  /// `reviewDoctorRegistration`, for legacy sign-ups still pending. [reason]
+  /// (3–500 characters) is required to reject. Approving starts the trial.
   Future<DoctorRegistration> reviewDoctorRegistration({
     required String doctorId,
     required ReviewDecision decision,
@@ -40,6 +45,15 @@ abstract interface class AdminRepository {
   /// who is pending, rejected or disabled answers 409
   /// `DOCTOR_STATUS_NOT_CHANGEABLE`. The AD5 screen comes in Phase 7.
   Future<DoctorStatusView> setDoctorStatus(String doctorId, {required bool suspended, required String reason});
+
+  /// BR-T5: ends the free trial and turns the service on (per-session fees
+  /// from now on). 409 `DOCTOR_STATUS_NOT_CHANGEABLE` unless the doctor is
+  /// active or suspended.
+  Future<DoctorTrialView> activateDoctorService(String doctorId);
+
+  /// BR-T5: [days] (1–90) more, from the later of the trial's end and now.
+  /// 409 `SERVICE_ALREADY_ACTIVE` when there is no trial.
+  Future<DoctorTrialView> extendDoctorTrial(String doctorId, {required int days});
 
   /// AD14 (super admin only).
   Future<List<AdminUser>> admins();
@@ -95,12 +109,14 @@ class ApiAdminRepository implements AdminRepository {
   Future<Paged<RegistrationSummary>> doctorRegistrations({
     String? search,
     String sort = 'newest',
+    TrialFilter? trial,
     int page = 1,
     int pageSize = 25,
   }) =>
       _call(() async => Paged.fromJson(
             await _get('/admin/doctorRegistrations', {
-              'status': 'pendingApproval',
+              'status': 'all',
+              'trial': ?trial?.name,
               if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
               'sort': sort,
               'page': page,
@@ -145,6 +161,14 @@ class ApiAdminRepository implements AdminRepository {
             'status': suspended ? DoctorStatuses.suspended : DoctorStatuses.active,
             'reason': reason,
           })));
+
+  @override
+  Future<DoctorTrialView> activateDoctorService(String doctorId) => _call(() async =>
+      DoctorTrialView.fromJson(await _post('/admin/activateDoctorService', {'doctorId': doctorId})));
+
+  @override
+  Future<DoctorTrialView> extendDoctorTrial(String doctorId, {required int days}) => _call(() async =>
+      DoctorTrialView.fromJson(await _post('/admin/extendDoctorTrial', {'doctorId': doctorId, 'days': days})));
 
   @override
   Future<List<AdminUser>> admins() => _call(() async {

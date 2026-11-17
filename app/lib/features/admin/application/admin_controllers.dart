@@ -10,21 +10,32 @@ import '../../../core/data/paged_controller.dart';
 /// AD2 order: newest first (the default here), or the API's queue order.
 enum SignupSort { newest, oldest }
 
-/// AD2: sign-up requests waiting for approval, with search and sort.
+/// AD2: the doctors, with search, sort and the free-trial filter.
 final signupsControllerProvider =
     NotifierProvider.autoDispose<SignupsController, PagedState<RegistrationSummary>>(SignupsController.new);
 
 class SignupsController extends PagedController<RegistrationSummary> {
   String _search = '';
   SignupSort _sort = SignupSort.newest;
+  TrialFilter? _trial;
 
   String get search => _search;
   SignupSort get sort => _sort;
 
+  /// Null: every doctor. Otherwise those whose free trial is running or has
+  /// ended (spec 6.16).
+  TrialFilter? get trial => _trial;
+
   @override
   Future<Paged<RegistrationSummary>> fetch(int page, int pageSize) => ref
       .read(adminRepositoryProvider)
-      .doctorRegistrations(search: _search, sort: _sort.name, page: page, pageSize: pageSize);
+      .doctorRegistrations(search: _search, sort: _sort.name, trial: _trial, page: page, pageSize: pageSize);
+
+  void setTrial(TrialFilter? value) {
+    if (value == _trial) return;
+    _trial = value;
+    reload();
+  }
 
   @override
   Object keyOf(RegistrationSummary item) => item.doctorId;
@@ -41,8 +52,8 @@ class SignupsController extends PagedController<RegistrationSummary> {
     reload();
   }
 
-  /// After a review: the request leaves the list.
-  void reviewed(String doctorId) => removeWhere((item) => item.doctorId == doctorId);
+  /// After a legacy sign-up's review: the doctor stays, with the new status.
+  void reviewed(String doctorId) => refresh().ignore();
 }
 
 /// AD3: one registration with its earlier reviews.

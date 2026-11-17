@@ -35,6 +35,9 @@ public sealed record AccountState
     /// <summary>The rejection (or suspension) reason. Only for the doctor themselves, never for assistants.</summary>
     public string? DoctorStatusReason { get; init; }
 
+    /// <summary>The clinic's free trial end (Doctors.TrialEndsAt): the doctor's own, or an assistant's doctor's.</summary>
+    public DateTime? TrialEndsAt { get; init; }
+
     public string? AssistantStatus { get; init; }
 
     /// <summary>For an assistant: whether their doctor's user account is active.</summary>
@@ -48,7 +51,8 @@ public sealed record AccountState
     /// Why this account may not use the API at all, or null. <c>ACCOUNT_DISABLED</c>: the user, doctor,
     /// assistant or patient record is disabled or removed. <c>CLINIC_NOT_ACTIVE</c>: an assistant whose doctor
     /// is pending, rejected or disabled (BR-AS9). Pending, rejected and suspended doctors are not blocked here:
-    /// they sign in and see A6, A7 or the suspension banner.
+    /// they sign in and see A6, A7 or the suspension banner. Nor is a clinic whose free trial ended: its doctor and
+    /// assistants sign in and see A15 (BR-T4).
     /// </summary>
     public string? BlockCode => this switch
     {
@@ -89,6 +93,9 @@ public sealed record AccountState
                     ? u.DoctorUser!.Status
                     : u.AssistantUser != null ? u.AssistantUser.Doctor.Status : null,
                 DoctorStatusReason = u.Role == Roles.Doctor ? u.DoctorUser!.StatusReason : null,
+                TrialEndsAt = u.Role == Roles.Doctor
+                    ? u.DoctorUser!.TrialEndsAt
+                    : u.AssistantUser != null ? u.AssistantUser.Doctor.TrialEndsAt : null,
                 AssistantStatus = u.AssistantUser != null ? u.AssistantUser.Status : null,
                 DoctorUserActive = u.AssistantUser == null || u.AssistantUser.Doctor.User.Status == AccountStatuses.Active,
                 PatientStatus = u.Patient != null ? u.Patient.Status : null,

@@ -13,6 +13,9 @@ public partial class AppSetting
 
     public int GracePeriodDays { get; set; } = 7;
 
+    /// <summary>Free trial length in days, from approval (spec 6.16 BR-T1). 1–90.</summary>
+    public int TrialDays { get; set; } = 14;
+
     public int MaxConsecutiveConsultations { get; set; } = 2;
 
     public int MaxUploadMb { get; set; } = 50;

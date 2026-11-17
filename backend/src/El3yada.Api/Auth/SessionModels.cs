@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
+using El3yada.Api.Doctors;
 using El3yada.Api.Validation;
 
 namespace El3yada.Api.Auth;
@@ -45,6 +46,7 @@ public class SessionView
         AccountStatus = other.AccountStatus;
         DoctorStatus = other.DoctorStatus;
         DoctorStatusReason = other.DoctorStatusReason;
+        Trial = other.Trial;
         MustChangePassword = other.MustChangePassword;
         MustAcceptTerms = other.MustAcceptTerms;
         Email = other.Email;
@@ -79,6 +81,12 @@ public class SessionView
     /// <summary>The admin's reason when a doctor is <c>rejected</c> (A7) or suspended. Only sent to the doctor.</summary>
     public string? DoctorStatusReason { get; init; }
 
+    /// <summary>
+    /// The clinic's free trial (spec 6.16), for a doctor or an assistant; null when there is none (the service is
+    /// active) and for other roles. <c>trial.ended</c> sends the app to A15.
+    /// </summary>
+    public TrialView? Trial { get; init; }
+
     /// <summary>The user must set a new password before anything else (A9).</summary>
     public bool MustChangePassword { get; init; }
 
@@ -96,7 +104,8 @@ public class SessionView
 
     public string ThemeMode { get; init; } = "system";
 
-    public static SessionView Of(AccountState account) => new()
+    /// <summary>The session as of <paramref name="now"/> (the trial's state depends on it).</summary>
+    public static SessionView Of(AccountState account, DateTime now) => new()
     {
         UserId = account.UserId,
         DisplayName = account.DisplayName,
@@ -106,6 +115,7 @@ public class SessionView
         AccountStatus = account.BlockCode is null ? AccountStatuses.Active : AccountStatuses.Disabled,
         DoctorStatus = account.DoctorStatus,
         DoctorStatusReason = account.DoctorStatusReason,
+        Trial = account.Role is Roles.Doctor or Roles.Assistant ? TrialView.Of(account.TrialEndsAt, now) : null,
         MustChangePassword = account.MustChangePassword,
         MustAcceptTerms = account.MustAcceptTerms,
         Email = account.Email,

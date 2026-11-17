@@ -1,3 +1,4 @@
+import '../../auth/domain/auth_session.dart' show TrialInfo;
 import '../../auth/domain/user_role.dart';
 import 'clinic_permissions.dart';
 
@@ -15,6 +16,7 @@ class ClinicContext {
     required this.defaultBranchId,
     required this.fees,
     required this.limits,
+    this.trial,
   });
 
   factory ClinicContext.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class ClinicContext {
       defaultBranchId: json['defaultBranchId'] as String?,
       fees: ClinicFees.fromJson(_map(json['fees'])),
       limits: ClinicLimits.fromJson(_map(json['limits'])),
+      trial: json['trial'] == null ? null : TrialInfo.fromJson(_map(json['trial'])),
     );
   }
 
@@ -45,6 +48,13 @@ class ClinicContext {
   final String? defaultBranchId;
   final ClinicFees fees;
   final ClinicLimits limits;
+
+  /// The clinic's free trial (spec 6.16), or null when the service is
+  /// active. While it runs, [fees] are 0.
+  final TrialInfo? trial;
+
+  /// Sessions saved now carry no platform fee (BR-T3): show «مجاناً».
+  bool get freeTrial => trial != null && !trial!.ended;
 
   bool get isDoctor => role == UserRole.doctor;
 

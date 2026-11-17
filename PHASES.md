@@ -176,7 +176,7 @@ The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md
 
 The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md) (who may call what, `GET /api/clinic/me`), [api-phase-2-patients.md](backend/docs/api-phase-2-patients.md) and [api-phase-2-clinic.md](backend/docs/api-phase-2-clinic.md).
 
-**API** (565 tests: 8 data and 557 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
+**API** (508 tests: 7 data and 501 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
 - [x] `createPatient` (link an existing number with BR-P3, file number, temporary password shown once), `updatePatientPhone`, `resetPatientPassword`, archive [S].
   - Also `lookupPhone` for D5. Linking needs the phone alone. A clinic that linked an existing patient sees only the name, phone, gender and date of birth (`ownsDetails`); the optional details stay with the clinic that created the account. A doctor's password reset also lifts the 15-minute login block on the number.
 - [x] Medical profile read and update (allergies, chronic diseases, medications, surgeries, family history, notes).
@@ -304,27 +304,43 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Goal:** patients book from the app, staff book, check in and run the day from the live board, and every clinic device sees changes within about 2 seconds.
 
+**How the queue works** (product owner, 17 Nov; spec D14, BR-AP3, BR-AP16). This is the default mode, and most clinics use it.
+1. **Booking puts the patient on a list, not in a line.** The patient books a day's period from the app (P15), or reception books it for a phone call (D32). That gives them a place on the period's list: a waiting list with a capacity, and no number. Not everyone who books comes.
+2. **The turn is given at the clinic.** When the patient arrives, reception checks them in and they get the next number. So they see the doctor in order of arrival. Walk-ins join the same line the same way.
+3. **Notifications:**
+   - a reminder 24 hours before
+   - a reminder on the day, 2 hours before the period starts, saying the turn goes by order of arrival
+   - at check-in, «تم تسجيل حضورك — دورك رقم 7، وقبلك 3 مرضى»
+   - **[S]** «دورك التالي» when the patient before them goes in
+
+Timed mode (exact times) keeps its order by time.
+
 **API**
 - [ ] Schedule: `updateBranchSchedule` with special dates, closures, booking settings and the conflicts dry run (BR-AP12).
 - [ ] `getAvailability` (server-side only, BR-AP1) for queue and timed modes.
-- [ ] `createAppointment` with every rule in 6.12.5 in one transaction, `rescheduleAppointment`, `cancelAppointment`, `confirmAppointment`, `rejectAppointment`.
+- [ ] `createAppointment` with every rule in 6.12.5 in one transaction, `rescheduleAppointment`, `cancelAppointment`, `confirmAppointment`, `rejectAppointment`. In queue mode a booking only takes a place on the period's list (capacity, `PERIOD_FULL`); it gets no queue number.
 - [ ] `checkInAppointment`, `addWalkIn`, guest conversion, `markNoShow`, `undoNoShow`, `markLeftWithoutSeen`, `cancelRestOfDay`, `sendDelayNotice` [S], `callNext` [S], `setSelfBooking`.
+  - Queue mode: check-in gives the period's next number in arrival order, inside a transaction that locks the period, so two receptionists checking in at once never get the same number (BR-AP3). Walk-ins take the next number too. Numbers aren't reused. A no-show undone the same day gets a new number at check-in.
+  - Check-in notifies the patient: their number, how many are ahead, and an estimated wait from the average visit time (BR-AP16). A guest has no app and is told at the desk.
 - [ ] Live board: `callIn`, `sendBackToWaiting`, `movePriority`, `getBoardPatientSummary`; first action wins (`RowVersion`, BR-LB4); `createSession` completes the booking (BR-AP10).
 - [ ] Firestore mirror written by the API after every change, and `getRealtimeToken` (spec 9.6).
 - [ ] `searchAppointments` (6.12.8).
-- [ ] Jobs: `appointmentReminders`, `expirePendingAppointments`, `markNoShows`, `flagCheckedInNoSession`.
-- [ ] Load test: availability, concurrent booking of the same slot, and the board with many devices.
+- [ ] Jobs: `appointmentReminders` (24 hours before, and on the day 2 hours before the period or the time), `expirePendingAppointments`, `markNoShows`, `flagCheckedInNoSession`.
+- [ ] **[S]** «دورك التالي» to the next checked-in patient when someone goes in to the doctor (`callIn`, `callNext`).
+- [ ] Load test: availability, concurrent booking of the same slot, concurrent check-ins in one period (no repeated number), and the board with many devices.
 
 **App**
 - [ ] D29 Working hours, Special dates and Booking settings tabs with the conflicts sheet. AS17 branch schedule.
 - [ ] D30 appointments calendar, D31 appointment details, D32 book appointment (existing patient, new patient, quick guest, walk-in), D33 search.
 - [ ] D34 live board (columns on desktop and tablet, tabs on phone, drag and drop on desktop, side panel, doctor extras), offline banner (BR-LB5). D36 waiting-room screen [C].
+  - Queue mode: Expected cards show «محجوز» and are ordered by booking time. A card gets its number when it moves to Waiting (check-in), and Waiting is ordered by number, which is the order of arrival.
 - [ ] AS1 with the live board, AS13–AS16.
 - [ ] P15 book appointment, P16 my appointments, P17 appointment details (reschedule, cancel, live "now serving" [S]).
+  - Queue mode: P15 shows the period and «الدور بأسبقية الحضور في العيادة», with no number. P1, P16 and P17 show «سجّل حضورك في الاستقبال عند وصولك» until check-in. From check-in they show the number, how many are ahead and the estimated wait.
 
 **Tables:** Appointments, AppointmentHistory, Branches (booking columns), BranchPeriods, BranchDateOverrides, BranchDateOverridePeriods, BranchClosures, BranchDayStates, PublicHolidays [C], DoctorPatients (self-booking block), Sessions.
 
-**Done when:** AC-21, AC-22, AC-25 and AC-26 pass, and the load test shows no double booking.
+**Done when:** AC-21 (including the queue-order check: A books before B, B arrives first and goes in first), AC-22, AC-25 and AC-26 pass. The load test shows no double booking and no repeated queue number.
 
 ---
 

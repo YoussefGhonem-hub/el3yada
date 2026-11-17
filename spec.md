@@ -42,7 +42,7 @@ el3yada (العيادة) is a clinic app for doctors and their patients.
 
 - **Doctors** create patient accounts, record each visit as an *examination* or a *consultation*, scan or upload medical documents, write medication prescriptions and lab/radiology requests, and chat with patients.
 - **Assistants (مساعد الطبيب)** are clinic staff accounts that a doctor creates. A doctor can have several, each with its own permissions: for example registering patients and visits at reception, scanning papers, chatting with patients, or paying the monthly invoice. Medical decisions always stay with the doctor.
-- **Branches and appointments:** a doctor can work from several branches, each with its own address, phones, working hours and booking rules. Patients book appointments from the app (queue number or exact time), and clinic staff book for patients, manage the day's queue, and search every booking.
+- **Branches and appointments:** a doctor can work from several branches, each with its own address, phones, working hours and booking rules. Patients book appointments from the app (a place on a period's list, with the turn given on arrival at the clinic, or an exact time), and clinic staff book for patients, manage the day's queue, and search every booking.
 - **Patients** open the app to see their full medical file: visits, diagnoses, notes, prescriptions, uploaded documents. They can chat with their doctor.
 - **The platform (admin)** charges the doctor a fixed fee per session: **30 EGP per examination** and **15 EGP per consultation** (both editable by the admin). The app totals what the doctor owes each day and each month. At month end the doctor transfers the total via **InstaPay** and uploads a screenshot. The admin approves the payment. If a month stays unpaid after a **7-day grace period** (editable by the admin), the doctor's service is suspended until payment is approved.
 
@@ -67,7 +67,7 @@ These defaults were chosen where the brief was silent. Each one links to an open
 | D11 | Money is stored as integer piasters (1 EGP = 100 piasters). Days and months are calculated in the `Africa/Cairo` time zone. | Avoids rounding errors and day-boundary bugs. |
 | D12 | A doctor can add several assistants (up to 5 by default, an admin setting). Each assistant works for **one** doctor and has the permissions that doctor picks. Assistants never write diagnoses, never send prescriptions and never see private notes. Sessions they record are billed to the doctor at the normal fees. Assistants are free (no extra fee). | Egyptian clinics usually have a secretary at reception who registers patients and the visit type. Medical decisions stay with the doctor. (Q22, Q23) |
 | D13 | A doctor has one or more branches (up to 5 by default). Patients belong to the doctor, and each session belongs to a branch. One monthly invoice covers all branches. | Patients often move between a doctor's branches, and one medical file per doctor avoids duplicates. (Q26) |
-| D14 | Appointments are free and work in one of two modes per branch: **queue numbers per period** (the default) or **timed slots**. Patients book only with doctors they are linked to. Staff book new people as guests. Bookings never add platform fees; only recorded sessions do. | Most Egyptian clinics run on queue numbers. Linking booking to existing doctor–patient links fits the model where doctors create patient accounts. (Q24, Q25, Q27) |
+| D14 | Appointments are free and work in one of two modes per branch: **queue** (the default: a booking holds a place on a period's list, and the patient's turn is given when they arrive and reception checks them in) or **timed slots**. Patients book only with doctors they are linked to. Staff book new people as guests. Bookings never add platform fees; only recorded sessions do. | Most Egyptian clinics run on queue numbers. Not everyone who books comes, so turns go to the patients who are actually there, in order of arrival (product owner, 17 Nov). Linking booking to existing doctor–patient links fits the model where doctors create patient accounts. (Q24, Q25, Q27) |
 
 ---
 
@@ -90,8 +90,9 @@ These defaults were chosen where the brief was silent. Each one links to an open
 | Suspension | إيقاف الخدمة | The doctor and their assistants are limited to read-only and payment screens. |
 | Assistant (`assistant`) | مساعد الطبيب / سكرتير | A clinic staff account created by a doctor, with permissions that doctor chooses. |
 | Branch | فرع | One clinic location of a doctor, with its own address, phones, hours and booking settings. |
-| Appointment / booking | حجز / ميعاد | A reserved place with a doctor at a branch: a timed slot, or a queue number in a period. |
-| Queue booking | الحجز بالدور | Booking a place in a period (for example Saturday evening) and getting a queue number. |
+| Appointment / booking | حجز / ميعاد | A reserved place with a doctor at a branch: a timed slot, or a place on a period's list. |
+| Queue booking | الحجز بالدور | Booking a place on a period's list (for example Saturday evening). It is a waiting list: it doesn't fix the order. |
+| Queue number | رقم الدور / ترتيب الدخول | The patient's place in the line to see the doctor. Given at check-in, in order of arrival at the clinic (BR-AP3). |
 | Walk-in | حضور بدون حجز | A patient who arrives without booking and is added to today's queue. |
 | Check-in | تسجيل الحضور | Staff marking that a booked patient has arrived. |
 | No-show | عدم الحضور | A confirmed booking where the patient never arrived. |
@@ -612,7 +613,7 @@ Egyptian clinics work in one of two ways, so each branch chooses its mode:
 
 | Mode | How it works | Typical use |
 |---|---|---|
-| **Queue (بالدور / أولوية الحضور)** | The patient books a place in a period (for example "Saturday evening, 18:00–22:00") and gets a queue number. Each period has a capacity (maximum patients). The app shows an estimated time. | Most busy clinics |
+| **Queue (بالدور / أولوية الحضور)** | The patient (from the app) or reception (for a phone call) books a place on a period's list, for example "Saturday evening, 18:00–22:00". The list is a waiting list: it holds the place but doesn't fix the order, because not everyone who books comes. When the patient arrives, reception checks them in and they get the next queue number, so turns go in order of arrival at the clinic (BR-AP3). Each period has a capacity (maximum bookings). After check-in the patient sees their number, how many are ahead of them and an estimated wait. | Most busy clinics |
 | **Timed slots (مواعيد محددة)** | Each period is split into slots of `slotMinutes` (for example 15). One patient per slot. An examination can take more slots than a consultation. | Clinics that run on time |
 
 #### 6.12.2 Booking settings (per branch)
@@ -625,7 +626,7 @@ The doctor, or an assistant with `scheduleManage`, edits these in D29:
 | Slot length | 15 min | Timed mode only |
 | Slots per visit | Examination 1, consultation 1 | Timed mode only |
 | Period capacity | 30 | Queue mode. Can be changed per period. |
-| Average visit time | 10 min | Queue mode, used for the estimated time |
+| Average visit time | 10 min | Queue mode, used for the estimated wait after check-in |
 | Patient self-booking | On | Patients can book from the app |
 | Auto-confirm | On | Off: patient bookings wait for the clinic to confirm (`pending`) |
 | Booking window | 30 days | How far ahead patients can book |
@@ -635,7 +636,7 @@ The doctor, or an assistant with `scheduleManage`, edits these in D29:
 | Reschedules per booking | 2 | |
 | Upcoming bookings per patient (with this doctor) | 1 | Stops one patient holding several places |
 | No-show limit | 3 in 90 days | Reaching it turns off self-booking for that patient with this doctor |
-| Reminders | 24 h and 2 h before | |
+| Reminders | 24 h before, and on the day 2 h before | Before the period starts (queue mode) or the visit time (timed mode) (BR-AP16) |
 | Staff overbooking | On | Staff can book beyond capacity, or into a taken slot, after a warning |
 
 #### 6.12.3 Who books
@@ -649,7 +650,7 @@ The doctor, or an assistant with `scheduleManage`, edits these in D29:
   6. Reason (optional, up to 200 characters)
   7. Confirm
 - **Staff (D32):** the doctor, or an assistant with `appointmentsManage`, books for a linked patient or for a **guest** (name and phone only), for example a new person calling the clinic. At check-in, the guest is converted: if the phone already belongs to a patient, that patient is linked (BR-P3); otherwise a patient account is created (BR-P4).
-- **Walk-in (حضور بدون حجز):** staff add a patient who arrived without booking. They are checked in at once and get the next queue number.
+- **Walk-in (حضور بدون حجز):** staff add a patient who arrived without booking. They are checked in at once and get the next queue number, in the same line as the booked patients who have arrived.
 
 #### 6.12.4 Statuses
 
@@ -687,7 +688,13 @@ Every change is kept in the booking's history: who, when, what changed and why. 
   - **Timed mode:** a slot holds at most one active booking (pending, confirmed, checked in or with the doctor), enforced by a unique database index.
   - **Queue mode:** capacity is checked inside a transaction that locks the period.
   - When someone else takes the place first, the second request gets `SLOT_TAKEN` or `PERIOD_FULL` along with the current availability.
-- **BR-AP3 [M]** **Queue numbers** are given per period in booking order, and walk-ins get the next number. Cancelled numbers are not reused. **[S]** Staff can move a patient up (emergency, elderly), with a reason.
+- **BR-AP3 [M]** **Queue numbers** (queue mode) are given at check-in, not at booking:
+  - A booking, from the app or by reception for a phone call, only holds a place on the period's list (capacity, BR-AP2). Booked patients have no number before they arrive.
+  - When reception checks a patient in at the clinic, they get the period's next number, so the order to see the doctor is the order of arrival. Walk-ins join the same line the same way. The number is given inside a transaction that locks the period, so two check-ins at the same moment never get the same number.
+  - Example: A books Saturday evening at 9:00, B at 11:00. B arrives at 18:05 and gets number 1; A arrives at 18:20 and gets number 2; a walk-in at 18:25 gets number 3.
+  - Numbers are not reused (after "left without being seen", for example). A no-show undone the same day gets the next number when checked in.
+  - **[S]** Staff can move a patient up (emergency, elderly), with a reason.
+  - Timed mode is unchanged: the booked time sets the order.
 - **BR-AP4 [M]** **Visit type** at booking is the *intended* type.
   - **New patient** (a guest, or a patient with no visits yet with this doctor): the type is **Examination** and cannot be changed.
   - **Existing patient:** whoever books (staff, or the patient in P15) must choose Examination or Consultation. Nothing is pre-selected, and each option shows its price (section 6.15). Consultation is disabled with the BR-S4 message once the patient has reached the consultation limit (BR-S3), and the screen shows the count (for example «استشارة 1 من 2»).
@@ -704,7 +711,7 @@ Every change is kept in the booking's history: who, when, what changed and why. 
   - Reaching the no-show limit turns off self-booking for that patient with this doctor. The patient is told to call the clinic, and staff can turn self-booking back on.
 - **BR-AP9 [M]** **Pending bookings** (auto-confirm off) that staff haven't confirmed by the minimum-notice time before the visit are cancelled by the system, and the patient is notified.
 - **BR-AP10 [M]** **Check-in and sessions**
-  - Staff check in each arrival, and the arrival time is recorded.
+  - Staff check in each arrival, and the arrival time is recorded. In queue mode the patient gets their queue number (BR-AP3) and a notification with it (BR-AP16).
   - **Start session** on a checked-in booking opens D8 with the patient, branch and intended type filled in. Saving the session marks the booking `completed` and links the two.
   - Sessions can still be recorded without a booking.
 - **BR-AP11 [M]** **Checked in but no session:** at the end of the day, bookings still `checkedIn` are flagged.
@@ -718,8 +725,10 @@ Every change is kept in the booking's history: who, when, what changed and why. 
 - **BR-AP14 [M]** **Same-day problems**
   - "Cancel the rest of today" for a branch cancels the remaining bookings and notifies patients with a rebook link.
   - **[S]** "Doctor delayed" sends «الطبيب متأخر حوالي 30 دقيقة» (the doctor is about 30 minutes late) to that branch's remaining patients for today.
-- **BR-AP15 [S]** **Live queue** (queue mode): staff tap "Call next" or "With the doctor". Patients see «الدور الحالي: 12 — دورك: 15» (now serving 12, your number 15) with an estimated time, updated live over SignalR.
-- **BR-AP16 [M]** **Reminders** go out 24 hours and 2 hours before the visit, unless that time has already passed when the booking is made. **[S]** The 24-hour reminder has "Confirm attendance" and "Cancel" buttons.
+- **BR-AP15 [S]** **Live queue** (queue mode): staff tap "Call next" or "With the doctor". Checked-in patients see «الدور الحالي: 12 — دورك: 15» (now serving 12, your number 15) with an estimated wait, updated live over SignalR.
+- **BR-AP16 [M]** **Patient notifications for a booking**
+  - **Reminders:** 24 hours before, and on the booking day 2 hours before the period starts (queue mode) or before the visit time (timed mode). A reminder whose time has already passed when the booking is made is skipped. In queue mode the day's reminder says that turns go in order of arrival: «اليوم موعدك في فرع المعادي، الفترة المسائية من 6 مساءً. الدور بأسبقية الحضور: سجّل حضورك في الاستقبال عند وصولك.» **[S]** The 24-hour reminder has "Confirm attendance" and "Cancel" buttons.
+  - **Your turn (queue mode):** at check-in, the patient gets their number, how many are ahead of them and an estimated wait: «تم تسجيل حضورك — دورك رقم 7، وقبلك 3 مرضى». It goes to the patient's app; a guest has no app and is told at the desk. **[S]** When the patient before them goes in: «دورك التالي».
 - **BR-AP17 [M]** **The doctor's status**
   - **Suspended:** no new bookings by patients or staff. Patients see «الحجز أونلاين غير متاح حالياً، برجاء الاتصال بالعيادة» (online booking is unavailable, please call the clinic). Existing bookings stay: patients can cancel them, and staff can cancel, reschedule and check in. Sessions stay blocked (BR-G5).
   - **Disabled:** every future booking is cancelled by the system with a neutral reason, and patients are notified.
@@ -794,6 +803,7 @@ Every change is kept in the booking's history: who, when, what changed and why. 
 | 32 | Booking for an existing patient | The type must be chosen; nothing is pre-selected. |
 | 33 | The admin changes the consultation limit | It applies to new sessions and bookings. Existing bookings are checked again at check-in (case 18). |
 | 34 | The visit price changes after a booking is made | The session uses the price in force when the session is saved (BR-PR4). |
+| 35 | Queue mode: a patient who booked earlier arrives after one who booked later | The one who checks in first goes in first. A booking holds a place on the list, not a place in the line (BR-AP3). |
 
 #### 6.12.8 Advanced search (D33, AS15)
 
@@ -844,13 +854,14 @@ The live board is the **home screen** for the doctor and for assistants with `ap
 
 **Order**
 
-- Expected and Waiting are ordered by queue number (queue mode) or by time (timed mode). **[S]** A branch setting orders Waiting by arrival time instead.
+- **Queue mode:** Expected is ordered by booking time; those patients have no number until they arrive. Waiting is ordered by queue number, which is the order of arrival (BR-AP3).
+- **Timed mode:** both are ordered by time.
 - Staff can move a waiting patient up, with a reason (BR-AP3). The card then shows a "priority" tag.
 - Walk-ins get the next number and a "walk-in" tag.
 
 **Card**
 
-- Queue number (large) or time, patient name, visit type badge (كشف blue / استشارة green), and a source icon (app, staff, walk-in).
+- Queue number (large, from check-in on), «محجوز» (booked, before check-in in queue mode) or time, patient name, visit type badge (كشف blue / استشارة green), and a source icon (app, staff, walk-in).
 - **New or returning:** «مريض جديد» for a guest or a first visit. Otherwise «آخر زيارة: 3 نوفمبر — كشف» (last visit date and type).
 - **Waiting timer** from check-in. It turns amber after 20 minutes and red after 40; **[S]** the thresholds are a branch setting.
 - **Warning icons:** late arrival, consultation not allowed (BR-AP4), guest to convert, pending confirmation, notes.
@@ -1069,7 +1080,7 @@ Session behaviour: users stay logged in until they log out. Changing the passwor
 
 | ID | Screen | Contents and behaviour |
 |---|---|---|
-| P1 | Home | Greeting. Doctor selector when linked to more than one doctor (All, Dr A, Dr B). **Cards:** next appointment (date, time or queue number, branch, status; [S] live "now serving" number on the day) → P17, with a **Book** button → P15; latest visit (date, type, diagnosis) → P5; latest prescription → P7; next follow-up date if set; recent files (3 thumbnails) → P8; unread messages → P12. "New" badges on items the patient hasn't opened. |
+| P1 | Home | Greeting. Doctor selector when linked to more than one doctor (All, Dr A, Dr B). **Cards:** next appointment (date, time or period, branch, status; on the day after check-in, the queue number and how many are ahead, and [S] the live "now serving" number) → P17, with a **Book** button → P15; latest visit (date, type, diagnosis) → P5; latest prescription → P7; next follow-up date if set; recent files (3 thumbnails) → P8; unread messages → P12. "New" badges on items the patient hasn't opened. |
 | P2 | My doctors | Shown only when the patient has more than one doctor. Doctor cards: name, specialty, clinic, Chat button. → P3. |
 | P3 | Doctor info | Name, title, specialty. **Branches:** one card per branch with the detailed address and landmark ("Open in Google Maps" opens the branch's map link, when it has one), phones (tap to call, WhatsApp), working hours by day, patient prices, payment methods, amenities, and a "temporarily closed" message when it applies. **Buttons:** Book (P15), Chat, this doctor's records. |
 | P4 | Visits | Timeline grouped by month. Filters: doctor, branch. Row: date, doctor, branch, type badge (كشف / استشارة), diagnosis snippet. |
@@ -1083,9 +1094,9 @@ Session behaviour: users stay logged in until they log out. Changing the passwor
 | P12 | Chat thread | Same as D17 for the patient side: send text, images and files, see read status [S]. Disabled with «الطبيب غير متاح حالياً» when the doctor is suspended or has chat switched off. |
 | P13 | Notifications | Same behaviour as D21. |
 | P14 | Account and settings | Name and phone (read-only). Change password. Language (العربية / English). Appearance (Light / Dark / System). Notification toggles and the "show message text" toggle. Terms, Privacy Policy, Support contact. **Request account deletion** (confirmation, reason → admin queue AD12; required by the App Store and Google Play). Logout. |
-| P15 | Book appointment | **Stepper:** doctor (if more than one) → branch (cards with area, today's hours, prices) → visit type with prices (Examination only for a first visit; otherwise the patient chooses, and Consultation is disabled with the BR-S4 message at the limit) → date (calendar, with closed and full days greyed out) → time slot or period (queue mode shows "places left" and an estimated time) → reason (optional) → review and confirm. **Shows:** the cancellation policy («يمكنك الإلغاء أو التغيير حتى ساعتين قبل الموعد»). **Result:** "Confirmed" with the queue number or time, or "Waiting for the clinic to confirm" when auto-confirm is off. Booking errors appear with the 6.12.6 messages. When self-booking isn't possible, the screen shows the branch phones instead. |
-| P16 | My appointments | Tabs: **Upcoming**, **Past**, **Cancelled**. Rows: doctor, branch, date, time or queue number, visit type, status chip (pending, confirmed, checked in, with the doctor, completed, no-show, cancelled, rejected). |
-| P17 | Appointment details | Status and history (for example "Rescheduled by the clinic"). **Branch card:** detailed address and landmark, "Open in Google Maps" (the branch's map link, when it has one), phones, hours. Queue number and [S] live "now serving" number with an estimated time. **Buttons:** **Reschedule** and **Cancel** (reason optional) while inside the policy window; otherwise "Call the clinic". [S] "Confirm attendance" from the 24-hour reminder. [C] Add to the device calendar. A completed booking links to its visit (P5). |
+| P15 | Book appointment | **Stepper:** doctor (if more than one) → branch (cards with area, today's hours, prices) → visit type with prices (Examination only for a first visit; otherwise the patient chooses, and Consultation is disabled with the BR-S4 message at the limit) → date (calendar, with closed and full days greyed out) → time slot or period (queue mode shows the period's hours and "places left", and says «الدور بأسبقية الحضور في العيادة»: turns go in order of arrival) → reason (optional) → review and confirm. **Shows:** the cancellation policy («يمكنك الإلغاء أو التغيير حتى ساعتين قبل الموعد»). **Result:** "Confirmed" with the time (timed mode) or the period, with the reminder that the turn is given on arrival (queue mode); or "Waiting for the clinic to confirm" when auto-confirm is off. Booking errors appear with the 6.12.6 messages. When self-booking isn't possible, the screen shows the branch phones instead. |
+| P16 | My appointments | Tabs: **Upcoming**, **Past**, **Cancelled**. Rows: doctor, branch, date, time or period (and the queue number once checked in), visit type, status chip (pending, confirmed, checked in, with the doctor, completed, no-show, cancelled, rejected). |
+| P17 | Appointment details | Status and history (for example "Rescheduled by the clinic"). **Branch card:** detailed address and landmark, "Open in Google Maps" (the branch's map link, when it has one), phones, hours. Queue mode: before check-in, «الدور بأسبقية الحضور: سجّل حضورك في الاستقبال عند وصولك»; after it, the queue number, how many are ahead and an estimated wait, and [S] the live "now serving" number. **Buttons:** **Reschedule** and **Cancel** (reason optional) while inside the policy window; otherwise "Call the clinic". [S] "Confirm attendance" from the 24-hour reminder. [C] Add to the device calendar. A completed booking links to its visit (P5). |
 
 ### 7.5 Admin screens (complete)
 
@@ -1355,7 +1366,7 @@ appointments/{id}
   visitType: 'examination' | 'consultation'        // intended type (BR-AP4)
   mode: 'queue' | 'timed'
   localDate, periodStartLocal, startUtc, endUtc?   // timed: the slot; queue: the period
-  queueNumber?                                     (fn)
+  queueNumber?                                     (fn)  // queue mode: given at check-in, in arrival order (BR-AP3)
   status: 'pending' | 'confirmed' | 'checkedIn' | 'withDoctor' | 'completed' | 'cancelled' | 'noShow' | 'rejected'   (fn)
   boardOrder                                       (fn)  // position in the live board, changed by priority moves
   source: 'patientApp' | 'staff' | 'walkIn'
@@ -1457,12 +1468,12 @@ Suggested stack on the server:
 | `updatePrices` | doctor / assistant (`pricesManage`) | Doctor prices, or one branch's prices. Writes `priceHistory` and an audit entry (BR-PR5). |
 | `setBranchStatus` | doctor only | Temporarily close, reopen or archive. Returns the future bookings that must be handled first (BR-BR9). |
 | `updateBranchSchedule` | doctor / assistant (`scheduleManage`) | Weekly periods, date overrides, closures, booking settings. A dry run first returns the affected bookings (BR-AP12). Then it applies the change with the chosen action per booking. |
-| `getAvailability` | linked patient / staff | Branch, visit type and date range → slots or periods, with places left and estimated times. Applies every rule that fits the caller (BR-AP1). |
+| `getAvailability` | linked patient / staff | Branch, visit type and date range → slots, or periods with places left. Applies every rule that fits the caller (BR-AP1). |
 | `createAppointment` | patient / staff | Checks every rule in 6.12.5 in one transaction. Returns the booking or an error code (6.12.6). Staff can send `overbook=true` after the warning. |
 | `rescheduleAppointment` | patient / staff | BR-AP6, atomic. |
 | `cancelAppointment` | patient / staff | BR-AP5. Notifies the other side. |
 | `confirmAppointment`, `rejectAppointment` | staff | Pending bookings, when auto-confirm is off. |
-| `checkInAppointment`, `addWalkIn` | staff | Sets `checkedIn`, and the queue number for walk-ins. Converts guests (6.12.3). |
+| `checkInAppointment`, `addWalkIn` | staff | Sets `checkedIn` and the arrival time. In queue mode, gives the period's next queue number inside a transaction that locks the period (BR-AP3), and notifies the patient with it (BR-AP16). Converts guests (6.12.3). |
 | `markNoShow`, `undoNoShow`, `markLeftWithoutSeen` | staff | BR-AP8 and case 20. |
 | `cancelRestOfDay`, `sendDelayNotice` [S] | staff | BR-AP14. |
 | `callNext` [S] | staff | Moves "now serving" forward and pushes a SignalR update to the board and to waiting patients. |
@@ -1490,7 +1501,7 @@ Suggested stack on the server:
 | `monthlyClose` | 1st of month, 00:05 | For each doctor with activity in the previous month: calculate totals with SQL aggregates (`COUNT`, `SUM(feePiasters)`) on non-deleted sessions. These, not the counters, are the source of truth. Create `invoices/{doctorId}_{monthKey}` with `dueAt = periodEnd + gracePeriodDays`. Idempotent, so running it twice changes nothing. Notifies each doctor. |
 | `dailyBillingCheck` | Daily, 00:10 | Sends due-in-2-days and due-today reminders. Marks invoices past due with status `unpaid` or `rejected` as `overdue` and suspends the doctor (BR-G1). |
 | `statsReconcile` **[S]** | Daily, 03:00 | Recalculates yesterday's `dailyStats` from the sessions and logs any difference. |
-| `appointmentReminders` | Every 5 min | Sends the 24-hour and 2-hour reminders that are due, in the patient's language (BR-AP16). |
+| `appointmentReminders` | Every 5 min | Sends the 24-hour and same-day reminders that are due, in the patient's language (BR-AP16). |
 | `expirePendingAppointments` | Every 5 min | Cancels pending bookings that were not confirmed in time, and notifies the patient (BR-AP9). |
 | `markNoShows` | Every 15 min | Marks confirmed bookings `noShow` 30 minutes after their period ends, then applies the no-show limit (BR-AP8). |
 | `flagCheckedInNoSession` | Daily, 02:00 | Flags yesterday's bookings that are still `checkedIn` (BR-AP11). |
@@ -1612,9 +1623,12 @@ liveQueues/{branchId}_{yyyy-mm-dd}   // for patients: numbers only, no names
 | Due in 2 days, due today | Doctor and assistants with `billingPay` | «تذكير: آخر موعد لسداد فاتورة أكتوبر …» |
 | Payment approved or rejected | Doctor and assistants with `billingPay` | «تم قبول الدفع» / «تم رفض الدفع: السبب …» |
 | Suspended or reactivated | Doctor and all their assistants | «تم إيقاف الخدمة …» / «تم إعادة تفعيل الخدمة» |
-| Booking confirmed, or waiting for confirmation | Patient | «تم تأكيد حجزك يوم السبت — رقمك 15» / «حجزك في انتظار تأكيد العيادة» |
+| Booking confirmed, or waiting for confirmation | Patient | «تم تأكيد حجزك يوم السبت، الفترة المسائية — الدور بأسبقية الحضور» (queue mode) or «… الساعة 6:15 مساءً» (timed mode) / «حجزك في انتظار تأكيد العيادة» |
 | Booking rejected, or not confirmed in time | Patient | «لم يتم تأكيد الحجز، برجاء اختيار موعد آخر» (with a rebook link) |
-| Reminder, 24 h and 2 h before | Patient | «تذكير: موعدك غداً الساعة 6 مساءً — فرع المعادي» |
+| Reminder, 24 h before | Patient | «تذكير: موعدك غداً الساعة 6 مساءً — فرع المعادي» |
+| Reminder on the day, 2 h before (BR-AP16) | Patient | Queue mode: «اليوم موعدك في فرع المعادي، الفترة المسائية من 6 مساءً. الدور بأسبقية الحضور: سجّل حضورك في الاستقبال عند وصولك.» Timed mode: «تذكير: موعدك اليوم الساعة 6:15 مساءً — فرع المعادي» |
+| Checked in (queue mode) | Patient | «تم تسجيل حضورك — دورك رقم 7، وقبلك 3 مرضى» |
+| Next in line [S] | Patient (queue mode) | «دورك التالي» |
 | Booking rescheduled or cancelled by the clinic | Patient | «تم تغيير موعدك إلى …» / «تم إلغاء موعدك: … احجز موعداً جديداً» (with a rebook link) |
 | Doctor delayed [S] | Today's remaining patients at that branch | «الطبيب متأخر حوالي 30 دقيقة» |
 | Turn coming up [S] | Patient (queue mode) | «باقي 3 أدوار على دورك» |
@@ -1962,7 +1976,8 @@ Error messages appear in the user's current language. The table shows the Arabic
 - **Time:**
   - In a Thursday period of 20:00–01:00, a booking at 00:30 belongs to Thursday's evening period.
   - A daylight-saving change does not move a 10:00 slot.
-- **Reminders:** they arrive 24 hours and 2 hours before, in the patient's language. A booking made 1 hour before gets no reminder.
+- **Queue order:** in queue mode, A books Saturday evening before B. B is checked in first and gets number 1; A gets number 2; a walk-in after them gets 3. Two receptionists checking in two patients at the same moment get different numbers. Before check-in, the patient's app shows no number.
+- **Reminders and turn:** reminders arrive 24 hours before and 2 hours before the period (queue) or the time (timed), in the patient's language. A booking made 1 hour before gets no reminder. In queue mode, check-in sends «تم تسجيل حضورك — دورك رقم …» with how many are ahead.
 - **Advanced search:**
   - The filter "this week + branch A + no-show" returns exactly those bookings, with counts per status.
   - An assistant sees results only for their branches.

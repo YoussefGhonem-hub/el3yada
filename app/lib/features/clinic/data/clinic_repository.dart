@@ -63,6 +63,7 @@ class FakeClinicRepository implements ClinicRepository {
       _ => AssistantPreset.clinical,
     };
     final onlyMaadi = !isDoctor && preset == AssistantPreset.reception;
+    final freeTrial = session.trial != null && !session.trial!.ended;
     return ClinicContext(
       role: session.role,
       doctor: ClinicDoctor(
@@ -97,8 +98,11 @@ class FakeClinicRepository implements ClinicRepository {
         ),
       ],
       defaultBranchId: maadiBranchId,
-      fees: const ClinicFees(examinationFeePiasters: 3000, consultationFeePiasters: 1500, maxConsecutiveConsultations: 2),
+      fees: freeTrial
+          ? const ClinicFees(examinationFeePiasters: 0, consultationFeePiasters: 0, maxConsecutiveConsultations: 2)
+          : const ClinicFees(examinationFeePiasters: 3000, consultationFeePiasters: 1500, maxConsecutiveConsultations: 2),
       limits: const ClinicLimits(maxAssistants: 5, maxBranches: 5, maxUploadMb: 50),
+      trial: session.trial,
     );
   }
 }

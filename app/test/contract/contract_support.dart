@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/features/admin/data/admin_repository.dart';
-import 'package:el3yada/features/admin/domain/admin_models.dart' show ReviewDecision;
 import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:el3yada/features/auth/domain/auth_session.dart';
 import 'package:el3yada/features/auth/domain/login_result.dart';
@@ -156,18 +155,18 @@ LicenseFile contractLicense() =>
     LicenseFile(bytes: base64Decode(_onePixelPng), name: 'license.png', contentType: LicenseFile.png);
 
 /// Another doctor with a clinic of their own: signs up with
-/// [doctorRegistration], the admin (already signed in) approves, and they
-/// sign in. Returns their session; [doctor] holds its token.
-Future<AuthSession> signUpApprovedDoctor({
+/// [doctorRegistration] and is active at once, in a free trial (no
+/// approval: backend/docs/api-free-trial.md), then signs in. Returns their
+/// session; [doctor] holds its token.
+Future<AuthSession> signUpDoctor({
   required ContractAccount doctor,
-  required ContractAccount admin,
   required String fullName,
   required String email,
   required String password,
   required Map<String, dynamic> device,
 }) async {
   final specialties = await doctor.registration.specialties();
-  final pending = await doctor.registration.register(
+  final registered = await doctor.registration.register(
     doctorRegistration(
       fullName: fullName,
       email: email,
@@ -179,10 +178,12 @@ Future<AuthSession> signUpApprovedDoctor({
     ),
     contractLicense(),
   );
-  await admin.admin.reviewDoctorRegistration(doctorId: pending.doctorId!, decision: ReviewDecision.approve);
+  expect(registered.doctorStatus, DoctorStatus.active);
+  expect(registered.trial?.ended, isFalse);
   final signedIn = await doctor.auth.login(identifier: email, password: password, device: device);
   final session = (signedIn as SignedIn).session;
   expect(session.doctorStatus, DoctorStatus.active);
+  expect(session.trial?.endsAt, registered.trial?.endsAt);
   doctor.token = session.accessToken;
   return session;
 }

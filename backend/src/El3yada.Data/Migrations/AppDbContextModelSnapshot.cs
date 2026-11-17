@@ -166,6 +166,10 @@ namespace El3yada.Data.Migrations
                     b.Property<string>("TermsEn")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TrialDays")
+                        .HasColumnType("int")
+                        .HasDefaultValue(14);
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)")
@@ -189,6 +193,8 @@ namespace El3yada.Data.Migrations
                             t.HasCheckConstraint("CK_AppSettings_MaxUpload", "([MaxUploadMb]>=(1) AND [MaxUploadMb]<=(200))");
 
                             t.HasCheckConstraint("CK_AppSettings_SingleRow", "([Id]=(1))");
+
+                            t.HasCheckConstraint("CK_AppSettings_TrialDays", "([TrialDays]>=(1) AND [TrialDays]<=(90))");
                         });
                 });
 
@@ -1698,6 +1704,10 @@ namespace El3yada.Data.Migrations
                     b.Property<string>("TitleEn")
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime?>("TrialEndsAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasPrecision(3)

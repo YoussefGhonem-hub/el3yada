@@ -4,7 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/motion.dart';
 import '../../../core/widgets/motion_size.dart';
+import '../../../app/routes.dart';
+import '../../../core/widgets/support_contact.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../auth/application/auth_controller.dart';
+import '../../auth/domain/user_role.dart';
+import '../../startup/startup.dart';
 import '../application/clinic_providers.dart';
 import '../domain/clinic_context.dart';
 
@@ -131,6 +136,147 @@ class SuspensionBanner extends ConsumerWidget {
     );
   }
 }
+
+/// The free-trial countdown (BR-T6): in the trial's last [showWithin] days,
+/// a calm banner above every clinic screen, with Contact us when the admin
+/// has set a support contact. It grows in and out like [SuspensionBanner].
+/// The API decides the days left; the device's clock is never used.
+class TrialBanner extends ConsumerWidget {
+  const TrialBanner({super.key});
+
+  static const showWithin = 3;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final trial = ref.watch(clinicContextProvider).value?.trial;
+    final show = trial != null && !trial.ended && trial.daysLeft <= showWithin;
+    final canContact = ref.watch(publicSettingsProvider)?.hasSupportContact ?? false;
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return MotionSize(
+      curve: Motion.enterCurve,
+      child: !show
+          ? const SizedBox(width: double.infinity)
+          : Material(
+              color: scheme.secondaryContainer,
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 8, 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.hourglass_bottom_rounded, size: 20, color: scheme.onSecondaryContainer),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.trialBanner(trial.daysLeft),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSecondaryContainer),
+                        ),
+                      ),
+                      if (canContact) ...[
+                        const SizedBox(width: 8),
+                        TextButton(
+                          style: TextButton.styleFrom(foregroundColor: scheme.onSecondaryContainer),
+                          onPressed: () => showSupportContactSheet(context),
+                          child: Text(l10n.trialContactUs),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+/// The user who closed [EmailVerifyBanner] in this app run, so it stays
+/// closed until the next start (or another account signs in).
+final emailBannerDismissedProvider = NotifierProvider<EmailBannerDismissed, String?>(EmailBannerDismissed.new);
+
+class EmailBannerDismissed extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void dismiss(String userId) => state = userId;
+}
+
+/// "Verify your email" for a doctor whose email isn't verified (A5 [S]): a
+/// new doctor is active at once (spec 6.16), so A6 no longer leads there.
+/// Calm, like [TrialBanner]: Verify pushes A5 over the shell (Back returns
+/// home), and the close button hides it until the app starts again. It
+/// goes away by itself once A5 has verified the email and reloaded the
+/// account.
+class EmailVerifyBanner extends ConsumerWidget {
+  const EmailVerifyBanner({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(authControllerProvider).value;
+    final dismissed = ref.watch(emailBannerDismissedProvider);
+    final show = session != null &&
+        session.role == UserRole.doctor &&
+        session.email != null &&
+        !session.emailVerified &&
+        dismissed != session.userId;
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return MotionSize(
+      curve: Motion.enterCurve,
+      child: !show
+          ? const SizedBox(width: double.infinity)
+          : Material(
+              color: scheme.secondaryContainer,
+              child: SafeArea(
+                top: false,
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 4, 4),
+                  child: Row(
+                    children: [
+                      Icon(Icons.mark_email_unread_outlined, size: 20, color: scheme.onSecondaryContainer),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          l10n.regVerifyCardTitle,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSecondaryContainer),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      TextButton(
+                        style: TextButton.styleFrom(foregroundColor: scheme.onSecondaryContainer),
+                        onPressed: () => context.push(AppRoutes.verifyEmail),
+                        child: Text(l10n.regVerifyButton),
+                      ),
+                      IconButton(
+                        tooltip: l10n.emailBannerDismiss,
+                        color: scheme.onSecondaryContainer,
+                        iconSize: 20,
+                        onPressed: () => ref.read(emailBannerDismissedProvider.notifier).dismiss(session.userId),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+/// The support contacts (WhatsApp, call, email) in a bottom sheet, for the
+/// trial banner's Contact us.
+Future<void> showSupportContactSheet(BuildContext context) => showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => const SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: SupportContact(),
+        ),
+      ),
+    );
 
 /// Shown above the content when the clinic couldn't load (offline at sign-in).
 class ClinicLoadError extends ConsumerWidget {

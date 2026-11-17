@@ -90,26 +90,32 @@ void phase2SuspendedDoctor(ClinicDay day, {required String? skip}) {
     expect(renamed.fullName, 'نهى سمير علي');
   }, skip: skip);
 
-  test('only an active doctor is suspended: a sign-up waiting for review is refused', () async {
-    final pending = ContractAccount(day.baseUrl, day.plain);
-    final specialties = await pending.registration.specialties();
-    final session = await pending.registration.register(
+  test('a doctor who just signed up is active, so the admin can suspend them at once', () async {
+    final fresh = ContractAccount(day.baseUrl, day.plain);
+    final specialties = await fresh.registration.specialties();
+    final session = await fresh.registration.register(
       doctorRegistration(
         fullName: 'كمال رشدي',
-        email: 'contract-pending-${day.run}@el3yada.dev',
+        email: 'contract-fresh-${day.run}@el3yada.dev',
         phone: contractMobile(),
         password: 'Doctor1234',
         licenseNumber: 'P${day.run.substring(day.run.length - 9)}',
         specialtyId: specialties.first.id,
-        device: contractDevice('pending', day.run),
+        device: contractDevice('fresh', day.run),
       ),
       contractLicense(),
     );
-    expect(session.doctorStatus, DoctorStatus.pendingApproval);
-    await expectLater(
-      day.admin.admin.setDoctorStatus(session.doctorId!, suspended: true, reason: reason),
-      throwsA(apiError(409, 'DOCTOR_STATUS_NOT_CHANGEABLE')
-          .having((e) => e.details['status'], 'status', DoctorStatuses.pendingApproval)),
+    expect(session.doctorStatus, DoctorStatus.active);
+    expect(session.trial?.ended, isFalse);
+    final suspended = await day.admin.admin.setDoctorStatus(session.doctorId!, suspended: true, reason: reason);
+    expect(suspended.status, DoctorStatuses.suspended);
+    fresh.token = session.accessToken;
+    final clinic = await fresh.clinic.me();
+    expect(clinic.isSuspended, isTrue);
+    expect(clinic.freeTrial, isTrue, reason: 'the trial goes on while suspended');
+    expect(
+      (await day.admin.admin.setDoctorStatus(session.doctorId!, suspended: false, reason: 'تم التحقق')).status,
+      DoctorStatuses.active,
     );
     await expectLater(
       day.admin.admin.setDoctorStatus(day.doctorId, suspended: false, reason: ' ab '),

@@ -179,7 +179,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navInvoices => 'Invoices';
 
   @override
-  String get navSignups => 'Sign-up requests';
+  String get navSignups => 'Doctors';
 
   @override
   String get navAccounts => 'Accounts';
@@ -484,7 +484,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regBack => 'Back';
 
   @override
-  String get regSubmit => 'Send for review';
+  String get regSubmit => 'Create my account';
 
   @override
   String get regResubmit => 'Send again for review';
@@ -729,7 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get regReviewIntro => 'Check your details, then send them for review.';
+  String get regReviewIntro => 'Check your details, then create your account.';
 
   @override
   String get regReviewIntroResubmit =>
@@ -1101,18 +1101,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminFixErrors => 'Fix the highlighted fields, then save.';
 
   @override
-  String adminSignupsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count requests waiting',
-      one: '1 request waiting',
-      zero: 'No requests waiting',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get adminSignupsSearchHint => 'Name, email, mobile or number';
 
   @override
@@ -1128,21 +1116,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSortOldest => 'Oldest first (queue order)';
 
   @override
-  String get adminSignupsEmptyTitle => 'No sign-up requests waiting';
+  String get adminSignupsEmptyTitle => 'No doctors yet';
 
   @override
   String get adminSignupsEmptyBody =>
-      'New doctors\' requests show up here as soon as they register.';
+      'Doctors show up here as soon as they sign up.';
 
   @override
-  String get adminSignupsNoMatchTitle => 'No requests match your search';
+  String get adminSignupsNoMatchTitle => 'No doctors match your search';
 
   @override
   String get adminSignupsNoMatchBody =>
       'Check the spelling, or search by mobile or syndicate number.';
 
   @override
-  String get adminSelectRequest => 'Choose a request to review it';
+  String get adminSelectRequest => 'Choose a doctor to see their account';
 
   @override
   String adminSubmittedShort(String time) {
@@ -4460,4 +4448,223 @@ class AppLocalizationsEn extends AppLocalizations {
   String backToSection(String section) {
     return 'Back to $section';
   }
+
+  @override
+  String get trialEndedTitle => 'Your free trial has ended';
+
+  @override
+  String get trialEndedBody =>
+      'Contact us to activate the service and keep using el3yada. Your patients and records are kept safe.';
+
+  @override
+  String get trialEndedTitleAssistant => 'The clinic\'s free trial has ended';
+
+  @override
+  String get trialEndedBodyAssistant =>
+      'Ask the doctor to contact us to activate the service. Then you can carry on as usual.';
+
+  @override
+  String get trialCheckAgain => 'Check again';
+
+  @override
+  String get trialStillEnded => 'The service isn\'t active yet.';
+
+  @override
+  String trialBanner(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left in your free trial',
+      one: '1 day left in your free trial',
+      zero: 'Your free trial ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trialContactUs => 'Contact us';
+
+  @override
+  String get errorTrialEnded =>
+      'The free trial has ended. Contact us to activate the service.';
+
+  @override
+  String get sessionFeeFreeTrial => 'Free (trial)';
+
+  @override
+  String get sessionPlatformFeeFree => 'No platform fee (free trial)';
+
+  @override
+  String get sessionConfirmFeeFree =>
+      'No fee: the clinic is in its free trial.';
+
+  @override
+  String sessionSavedBodyFree(String type, String patient) {
+    return '$type for $patient. No fee (free trial).';
+  }
+
+  @override
+  String get adminErrorServiceAlreadyActive =>
+      'This doctor\'s service is already active, so there\'s no trial to extend.';
+
+  @override
+  String get adminErrorDoctorStatusNotChangeable =>
+      'This can\'t be done for a doctor who is pending, rejected or disabled.';
+
+  @override
+  String get adminSettingTrialDays => 'Free trial';
+
+  @override
+  String get adminAppliesToNewDoctors =>
+      'Applies to doctors approved after the change';
+
+  @override
+  String get adminDoctorsFilterAll => 'All doctors';
+
+  @override
+  String get adminSignupsFilterTrialRunning => 'In free trial';
+
+  @override
+  String get adminSignupsFilterTrialEnded => 'Trial ended';
+
+  @override
+  String adminDoctorsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors',
+      one: '1 doctor',
+      zero: 'No doctors',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminTrialListEmpty => 'No doctors here';
+
+  @override
+  String get adminTrialListEmptyBody =>
+      'Doctors show up here by the state of their free trial.';
+
+  @override
+  String get adminServiceActive => 'Service active';
+
+  @override
+  String get adminTrialEnded => 'Trial ended';
+
+  @override
+  String adminTrialDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Trial: $days days left',
+      one: 'Trial: 1 day left',
+      zero: 'Trial: ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminSectionTrial => 'Free trial';
+
+  @override
+  String get adminServiceActiveBody =>
+      'The service is active. Sessions carry the platform fees.';
+
+  @override
+  String adminTrialRunningBody(String date) {
+    return 'The free trial ends on $date. Sessions until then carry no fee.';
+  }
+
+  @override
+  String adminTrialEndedBody(String date) {
+    return 'The free trial ended on $date. The doctor and their assistants can\'t use the clinic until you activate the service or extend the trial.';
+  }
+
+  @override
+  String get adminActivateService => 'Activate service';
+
+  @override
+  String adminActivateServiceTitle(String name) {
+    return 'Activate the service for Dr. $name?';
+  }
+
+  @override
+  String get adminActivateServiceBody =>
+      'The free trial ends now, and platform fees apply to every session from now on.';
+
+  @override
+  String adminServiceActivatedMessage(String name) {
+    return 'Service activated for Dr. $name.';
+  }
+
+  @override
+  String get adminExtendTrial => 'Extend trial';
+
+  @override
+  String adminExtendTrialTitle(String name) {
+    return 'Extend Dr. $name\'s free trial';
+  }
+
+  @override
+  String get adminExtendTrialBody =>
+      'The days are added to the end of the trial, or to today if it has ended.';
+
+  @override
+  String get adminExtendTrialDays => 'Days';
+
+  @override
+  String adminTrialExtendedMessage(String name, String date) {
+    return 'Dr. $name\'s free trial now ends on $date.';
+  }
+
+  @override
+  String get adminAuditServiceActivated => 'Activated a doctor\'s service';
+
+  @override
+  String adminAuditTrialExtended(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Extended a doctor\'s free trial by $days days',
+      one: 'Extended a doctor\'s free trial by 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminActionServiceActivated => 'Service activated';
+
+  @override
+  String get adminActionTrialExtended => 'Trial extended';
+
+  @override
+  String get regWelcomeTitle => 'Welcome to el3yada';
+
+  @override
+  String regWelcomeTrial(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'You have a free trial for $days days.',
+      one: 'You have a free trial for 1 day.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regWelcomeBody =>
+      'Add your patients and record sessions with no platform fees during the trial.';
+
+  @override
+  String get regWelcomeStart => 'Get started';
+
+  @override
+  String get adminDoctorTitle => 'Doctor account';
+
+  @override
+  String get emailBannerDismiss => 'Hide for now';
+
+  @override
+  String get settingsVerifyEmail => 'Verify your email address';
 }

@@ -1,6 +1,6 @@
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/features/admin/data/admin_repository.dart';
-import 'package:el3yada/features/admin/domain/admin_models.dart' show ReviewDecision;
+import 'package:el3yada/features/admin/domain/admin_models.dart' show TrialFilter;
 import 'package:el3yada/features/auth/domain/auth_session.dart';
 import 'package:el3yada/features/auth/domain/login_result.dart';
 import 'package:el3yada/features/auth/domain/user_role.dart';
@@ -18,8 +18,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'contract_support.dart';
 
 /// Phase 2 against a running API: one clinic day through the app's real
-/// repositories (backend/docs/api-phase-2*.md). A doctor signs up and the
-/// admin approves them; the doctor sets up the clinic, adds a patient and
+/// repositories (backend/docs/api-phase-2*.md). A doctor signs up and is
+/// active at once in a free trial (api-free-trial.md); the admin extends the
+/// trial, then activates the service so the day runs with the platform
+/// fees. The doctor sets up the clinic, adds a patient and
 /// records sessions; a reception assistant in one branch works the desk;
 /// the doctor reads the activity log, then disables and removes the assistant.
 ///
@@ -72,13 +74,13 @@ ClinicDay phase2ClinicDay({
   late String assistantUserId;
   late String assistantPatientId;
 
-  test('a doctor signs up, the admin approves, the doctor signs in', () async {
+  test('a doctor signs up and is active in a free trial; the admin extends it, then activates the service', () async {
     final registration = ApiRegistrationRepository(doctor.dio, plain);
     final specialties = await registration.specialties();
     expect(specialties, isNotEmpty);
     expect(specialties.first.nameAr, isNotEmpty);
 
-    final pending = await registration.register(
+    final registered = await registration.register(
       doctorRegistration(
         fullName: 'سامي عبد الله',
         fullNameEn: 'Sami Abdallah',
@@ -91,32 +93,64 @@ ClinicDay phase2ClinicDay({
       ),
       contractLicense(),
     );
-    expect(pending.role, UserRole.doctor);
-    expect(pending.doctorStatus, DoctorStatus.pendingApproval);
-    expect(pending.email, doctorEmail);
-    expect(pending.emailVerified, isFalse);
-    expect(pending.phone, e164(doctorPhone));
-    expect(pending.doctorId, isNotNull);
-    doctorUserId = pending.userId;
-    doctorId = pending.doctorId!;
+    // No approval: active at once, in a free trial (api-free-trial.md).
+    expect(registered.role, UserRole.doctor);
+    expect(registered.doctorStatus, DoctorStatus.active);
+    expect(registered.email, doctorEmail);
+    expect(registered.emailVerified, isFalse);
+    expect(registered.phone, e164(doctorPhone));
+    expect(registered.doctorId, isNotNull);
+    final trial = registered.trial!;
+    expect(trial.ended, isFalse);
+    expect(trial.daysLeft, greaterThan(0));
+    expect(trial.endsAt.isAfter(DateTime.now().toUtc()), isTrue);
+    doctorUserId = registered.userId;
+    doctorId = registered.doctorId!;
 
-    // Clinic endpoints wait for the approval.
-    doctor.token = pending.accessToken;
-    await expectLater(doctor.clinic.me(), throwsA(_apiError(403, ApiCodes.doctorPendingApproval)));
+    // The clinic opens at once, and sessions carry no fee during the trial (BR-T3).
+    doctor.token = registered.accessToken;
+    final during = await doctor.clinic.me();
+    expect(during.doctor.status, 'active');
+    expect(during.freeTrial, isTrue);
+    expect(during.trial?.endsAt, trial.endsAt);
+    expect(during.fees.examinationFeePiasters, 0);
+    expect(during.fees.consultationFeePiasters, 0);
 
-    // The admin finds the sign-up and approves it. Email verification
-    // doesn't block anything (api-phase-1.md, "emailVerified").
+    // The admin finds the new doctor (every doctor, and those in a trial).
+    // Email verification doesn't block anything (api-phase-1.md, "emailVerified").
     admin.token =
         (await signInAdmin(admin, adminEmail!, adminTemporaryPassword!, adminPassword, device('admin'))).accessToken;
     final adminRepository = ApiAdminRepository(admin.dio);
-    final queue = await adminRepository.doctorRegistrations(search: doctorEmail);
-    final summary = queue.items.singleWhere((row) => row.doctorId == doctorId);
+    final all = await adminRepository.doctorRegistrations(search: doctorEmail);
+    final summary = all.items.singleWhere((row) => row.doctorId == doctorId);
     expect(summary.fullName, 'سامي عبد الله');
-    expect(summary.status, 'pendingApproval');
+    expect(summary.status, 'active');
     expect(summary.emailVerified, isFalse);
-    final approved = await adminRepository.reviewDoctorRegistration(doctorId: doctorId, decision: ReviewDecision.approve);
-    expect(approved.status, 'active');
-    expect(approved.approvedAt, isNotNull);
+    expect(summary.trial?.ended, isFalse);
+    final inTrial = await adminRepository.doctorRegistrations(search: doctorEmail, trial: TrialFilter.running);
+    expect(inTrial.items.map((row) => row.doctorId), contains(doctorId));
+    final ended = await adminRepository.doctorRegistrations(search: doctorEmail, trial: TrialFilter.ended);
+    expect(ended.items.map((row) => row.doctorId), isNot(contains(doctorId)));
+    final detail = await adminRepository.doctorRegistration(doctorId);
+    expect(detail.registration.status, 'active');
+    expect(detail.registration.approvedAt, isNotNull);
+    expect(detail.registration.trial?.daysLeft, trial.daysLeft);
+
+    // Extend by 3 days, then activate: the trial ends and the fees apply.
+    final extended = await adminRepository.extendDoctorTrial(doctorId, days: 3);
+    expect(extended.trial!.endsAt, trial.endsAt.add(const Duration(days: 3)));
+    expect(extended.trial!.daysLeft, trial.daysLeft + 3);
+    final activated = await adminRepository.activateDoctorService(doctorId);
+    expect(activated.status, 'active');
+    expect(activated.trial, isNull);
+    await expectLater(
+      adminRepository.extendDoctorTrial(doctorId, days: 3),
+      throwsA(_apiError(409, ApiCodes.serviceAlreadyActive)),
+    );
+    final after = await doctor.clinic.me();
+    expect(after.trial, isNull);
+    expect(after.freeTrial, isFalse);
+    expect(after.fees.examinationFeePiasters, greaterThan(0));
 
     final signedIn = await doctor.auth.login(identifier: doctorEmail, password: doctorPassword, device: device('doctor'));
     final session = (signedIn as SignedIn).session;

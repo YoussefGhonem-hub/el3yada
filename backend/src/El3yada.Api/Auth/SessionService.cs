@@ -51,7 +51,7 @@ public sealed class SessionService(
         var account = await AccountState.LoadAsync(db, user.Id, cancellationToken)
             ?? throw new InvalidOperationException("The user disappeared while signing in.");
         var (accessToken, accessExpires) = tokens.CreateAccessToken(account, familyId);
-        return new SignedInResponse(SessionView.Of(account), accessToken, accessExpires, refreshToken, refreshExpires);
+        return new SignedInResponse(SessionView.Of(account, Now), accessToken, accessExpires, refreshToken, refreshExpires);
     }
 
     /// <summary>Rotates a refresh token. See <see cref="RefreshOutcome"/> for the answers.</summary>
@@ -113,7 +113,7 @@ public sealed class SessionService(
         await transaction.CommitAsync(cancellationToken);
 
         var (accessToken, accessExpires) = tokens.CreateAccessToken(account, current.FamilyId);
-        return RefreshOutcome.Success(new SignedInResponse(SessionView.Of(account), accessToken, accessExpires, newToken, newExpires));
+        return RefreshOutcome.Success(new SignedInResponse(SessionView.Of(account, now), accessToken, accessExpires, newToken, newExpires));
     }
 
     /// <summary>

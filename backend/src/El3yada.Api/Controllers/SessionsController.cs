@@ -72,6 +72,7 @@ public sealed class SessionsController(
         }
 
         var settings = await db.AppSettings.AsNoTracking().SingleAsync(cancellationToken);
+        var free = caller.TrialRunning(Now);
         var doctor = await DoctorPricesAsync(caller.DoctorId, cancellationToken);
         var visits = link.View(Today);
         var blocked = ConsultationRule.ConsultationBlockedReason(
@@ -94,8 +95,8 @@ public sealed class SessionsController(
             settings.MaxConsecutiveConsultations,
             ConsultationAllowed: blocked is null,
             blocked,
-            Option(SessionTypes.Examination, true, settings.ExamFeePiasters),
-            Option(SessionTypes.Consultation, blocked is null, settings.ConsultationFeePiasters)));
+            Option(SessionTypes.Examination, true, free ? 0 : settings.ExamFeePiasters),
+            Option(SessionTypes.Consultation, blocked is null, free ? 0 : settings.ConsultationFeePiasters)));
     }
 
     /// <summary>
@@ -162,7 +163,9 @@ public sealed class SessionsController(
         var now = Now;
         var day = CairoTime.DayOf(now);
         var month = CairoTime.MonthKey(day);
-        var fee = type == SessionTypes.Examination ? settings.ExamFeePiasters : settings.ConsultationFeePiasters;
+        // The fee snapshot (BR-S5): nothing while the free trial runs (BR-T3).
+        var fee = caller.TrialRunning(now) ? 0
+            : type == SessionTypes.Examination ? settings.ExamFeePiasters : settings.ConsultationFeePiasters;
         var session = new Session
         {
             Id = Guid.NewGuid(),

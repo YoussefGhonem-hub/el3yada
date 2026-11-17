@@ -63,6 +63,12 @@ public partial class Doctor
 
     public Guid? ApprovedBy { get; set; }
 
+    /// <summary>
+    /// When the free trial ends (UTC, spec 6.16 BR-T1): the approval time plus AppSettings.TrialDays. Null when
+    /// there is no trial: the service is active (approved before the trial existed, or activated by an admin).
+    /// </summary>
+    public DateTime? TrialEndsAt { get; set; }
+
     public int NextFileNumber { get; set; } = 1;
 
     public DateTime CreatedAt { get; set; }

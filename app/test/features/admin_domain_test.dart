@@ -62,12 +62,12 @@ void main() {
     test('every API setting is here, once', () {
       expect(SettingFields.all.map((f) => f.name).toSet(), {
         'examFeePiasters', 'consultationFeePiasters', 'gracePeriodDays', 'maxConsecutiveConsultations', //
-        'maxUploadMb', 'maxAssistantsPerDoctor', 'maxBranchesPerDoctor', 'instapayAddress', 'instapayAccountName',
+        'trialDays', 'maxUploadMb', 'maxAssistantsPerDoctor', 'maxBranchesPerDoctor', 'instapayAddress', 'instapayAccountName',
         'instapayInstructionsAr', 'instapayInstructionsEn', 'supportPhone', 'supportWhatsapp', 'supportEmail',
         'minVersionAndroid', 'minVersionIos', 'minVersionWindows', 'minVersionMacos', 'maintenanceEnabled',
         'maintenanceMessageAr', 'maintenanceMessageEn', 'termsAr', 'termsEn', 'privacyAr', 'privacyEn',
       });
-      expect(SettingFields.all, hasLength(25));
+      expect(SettingFields.all, hasLength(26));
     });
 
     test('fees: 0 to 10,000 EGP, sent in piasters', () {
@@ -89,6 +89,11 @@ void main() {
       expect(field('maxBranchesPerDoctor').check('0'), SettingProblem.outOfRange);
       expect(field('maxAssistantsPerDoctor').check('0'), isNull);
       expect(field('gracePeriodDays').wire('١٠'), 10);
+      // The free trial (spec 6.16): 1 to 90 days.
+      expect(field('trialDays').check('0'), SettingProblem.outOfRange);
+      expect(field('trialDays').check('90'), isNull);
+      expect(field('trialDays').check('91'), SettingProblem.outOfRange);
+      expect(field('trialDays').appliesToNewOnly, isTrue);
     });
 
     test('versions are major.minor.patch and required', () {
@@ -147,12 +152,20 @@ void main() {
       await expectLater(plain.admins(), throwsA(_code('FORBIDDEN')));
     });
 
-    test('a reviewed request leaves the queue and can\'t be reviewed again', () async {
+    test('AD2 lists every doctor; approving a legacy sign-up starts their trial, once', () async {
       final fake = FakeAdminRepository(delay: Duration.zero);
       final before = await fake.doctorRegistrations();
-      await fake.reviewDoctorRegistration(doctorId: 'doc-sami', decision: ReviewDecision.approve);
+      expect(before.totalCount, 8);
+      expect((await fake.doctorRegistrations(trial: TrialFilter.running)).items.map((r) => r.doctorId), ['doc-tarek']);
+      expect((await fake.doctorRegistrations(trial: TrialFilter.ended)).items.map((r) => r.doctorId), ['doc-nadia']);
+
+      final approved = await fake.reviewDoctorRegistration(doctorId: 'doc-sami', decision: ReviewDecision.approve);
+      expect(approved.status, DoctorStatuses.active);
+      expect(approved.trial?.daysLeft, 14);
       final after = await fake.doctorRegistrations();
-      expect(after.totalCount, before.totalCount - 1);
+      expect(after.totalCount, before.totalCount, reason: 'the doctor stays, now active');
+      expect(after.items.singleWhere((r) => r.doctorId == 'doc-sami').trial?.ended, isFalse);
+      expect((await fake.doctorRegistrations(trial: TrialFilter.running)).totalCount, 2);
       await expectLater(
         fake.reviewDoctorRegistration(doctorId: 'doc-sami', decision: ReviewDecision.approve),
         throwsA(_code('REGISTRATION_NOT_PENDING')),
@@ -172,7 +185,7 @@ void main() {
       expect(active.statusReason, isNull);
       expect((await fake.doctorRegistration('doc-tarek')).registration.statusReason, isNull);
 
-      // A sign-up waiting for review is neither active nor suspended.
+      // A legacy sign-up waiting for review is neither active nor suspended.
       await expectLater(
         fake.setDoctorStatus('doc-sami', suspended: true, reason: 'سبب الإيقاف'),
         throwsA(isA<ApiException>()

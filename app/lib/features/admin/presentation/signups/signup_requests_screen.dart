@@ -17,14 +17,16 @@ import '../../../../core/data/paged_controller.dart';
 import '../../domain/admin_models.dart';
 import '../widgets/admin_widgets.dart';
 import 'signup_review.dart';
+import 'trial_parts.dart';
 
-/// A request submitted in the last day gets the coral "new" mark.
+/// A doctor who signed up in the last day gets the coral "new" mark.
 const _newFor = Duration(days: 1);
 
-/// AD2: doctors waiting for approval, newest first, with search. Phones
-/// show cards that grow into AD3 (container transform); wide screens show
-/// the list and AD3 side by side, and move to the next request after a
-/// review.
+/// AD2, «الأطباء»: every doctor, newest first, with search and the
+/// free-trial filter (all, in trial, trial ended). New doctors are active at
+/// once (spec 6.16); legacy sign-ups still pending or rejected show their
+/// status and can be reviewed in AD3. Phones show cards that grow into AD3
+/// (container transform); wide screens show the list and AD3 side by side.
 class SignupRequestsScreen extends ConsumerStatefulWidget {
   const SignupRequestsScreen({super.key});
 
@@ -66,6 +68,16 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
     setState(() => _generation++);
   }
 
+  /// Every doctor, or by free-trial state (spec 6.16).
+  void _onTrial(TrialFilter? trial) {
+    if (trial == _controller.trial) return;
+    _controller.setTrial(trial);
+    setState(() {
+      _generation++;
+      _selected = null;
+    });
+  }
+
   Future<void> _refresh() async {
     await _controller.refresh();
     if (!mounted) return;
@@ -75,15 +87,11 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
     }
   }
 
-  /// Wide layout: after a review, the next request opens.
+  /// Wide layout: after a legacy sign-up's review, the doctor stays open
+  /// with the new status.
   void _onReviewedInPane(DoctorRegistration registration, ReviewDecision decision) {
-    final items = ref.read(signupsControllerProvider).items;
-    final index = items.indexWhere((item) => item.doctorId == registration.doctorId);
     _controller.reviewed(registration.doctorId);
-    final rest = ref.read(signupsControllerProvider).items;
-    setState(() {
-      _selected = rest.isEmpty ? null : rest[index.clamp(0, rest.length - 1)].doctorId;
-    });
+    ref.invalidate(registrationDetailProvider(registration.doctorId));
     showAdminSnack(context, reviewedMessage(AppLocalizations.of(context), registration, decision));
   }
 
@@ -141,6 +149,7 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
     final width = MediaQuery.sizeOf(context).width;
     final gutter = wide ? 20.0 : adminGutter(width);
     final sort = ref.read(signupsControllerProvider.notifier).sort;
+    final trial = ref.read(signupsControllerProvider.notifier).trial;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -148,7 +157,7 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
           padding: EdgeInsets.fromLTRB(gutter, 20, gutter, 12),
           child: AdminHeader(
             title: l10n.navSignups,
-            subtitle: state.loading ? l10n.loading : l10n.adminSignupsCount(state.totalCount),
+            subtitle: state.loading ? l10n.loading : l10n.adminDoctorsCount(state.totalCount),
           ),
         ),
         Padding(
@@ -201,7 +210,28 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
+        // Every doctor, or by free-trial state (spec 6.16).
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: gutter),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final (value, label) in [
+                (null, l10n.adminDoctorsFilterAll),
+                (TrialFilter.running, l10n.adminSignupsFilterTrialRunning),
+                (TrialFilter.ended, l10n.adminSignupsFilterTrialEnded),
+              ])
+                ChoiceChip(
+                  label: Text(label),
+                  selected: trial == value,
+                  onSelected: (_) => _onTrial(value),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
         Expanded(
           child: StateSwitcher(
             state: state.view,
@@ -214,8 +244,16 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
                   child: SizedBox(
                     height: constraints.maxHeight,
                     child: EmptyState(
-                      title: _controller.search.isEmpty ? l10n.adminSignupsEmptyTitle : l10n.adminSignupsNoMatchTitle,
-                      message: _controller.search.isEmpty ? l10n.adminSignupsEmptyBody : l10n.adminSignupsNoMatchBody,
+                      title: _controller.search.isNotEmpty
+                          ? l10n.adminSignupsNoMatchTitle
+                          : trial != null
+                              ? l10n.adminTrialListEmpty
+                              : l10n.adminSignupsEmptyTitle,
+                      message: _controller.search.isNotEmpty
+                          ? l10n.adminSignupsNoMatchBody
+                          : trial != null
+                              ? l10n.adminTrialListEmptyBody
+                              : l10n.adminSignupsEmptyBody,
                       actionLabel: _controller.search.isEmpty ? l10n.adminRefresh : l10n.adminClearSearch,
                       onAction: _controller.search.isEmpty
                           ? _refresh
@@ -294,8 +332,9 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
   }
 }
 
-/// One request: who, what, where, when. A ticket-like card on phones, a
-/// compact selectable row in the wide list.
+/// One doctor: who, what, where, when, a status other than active, and the
+/// free trial. A ticket-like card on phones, a compact selectable row in the
+/// wide list.
 class _SignupCard extends StatelessWidget {
   const _SignupCard({required this.item, required this.onTap, this.compact = false, this.selected = false});
 
@@ -373,6 +412,8 @@ class _SignupCard extends StatelessWidget {
                   children: [
                     if (place.isNotEmpty) _Meta(icon: Icons.place_outlined, text: place, selected: selected),
                     _Meta(icon: Icons.schedule, text: when, selected: selected),
+                    if (item.status != DoctorStatuses.active) DoctorStatusPill(status: item.status),
+                    if (item.trial != null) TrialPill(trial: item.trial),
                   ],
                 ),
               ],
@@ -382,8 +423,16 @@ class _SignupCard extends StatelessWidget {
       ),
     );
 
-    final semantics = [name, what, if (place.isNotEmpty) place, l10n.adminSubmittedShort(when), if (isNew) l10n.adminNew]
-        .join(l10n.adminListSeparator);
+    final trial = item.trial;
+    final semantics = [
+      name,
+      what,
+      if (place.isNotEmpty) place,
+      l10n.adminSubmittedShort(when),
+      if (isNew) l10n.adminNew,
+      if (item.status != DoctorStatuses.active) doctorStatusLabel(l10n, item.status),
+      if (trial != null) trial.ended ? l10n.adminTrialEnded : l10n.adminTrialDaysLeft(trial.daysLeft),
+    ].join(l10n.adminListSeparator);
     if (compact) {
       return Pressable(
         onTap: onTap,

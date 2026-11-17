@@ -50,6 +50,11 @@ abstract class AuthSession with _$AuthSession {
     String? phone,
     @Default('ar') String locale,
     @Default('system') String themeMode,
+
+    /// The clinic's free trial (backend/docs/api-free-trial.md): a doctor's
+    /// own, an assistant's doctor's. Null when there is none (the service is
+    /// active) and for other roles.
+    TrialInfo? trial,
     required String accessToken,
     DateTime? accessTokenExpiresAt,
     required String refreshToken,
@@ -59,6 +64,10 @@ abstract class AuthSession with _$AuthSession {
   factory AuthSession.fromJson(Map<String, dynamic> json) => _$AuthSessionFromJson(json);
 
   bool get isSuperAdmin => adminRole == 'superAdmin';
+
+  /// The clinic's free trial has ended: the doctor and their assistants only
+  /// see A15 until the admin activates the service or extends the trial.
+  bool get trialEnded => trial?.ended ?? false;
 
   /// The same tokens with the account fields from `GET /api/auth/me`.
   /// (Round-trips through JSON text: `toJson` keeps enums and dates as objects.)
@@ -76,6 +85,27 @@ abstract class AuthSession with _$AuthSession {
   /// The access token expires within [margin] (refresh before sending).
   bool accessTokenExpiresWithin(Duration margin, DateTime now) =>
       accessTokenExpiresAt != null && accessTokenExpiresAt!.isBefore(now.add(margin));
+}
+
+/// A clinic's free trial (spec 6.16, backend/docs/api-free-trial.md), in
+/// the session, `GET /api/clinic/me` and the admin's registration views.
+/// The API decides with its own clock: use [ended], never the device's time.
+@freezed
+abstract class TrialInfo with _$TrialInfo {
+  const TrialInfo._();
+
+  const factory TrialInfo({
+    /// UTC: the approval time plus the `trialDays` setting.
+    required DateTime endsAt,
+    @Default(false) bool ended,
+
+    /// Whole days left, rounded up; 0 once [ended].
+    @Default(0) int daysLeft,
+  }) = _TrialInfo;
+
+  factory TrialInfo.fromJson(Map<String, dynamic> json) => _$TrialInfoFromJson(json);
+
+  bool get running => !ended;
 }
 
 /// `Doctors.Status` (spec 8). A disabled doctor never gets a session: the API

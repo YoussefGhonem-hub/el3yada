@@ -400,8 +400,9 @@ class FakeCatalogBackend {
     if (name.length > 200) fields['nameEn'] = 'TOO_LONG';
     if ((draft.nameAr ?? '').length > 200) fields['nameAr'] = 'TOO_LONG';
     if ((draft.loincCode ?? '').length > 20) fields['loincCode'] = 'TOO_LONG';
-    if (draft.aliases.length > 10 || draft.aliases.any((a) => a.trim().length > 100))
+    if (draft.aliases.length > 10 || draft.aliases.any((a) => a.trim().length > 100)) {
       fields['aliases'] = 'INVALID_VALUE';
+    }
     if (fields.isNotEmpty) throw _error(400, ApiCodes.validationFailed, fields);
     final old = id == null ? null : customItems[id];
     if (id != null && old == null) throw _error(404, ApiCodes.notFound);

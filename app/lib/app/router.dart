@@ -13,6 +13,8 @@ import '../features/auth/presentation/language_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/set_password_screen.dart';
 import '../features/auth/presentation/trial_ended_screen.dart';
+import '../features/catalog/presentation/catalog_setup_screen.dart';
+import '../features/catalog/presentation/catalog_sources_screen.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/doctor_registration/presentation/registration_status_screens.dart';
 import '../features/shell/fade_through_branches.dart';
@@ -89,6 +91,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: AppRoutes.maintenance, builder: (context, state) => const MaintenanceScreen()),
       GoRoute(path: AppRoutes.terms, builder: (context, state) => const LegalScreen(document: LegalDocument.terms)),
       GoRoute(path: AppRoutes.privacy, builder: (context, state) => const LegalScreen(document: LegalDocument.privacy)),
+      GoRoute(path: AppRoutes.dataSources, builder: (context, state) => const CatalogSourcesScreen()),
+      GoRoute(path: AppRoutes.catalogSetup, builder: (context, state) => const CatalogSetupScreen()),
       for (final shell in RoleShell.all)
         StatefulShellRoute(
           builder: (context, state, navigationShell) => RoleScaffold(
@@ -152,6 +156,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 /// 11. A5 can open over the shell for a doctor (the "Verify your email"
 ///     banner and D24 push it; Back returns home). It stays open once the
 ///     email is verified, to show the success.
+/// 11b. D0 (the catalog download) opens over the shell, except for patients.
 /// 12. Otherwise the role's area,
 /// 13. except an assistant's menu items without the permission.
 String? appRedirect(Ref ref, String location) {
@@ -199,6 +204,9 @@ String? appRedirect(Ref ref, String location) {
   }
 
   if (session.role == UserRole.doctor && at(AppRoutes.verifyEmail)) return null;
+
+  // D0 opens over the role's area for those who keep the catalog (BR-CAT11).
+  if (at(AppRoutes.catalogSetup)) return session.role == UserRole.patient ? RoleShell.forRole(session.role).homePath : null;
 
   final shell = RoleShell.forRole(session.role);
   if (!location.startsWith(shell.basePath)) return shell.homePath;

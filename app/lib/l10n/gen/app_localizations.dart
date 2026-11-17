@@ -7876,6 +7876,1056 @@ abstract class AppLocalizations {
   /// **'Trial extended'**
   String get adminActionTrialExtended;
 
+  /// D0: the catalog download screen's heading (spec 6.9, BR-CAT11).
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the medicines and tests guide ready'**
+  String get catalogSetupTitle;
+
+  /// No description provided for @catalogSetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re downloading the Egyptian medicines, lab tests and radiology guide to your device, so search is instant and works offline.'**
+  String get catalogSetupBody;
+
+  /// No description provided for @catalogSetupMeanwhile.
+  ///
+  /// In en, this message translates to:
+  /// **'You can keep working. Until it finishes, search suggests what you\'ve written before and you can type any name.'**
+  String get catalogSetupMeanwhile;
+
+  /// No description provided for @catalogSetupWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wi-Fi recommended'**
+  String get catalogSetupWifi;
+
+  /// No description provided for @catalogSetupProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{received} of {total}'**
+  String catalogSetupProgress(String received, String total);
+
+  /// No description provided for @catalogVersionLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} · {size}'**
+  String catalogVersionLine(String version, String size);
+
+  /// No description provided for @catalogVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String catalogVersionTitle(String version);
+
+  /// No description provided for @catalogContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep using the app'**
+  String get catalogContinue;
+
+  /// No description provided for @catalogPhaseChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for the latest version…'**
+  String get catalogPhaseChecking;
+
+  /// No description provided for @catalogPhaseDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading… {percent}%'**
+  String catalogPhaseDownloading(String percent);
+
+  /// No description provided for @catalogPhaseVerifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking and preparing the file…'**
+  String get catalogPhaseVerifying;
+
+  /// No description provided for @catalogPhaseReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The guide is ready on your device'**
+  String get catalogPhaseReady;
+
+  /// No description provided for @catalogPhaseNotPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'No guide is published yet. Until it is, type names yourself; they\'re saved to your list.'**
+  String get catalogPhaseNotPublished;
+
+  /// No description provided for @catalogPhaseUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The guide isn\'t available on this device. Search covers what you\'ve written before.'**
+  String get catalogPhaseUnavailable;
+
+  /// No description provided for @catalogFailureNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Try again picks up where it stopped.'**
+  String get catalogFailureNetwork;
+
+  /// No description provided for @catalogFailureServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The server had a problem. Try again in a little while.'**
+  String get catalogFailureServer;
+
+  /// No description provided for @catalogFailureChecksum.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded file was damaged and has been deleted. Try again.'**
+  String get catalogFailureChecksum;
+
+  /// No description provided for @catalogFailureCorrupt.
+  ///
+  /// In en, this message translates to:
+  /// **'The file isn\'t a valid guide and has been deleted. Try again.'**
+  String get catalogFailureCorrupt;
+
+  /// No description provided for @catalogFailureSchema.
+  ///
+  /// In en, this message translates to:
+  /// **'The new version needs a newer app. Update the app to use it.'**
+  String get catalogFailureSchema;
+
+  /// No description provided for @catalogFailureStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'There isn\'t enough space on this device.'**
+  String get catalogFailureStorage;
+
+  /// No description provided for @catalogStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} · ready'**
+  String catalogStatusReady(String version);
+
+  /// No description provided for @catalogStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download stopped. Open it to try again.'**
+  String get catalogStatusFailed;
+
+  /// No description provided for @catalogStatusNotPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'No version published yet'**
+  String get catalogStatusNotPublished;
+
+  /// No description provided for @catalogStatusUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not on this device'**
+  String get catalogStatusUnavailable;
+
+  /// No description provided for @catalogSettingsTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines and tests guide'**
+  String get catalogSettingsTile;
+
+  /// No description provided for @catalogNotPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'No catalog version is published yet'**
+  String get catalogNotPublished;
+
+  /// No description provided for @catalogSectionUsedBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Used before'**
+  String get catalogSectionUsedBefore;
+
+  /// No description provided for @catalogSectionMySpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your specialty'**
+  String get catalogSectionMySpecialty;
+
+  /// No description provided for @catalogSectionOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'From other specialties'**
+  String get catalogSectionOthers;
+
+  /// Under a product the drug dataset marks N/A (not on the market).
+  ///
+  /// In en, this message translates to:
+  /// **'May not be available'**
+  String get catalogMayBeUnavailable;
+
+  /// A small tag on an admin's custom catalog item (BR-CAT9).
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get catalogCustomTag;
+
+  /// No description provided for @catalogTypeDrug.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine'**
+  String get catalogTypeDrug;
+
+  /// No description provided for @catalogTypeLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test'**
+  String get catalogTypeLab;
+
+  /// No description provided for @catalogTypeRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get catalogTypeRadiology;
+
+  /// No description provided for @catalogTypeDrugs.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines'**
+  String get catalogTypeDrugs;
+
+  /// No description provided for @catalogTypeLabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests'**
+  String get catalogTypeLabs;
+
+  /// No description provided for @catalogTypeRadiologyPlural.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get catalogTypeRadiologyPlural;
+
+  /// No description provided for @catalogReportMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing item'**
+  String get catalogReportMissing;
+
+  /// No description provided for @catalogReportWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong details'**
+  String get catalogReportWrong;
+
+  /// No description provided for @catalogReportOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get catalogReportOther;
+
+  /// No description provided for @catalogRouteOralSolid.
+  ///
+  /// In en, this message translates to:
+  /// **'Oral (tablets, capsules)'**
+  String get catalogRouteOralSolid;
+
+  /// No description provided for @catalogRouteOralLiquid.
+  ///
+  /// In en, this message translates to:
+  /// **'Oral liquids (syrups, drops)'**
+  String get catalogRouteOralLiquid;
+
+  /// No description provided for @catalogRouteInjection.
+  ///
+  /// In en, this message translates to:
+  /// **'Injection'**
+  String get catalogRouteInjection;
+
+  /// No description provided for @catalogRouteTopical.
+  ///
+  /// In en, this message translates to:
+  /// **'Topical (creams, ointments)'**
+  String get catalogRouteTopical;
+
+  /// No description provided for @catalogRouteEffervescent.
+  ///
+  /// In en, this message translates to:
+  /// **'Effervescent'**
+  String get catalogRouteEffervescent;
+
+  /// No description provided for @catalogRouteRectal.
+  ///
+  /// In en, this message translates to:
+  /// **'Rectal (suppositories)'**
+  String get catalogRouteRectal;
+
+  /// No description provided for @catalogRouteEye.
+  ///
+  /// In en, this message translates to:
+  /// **'Eye'**
+  String get catalogRouteEye;
+
+  /// No description provided for @catalogRouteEar.
+  ///
+  /// In en, this message translates to:
+  /// **'Ear'**
+  String get catalogRouteEar;
+
+  /// No description provided for @catalogRouteSpray.
+  ///
+  /// In en, this message translates to:
+  /// **'Spray'**
+  String get catalogRouteSpray;
+
+  /// No description provided for @catalogRouteVaginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Vaginal'**
+  String get catalogRouteVaginal;
+
+  /// No description provided for @catalogRouteMouth.
+  ///
+  /// In en, this message translates to:
+  /// **'Mouth and teeth'**
+  String get catalogRouteMouth;
+
+  /// No description provided for @catalogRouteSoap.
+  ///
+  /// In en, this message translates to:
+  /// **'Soap and wash'**
+  String get catalogRouteSoap;
+
+  /// No description provided for @catalogRouteUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not stated'**
+  String get catalogRouteUnknown;
+
+  /// No description provided for @catalogErrorShaMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'The file doesn\'t match its manifest (sha256). Choose the pair the builder made together.'**
+  String get catalogErrorShaMismatch;
+
+  /// No description provided for @catalogErrorManifest.
+  ///
+  /// In en, this message translates to:
+  /// **'The manifest has no valid sha256. Choose the .json the builder wrote with this file.'**
+  String get catalogErrorManifest;
+
+  /// No description provided for @catalogErrorFileInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t a catalog made by the catalog builder.'**
+  String get catalogErrorFileInvalid;
+
+  /// No description provided for @catalogErrorSchema.
+  ///
+  /// In en, this message translates to:
+  /// **'This file\'s format is version {actual}; the apps read version {expected}. Build it with the matching catalog builder.'**
+  String catalogErrorSchema(String actual, String expected);
+
+  /// No description provided for @catalogErrorTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is larger than 150 MB.'**
+  String get catalogErrorTooLarge;
+
+  /// About: the LOINC notice and the other credits (BR-CAT14).
+  ///
+  /// In en, this message translates to:
+  /// **'Data sources and licences'**
+  String get catalogSourcesTitle;
+
+  /// No description provided for @catalogSourcesIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The app\'s medicines, lab tests and radiology guide is built from these sources. LOINC names are shown exactly as published.'**
+  String get catalogSourcesIntro;
+
+  /// No description provided for @catalogSourceDrugsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines'**
+  String get catalogSourceDrugsTitle;
+
+  /// No description provided for @catalogSourceDrugsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The Egyptian Drug Database by karem505, in the public domain (CC0). Prices aren\'t shown because they go out of date.'**
+  String get catalogSourceDrugsBody;
+
+  /// No description provided for @catalogSourceDrugsDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Data as of {date}'**
+  String catalogSourceDrugsDate(String date);
+
+  /// No description provided for @catalogSourceLoincTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests and radiology (LOINC)'**
+  String get catalogSourceLoincTitle;
+
+  /// No description provided for @catalogSourceLoincBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test names and codes come from LOINC, kept exactly as published. The required copyright notice:'**
+  String get catalogSourceLoincBody;
+
+  /// No description provided for @catalogSourceLoincRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'LOINC release on this device: {release}'**
+  String catalogSourceLoincRelease(String release);
+
+  /// No description provided for @catalogSourceRadlexTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology (LOINC/RSNA Radiology Playbook)'**
+  String get catalogSourceRadlexTitle;
+
+  /// No description provided for @catalogSourceRadlexBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology procedures, modalities and body regions come from the LOINC/RSNA Radiology Playbook, which includes RadLex content:'**
+  String get catalogSourceRadlexBody;
+
+  /// No description provided for @catalogSourceOursTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic names and short names'**
+  String get catalogSourceOursTitle;
+
+  /// No description provided for @catalogSourceOursBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic names and short names such as «صورة دم كاملة» and CBC are written by the el3yada team and kept separate from LOINC content.'**
+  String get catalogSourceOursBody;
+
+  /// No description provided for @adminCatalogSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines, lab tests and radiology on doctors\' devices'**
+  String get adminCatalogSubtitle;
+
+  /// No description provided for @adminCatalogPublish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish new version'**
+  String get adminCatalogPublish;
+
+  /// No description provided for @adminCatalogTabVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'Versions'**
+  String get adminCatalogTabVersions;
+
+  /// No description provided for @adminCatalogTabCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom items'**
+  String get adminCatalogTabCustom;
+
+  /// No description provided for @adminCatalogTabReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor reports'**
+  String get adminCatalogTabReports;
+
+  /// No description provided for @adminCatalogCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current version'**
+  String get adminCatalogCurrent;
+
+  /// No description provided for @adminCatalogCurrentPill.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get adminCatalogCurrentPill;
+
+  /// No description provided for @adminCatalogAllVersions.
+  ///
+  /// In en, this message translates to:
+  /// **'All versions'**
+  String get adminCatalogAllVersions;
+
+  /// No description provided for @adminCatalogPublishedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Published {date}'**
+  String adminCatalogPublishedOn(String date);
+
+  /// No description provided for @adminCatalogCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{drugs} medicines · {labs} lab tests · {radiology} radiology'**
+  String adminCatalogCounts(String drugs, String labs, String radiology);
+
+  /// No description provided for @adminCatalogDrugSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Drug data of {date}'**
+  String adminCatalogDrugSource(String date);
+
+  /// No description provided for @adminCatalogLoincRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'LOINC {release}'**
+  String adminCatalogLoincRelease(String release);
+
+  /// No description provided for @adminCatalogNothingPublishedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Until a version is published, doctors\' search covers only what they\'ve written before.'**
+  String get adminCatalogNothingPublishedBody;
+
+  /// No description provided for @adminCatalogThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'On this device'**
+  String get adminCatalogThisDevice;
+
+  /// No description provided for @adminCatalogOpenSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get adminCatalogOpenSetup;
+
+  /// No description provided for @adminCatalogPublishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish a new catalog version'**
+  String get adminCatalogPublishTitle;
+
+  /// No description provided for @adminCatalogPublishBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload the file the catalog builder made (catalog-v<n>.sqlite.gz) with its manifest. The server checks it, then devices download it in the background.'**
+  String get adminCatalogPublishBody;
+
+  /// No description provided for @adminCatalogNoFile.
+  ///
+  /// In en, this message translates to:
+  /// **'No file chosen yet'**
+  String get adminCatalogNoFile;
+
+  /// No description provided for @adminCatalogNoManifest.
+  ///
+  /// In en, this message translates to:
+  /// **'No manifest (.json) yet'**
+  String get adminCatalogNoManifest;
+
+  /// No description provided for @adminCatalogPickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose file'**
+  String get adminCatalogPickFile;
+
+  /// No description provided for @adminCatalogPickManifest.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose manifest'**
+  String get adminCatalogPickManifest;
+
+  /// No description provided for @adminCatalogChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the file\'s sha256…'**
+  String get adminCatalogChecking;
+
+  /// No description provided for @adminCatalogShaMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'The file matches its manifest (sha256)'**
+  String get adminCatalogShaMatches;
+
+  /// No description provided for @adminCatalogUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading… {sent} of {total}'**
+  String adminCatalogUploading(String sent, String total);
+
+  /// No description provided for @adminCatalogServerChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is checking the file…'**
+  String get adminCatalogServerChecking;
+
+  /// No description provided for @adminCatalogDropTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This version has far fewer items than the current one:'**
+  String get adminCatalogDropTitle;
+
+  /// No description provided for @adminCatalogDropRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{table}: {previous} → {current}'**
+  String adminCatalogDropRow(String table, String previous, String current);
+
+  /// No description provided for @adminCatalogDropBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish anyway only if that\'s intended, for example a cleaned-up medicines list.'**
+  String get adminCatalogDropBody;
+
+  /// No description provided for @adminCatalogPublishAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish anyway'**
+  String get adminCatalogPublishAnyway;
+
+  /// No description provided for @adminCatalogPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} published'**
+  String adminCatalogPublished(String version);
+
+  /// No description provided for @adminCatalogPublishedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctors\' devices download it in the background and switch to it when it\'s complete.'**
+  String get adminCatalogPublishedBody;
+
+  /// No description provided for @adminCatalogAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get adminCatalogAllTypes;
+
+  /// No description provided for @adminCatalogShowDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Show disabled'**
+  String get adminCatalogShowDisabled;
+
+  /// No description provided for @adminCatalogSearchItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Search items'**
+  String get adminCatalogSearchItems;
+
+  /// No description provided for @adminCatalogAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get adminCatalogAddItem;
+
+  /// No description provided for @adminCatalogEditItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit item'**
+  String get adminCatalogEditItem;
+
+  /// No description provided for @adminCatalogEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get adminCatalogEdit;
+
+  /// No description provided for @adminCatalogItemActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions for {name}'**
+  String adminCatalogItemActions(String name);
+
+  /// No description provided for @adminCatalogItemBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every doctor sees it in search within a minute, without a new catalog version.'**
+  String get adminCatalogItemBody;
+
+  /// No description provided for @adminCatalogNoItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No items here yet. Add the medicines or tests the catalog is missing.'**
+  String get adminCatalogNoItems;
+
+  /// No description provided for @adminCatalogItemDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is off. Doctors stop seeing it within a minute.'**
+  String adminCatalogItemDisabled(String name);
+
+  /// No description provided for @adminCatalogItemEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is back on. Doctors see it within a minute.'**
+  String adminCatalogItemEnabled(String name);
+
+  /// No description provided for @adminCatalogUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {when}'**
+  String adminCatalogUpdated(String when);
+
+  /// No description provided for @adminCatalogFieldTradeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade name'**
+  String get adminCatalogFieldTradeName;
+
+  /// No description provided for @adminCatalogFieldTradeNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'As on the box, e.g. NEWCILLIN 500 MG 12 CAPS.'**
+  String get adminCatalogFieldTradeNameHint;
+
+  /// No description provided for @adminCatalogFieldTestName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get adminCatalogFieldTestName;
+
+  /// No description provided for @adminCatalogFieldNameAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic name (optional)'**
+  String get adminCatalogFieldNameAr;
+
+  /// No description provided for @adminCatalogFieldIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Active ingredient'**
+  String get adminCatalogFieldIngredient;
+
+  /// No description provided for @adminCatalogFieldGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine group'**
+  String get adminCatalogFieldGroup;
+
+  /// No description provided for @adminCatalogFieldRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Route'**
+  String get adminCatalogFieldRoute;
+
+  /// No description provided for @adminCatalogFieldCode.
+  ///
+  /// In en, this message translates to:
+  /// **'LOINC code (optional)'**
+  String get adminCatalogFieldCode;
+
+  /// No description provided for @adminCatalogFieldCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 2093-3'**
+  String get adminCatalogFieldCodeHint;
+
+  /// No description provided for @adminCatalogFieldAliases.
+  ///
+  /// In en, this message translates to:
+  /// **'Short names'**
+  String get adminCatalogFieldAliases;
+
+  /// No description provided for @adminCatalogFieldAliasesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Separated by commas, e.g. CBC, Blood count'**
+  String get adminCatalogFieldAliasesHint;
+
+  /// No description provided for @adminCatalogAliasesTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 10 short names, each up to 100 characters'**
+  String get adminCatalogAliasesTooMany;
+
+  /// No description provided for @adminCatalogItemActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown to doctors'**
+  String get adminCatalogItemActive;
+
+  /// No description provided for @adminCatalogItemActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off to hide it from every doctor\'s search.'**
+  String get adminCatalogItemActiveHint;
+
+  /// No description provided for @adminCatalogSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get adminCatalogSave;
+
+  /// No description provided for @adminCatalogReportsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get adminCatalogReportsOpen;
+
+  /// No description provided for @adminCatalogReportsDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get adminCatalogReportsDone;
+
+  /// No description provided for @adminCatalogMarkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as done'**
+  String get adminCatalogMarkDone;
+
+  /// No description provided for @adminCatalogReportHandled.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as done'**
+  String get adminCatalogReportHandled;
+
+  /// No description provided for @adminCatalogHandledOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Handled {date}'**
+  String adminCatalogHandledOn(String date);
+
+  /// No description provided for @adminCatalogNoReports.
+  ///
+  /// In en, this message translates to:
+  /// **'No reports here.'**
+  String get adminCatalogNoReports;
+
+  /// No description provided for @specialtyProfilesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What each specialty sees first when searching medicines and tests'**
+  String get specialtyProfilesSubtitle;
+
+  /// No description provided for @specialtyDoctorCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doctors} =1{1 doctor} other{{count} doctors}}'**
+  String specialtyDoctorCount(int count);
+
+  /// No description provided for @specialtyItemsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{groups} medicine groups · {labs} lab tests · {radiology} radiology'**
+  String specialtyItemsSummary(int groups, int labs, int radiology);
+
+  /// No description provided for @specialtyGeneralBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to every specialty'**
+  String get specialtyGeneralBadge;
+
+  /// No description provided for @specialtyWithGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'With General'**
+  String get specialtyWithGeneral;
+
+  /// No description provided for @specialtyGeneralBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to every specialty that includes it'**
+  String get specialtyGeneralBody;
+
+  /// No description provided for @specialtyGeneralExplained.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the General profile: the common medicines and tests (painkillers, antibiotics, CBC …) that come first in every specialty that includes it.'**
+  String get specialtyGeneralExplained;
+
+  /// No description provided for @specialtyUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed {when}'**
+  String specialtyUpdated(String when);
+
+  /// No description provided for @specialtyCatalogNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The catalog is still downloading on this device; counts, names and search show up when it\'s done.'**
+  String get specialtyCatalogNotReady;
+
+  /// No description provided for @specialtyIncludeGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'Include the General profile'**
+  String get specialtyIncludeGeneral;
+
+  /// No description provided for @specialtyIncludeGeneralHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Painkillers, antibiotics, stomach protection, CBC and the other common items come first too.'**
+  String get specialtyIncludeGeneralHint;
+
+  /// No description provided for @specialtyGroupsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine groups'**
+  String get specialtyGroupsTitle;
+
+  /// No description provided for @specialtyGroupsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines in these groups appear under «Your specialty». The number is how many products each group has.'**
+  String get specialtyGroupsHint;
+
+  /// No description provided for @specialtyGroupsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter groups'**
+  String get specialtyGroupsFilter;
+
+  /// No description provided for @specialtySelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{None chosen} =1{1 chosen} other{{count} chosen}}'**
+  String specialtySelectedCount(int count);
+
+  /// No description provided for @specialtyRoutesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred routes'**
+  String get specialtyRoutesTitle;
+
+  /// No description provided for @specialtyRoutesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown first inside each section, for example syrups and suppositories for children'**
+  String get specialtyRoutesHint;
+
+  /// No description provided for @specialtyLabsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended lab tests'**
+  String get specialtyLabsTitle;
+
+  /// No description provided for @specialtyNoLabs.
+  ///
+  /// In en, this message translates to:
+  /// **'No recommended lab tests yet.'**
+  String get specialtyNoLabs;
+
+  /// No description provided for @specialtyAddLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the catalog to add a lab test'**
+  String get specialtyAddLab;
+
+  /// No description provided for @specialtyRadiologyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get specialtyRadiologyTitle;
+
+  /// No description provided for @specialtyRadiologyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Procedures of these body regions or modalities appear under «Your specialty»'**
+  String get specialtyRadiologyHint;
+
+  /// No description provided for @specialtyRegions.
+  ///
+  /// In en, this message translates to:
+  /// **'Body regions'**
+  String get specialtyRegions;
+
+  /// No description provided for @specialtyModalities.
+  ///
+  /// In en, this message translates to:
+  /// **'Modalities'**
+  String get specialtyModalities;
+
+  /// No description provided for @specialtyProcedures.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended procedures'**
+  String get specialtyProcedures;
+
+  /// No description provided for @specialtyNoProcedures.
+  ///
+  /// In en, this message translates to:
+  /// **'No recommended procedures yet.'**
+  String get specialtyNoProcedures;
+
+  /// No description provided for @specialtyAddProcedure.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the catalog to add a procedure'**
+  String get specialtyAddProcedure;
+
+  /// No description provided for @specialtyShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all ({count})'**
+  String specialtyShowAll(int count);
+
+  /// No description provided for @specialtyShowFewer.
+  ///
+  /// In en, this message translates to:
+  /// **'Show fewer'**
+  String get specialtyShowFewer;
+
+  /// No description provided for @specialtyRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get specialtyRemove;
+
+  /// No description provided for @specialtyCopyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy from another specialty'**
+  String get specialtyCopyTitle;
+
+  /// No description provided for @specialtyCopyConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the {name} profile?'**
+  String specialtyCopyConfirmTitle(String name);
+
+  /// No description provided for @specialtyCopyConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its medicine groups, routes, tests and radiology replace this profile\'s. You can still change them afterwards.'**
+  String get specialtyCopyConfirmBody;
+
+  /// No description provided for @specialtyCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get specialtyCopy;
+
+  /// No description provided for @specialtyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied from {name}'**
+  String specialtyCopied(String name);
+
+  /// No description provided for @specialtyPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search preview'**
+  String get specialtyPreviewTitle;
+
+  /// No description provided for @specialtyPreviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What a doctor of this specialty sees first, with your unsaved changes'**
+  String get specialtyPreviewHint;
+
+  /// No description provided for @specialtyPreviewTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests'**
+  String get specialtyPreviewTests;
+
+  /// No description provided for @specialtyPreviewDrugsSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Try: ator, omep, panadol'**
+  String get specialtyPreviewDrugsSample;
+
+  /// No description provided for @specialtyPreviewTestsSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Try: CBC, echo, X-ray'**
+  String get specialtyPreviewTestsSample;
+
+  /// No description provided for @specialtyPreviewNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches.'**
+  String get specialtyPreviewNothing;
+
   /// No description provided for @regWelcomeTitle.
   ///
   /// In en, this message translates to:

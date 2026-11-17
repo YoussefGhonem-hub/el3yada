@@ -4626,6 +4626,640 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminActionTrialExtended => 'مدّ الفترة التجريبية';
 
   @override
+  String get catalogSetupTitle => 'بنجهّز دليل الأدوية والتحاليل';
+
+  @override
+  String get catalogSetupBody =>
+      'بننزّل دليل الأدوية المصرية والتحاليل والأشعة على جهازك، عشان البحث يبقى فوري ويشتغل من غير نت.';
+
+  @override
+  String get catalogSetupMeanwhile =>
+      'تقدر تكمّل شغلك عادي. لحد ما يخلص، البحث بيقترح اللي كتبته قبل كده وتقدر تكتب أي اسم.';
+
+  @override
+  String get catalogSetupWifi => 'يُفضّل استخدام Wi-Fi';
+
+  @override
+  String catalogSetupProgress(String received, String total) {
+    return '$received من $total';
+  }
+
+  @override
+  String catalogVersionLine(String version, String size) {
+    return 'الإصدار $version · $size';
+  }
+
+  @override
+  String catalogVersionTitle(String version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get catalogContinue => 'كمّل استخدام التطبيق';
+
+  @override
+  String get catalogPhaseChecking => 'بندوّر على آخر إصدار…';
+
+  @override
+  String catalogPhaseDownloading(String percent) {
+    return 'جاري التنزيل… $percent٪';
+  }
+
+  @override
+  String get catalogPhaseVerifying => 'بنراجع الملف ونجهّزه…';
+
+  @override
+  String get catalogPhaseReady => 'الدليل جاهز على جهازك';
+
+  @override
+  String get catalogPhaseNotPublished =>
+      'لسه مفيش دليل منشور. لحد ما يتنشر، اكتب الاسم بإيدك وهيتحفظ في قايمتك.';
+
+  @override
+  String get catalogPhaseUnavailable =>
+      'الدليل مش متاح على الجهاز ده. البحث هيكون في اللي كتبته قبل كده بس.';
+
+  @override
+  String get catalogFailureNetwork =>
+      'مفيش اتصال بالإنترنت. «إعادة المحاولة» هتكمّل من مكان ما وقف.';
+
+  @override
+  String get catalogFailureServer =>
+      'حصلت مشكلة في السيرفر. جرّب تاني بعد شوية.';
+
+  @override
+  String get catalogFailureChecksum =>
+      'الملف اللي نزل مش سليم واتمسح. جرّب تاني.';
+
+  @override
+  String get catalogFailureCorrupt => 'الملف مش دليل صالح واتمسح. جرّب تاني.';
+
+  @override
+  String get catalogFailureSchema =>
+      'الإصدار الجديد محتاج تحديث للتطبيق. حدّث التطبيق عشان تستخدمه.';
+
+  @override
+  String get catalogFailureStorage => 'مفيش مساحة كفاية على الجهاز.';
+
+  @override
+  String catalogStatusReady(String version) {
+    return 'الإصدار $version · جاهز';
+  }
+
+  @override
+  String get catalogStatusFailed => 'التنزيل وقف. افتحه عشان تعيد المحاولة.';
+
+  @override
+  String get catalogStatusNotPublished => 'لسه مفيش إصدار منشور';
+
+  @override
+  String get catalogStatusUnavailable => 'مش موجود على الجهاز ده';
+
+  @override
+  String get catalogSettingsTile => 'دليل الأدوية والتحاليل';
+
+  @override
+  String get catalogNotPublished => 'لسه مفيش إصدار منشور من الكتالوج';
+
+  @override
+  String get catalogSectionUsedBefore => 'استخدمته قبل كده';
+
+  @override
+  String get catalogSectionMySpecialty => 'تخصصك';
+
+  @override
+  String get catalogSectionOthers => 'من تخصصات أخرى';
+
+  @override
+  String get catalogMayBeUnavailable => 'قد لا يكون متوفرًا';
+
+  @override
+  String get catalogCustomTag => 'مُضاف';
+
+  @override
+  String get catalogTypeDrug => 'دواء';
+
+  @override
+  String get catalogTypeLab => 'تحليل';
+
+  @override
+  String get catalogTypeRadiology => 'أشعة';
+
+  @override
+  String get catalogTypeDrugs => 'أدوية';
+
+  @override
+  String get catalogTypeLabs => 'تحاليل';
+
+  @override
+  String get catalogTypeRadiologyPlural => 'أشعة';
+
+  @override
+  String get catalogReportMissing => 'عنصر ناقص';
+
+  @override
+  String get catalogReportWrong => 'بيانات غلط';
+
+  @override
+  String get catalogReportOther => 'حاجة تانية';
+
+  @override
+  String get catalogRouteOralSolid => 'بالفم (أقراص وكبسولات)';
+
+  @override
+  String get catalogRouteOralLiquid => 'شراب ونقط بالفم';
+
+  @override
+  String get catalogRouteInjection => 'حقن';
+
+  @override
+  String get catalogRouteTopical => 'موضعي (كريمات ومراهم)';
+
+  @override
+  String get catalogRouteEffervescent => 'فوّار';
+
+  @override
+  String get catalogRouteRectal => 'لبوس شرجي';
+
+  @override
+  String get catalogRouteEye => 'للعين';
+
+  @override
+  String get catalogRouteEar => 'للأذن';
+
+  @override
+  String get catalogRouteSpray => 'بخاخ';
+
+  @override
+  String get catalogRouteVaginal => 'مهبلي';
+
+  @override
+  String get catalogRouteMouth => 'للفم والأسنان';
+
+  @override
+  String get catalogRouteSoap => 'صابون وغسول';
+
+  @override
+  String get catalogRouteUnknown => 'غير محدد';
+
+  @override
+  String get catalogErrorShaMismatch =>
+      'الملف مش مطابق للـ manifest ‏(sha256). اختار الملفين اللي طلعوا مع بعض من الـ builder.';
+
+  @override
+  String get catalogErrorManifest =>
+      'الـ manifest مفيهوش sha256 سليم. اختار ملف الـ ‎.json اللي طلع مع الملف ده.';
+
+  @override
+  String get catalogErrorFileInvalid =>
+      'الملف ده مش كتالوج من الـ catalog builder.';
+
+  @override
+  String catalogErrorSchema(String actual, String expected) {
+    return 'صيغة الملف ده إصدار $actual والتطبيقات بتقرا إصدار $expected. اعمله بنسخة الـ catalog builder المناسبة.';
+  }
+
+  @override
+  String get catalogErrorTooLarge => 'الملف أكبر من 150 ميجا.';
+
+  @override
+  String get catalogSourcesTitle => 'مصادر البيانات والتراخيص';
+
+  @override
+  String get catalogSourcesIntro =>
+      'دليل الأدوية والتحاليل والأشعة في التطبيق مبني على المصادر دي. أسماء LOINC بتظهر زي ما هي منشورة بالظبط.';
+
+  @override
+  String get catalogSourceDrugsTitle => 'الأدوية';
+
+  @override
+  String get catalogSourceDrugsBody =>
+      'قاعدة بيانات الأدوية المصرية Egyptian Drug Database من karem505، ومتاحة كملكية عامة بترخيص CC0. الأسعار مش بتظهر لأنها بتتغيّر بسرعة.';
+
+  @override
+  String catalogSourceDrugsDate(String date) {
+    return 'البيانات بتاريخ $date';
+  }
+
+  @override
+  String get catalogSourceLoincTitle => 'التحاليل والأشعة: LOINC';
+
+  @override
+  String get catalogSourceLoincBody =>
+      'أسماء التحاليل وأكوادها من LOINC، ومحفوظة بنصها الأصلي. ده إشعار حقوق النشر المطلوب:';
+
+  @override
+  String catalogSourceLoincRelease(String release) {
+    return 'إصدار LOINC على الجهاز ده: $release';
+  }
+
+  @override
+  String get catalogSourceRadlexTitle =>
+      'الأشعة: LOINC/RSNA Radiology Playbook';
+
+  @override
+  String get catalogSourceRadlexBody =>
+      'أسماء الأشعة وأنواعها ومناطق الجسم من LOINC/RSNA Radiology Playbook، وفيه محتوى من RadLex:';
+
+  @override
+  String get catalogSourceOursTitle => 'الأسماء العربية والاختصارات';
+
+  @override
+  String get catalogSourceOursBody =>
+      'الأسماء العربية والاختصارات زي «صورة دم كاملة» و CBC كتبها فريق «العيادة»، ومحفوظة منفصلة عن محتوى LOINC.';
+
+  @override
+  String get adminCatalogSubtitle =>
+      'الأدوية والتحاليل والأشعة على أجهزة الأطباء';
+
+  @override
+  String get adminCatalogPublish => 'نشر إصدار جديد';
+
+  @override
+  String get adminCatalogTabVersions => 'الإصدارات';
+
+  @override
+  String get adminCatalogTabCustom => 'عناصر مضافة';
+
+  @override
+  String get adminCatalogTabReports => 'بلاغات الأطباء';
+
+  @override
+  String get adminCatalogCurrent => 'الإصدار الحالي';
+
+  @override
+  String get adminCatalogCurrentPill => 'الحالي';
+
+  @override
+  String get adminCatalogAllVersions => 'كل الإصدارات';
+
+  @override
+  String adminCatalogPublishedOn(String date) {
+    return 'اتنشر $date';
+  }
+
+  @override
+  String adminCatalogCounts(String drugs, String labs, String radiology) {
+    return '$drugs دواء · $labs تحليل · $radiology أشعة';
+  }
+
+  @override
+  String adminCatalogDrugSource(String date) {
+    return 'بيانات الأدوية بتاريخ $date';
+  }
+
+  @override
+  String adminCatalogLoincRelease(String release) {
+    return 'LOINC $release';
+  }
+
+  @override
+  String get adminCatalogNothingPublishedBody =>
+      'لحد ما يتنشر إصدار، بحث الأطباء هيكون في اللي كتبوه قبل كده بس.';
+
+  @override
+  String get adminCatalogThisDevice => 'على الجهاز ده';
+
+  @override
+  String get adminCatalogOpenSetup => 'التفاصيل';
+
+  @override
+  String get adminCatalogPublishTitle => 'نشر إصدار جديد من الكتالوج';
+
+  @override
+  String get adminCatalogPublishBody =>
+      'ارفع الملف اللي طلّعه الـ catalog builder ‏(catalog-v<n>.sqlite.gz) مع الـ manifest بتاعه. السيرفر بيراجعه وبعدين الأجهزة بتنزّله في الخلفية.';
+
+  @override
+  String get adminCatalogNoFile => 'لسه ما اخترتش ملف';
+
+  @override
+  String get adminCatalogNoManifest => 'لسه مفيش manifest ‏(.json)';
+
+  @override
+  String get adminCatalogPickFile => 'اختيار الملف';
+
+  @override
+  String get adminCatalogPickManifest => 'اختيار الـ manifest';
+
+  @override
+  String get adminCatalogChecking => 'بنراجع الـ sha256 بتاع الملف…';
+
+  @override
+  String get adminCatalogShaMatches => 'الملف مطابق للـ manifest ‏(sha256)';
+
+  @override
+  String adminCatalogUploading(String sent, String total) {
+    return 'بيترفع… $sent من $total';
+  }
+
+  @override
+  String get adminCatalogServerChecking => 'السيرفر بيراجع الملف…';
+
+  @override
+  String get adminCatalogDropTitle =>
+      'الإصدار ده فيه عناصر أقل بكتير من الحالي:';
+
+  @override
+  String adminCatalogDropRow(String table, String previous, String current) {
+    return '$table: كانت $previous وبقت $current';
+  }
+
+  @override
+  String get adminCatalogDropBody =>
+      'انشره بس لو ده مقصود، زي مثلاً قايمة أدوية اتنضّفت.';
+
+  @override
+  String get adminCatalogPublishAnyway => 'انشر برضه';
+
+  @override
+  String adminCatalogPublished(String version) {
+    return 'اتنشر الإصدار $version';
+  }
+
+  @override
+  String get adminCatalogPublishedBody =>
+      'أجهزة الأطباء هتنزّله في الخلفية وتبدأ تستخدمه أول ما يخلص.';
+
+  @override
+  String get adminCatalogAllTypes => 'الكل';
+
+  @override
+  String get adminCatalogShowDisabled => 'اعرض المتوقفة';
+
+  @override
+  String get adminCatalogSearchItems => 'دوّر في العناصر';
+
+  @override
+  String get adminCatalogAddItem => 'إضافة عنصر';
+
+  @override
+  String get adminCatalogEditItem => 'تعديل العنصر';
+
+  @override
+  String get adminCatalogEdit => 'تعديل';
+
+  @override
+  String adminCatalogItemActions(String name) {
+    return 'إجراءات $name';
+  }
+
+  @override
+  String get adminCatalogItemBody =>
+      'كل الأطباء هيلاقوه في البحث خلال دقيقة، من غير إصدار جديد للكتالوج.';
+
+  @override
+  String get adminCatalogNoItems =>
+      'مفيش عناصر هنا لسه. ضيف الأدوية أو التحاليل اللي ناقصة من الكتالوج.';
+
+  @override
+  String adminCatalogItemDisabled(String name) {
+    return 'اتوقف $name. هيختفي من بحث الأطباء خلال دقيقة.';
+  }
+
+  @override
+  String adminCatalogItemEnabled(String name) {
+    return 'رجع $name. الأطباء هيلاقوه خلال دقيقة.';
+  }
+
+  @override
+  String adminCatalogUpdated(String when) {
+    return 'آخر تعديل $when';
+  }
+
+  @override
+  String get adminCatalogFieldTradeName => 'الاسم التجاري';
+
+  @override
+  String get adminCatalogFieldTradeNameHint =>
+      'زي ما هو مكتوب على العلبة، مثلاً NEWCILLIN 500 MG 12 CAPS.';
+
+  @override
+  String get adminCatalogFieldTestName => 'الاسم';
+
+  @override
+  String get adminCatalogFieldNameAr => 'الاسم بالعربي (اختياري)';
+
+  @override
+  String get adminCatalogFieldIngredient => 'المادة الفعالة';
+
+  @override
+  String get adminCatalogFieldGroup => 'مجموعة الدواء';
+
+  @override
+  String get adminCatalogFieldRoute => 'طريقة الاستخدام';
+
+  @override
+  String get adminCatalogFieldCode => 'كود LOINC (اختياري)';
+
+  @override
+  String get adminCatalogFieldCodeHint => 'زي 2093-3';
+
+  @override
+  String get adminCatalogFieldAliases => 'أسماء مختصرة';
+
+  @override
+  String get adminCatalogFieldAliasesHint =>
+      'افصل بينهم بفاصلة، زي: CBC، صورة دم';
+
+  @override
+  String get adminCatalogAliasesTooMany =>
+      'لحد 10 أسماء مختصرة، كل واحد لحد 100 حرف';
+
+  @override
+  String get adminCatalogItemActive => 'ظاهر للأطباء';
+
+  @override
+  String get adminCatalogItemActiveHint =>
+      'اقفله عشان يختفي من بحث كل الأطباء.';
+
+  @override
+  String get adminCatalogSave => 'حفظ';
+
+  @override
+  String get adminCatalogReportsOpen => 'مفتوحة';
+
+  @override
+  String get adminCatalogReportsDone => 'اتعملت';
+
+  @override
+  String get adminCatalogMarkDone => 'تم التعامل معاه';
+
+  @override
+  String get adminCatalogReportHandled => 'اتعلّم إنه اتعمل';
+
+  @override
+  String adminCatalogHandledOn(String date) {
+    return 'اتعمل $date';
+  }
+
+  @override
+  String get adminCatalogNoReports => 'مفيش بلاغات هنا.';
+
+  @override
+  String get specialtyProfilesSubtitle =>
+      'اللي كل تخصص بيشوفه الأول وهو بيدوّر على الأدوية والتحاليل';
+
+  @override
+  String specialtyDoctorCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبيب',
+      few: '$count أطباء',
+      two: 'طبيبين',
+      one: 'طبيب واحد',
+      zero: 'مفيش أطباء',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String specialtyItemsSummary(int groups, int labs, int radiology) {
+    return '$groups مجموعة أدوية · $labs تحليل · $radiology أشعة';
+  }
+
+  @override
+  String get specialtyGeneralBadge => 'بيتضاف لكل التخصصات';
+
+  @override
+  String get specialtyWithGeneral => 'مع الملف العام';
+
+  @override
+  String get specialtyGeneralBody => 'بيتضاف لكل تخصص مفعّل فيه الملف العام';
+
+  @override
+  String get specialtyGeneralExplained =>
+      'ده الملف العام: الأدوية والتحاليل الشائعة (مسكنات، مضادات حيوية، صورة دم …) اللي بتظهر الأول في كل تخصص مفعّل فيه.';
+
+  @override
+  String specialtyUpdated(String when) {
+    return 'آخر تعديل $when';
+  }
+
+  @override
+  String get specialtyCatalogNotReady =>
+      'الكتالوج لسه بيتنزّل على الجهاز ده؛ الأعداد والأسماء والبحث هيظهروا أول ما يخلص.';
+
+  @override
+  String get specialtyIncludeGeneral => 'ضم الملف العام';
+
+  @override
+  String get specialtyIncludeGeneralHint =>
+      'المسكنات والمضادات الحيوية وحماية المعدة وصورة الدم وباقي الحاجات الشائعة تظهر الأول كمان.';
+
+  @override
+  String get specialtyGroupsTitle => 'مجموعات الأدوية';
+
+  @override
+  String get specialtyGroupsHint =>
+      'الأدوية اللي في المجموعات دي بتظهر تحت «تخصصك». الرقم هو عدد المنتجات في كل مجموعة.';
+
+  @override
+  String get specialtyGroupsFilter => 'دوّر في المجموعات';
+
+  @override
+  String specialtySelectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مختارة',
+      two: 'اختيارين',
+      one: 'اختيار واحد',
+      zero: 'مفيش اختيارات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get specialtyRoutesTitle => 'طرق الاستخدام المفضلة';
+
+  @override
+  String get specialtyRoutesHint =>
+      'بتظهر الأول جوه كل قسم، زي الشراب واللبوس للأطفال';
+
+  @override
+  String get specialtyLabsTitle => 'تحاليل مقترحة';
+
+  @override
+  String get specialtyNoLabs => 'مفيش تحاليل مقترحة لسه.';
+
+  @override
+  String get specialtyAddLab => 'دوّر في الكتالوج عشان تضيف تحليل';
+
+  @override
+  String get specialtyRadiologyTitle => 'الأشعة';
+
+  @override
+  String get specialtyRadiologyHint =>
+      'الأشعة على مناطق الجسم دي أو من الأنواع دي بتظهر تحت «تخصصك»';
+
+  @override
+  String get specialtyRegions => 'مناطق الجسم';
+
+  @override
+  String get specialtyModalities => 'أنواع الأشعة';
+
+  @override
+  String get specialtyProcedures => 'أشعة مقترحة';
+
+  @override
+  String get specialtyNoProcedures => 'مفيش أشعة مقترحة لسه.';
+
+  @override
+  String get specialtyAddProcedure => 'دوّر في الكتالوج عشان تضيف أشعة';
+
+  @override
+  String specialtyShowAll(int count) {
+    return 'اعرض الكل ($count)';
+  }
+
+  @override
+  String get specialtyShowFewer => 'اعرض أقل';
+
+  @override
+  String get specialtyRemove => 'شيل';
+
+  @override
+  String get specialtyCopyTitle => 'نسخ من تخصص تاني';
+
+  @override
+  String specialtyCopyConfirmTitle(String name) {
+    return 'ننسخ ملف $name؟';
+  }
+
+  @override
+  String get specialtyCopyConfirmBody =>
+      'مجموعات الأدوية وطرق الاستخدام والتحاليل والأشعة بتاعته هتحل محل اللي هنا. تقدر تعدّلهم بعد كده.';
+
+  @override
+  String get specialtyCopy => 'انسخ';
+
+  @override
+  String specialtyCopied(String name) {
+    return 'اتنسخ من $name';
+  }
+
+  @override
+  String get specialtyPreviewTitle => 'معاينة البحث';
+
+  @override
+  String get specialtyPreviewHint =>
+      'اللي دكتور التخصص ده هيشوفه الأول، بالتعديلات اللي لسه ما اتحفظتش';
+
+  @override
+  String get specialtyPreviewTests => 'تحاليل وأشعة';
+
+  @override
+  String get specialtyPreviewDrugsSample => 'جرّب: ator أو omep أو بنادول';
+
+  @override
+  String get specialtyPreviewTestsSample => 'جرّب: CBC أو سونار أو echo';
+
+  @override
+  String get specialtyPreviewNothing => 'مفيش نتايج.';
+
+  @override
   String get regWelcomeTitle => 'أهلاً بك في العيادة';
 
   @override

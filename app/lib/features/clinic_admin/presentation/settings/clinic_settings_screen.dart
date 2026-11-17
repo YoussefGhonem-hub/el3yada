@@ -14,6 +14,8 @@ import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/application/auth_controller.dart';
 import '../../../auth/domain/user_role.dart';
 import '../../../auth/presentation/change_password_form.dart';
+import '../../../catalog/application/catalog_providers.dart';
+import '../../../catalog/presentation/catalog_text.dart';
 import '../../../doctor_registration/presentation/registration_text.dart' show ltrIsolate;
 import '../../../clinic/application/clinic_providers.dart';
 import '../../../clinic/domain/clinic_context.dart';
@@ -492,6 +494,8 @@ class _AboutGroup extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final version = ref.watch(deviceIdentityProvider).value?.appVersion;
+    final catalogEligible = ref.watch(catalogEligibleProvider);
+    final catalog = ref.watch(catalogControllerProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -502,6 +506,19 @@ class _AboutGroup extends ConsumerWidget {
           children: [
             SettingsTile(icon: Icons.description_outlined, title: l10n.termsTitle, onTap: () => context.push(AppRoutes.terms)),
             SettingsTile(icon: Icons.privacy_tip_outlined, title: l10n.privacyTitle, onTap: () => context.push(AppRoutes.privacy)),
+            // D0 and BR-CAT14: the medical catalog on this device, and its sources.
+            if (catalogEligible)
+              SettingsTile(
+                icon: Icons.medication_liquid_outlined,
+                title: l10n.catalogSettingsTile,
+                subtitle: catalogStatus(l10n, catalog),
+                onTap: () => context.push(AppRoutes.catalogSetup),
+              ),
+            SettingsTile(
+              icon: Icons.copyright_outlined,
+              title: l10n.catalogSourcesTitle,
+              onTap: () => context.push(AppRoutes.dataSources),
+            ),
             SettingsTile(
               icon: Icons.info_outline,
               title: l10n.appTitle,

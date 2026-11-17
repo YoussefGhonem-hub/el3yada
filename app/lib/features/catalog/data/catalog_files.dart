@@ -52,11 +52,13 @@ class CatalogFiles {
 
   File database(String fileName) => _file(fileName);
 
+  // The state file is a few hundred bytes: read and written synchronously,
+  // like the folder listing (a handful of files).
   Future<InstalledCatalog?> readInstalled() async {
     try {
-      if (!await _state.exists()) return null;
-      final installed = InstalledCatalog.fromJson(jsonDecode(await _state.readAsString()) as Map<String, dynamic>);
-      return await database(installed.fileName).exists() ? installed : null;
+      if (!_state.existsSync()) return null;
+      final installed = InstalledCatalog.fromJson(jsonDecode(_state.readAsStringSync()) as Map<String, dynamic>);
+      return database(installed.fileName).existsSync() ? installed : null;
     } on Object {
       // A broken state file is the same as none: the catalog downloads again.
       return null;
@@ -67,20 +69,24 @@ class CatalogFiles {
   /// a state file.
   Future<void> writeInstalled(InstalledCatalog installed) async {
     final temp = _file('state.json.tmp');
-    await temp.writeAsString(jsonEncode(installed.toJson()), flush: true);
-    await temp.rename(_state.path);
+    temp.writeAsStringSync(jsonEncode(installed.toJson()), flush: true);
+    temp.renameSync(_state.path);
   }
 
   /// Deletes what is neither [keep] nor the resumable download of
   /// [resumable]. Files still open (Windows) are left for next time.
   Future<void> clean({required Set<String> keep, int? resumable}) async {
-    if (!await directory.exists()) return;
-    await for (final entry in directory.list()) {
+    if (!directory.existsSync()) return;
+    for (final entry in directory.listSync()) {
       if (entry is! File) continue;
       final name = entry.uri.pathSegments.last;
       if (name == 'state.json' || keep.contains(name)) continue;
       if (resumable != null && name == 'download-v$resumable.gz.part') continue;
-      await _deleteQuietly(entry);
+      try {
+        entry.deleteSync();
+      } on FileSystemException {
+        // Still open (Windows): cleaned up next time.
+      }
     }
   }
 }

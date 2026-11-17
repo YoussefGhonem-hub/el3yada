@@ -266,21 +266,36 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
   - The source files and the built file stay out of git (LOINC licence, A.7). Put LOINC under `tools/catalog-builder/sources/loinc/<release>/`.
   - **Before publishing v1:** a doctor or pharmacist reviews the groups, the class mapping, the profiles and the Arabic names (README, "What needs a doctor's review"); the EDA spot check (A.3.8); and open questions 32 and 33 in the spec.
 
-**App**
+**App** (492 tests pass; the screenshot tests are skipped unless turned on.)
 - [x] D10 scan (mobile only), D11 upload (drag and drop on desktop), D12 file viewer (black background, zoom, PDF), and the D6 Files tab.
   - Files are made smaller on the device before upload too (images at most 2560 px, JPEG 80, no EXIF; scans as one PDF of JPEG 75 pages), and each file shows how much it saved.
   - Not yet tried on a real device: the document scanner and camera permission, real drag and drop, "Open with", the share sheet and save dialog, and drawing real PDFs.
   - iOS: add `ar.lproj/InfoPlist.strings` and `en.lproj/InfoPlist.strings` to the Runner target in Xcode.
-- [ ] D13 medication editor and D14 investigations editor with catalog search sections (BR-CAT4–CAT8), D15 preview and send (PDF, print, print all, share).
-- [ ] D22 prescription header and print settings with live preview and test print. D23 templates and favourites [S].
-- [ ] D0 preparing the catalog (download with progress, works in the background).
+- [x] D13 medication editor and D14 investigations editor with catalog search sections (BR-CAT4–CAT8), D15 preview and send (PDF, print, print all, share), the D6 Prescriptions tab and the D9 card.
+  - The app builds the A5 PDF (6.4.1): 4 medicines fit on one page, and a longer prescription continues on page 2 with the header repeated.
+  - A duration shows in the prescription's language, whatever the app's language.
+  - Print all turns the stored PDFs into one print job (pages drawn at 300 dpi), so every copy is exactly what was sent.
+  - Not yet tried on real hardware: printing on A5 and A4 paper (AC-15), the system print and share dialogs, picking the logo and signature.
+  - Not done: "Report a missing or wrong item" [S] in the editors (the API has `reportCatalogItem`).
+- [x] D22 prescription header and print settings with live preview and test print. D23 templates and favourites [S].
+- [x] D0 preparing the catalog (download with progress, works in the background).
+  - The download resumes after a failure or a restart (HTTP Range), is checked (sha256 and schema version), and is swapped in only when complete.
+  - D0 opens at the first download, and for a new version of 15 MB or more. Doctors, admins and assistants with `prescriptionsDraft` download it; patients never do.
+  - Search runs in a background isolate over the local file: under 25 ms per search on the real catalog (Windows desktop).
+  - Custom items sync every minute while the app is open; the specialty profile refreshes at sign-in and every 6 hours.
+  - Not yet tried on a phone: FTS5 on Android, iOS and macOS (the `sqlite3` package's built-in SQLite includes it), search speed, the file picker.
+  - The API doesn't give the unpacked size, so D0 can't warn about free space.
 - [x] AS6 files (the Files tab for an assistant with `filesManage`; deleting stays doctor-only).
-- [ ] AS7 draft editor [S], AS8 sent prescription (print and share only).
-- [ ] AD19 specialty profiles, AD20 catalogs.
+- [x] AS7 draft editor [S], AS8 sent prescription (print and share only).
+- [x] AD19 specialty profiles, AD20 catalogs.
+  - AD20 checks the file's sha256 against the builder's manifest before uploading, and asks before publishing a version with more than 5% fewer rows.
+- [x] "Data sources and licences" screen (`/legal/sources`, from Settings → About): the LOINC notice, the RadLex attribution and the drug dataset credit (BR-CAT14, A.7).
 
 **Tables:** MedicalRecords, MedicalRecordAttachments, Prescriptions, PrescriptionMedicationItems, PrescriptionInvestigationItems, PrescriptionTemplates, DoctorItemHistory, Doctors (Rx* columns), CatalogVersions, CatalogCustomItems, CatalogReports, Specialties, SpecialtyProfileItems.
 
 **Done when:** AC-14, AC-15 and AC-18 pass. An A5 prescription prints correctly on a real printer, on plain and pre-printed paper.
+
+*Status (17 Nov):* AC-18 passes against the API with the real catalog v1, and AC-14 is covered by widget tests. Still open: AC-15 on a real printer, the device checks above, and the medical review before catalog v1 is published.
 
 ---
 

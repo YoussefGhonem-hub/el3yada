@@ -1,0 +1,229 @@
+type,code,alias_en,name_ar,priority
+lab,58410-2,CBC,صورة دم كاملة,1
+lab,58410-2,Complete blood count,صورة دم,1
+lab,58410-2,Complete blood picture,سي بي سي,1
+lab,57021-8,CBC with differential,صورة دم كاملة مع العد التفريقي,1
+lab,5909-7,Blood film,فيلم دم (مسحة دم),0
+lab,718-7,Hemoglobin,هيموجلوبين (نسبة الدم),1
+lab,718-7,Hb,,1
+lab,777-3,Platelet count,عدد الصفائح الدموية,0
+lab,4679-7,Reticulocyte count,عدد الخلايا الشبكية,0
+lab,30341-2,ESR,سرعة الترسيب,1
+lab,4537-7,ESR Westergren,سرعة الترسيب بطريقة ويسترجرين,0
+lab,1988-5,CRP,بروتين سي التفاعلي,1
+lab,1988-5,C-reactive protein,سي آر بي,1
+lab,30522-7,hs-CRP,بروتين سي التفاعلي عالي الحساسية,0
+lab,4548-4,HbA1c,السكر التراكمي,1
+lab,4548-4,Glycated hemoglobin,الهيموجلوبين السكري,1
+lab,1558-6,FBS,سكر صائم,1
+lab,1558-6,Fasting blood sugar,سكر صايم,1
+lab,1521-4,PPBS,سكر فاطر (بعد الأكل بساعتين),1
+lab,1521-4,2h postprandial blood sugar,سكر بعد الأكل,1
+lab,2345-7,RBS,سكر عشوائي,1
+lab,2345-7,Random blood sugar,,1
+lab,24331-1,Lipid profile,صورة دهون كاملة,1
+lab,24331-1,Lipid panel,دهون الدم,1
+lab,2093-3,Total cholesterol,كوليسترول كلي,1
+lab,2571-8,Triglycerides,دهون ثلاثية,1
+lab,2085-9,HDL,الكوليسترول النافع,1
+lab,2089-1,LDL,الكوليسترول الضار,1
+lab,24325-3,LFT,وظائف كبد,1
+lab,24325-3,Liver function tests,,1
+lab,1742-6,ALT,إنزيم ALT (SGPT),1
+lab,1742-6,SGPT,,1
+lab,1920-8,AST,إنزيم AST (SGOT),1
+lab,1920-8,SGOT,,1
+lab,6768-6,ALP,الفوسفاتيز القلوي,0
+lab,2324-2,GGT,إنزيم جاما جي تي,0
+lab,1975-2,Total bilirubin,صفراء كلية,1
+lab,1968-7,Direct bilirubin,صفراء مباشرة,0
+lab,1751-7,Albumin,زلال (ألبومين),1
+lab,2885-2,Total protein,بروتين كلي,0
+lab,24362-6,KFT,وظائف كلى,1
+lab,24362-6,Kidney function tests,,1
+lab,24362-6,RFT,,1
+lab,2160-0,Creatinine,كرياتينين,1
+lab,3091-6,Urea,يوريا,1
+lab,3094-0,BUN,نيتروجين اليوريا,0
+lab,3084-1,Uric acid,حمض اليوريك,1
+lab,24326-1,Electrolytes,أملاح الدم (صوديوم وبوتاسيوم),1
+lab,2951-2,Sodium,صوديوم,1
+lab,2951-2,Na,,1
+lab,2823-3,Potassium,بوتاسيوم,1
+lab,2823-3,K,,1
+lab,17861-6,Calcium,كالسيوم,1
+lab,17863-2,Ionized calcium,كالسيوم متأين,1
+lab,19123-9,Magnesium,ماغنسيوم,0
+lab,2777-1,Phosphorus,فوسفور,0
+lab,3016-3,TSH,هرمون الغدة الدرقية,1
+lab,3016-3,Thyroid stimulating hormone,الهرمون المنبه للغدة الدرقية,1
+lab,3024-7,FT4,هرمون الثيروكسين الحر,1
+lab,3024-7,Free T4,,1
+lab,3051-0,FT3,هرمون ثلاثي يود الثيرونين الحر,1
+lab,3051-0,Free T3,,1
+lab,8099-4,Anti-TPO,الأجسام المضادة للغدة الدرقية,0
+lab,24356-8,Urine analysis,تحليل بول كامل,1
+lab,24356-8,Urinalysis,تحليل بول,1
+lab,630-4,Urine culture,مزرعة بول,1
+lab,9318-7,Urine albumin/creatinine ratio,نسبة الزلال إلى الكرياتينين في البول,1
+lab,9318-7,UACR,,1
+lab,10704-5,Stool analysis,تحليل براز,1
+lab,10704-5,Stool examination,تحليل براز كامل,1
+lab,625-4,Stool culture,مزرعة براز,0
+lab,2335-8,Occult blood in stool,دم خفي في البراز,0
+lab,21198-7,Beta-hCG,هرمون الحمل الرقمي في الدم,1
+lab,21198-7,b-hCG,اختبار حمل في الدم,1
+lab,21198-7,Pregnancy test (blood),,1
+lab,2106-3,Urine pregnancy test,اختبار حمل في البول,1
+lab,2857-1,PSA,مستضد البروستاتا النوعي,1
+lab,10886-0,Free PSA,مستضد البروستاتا الحر,0
+lab,62292-8,Vitamin D,فيتامين د,1
+lab,62292-8,25-OH vitamin D,,1
+lab,1989-3,Vitamin D3,فيتامين د3,0
+lab,2132-9,Vitamin B12,فيتامين ب12,1
+lab,2276-4,Ferritin,مخزون الحديد (فيريتين),1
+lab,2498-4,Serum iron,حديد في الدم,1
+lab,2500-7,TIBC,سعة ربط الحديد الكلية,0
+lab,10839-9,Troponin I,تروبونين,1
+lab,6598-7,Troponin T,تروبونين تي,0
+lab,13969-1,CK-MB,إنزيم القلب CK-MB,1
+lab,2157-6,CPK,إنزيم CPK,1
+lab,2157-6,CK,,1
+lab,30934-4,BNP,الببتيد المدر للصوديوم,1
+lab,33762-6,NT-proBNP,الببتيد المدر للصوديوم NT-proBNP,1
+lab,6301-6,INR,سيولة الدم (INR),1
+lab,5902-2,PT,زمن البروثرومبين,1
+lab,5902-2,Prothrombin time,,1
+lab,34528-0,PT panel,زمن البروثرومبين وسيولة الدم,0
+lab,14979-9,aPTT,زمن الثرومبوبلاستين الجزئي,1
+lab,14979-9,PTT,,1
+lab,48065-7,D-dimer,دي دايمر,1
+lab,882-1,Blood group,فصيلة الدم,1
+lab,882-1,ABO and Rh,فصيلة الدم ومعامل ريسس,1
+lab,8039-0,Toxoplasma IgG,توكسوبلازما IgG,0
+lab,8039-0,TORCH,,0
+lab,8040-8,Toxoplasma IgM,توكسوبلازما IgM,1
+lab,8040-8,TORCH,,1
+lab,8014-3,Rubella IgG,الحصبة الألمانية IgG,0
+lab,8014-3,TORCH,,0
+lab,8015-0,Rubella IgM,الحصبة الألمانية IgM,1
+lab,8015-0,TORCH,,1
+lab,13949-3,CMV IgG,فيروس سي إم في IgG,0
+lab,13949-3,TORCH,,0
+lab,7853-5,CMV IgM,فيروس سي إم في IgM,1
+lab,7853-5,TORCH,,1
+lab,15067-2,FSH,الهرمون المنبه للحويصلة,1
+lab,10501-5,LH,الهرمون المنشط للجسم الأصفر,1
+lab,2842-3,Prolactin,هرمون الحليب (البرولاكتين),1
+lab,2243-4,Estradiol (E2),هرمون الإستروجين (إستراديول),0
+lab,2839-9,Progesterone,هرمون البروجسترون,0
+lab,2986-8,Testosterone,هرمون الذكورة (تستوستيرون),0
+lab,38476-8,AMH,هرمون مخزون المبيض,1
+lab,20448-7,Insulin,إنسولين,0
+lab,2731-8,PTH,هرمون الغدة الجار درقية,0
+lab,2143-6,Cortisol,هرمون الكورتيزول,1
+lab,667-6,Fungal scraping (KOH),كشط فطريات,1
+lab,580-1,Fungal culture,مزرعة فطريات,0
+lab,5370-2,ASO,الأجسام المضادة للستربتوليسين,1
+lab,5370-2,ASOT,,1
+lab,626-2,Throat swab culture,مزرعة مسحة الحلق,1
+lab,624-7,Sputum culture,مزرعة بلغم,1
+lab,600-7,Blood culture,مزرعة دم,1
+lab,24336-0,ABG,غازات الدم الشرياني,1
+lab,24336-0,Arterial blood gases,,1
+lab,4086-5,Valproate level,مستوى الديباكين في الدم,1
+lab,3432-2,Carbamazepine level,مستوى التجريتول في الدم,1
+lab,3968-5,Phenytoin level,مستوى الإيبانوتين في الدم,1
+lab,30471-7,Levetiracetam level,مستوى الكيبرا في الدم,0
+lab,14334-7,Lithium level,مستوى الليثيوم في الدم,1
+lab,16128-1,HCV antibody,فيروس سي (أجسام مضادة),1
+lab,16128-1,HCV Ab,,1
+lab,5196-1,HBsAg,فيروس بي (الأنتيجين السطحي),1
+lab,7918-6,HIV antibody,فيروس نقص المناعة (أجسام مضادة),0
+lab,17780-8,H. pylori stool antigen,جرثومة المعدة في البراز,1
+lab,5176-3,H. pylori antibody,جرثومة المعدة في الدم,1
+lab,29891-9,H. pylori breath test,اختبار التنفس لجرثومة المعدة,0
+lab,34372-3,Widal (O),تفاعل فيدال (O),1
+lab,34372-3,Widal,تيفود,1
+lab,34371-5,Widal (H),تفاعل فيدال (H),1
+lab,34371-5,Widal,,1
+lab,19053-8,Brucella agglutination,بروسيلا (الحمى المالطية),1
+lab,13361-1,Semen analysis,تحليل سائل منوي,1
+lab,11572-5,RF,عامل الروماتويد,1
+lab,11572-5,Rheumatoid factor,,1
+lab,33935-8,Anti-CCP,الأجسام المضادة لـ CCP,1
+lab,8061-4,ANA,الأجسام المضادة للنواة,1
+lab,2039-6,CEA,دلالة أورام CEA,0
+lab,2039-6,Tumor markers,دلالات الأورام,0
+lab,10334-1,CA-125,دلالة أورام CA-125,0
+lab,10334-1,Tumor markers,,0
+lab,24108-3,CA 19-9,دلالة أورام CA 19-9,0
+lab,24108-3,Tumor markers,,0
+lab,6875-9,CA 15-3,دلالة أورام CA 15-3,0
+lab,6875-9,Tumor markers,,0
+lab,1834-1,AFP,دلالة أورام ألفا فيتو بروتين,0
+lab,1834-1,Tumor markers,,0
+lab,1798-8,Amylase,إنزيم الأميليز,0
+lab,3040-3,Lipase,إنزيم الليباز,0
+lab,14804-9,LDH,إنزيم LDH,0
+lab,33959-8,Procalcitonin,بروكالسيتونين,0
+radiology,36643-5,Chest X-ray PA & lateral,أشعة عادية على الصدر,1
+radiology,36643-5,CXR,,1
+radiology,36554-4,Chest X-ray (single view),أشعة صدر منظر واحد,1
+radiology,24558-9,Abdominal ultrasound,سونار على البطن,1
+radiology,24558-9,Abdominal US,,1
+radiology,103901-5,Abdominopelvic ultrasound,سونار على البطن والحوض,1
+radiology,24869-0,Pelvic ultrasound,سونار على الحوض,1
+radiology,24677-7,Transvaginal ultrasound,سونار مهبلي,1
+radiology,24677-7,TVUS,,1
+radiology,11525-3,Obstetric ultrasound,سونار حمل,1
+radiology,11525-3,Pregnancy ultrasound,سونار على الجنين,1
+radiology,25022-5,HSG,أشعة بالصبغة على الرحم والأنابيب,1
+radiology,25022-5,Hysterosalpingography,,1
+radiology,26175-0,Mammography,ماموجرام (أشعة الثدي),1
+radiology,26214-7,Breast ultrasound,سونار على الثدي,1
+radiology,42148-7,Echocardiography,إيكو على القلب,1
+radiology,42148-7,Echo,,1
+radiology,80859-2,Echo Doppler,إيكو دوبلر على القلب,1
+radiology,79073-3,CT coronary angiography,أشعة مقطعية على الشرايين التاجية,1
+radiology,79073-3,CTCA,,1
+radiology,39420-5,Venous Doppler of both legs,دوبلر على أوردة الساقين,1
+radiology,39421-3,Arterial Doppler of both legs,دوبلر على شرايين الساقين,1
+radiology,43765-7,Carotid Doppler,دوبلر على شرايين الرقبة,1
+radiology,25010-0,Thyroid ultrasound,سونار على الغدة الدرقية,1
+radiology,24842-7,Neck ultrasound,سونار على الرقبة,0
+radiology,38268-9,DEXA scan,قياس كثافة العظام,1
+radiology,38268-9,Bone densitometry,,1
+radiology,24725-4,CT brain,أشعة مقطعية على المخ,1
+radiology,30799-1,CT brain without contrast,أشعة مقطعية على المخ بدون صبغة,1
+radiology,24590-2,MRI brain,رنين مغناطيسي على المخ,1
+radiology,24968-0,MRI lumbar spine,رنين على الفقرات القطنية,1
+radiology,30679-5,MRI lumbar spine without contrast,رنين على الفقرات القطنية بدون صبغة,1
+radiology,24935-9,MRI cervical spine,رنين على الفقرات العنقية,1
+radiology,24970-6,X-ray lumbar spine AP & lateral,أشعة عادية على الفقرات القطنية,1
+radiology,24942-5,X-ray cervical spine AP & lateral,أشعة عادية على الفقرات العنقية,1
+radiology,36709-4,X-ray knee AP & lateral,أشعة عادية على الركبة,1
+radiology,24802-1,MRI knee,رنين على الركبة,1
+radiology,30691-0,MRI knee without contrast,رنين على الركبة بدون صبغة,1
+radiology,38036-0,Renal ultrasound,سونار على الكلى,1
+radiology,38036-0,Ultrasound KUB,سونار على المسالك البولية,1
+radiology,25019-1,Bladder ultrasound,سونار على المثانة,0
+radiology,25002-7,Scrotal ultrasound,سونار على الخصية,0
+radiology,28614-6,Liver ultrasound,سونار على الكبد,0
+radiology,115638-9,CT KUB,أشعة مقطعية على المسالك البولية,1
+radiology,115638-9,CT urinary tract without contrast,أشعة مقطعية على الكلى بدون صبغة,1
+radiology,24799-9,X-ray KUB,أشعة عادية على المسالك البولية,1
+radiology,24799-9,Plain X-ray abdomen,أشعة عادية على البطن,1
+radiology,29252-4,CT chest,أشعة مقطعية على الصدر,1
+radiology,29252-4,HRCT chest,أشعة مقطعية عالية الدقة على الصدر,1
+radiology,36813-4,CT abdomen and pelvis with contrast,أشعة مقطعية على البطن والحوض بالصبغة,1
+radiology,36952-0,CT abdomen and pelvis without contrast,أشعة مقطعية على البطن والحوض,1
+radiology,58740-2,MRCP,رنين على القنوات المرارية,1
+radiology,30587-0,CT orbit,أشعة مقطعية على محجر العين,1
+radiology,30588-8,CT paranasal sinuses,أشعة مقطعية على الجيوب الأنفية,1
+radiology,30721-5,X-ray paranasal sinuses,أشعة عادية على الجيوب الأنفية,0
+radiology,24843-5,X-ray nasopharynx (lateral neck),أشعة على اللحمية,1
+radiology,24828-6,Panoramic dental X-ray,أشعة بانوراما على الأسنان,1
+radiology,115585-2,Periapical dental X-ray,أشعة صغيرة على الأسنان,1
+radiology,99633-0,CBCT,أشعة مقطعية مخروطية على الأسنان,1
+radiology,107382-4,PET-CT whole body,مسح بالبوزيترون على الجسم كله,1

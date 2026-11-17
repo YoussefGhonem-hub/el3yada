@@ -107,6 +107,7 @@ public class OptionsTests
     {
         var settings = ValidSettings();
         settings["Storage:RootPath"] = Path.Combine(Path.GetTempPath(), "el3yada-files");
+        settings["AppLinks:PublicBaseUrl"] = "https://api.example.com";
 
         Assert.Contains("Email:Delivery", Fails(settings, Environments.Production).Message);
 
@@ -155,6 +156,19 @@ public class OptionsTests
         Assert.Contains("Email__ResetPasswordUrl", Fails(settings, Environments.Production).Message);
     }
 
+    [Fact]
+    public void Production_needs_a_public_address_for_prescription_qr_codes()
+    {
+        var settings = ProductionEmail(ValidSettings());
+        settings["Storage:RootPath"] = Path.Combine(Path.GetTempPath(), "el3yada-files");
+        settings["AppLinks:PublicBaseUrl"] = "https://localhost:7001";
+
+        Assert.Contains("AppLinks:PublicBaseUrl", Fails(settings, Environments.Production).Message);
+
+        settings["AppLinks:PublicBaseUrl"] = "not a url";
+        Assert.Contains("PublicBaseUrl", Fails(settings).Message);
+    }
+
     private static Dictionary<string, string?> ProductionEmail(Dictionary<string, string?> settings)
     {
         settings["Email:Delivery"] = "Smtp";
@@ -162,6 +176,8 @@ public class OptionsTests
         settings["Email:FromAddress"] = "no-reply@example.com";
         settings["Email:ResetPasswordUrl"] = "https://app.example.com/reset-password";
         settings["Email:VerifyEmailUrl"] = "https://app.example.com/verify-email";
+        // Printed in prescription QR codes (Phase 3): production needs the real public address.
+        settings["AppLinks:PublicBaseUrl"] = "https://api.example.com";
         return settings;
     }
 }

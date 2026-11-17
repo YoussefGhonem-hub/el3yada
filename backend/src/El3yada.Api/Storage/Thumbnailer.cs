@@ -16,6 +16,25 @@ internal static class Thumbnailer
     /// </summary>
     public static byte[] CreateJpeg(Stream image, int maxEdge)
     {
+        using var output = Render(image, maxEdge, SKColors.White);
+        using var jpeg = output.Encode(SKEncodedImageFormat.Jpeg, JpegQuality) ?? throw Unreadable();
+        return jpeg.ToArray();
+    }
+
+    /// <summary>
+    /// The same, as a PNG that keeps transparency: for the prescription logo and signature (D22), which are drawn
+    /// over the page and must stay sharp. Metadata is dropped.
+    /// </summary>
+    public static byte[] CreatePng(Stream image, int maxEdge)
+    {
+        using var output = Render(image, maxEdge, SKColors.Transparent);
+        using var png = output.Encode(SKEncodedImageFormat.Png, 100) ?? throw Unreadable();
+        return png.ToArray();
+    }
+
+    /// <summary>Decodes, scales to <paramref name="maxEdge"/> and turns upright, over <paramref name="background"/>.</summary>
+    private static SKBitmap Render(Stream image, int maxEdge, SKColor background)
+    {
         using var codec = SKCodec.Create(image) ?? throw Unreadable();
         var encoded = codec.Info;
         if (encoded.Width <= 0 || encoded.Height <= 0)
@@ -50,19 +69,18 @@ internal static class Thumbnailer
         var origin = codec.EncodedOrigin;
         var turned = origin is SKEncodedOrigin.LeftTop or SKEncodedOrigin.RightTop
             or SKEncodedOrigin.RightBottom or SKEncodedOrigin.LeftBottom;
-        using var output = new SKBitmap(new SKImageInfo(
+        var output = new SKBitmap(new SKImageInfo(
             turned ? height : width, turned ? width : height, SKColorType.Rgba8888, SKAlphaType.Premul));
         using (var canvas = new SKCanvas(output))
         {
-            canvas.Clear(SKColors.White);
+            canvas.Clear(background);
             var matrix = OriginMatrix(origin, width, height);
             canvas.SetMatrix(in matrix);
             // Quarter turns and flips land on whole pixels, so plain sampling is exact.
             canvas.DrawBitmap(source, 0, 0, SKSamplingOptions.Default);
         }
 
-        using var jpeg = output.Encode(SKEncodedImageFormat.Jpeg, JpegQuality) ?? throw Unreadable();
-        return jpeg.ToArray();
+        return output;
     }
 
     private static (int Width, int Height) Fit(int width, int height, int maxEdge)

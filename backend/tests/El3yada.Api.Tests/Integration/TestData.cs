@@ -35,7 +35,8 @@ public static partial class TestData
     {
         await using var scope = factory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        return await db.Specialties.OrderBy(s => s.SortOrder).Skip(skip).Select(s => s.Id).FirstAsync();
+        // Active only: the General profile (Phase 3) is a specialty row nobody signs up with.
+        return await db.Specialties.Where(s => s.Active).OrderBy(s => s.SortOrder).Skip(skip).Select(s => s.Id).FirstAsync();
     }
 
     public static async Task<TestUser> CreateAdminAsync(

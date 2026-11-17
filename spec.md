@@ -1289,7 +1289,8 @@ prescriptions/{rxId}
   status: 'draft' | 'readyForReview' | 'sent' | 'cancelled'   // 'readyForReview' by an assistant (BR-AS12); 'sent' and 'cancelled' by the doctor only
   preparedBy?, preparedByRole?
   pdfPath?, sentAt?, cancelledAt?, cancelReason?, replacesRxId?
-  qrShortCode                                      (fn)  // random, at least 10 characters (6.4.1)
+  qrShortCode                                      (fn)  // random, at least 10 characters (6.4.1); 12 base62 characters
+  followUpDate?                     // zone 6 of the page: «موعد المتابعة» / «إحضار النتائج في» (migration PrescriptionsAndCatalogs)
   createdAt, updatedAt
 
 chats/{chatId = linkId}
@@ -1342,7 +1343,7 @@ settings/public      // readable by any signed-in user
   maintenance{ enabled, messageAr, messageEn }, termsAr, termsEn, privacyAr, privacyEn
 settingsHistory/{id}: changedBy, at, field, before, after
 
-specialties/{id}
+specialties/{id}                          // the General profile (BR-CAT3) is the row nameEn "General" / «عام», active = false
   nameAr, nameEn, active, sortOrder
   profile: {
     includeGeneral: bool,                 // default true (BR-CAT3)
@@ -1475,7 +1476,8 @@ Suggested stack on the server:
 | `requestPatientPasswordReset` | anyone | Takes a phone number. For a patient account, it notifies the linked doctors and their assistants with `patientsResetPassword`. For an assistant account, it notifies their doctor. Always returns the same answer. Rate-limited per phone and per IP. |
 | `createSession` | active doctor | Takes `branchId` (required) and an optional `appointmentId`. With an appointment, the same transaction marks it `completed` (BR-AP10). Transaction: read the link and `settings/public` → check BR-S2/S3 with `consultationsSinceExam` and `maxConsecutiveConsultations` → write the session with the fee snapshot and the visit price → update `lastSession*` and `consultationsSinceExam` on the link → increment `dailyStats` and `monthlyStats` → notify the patient. Error codes: `CONSULTATION_REQUIRES_EXAM`, `DOCTOR_SUSPENDED`, `NOT_LINKED`. |
 | `deleteSession` | doctor | Checks BR-S7. Soft-deletes, recalculates `lastSession*` and `consultationsSinceExam` from the remaining non-deleted sessions, decrements stats, writes an audit log entry. |
-| `sendPrescription` | active doctor only | Checks status `draft`, at least one item, and that the PDF has been uploaded. Sets `sent` and notifies the patient. |
+| `createPrescriptionDraft`, `updatePrescriptionDraft`, `deletePrescriptionDraft` | doctor, or assistant with `prescriptionsDraft` | A draft from one of the doctor's sessions (BR-RX1). The diagnosis and follow-up date are pre-filled from the session; `copyFromId` is "Issue new copy". Updates replace everything, and items keep the order sent. |
+| `sendPrescription` | active doctor only | One multipart call with the PDF the app built (6.4.1). Checks status `draft` or `readyForReview`, at least one item, and a real PDF ≤ 10 MB. Stores the PDF, sets `sent`, counts the items in the doctor's history (BR-CAT4) and notifies the patient. Contract: [`backend/docs/api-phase-3-prescriptions.md`](backend/docs/api-phase-3-prescriptions.md). |
 | `rxLink` | anyone | `GET /rx/{shortCode}`, the target of the prescription QR code. Serves the App Links / Universal Links files and redirects to the app or to the right store. Never shows prescription content without sign-in (6.4.1). |
 | `cancelPrescription` | doctor only | Sets `cancelled` with a reason. Notifies the patient. |
 | `submitPayment` | doctor | Checks the invoice status (`unpaid`, `rejected` or `overdue`). Creates the payment, sets the invoice to `pendingReview`, notifies admins. |
@@ -1490,6 +1492,8 @@ Suggested stack on the server:
 | `requestAccountDeletion`, `reviewDeletionRequest` | patient / admin | P14 and AD12. |
 | `publishCatalog` | admin | Checks the uploaded catalog file (sha256, schema version, row counts not lower than the previous version by more than 5% unless confirmed), stores it at `catalogs/v{n}.sqlite.gz`, updates `settings/public.catalog`. Audit log. |
 | `reportCatalogItem` [S] | doctor | Creates a `catalogReports` entry and notifies admins. |
+| `getCatalogCustomItems` (`GET /api/catalog/customItems?since=`), `getMyCatalogProfile` (`GET /api/catalog/myProfile`) | doctor, admin, assistant with `prescriptionsDraft` | Custom-item sync (BR-CAT9, AC-18: changed items after `since`, inactive ones included) and the merged specialty profile for search ranking (BR-CAT4). Contract: [`backend/docs/api-phase-3-catalogs.md`](backend/docs/api-phase-3-catalogs.md). |
+| `updateSpecialtyProfile` (`PUT /api/admin/specialties/{id}/profile`), `copySpecialtyProfile` | admin | AD19. Lists replaced; the General profile is the "General" row. |
 | `createBranch`, `updateBranch` | doctor only | Checks `maxBranchesPerDoctor` and the fields. Audit log. |
 | `updatePrices` | doctor / assistant (`pricesManage`) | Doctor prices, or one branch's prices. Writes `priceHistory` and an audit entry (BR-PR5). |
 | `setBranchStatus` | doctor only | Temporarily close, reopen or archive. Returns the future bookings that must be handled first (BR-BR9). |

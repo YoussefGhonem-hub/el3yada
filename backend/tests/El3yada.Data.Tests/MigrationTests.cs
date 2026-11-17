@@ -22,7 +22,9 @@ public class MigrationTests(MigratedDatabase database) : IClassFixture<MigratedD
         Assert.Equal(3000, settings.ExamFeePiasters);
         Assert.Equal(1500, settings.ConsultationFeePiasters);
         Assert.Equal(7, settings.GracePeriodDays);
-        Assert.Equal(19, await db.Specialties.CountAsync());
+        Assert.Equal(19, await db.Specialties.CountAsync(s => s.Active));
+        // The General profile (BR-CAT3, migration PrescriptionsAndCatalogs): inactive, so sign-up never lists it.
+        Assert.True(await db.Specialties.AnyAsync(s => s.NameEn == "General" && !s.Active));
     }
 
     [Fact]

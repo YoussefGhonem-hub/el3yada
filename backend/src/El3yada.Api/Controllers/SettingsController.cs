@@ -194,7 +194,7 @@ public sealed class PublicSettingsController(AppDbContext db) : ControllerBase
     [HttpGet("public")]
     public async Task<IActionResult> GetPublic(CancellationToken cancellationToken)
     {
-        var s = await db.AppSettings.AsNoTracking().SingleAsync(cancellationToken);
+        var s = await db.AppSettings.AsNoTracking().Include(x => x.CurrentCatalogVersion).SingleAsync(cancellationToken);
         string[] legalFields = ["termsAr", "termsEn", "privacyAr", "privacyEn"];
         var changes = await db.SettingsHistories.AsNoTracking()
             .Where(h => legalFields.Contains(h.Field))
@@ -210,6 +210,8 @@ public sealed class PublicSettingsController(AppDbContext db) : ControllerBase
             support = new { phone = s.SupportPhone, whatsapp = s.SupportWhatsapp, email = s.SupportEmail },
             terms = Legal(s.TermsAr, s.TermsEn, Latest(changes, "termsAr", "termsEn")),
             privacy = Legal(s.PrivacyAr, s.PrivacyEn, Latest(changes, "privacyAr", "privacyEn")),
+            // Spec 8 settings/public.catalog: the version doctors' and admins' apps download (D0, BR-CAT12). Null until the first publish.
+            catalog = s.CurrentCatalogVersion is { } catalog ? CatalogController.ViewOf(catalog) : null,
         });
     }
 

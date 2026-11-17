@@ -39,7 +39,8 @@ public partial class Doctor
 
     public string RxLanguage { get; set; } = "ar";
 
-    public string RxAccentColor { get; set; } = "#0B5C8E";
+    /// <summary>The clinic colour on printed prescriptions (D22, spec 6.4.1). Default: the brand pine.</summary>
+    public string RxAccentColor { get; set; } = "#0F4C45";
 
     public string RxPaperSize { get; set; } = "A5";
 

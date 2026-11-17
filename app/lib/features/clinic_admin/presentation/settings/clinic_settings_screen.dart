@@ -14,6 +14,7 @@ import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/application/auth_controller.dart';
 import '../../../auth/domain/user_role.dart';
 import '../../../auth/presentation/change_password_form.dart';
+import '../../../doctor_registration/presentation/registration_text.dart' show ltrIsolate;
 import '../../../clinic/application/clinic_providers.dart';
 import '../../../clinic/domain/clinic_context.dart';
 import '../../../clinic/domain/clinic_permissions.dart';
@@ -450,9 +451,21 @@ class _AccountGroup extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final session = ref.watch(authControllerProvider).value;
+    final email = session?.email;
+    // A5 [S]: a new doctor is active at once, so this (and the shell's
+    // banner) is how they reach it.
+    final unverified = email != null && !session!.emailVerified;
     return SettingsGroup(
       title: l10n.settingsAccount,
       children: [
+        if (unverified)
+          SettingsTile(
+            icon: Icons.mark_email_unread_outlined,
+            title: l10n.settingsVerifyEmail,
+            subtitle: l10n.regVerifyCardBody(ltrIsolate(email)),
+            onTap: () => context.push(AppRoutes.verifyEmail),
+          ),
         SettingsTile(
           icon: Icons.lock_outline,
           title: l10n.adminChangePassword,

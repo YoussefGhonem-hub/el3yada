@@ -20,9 +20,9 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
 try
 {
-    // `dotnet run -- seed-admin <email>` (and, in Development only, `add-booking …`) runs a one-time command
-    // instead of the web server.
-    var isCommand = SeedAdminCommand.IsInvocation(args) || AddBookingCommand.IsInvocation(args);
+    // `dotnet run -- seed-admin <email>`, `seed-specialty-profiles <csv>` (and, in Development only, `add-booking …`)
+    // run a one-time command instead of the web server.
+    var isCommand = SeedAdminCommand.IsInvocation(args) || SeedSpecialtyProfilesCommand.IsInvocation(args) || AddBookingCommand.IsInvocation(args);
     var builder = WebApplication.CreateBuilder(isCommand ? [] : args);
 
     // Serilog: console and a daily file, set in the "Serilog" section of appsettings*.json.
@@ -52,6 +52,9 @@ try
     builder.Services.AddAppEmail();
     builder.Services.AddScoped<Auditor>();
     builder.Services.AddScoped<NotificationWriter>();
+    // Deletes medical files uploaded but never claimed by createRecord (Phase 3).
+    builder.Services.AddSingleton<El3yada.Api.Records.PendingUploadCleanup>();
+    builder.Services.AddHostedService(services => services.GetRequiredService<El3yada.Api.Records.PendingUploadCleanup>());
 
     // FluentValidation: every validator in this assembly runs on the matching action argument
     // before the action (ValidationFilter), and failures return a 400 ValidationProblem.
@@ -82,7 +85,9 @@ try
     {
         Environment.ExitCode = AddBookingCommand.IsInvocation(args)
             ? await AddBookingCommand.RunAsync(app.Services, args, Console.Out)
-            : await SeedAdminCommand.RunAsync(app.Services, args, Console.Out);
+            : SeedSpecialtyProfilesCommand.IsInvocation(args)
+                ? await SeedSpecialtyProfilesCommand.RunAsync(app.Services, args, Console.Out)
+                : await SeedAdminCommand.RunAsync(app.Services, args, Console.Out);
         return;
     }
 

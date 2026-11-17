@@ -180,7 +180,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navInvoices => 'الفواتير';
 
   @override
-  String get navSignups => 'طلبات التسجيل';
+  String get navSignups => 'الأطباء';
 
   @override
   String get navAccounts => 'الحسابات';
@@ -481,7 +481,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get regBack => 'السابق';
 
   @override
-  String get regSubmit => 'إرسال للمراجعة';
+  String get regSubmit => 'إنشاء الحساب';
 
   @override
   String get regResubmit => 'إعادة الإرسال للمراجعة';
@@ -724,7 +724,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get regReviewIntro => 'راجع بياناتك، ثم أرسلها للمراجعة.';
+  String get regReviewIntro => 'راجع بياناتك، ثم أنشئ حسابك.';
 
   @override
   String get regReviewIntroResubmit =>
@@ -1096,21 +1096,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminFixErrors => 'صحّح الحقول المحددة ثم احفظ.';
 
   @override
-  String adminSignupsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count طلب منتظر',
-      many: '$count طلباً منتظراً',
-      few: '$count طلبات منتظرة',
-      two: 'طلبان منتظران',
-      one: 'طلب واحد منتظر',
-      zero: 'لا توجد طلبات منتظرة',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get adminSignupsSearchHint => 'ابحث بالاسم أو البريد أو الرقم';
 
   @override
@@ -1126,21 +1111,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminSortOldest => 'الأقدم أولاً (حسب الدور)';
 
   @override
-  String get adminSignupsEmptyTitle => 'لا توجد طلبات تسجيل منتظرة';
+  String get adminSignupsEmptyTitle => 'لا يوجد أطباء بعد';
 
   @override
-  String get adminSignupsEmptyBody =>
-      'تظهر طلبات الأطباء الجدد هنا فور تسجيلهم.';
+  String get adminSignupsEmptyBody => 'يظهر الأطباء هنا فور تسجيلهم.';
 
   @override
-  String get adminSignupsNoMatchTitle => 'لا توجد طلبات تطابق البحث';
+  String get adminSignupsNoMatchTitle => 'لا يوجد أطباء يطابقون البحث';
 
   @override
   String get adminSignupsNoMatchBody =>
       'راجع الكتابة، أو ابحث برقم الموبايل أو رقم النقابة.';
 
   @override
-  String get adminSelectRequest => 'اختر طلباً لمراجعته';
+  String get adminSelectRequest => 'اختر طبيباً لعرض حسابه';
 
   @override
   String adminSubmittedShort(String time) {
@@ -4440,4 +4424,600 @@ class AppLocalizationsAr extends AppLocalizations {
   String backToSection(String section) {
     return 'رجوع إلى $section';
   }
+
+  @override
+  String get trialEndedTitle => 'انتهت الفترة التجريبية المجانية';
+
+  @override
+  String get trialEndedBody =>
+      'تواصل معنا لتفعيل الخدمة ومواصلة استخدام «العيادة». بيانات مرضاك وسجلاتك محفوظة كما هي.';
+
+  @override
+  String get trialEndedTitleAssistant => 'انتهت الفترة التجريبية للعيادة';
+
+  @override
+  String get trialEndedBodyAssistant =>
+      'اطلب من الطبيب التواصل معنا لتفعيل الخدمة، وبعدها تتابع عملك كالمعتاد.';
+
+  @override
+  String get trialCheckAgain => 'تحقق مرة أخرى';
+
+  @override
+  String get trialStillEnded => 'لم تُفعَّل الخدمة بعد.';
+
+  @override
+  String trialBanner(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'تبقّى $days يوم على نهاية الفترة التجريبية المجانية',
+      many: 'تبقّى $days يوماً على نهاية الفترة التجريبية المجانية',
+      few: 'تبقّت $days أيام على نهاية الفترة التجريبية المجانية',
+      two: 'تبقّى يومان على نهاية الفترة التجريبية المجانية',
+      one: 'تبقّى يوم واحد على نهاية الفترة التجريبية المجانية',
+      zero: 'تنتهي الفترة التجريبية المجانية اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trialContactUs => 'تواصل معنا';
+
+  @override
+  String get errorTrialEnded =>
+      'انتهت الفترة التجريبية المجانية. تواصل معنا لتفعيل الخدمة.';
+
+  @override
+  String get sessionFeeFreeTrial => 'مجاناً (فترة تجريبية)';
+
+  @override
+  String get sessionPlatformFeeFree => 'بدون رسوم منصة (فترة تجريبية)';
+
+  @override
+  String get sessionConfirmFeeFree =>
+      'بدون رسوم: العيادة في الفترة التجريبية المجانية.';
+
+  @override
+  String sessionSavedBodyFree(String type, String patient) {
+    return '$type للمريض $patient، بدون رسوم (فترة تجريبية).';
+  }
+
+  @override
+  String get adminErrorServiceAlreadyActive =>
+      'الخدمة مفعّلة بالفعل لهذا الطبيب، فلا توجد فترة تجريبية لمدّها.';
+
+  @override
+  String get adminErrorDoctorStatusNotChangeable =>
+      'لا يمكن تنفيذ هذا لطبيب قيد المراجعة أو مرفوض أو معطّل.';
+
+  @override
+  String get adminSettingTrialDays => 'الفترة التجريبية المجانية';
+
+  @override
+  String get adminAppliesToNewDoctors =>
+      'يُطبّق على الأطباء المعتمدين بعد التغيير';
+
+  @override
+  String get adminDoctorsFilterAll => 'كل الأطباء';
+
+  @override
+  String get adminSignupsFilterTrialRunning => 'في الفترة التجريبية';
+
+  @override
+  String get adminSignupsFilterTrialEnded => 'انتهت التجربة';
+
+  @override
+  String adminDoctorsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبيب',
+      many: '$count طبيباً',
+      few: '$count أطباء',
+      two: 'طبيبان',
+      one: 'طبيب واحد',
+      zero: 'لا يوجد أطباء',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminTrialListEmpty => 'لا يوجد أطباء هنا';
+
+  @override
+  String get adminTrialListEmptyBody =>
+      'يظهر هنا الأطباء حسب حالة فترتهم التجريبية.';
+
+  @override
+  String get adminServiceActive => 'الخدمة مفعّلة';
+
+  @override
+  String get adminTrialEnded => 'انتهت التجربة';
+
+  @override
+  String adminTrialDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'فترة تجريبية: باقي $days يوم',
+      many: 'فترة تجريبية: باقي $days يوماً',
+      few: 'فترة تجريبية: باقي $days أيام',
+      two: 'فترة تجريبية: باقي يومان',
+      one: 'فترة تجريبية: باقي يوم واحد',
+      zero: 'فترة تجريبية: تنتهي اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminSectionTrial => 'الفترة التجريبية';
+
+  @override
+  String get adminServiceActiveBody =>
+      'الخدمة مفعّلة، وتُحتسب رسوم المنصة على الجلسات.';
+
+  @override
+  String adminTrialRunningBody(String date) {
+    return 'تنتهي الفترة التجريبية المجانية يوم $date، والجلسات حتى ذلك الحين بدون رسوم.';
+  }
+
+  @override
+  String adminTrialEndedBody(String date) {
+    return 'انتهت الفترة التجريبية المجانية يوم $date. لا يستطيع الطبيب ومساعدوه استخدام العيادة حتى تفعّل الخدمة أو تمدّ الفترة التجريبية.';
+  }
+
+  @override
+  String get adminActivateService => 'تفعيل الخدمة';
+
+  @override
+  String adminActivateServiceTitle(String name) {
+    return 'تفعيل الخدمة لـ د. $name؟';
+  }
+
+  @override
+  String get adminActivateServiceBody =>
+      'تنتهي الفترة التجريبية الآن، وتُحتسب رسوم المنصة على كل جلسة من الآن فصاعداً.';
+
+  @override
+  String adminServiceActivatedMessage(String name) {
+    return 'تم تفعيل الخدمة لـ د. $name.';
+  }
+
+  @override
+  String get adminExtendTrial => 'مدّ الفترة التجريبية';
+
+  @override
+  String adminExtendTrialTitle(String name) {
+    return 'مدّ الفترة التجريبية لـ د. $name';
+  }
+
+  @override
+  String get adminExtendTrialBody =>
+      'تُضاف الأيام إلى نهاية الفترة التجريبية، أو إلى اليوم إن كانت قد انتهت.';
+
+  @override
+  String get adminExtendTrialDays => 'عدد الأيام';
+
+  @override
+  String adminTrialExtendedMessage(String name, String date) {
+    return 'الفترة التجريبية لـ د. $name تنتهي الآن يوم $date.';
+  }
+
+  @override
+  String get adminAuditServiceActivated => 'فعّل الخدمة لطبيب';
+
+  @override
+  String adminAuditTrialExtended(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'مدّ الفترة التجريبية لطبيب $days يوماً',
+      few: 'مدّ الفترة التجريبية لطبيب $days أيام',
+      two: 'مدّ الفترة التجريبية لطبيب يومين',
+      one: 'مدّ الفترة التجريبية لطبيب يوماً واحداً',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminActionServiceActivated => 'تفعيل الخدمة';
+
+  @override
+  String get adminActionTrialExtended => 'مدّ الفترة التجريبية';
+
+  @override
+  String get regWelcomeTitle => 'أهلاً بك في العيادة';
+
+  @override
+  String regWelcomeTrial(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'معك فترة تجريبية مجانية لمدة $days يوم.',
+      many: 'معك فترة تجريبية مجانية لمدة $days يوماً.',
+      few: 'معك فترة تجريبية مجانية لمدة $days أيام.',
+      two: 'معك فترة تجريبية مجانية لمدة يومين.',
+      one: 'معك فترة تجريبية مجانية لمدة يوم واحد.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regWelcomeBody =>
+      'أضف مرضاك وسجّل جلساتك بدون رسوم منصة خلال الفترة التجريبية.';
+
+  @override
+  String get regWelcomeStart => 'ابدأ الآن';
+
+  @override
+  String get adminDoctorTitle => 'حساب طبيب';
+
+  @override
+  String get emailBannerDismiss => 'إخفاء الآن';
+
+  @override
+  String get settingsVerifyEmail => 'تأكيد البريد الإلكتروني';
+
+  @override
+  String get patientTabFiles => 'الملفات';
+
+  @override
+  String get recordCategoryAll => 'الكل';
+
+  @override
+  String get recordCategoryRadiology => 'أشعة';
+
+  @override
+  String get recordCategoryLab => 'تحاليل';
+
+  @override
+  String get recordCategoryPrescription => 'روشتات';
+
+  @override
+  String get recordCategoryOther => 'أخرى';
+
+  @override
+  String recordChip(String name, int count) {
+    return '$name $count';
+  }
+
+  @override
+  String get recordOtherReport => 'تقرير طبي';
+
+  @override
+  String get recordOtherReferral => 'تحويل';
+
+  @override
+  String get recordOtherSickLeave => 'إجازة مرضية';
+
+  @override
+  String get recordOtherEcg => 'رسم قلب';
+
+  @override
+  String get recordOtherEegEmg => 'رسم مخ / أعصاب';
+
+  @override
+  String get recordOtherEndoscopy => 'منظار';
+
+  @override
+  String get recordOtherConsent => 'إقرار';
+
+  @override
+  String get recordOtherCustom => 'نوع آخر (اكتبه)';
+
+  @override
+  String get recordOtherNone => 'بدون نوع';
+
+  @override
+  String get recordsEmptyTitle => 'لا توجد ملفات بعد';
+
+  @override
+  String get recordsEmptyBody =>
+      'امسح أو ارفع نتائج التحاليل والأشعة وأي أوراق أخرى. يراها المريض في تطبيقه.';
+
+  @override
+  String get recordsEmptyCategory => 'لا توجد ملفات في هذا التصنيف';
+
+  @override
+  String get recordAddFiles => 'رفع ملفات';
+
+  @override
+  String get recordScan => 'مسح ضوئي';
+
+  @override
+  String get recordDropHint => 'أفلت الملفات لرفعها';
+
+  @override
+  String recordFilesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ملف',
+      many: '$count ملفاً',
+      few: '$count ملفات',
+      two: 'ملفان',
+      one: 'ملف واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordPagesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صفحة',
+      many: '$count صفحة',
+      few: '$count صفحات',
+      two: 'صفحتان',
+      one: 'صفحة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sizeBytes(String value) {
+    return '$value بايت';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value ك.ب';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value ميجا';
+  }
+
+  @override
+  String get recordUploadTitle => 'رفع ملفات';
+
+  @override
+  String get recordScanTitle => 'مسح مستند';
+
+  @override
+  String get recordEditTitle => 'تعديل بيانات الملف';
+
+  @override
+  String get recordFieldCategory => 'التصنيف';
+
+  @override
+  String get recordFieldOtherType => 'نوع المستند (اختياري)';
+
+  @override
+  String get recordFieldOtherTypeText => 'اكتب النوع';
+
+  @override
+  String get recordFieldTitle => 'العنوان (اختياري)';
+
+  @override
+  String recordTitleHint(String title) {
+    return 'لو تركته فارغاً: $title';
+  }
+
+  @override
+  String get recordFieldDate => 'تاريخ المستند';
+
+  @override
+  String get recordFieldNotes => 'ملاحظات (اختياري)';
+
+  @override
+  String get recordFieldSession => 'ربط بزيارة';
+
+  @override
+  String get recordNoSession => 'بدون زيارة';
+
+  @override
+  String recordSessionOption(String type, String date) {
+    return '$type · $date';
+  }
+
+  @override
+  String get recordCategoryRequired => 'اختر التصنيف';
+
+  @override
+  String get recordFilesHeading => 'الملفات';
+
+  @override
+  String get recordDetailsHeading => 'البيانات';
+
+  @override
+  String get recordAddMore => 'إضافة ملفات';
+
+  @override
+  String get recordFromFiles => 'اختيار ملفات';
+
+  @override
+  String get recordFromCamera => 'الكاميرا';
+
+  @override
+  String get recordFromGallery => 'الصور';
+
+  @override
+  String get recordSave => 'حفظ في ملف المريض';
+
+  @override
+  String get recordSaved => 'تم الحفظ في ملف المريض';
+
+  @override
+  String get recordUpdated => 'تم حفظ بيانات الملف';
+
+  @override
+  String get recordPreparing => 'جارٍ تصغير الحجم…';
+
+  @override
+  String recordUploading(int percent) {
+    return 'جارٍ الرفع $percent%';
+  }
+
+  @override
+  String get recordUploaded => 'تم الرفع';
+
+  @override
+  String get recordUploadFailed => 'فشل الرفع';
+
+  @override
+  String get recordRemoveFile => 'إزالة';
+
+  @override
+  String recordTooLarge(int mb) {
+    return 'حجم الملف أكبر من المسموح ($mb ميجا)';
+  }
+
+  @override
+  String recordSavedSpace(String from, String to) {
+    return 'تم تقليل الحجم من $from إلى $to';
+  }
+
+  @override
+  String get recordWaitForUploads =>
+      'انتظر حتى تُرفع كل الملفات، أو أزل الملفات التي فشلت.';
+
+  @override
+  String get recordNeedFiles => 'أضف ملفاً واحداً على الأقل';
+
+  @override
+  String get recordUploadExpired => 'انتهت مهلة هذا الملف. ارفعه مرة أخرى.';
+
+  @override
+  String get recordErrorInvalidSession => 'اختر زيارة من زيارات هذا المريض';
+
+  @override
+  String get recordErrorInvalidDate =>
+      'تاريخ المستند لا يمكن أن يكون في المستقبل';
+
+  @override
+  String get recordErrorTooMany => 'الملف الواحد يحمل 20 مرفقاً على الأكثر';
+
+  @override
+  String get recordNoFilesYet => 'لم تُضف ملفات بعد';
+
+  @override
+  String get recordScanReviewTitle => 'راجع الصفحات';
+
+  @override
+  String get recordScanAddPages => 'مسح صفحات أخرى';
+
+  @override
+  String recordScanPage(int number) {
+    return 'صفحة $number';
+  }
+
+  @override
+  String get recordScanMoveEarlier => 'تقديم';
+
+  @override
+  String get recordScanMoveLater => 'تأخير';
+
+  @override
+  String get recordScanDeletePage => 'حذف الصفحة';
+
+  @override
+  String get recordScanMakePdf => 'تجميعها في ملف PDF';
+
+  @override
+  String get recordScanBuilding => 'جارٍ تجهيز ملف PDF…';
+
+  @override
+  String get recordScanUnavailable => 'الماسح الضوئي غير متاح على هذا الجهاز.';
+
+  @override
+  String get recordScanDenied =>
+      'اسمح باستخدام الكاميرا من الإعدادات للمسح الضوئي.';
+
+  @override
+  String get recordScanFailed => 'لم ينجح المسح. حاول مرة أخرى.';
+
+  @override
+  String get recordDetails => 'البيانات';
+
+  @override
+  String get recordOpenWith => 'فتح باستخدام…';
+
+  @override
+  String get recordDownload => 'تنزيل';
+
+  @override
+  String get recordShare => 'مشاركة';
+
+  @override
+  String get recordEdit => 'تعديل البيانات';
+
+  @override
+  String get recordDelete => 'حذف';
+
+  @override
+  String get recordDeleteTitle => 'حذف هذا الملف؟';
+
+  @override
+  String get recordDeleteBody => 'سيختفي من ملف المريض، عندك وعند المريض.';
+
+  @override
+  String get recordDeleted => 'تم حذف الملف';
+
+  @override
+  String get recordDownloaded => 'تم حفظ الملف';
+
+  @override
+  String get recordCantOpen =>
+      'لا يوجد تطبيق على هذا الجهاز يفتح هذا النوع من الملفات.';
+
+  @override
+  String get recordNoPreview => 'هذا النوع من الملفات يُفتح في تطبيق آخر.';
+
+  @override
+  String get recordPdfFailed => 'تعذّر عرض ملف PDF هنا. افتحه بتطبيق آخر.';
+
+  @override
+  String recordAttachmentOf(int index, int count) {
+    return '$index من $count';
+  }
+
+  @override
+  String recordAdded(String date) {
+    return 'أُضيف $date';
+  }
+
+  @override
+  String get recordSize => 'الحجم';
+
+  @override
+  String get recordSourceScan => 'مسح ضوئي';
+
+  @override
+  String get recordSourceUpload => 'مرفوع';
+
+  @override
+  String get recordSourceChat => 'من المحادثة';
+
+  @override
+  String get recordVisit => 'الزيارة';
+
+  @override
+  String get recordPrevious => 'الملف السابق';
+
+  @override
+  String get recordNext => 'الملف التالي';
+
+  @override
+  String get recordLoadingFile => 'جارٍ فتح الملف…';
+
+  @override
+  String get activityRecordCreated => 'أضاف ملفاً إلى ملف المريض';
+
+  @override
+  String get activityRecordUpdated => 'عدّل بيانات ملف';
+
+  @override
+  String get activityRecordDeleted => 'حذف ملفاً';
+
+  @override
+  String get activityActionRecordCreated => 'إضافة ملف';
+
+  @override
+  String get activityActionRecordUpdated => 'تعديل ملف';
+
+  @override
+  String get activityActionRecordDeleted => 'حذف ملف';
 }

@@ -35,7 +35,13 @@ public sealed record ClinicCaller
     /// <summary>The assistant's assigned branches when <see cref="AllBranches"/> is false.</summary>
     public required IReadOnlySet<Guid> BranchIds { get; init; }
 
+    /// <summary>The clinic's free trial end (Doctors.TrialEndsAt), or null when the service is active (spec 6.16).</summary>
+    public DateTime? TrialEndsAt { get; init; }
+
     public string Role => IsDoctor ? Roles.Doctor : Roles.Assistant;
+
+    /// <summary>Sessions saved now carry no platform fee (BR-T3).</summary>
+    public bool TrialRunning(DateTime now) => Doctors.Trial.IsRunning(TrialEndsAt, now);
 
     public bool IsSuspended => DoctorStatus == DoctorStatuses.Suspended;
 
@@ -58,18 +64,19 @@ public sealed record ClinicCaller
     {
         if (role == Roles.Doctor)
         {
-            var status = await db.Doctors.AsNoTracking()
+            var doctor = await db.Doctors.AsNoTracking()
                 .Where(d => d.UserId == userId)
-                .Select(d => d.Status)
+                .Select(d => new { d.Status, d.TrialEndsAt })
                 .SingleOrDefaultAsync(cancellationToken);
-            return status is null
+            return doctor is null
                 ? null
                 : new ClinicCaller
                 {
                     UserId = userId,
                     IsDoctor = true,
                     DoctorId = userId,
-                    DoctorStatus = status,
+                    DoctorStatus = doctor.Status,
+                    TrialEndsAt = doctor.TrialEndsAt,
                     Permissions = ClinicPermissions.All.ToHashSet(),
                     AllBranches = true,
                     BranchIds = new HashSet<Guid>(),
@@ -87,6 +94,7 @@ public sealed record ClinicCaller
             {
                 Assistant = a,
                 DoctorStatus = a.Doctor.Status,
+                a.Doctor.TrialEndsAt,
                 DoctorUserStatus = a.Doctor.User.Status,
                 BranchIds = a.Branches.Select(b => b.Id).ToList(),
             })
@@ -103,6 +111,7 @@ public sealed record ClinicCaller
             DoctorId = row.Assistant.DoctorId,
             // A disabled doctor user closes the clinic the same way a disabled doctor row does (BR-AS9).
             DoctorStatus = row.DoctorUserStatus == AccountStatuses.Active ? row.DoctorStatus : DoctorStatuses.Disabled,
+            TrialEndsAt = row.TrialEndsAt,
             AssistantName = row.Assistant.FullName,
             Permissions = row.Assistant.Status == "active" ? ClinicPermissions.Of(row.Assistant) : new HashSet<string>(),
             AllBranches = row.Assistant.AllBranches,

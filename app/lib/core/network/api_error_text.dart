@@ -24,6 +24,10 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.permissionDenied => errorPermissionDenied,
       ApiCodes.doctorSuspended => errorDoctorSuspended,
       ApiCodes.branchNotAllowed => errorBranchNotAllowed,
+      // Free trial (backend/docs/api-free-trial.md).
+      ApiCodes.trialEnded => errorTrialEnded,
+      ApiCodes.serviceAlreadyActive => adminErrorServiceAlreadyActive,
+      ApiCodes.doctorStatusNotChangeable => adminErrorDoctorStatusNotChangeable,
       // Branches, assistants (backend/docs/api-phase-2-clinic.md).
       'BRANCH_LIMIT_REACHED' => branchErrorLimitReached,
       'CANNOT_ARCHIVE_DEFAULT_BRANCH' => branchErrorArchiveDefault,
@@ -108,6 +112,12 @@ extension ApiErrorText on AppLocalizations {
         'PERIOD_LENGTH_OUT_OF_RANGE' => branchErrorPeriodLength,
         'PERIODS_OVERLAP' => branchErrorPeriodsOverlap,
         'ASSISTANT_PHONE_TAKEN' => assistantErrorPhoneTaken,
+        // Medical files (backend/docs/api-phase-3-files.md). FILE_TOO_LARGE with the
+        // admin's limit is RecordText.recordError.
+        'UPLOAD_NOT_FOUND' => recordUploadExpired,
+        'INVALID_SESSION' => recordErrorInvalidSession,
+        'INVALID_DATE' => recordErrorInvalidDate,
+        'TOO_MANY' => recordErrorTooMany,
         _ => null,
       };
 

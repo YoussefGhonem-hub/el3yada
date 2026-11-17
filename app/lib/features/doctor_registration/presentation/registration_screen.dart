@@ -27,6 +27,7 @@ import 'steps/professional_step.dart';
 import 'steps/review_step.dart';
 import 'widgets/form_parts.dart';
 import 'widgets/step_progress.dart';
+import 'welcome_dialog.dart';
 
 /// A4: doctor registration in 4 steps (account, professional, first branch,
 /// review), with a progress bar. [resubmit] is A7 "Edit and resubmit": the
@@ -40,9 +41,11 @@ import 'widgets/step_progress.dart';
 /// - Next checks the step first (spec section 11). Submit checks every step;
 ///   errors from the server (`errorCodes` by JSON path) open the first step
 ///   with an error and mark the fields.
-/// - Success: a new doctor's session is used at once and the router opens
-///   A6; after a resubmission the account is reloaded and the router moves
-///   from A7 to A6.
+/// - Success: a new doctor is active at once, in a free trial (spec 6.16):
+///   the welcome (the sign-up's one signature moment) says how long the
+///   trial lasts, then the session is used and the router opens the home.
+///   A7's resubmission (legacy doctors, still reviewed by the admin) reloads
+///   the account and the router moves from A7 to A6.
 class RegistrationScreen extends ConsumerStatefulWidget {
   const RegistrationScreen({super.key, this.resubmit = false});
 
@@ -161,8 +164,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
       } else {
         final device = await _device();
         final session = await repository.register(_form.toData(locale: locale, device: device), _form.license!);
-        await _finish(reduced);
-        // The router replaces this screen with A6.
+        if (!mounted) return;
+        setState(() => _status = SubmitStatus.success);
+        // The welcome is the moment; then the router replaces this screen with the home.
+        await showWelcomeDialog(context, trialDays: session.trial?.daysLeft);
         await auth.acceptSession(session);
       }
       // A6 must not show the registration as it was before this submission.

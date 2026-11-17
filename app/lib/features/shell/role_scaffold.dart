@@ -217,7 +217,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
       ],
     );
 
-    // The suspension banner (BR-G5, BR-G8) and the offline notice sit above
+    // The suspension banner (BR-G5, BR-G8), the trial countdown (BR-T6), "Verify your email" (A5) and the offline notice sit above
     // every clinic screen. The top bar shows Back, so screens don't.
     final content = ShellBackScope(
       child: !_isClinic
@@ -225,6 +225,8 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
           : Column(
               children: [
                 SuspensionBanner(billingPath: '${shell.basePath}/billing'),
+                const TrialBanner(),
+                const EmailVerifyBanner(),
                 const ClinicLoadError(),
                 Expanded(child: widget.child),
               ],

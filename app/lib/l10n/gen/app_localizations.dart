@@ -431,7 +431,7 @@ abstract class AppLocalizations {
   /// No description provided for @navSignups.
   ///
   /// In en, this message translates to:
-  /// **'Sign-up requests'**
+  /// **'Doctors'**
   String get navSignups;
 
   /// No description provided for @navAccounts.
@@ -965,7 +965,7 @@ abstract class AppLocalizations {
   /// No description provided for @regSubmit.
   ///
   /// In en, this message translates to:
-  /// **'Send for review'**
+  /// **'Create my account'**
   String get regSubmit;
 
   /// No description provided for @regResubmit.
@@ -1421,7 +1421,7 @@ abstract class AppLocalizations {
   /// No description provided for @regReviewIntro.
   ///
   /// In en, this message translates to:
-  /// **'Check your details, then send them for review.'**
+  /// **'Check your details, then create your account.'**
   String get regReviewIntro;
 
   /// No description provided for @regReviewIntroResubmit.
@@ -2030,12 +2030,6 @@ abstract class AppLocalizations {
   /// **'Fix the highlighted fields, then save.'**
   String get adminFixErrors;
 
-  /// No description provided for @adminSignupsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{No requests waiting} =1{1 request waiting} other{{count} requests waiting}}'**
-  String adminSignupsCount(int count);
-
   /// No description provided for @adminSignupsSearchHint.
   ///
   /// In en, this message translates to:
@@ -2069,19 +2063,19 @@ abstract class AppLocalizations {
   /// No description provided for @adminSignupsEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No sign-up requests waiting'**
+  /// **'No doctors yet'**
   String get adminSignupsEmptyTitle;
 
   /// No description provided for @adminSignupsEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'New doctors\' requests show up here as soon as they register.'**
+  /// **'Doctors show up here as soon as they sign up.'**
   String get adminSignupsEmptyBody;
 
   /// No description provided for @adminSignupsNoMatchTitle.
   ///
   /// In en, this message translates to:
-  /// **'No requests match your search'**
+  /// **'No doctors match your search'**
   String get adminSignupsNoMatchTitle;
 
   /// No description provided for @adminSignupsNoMatchBody.
@@ -2093,7 +2087,7 @@ abstract class AppLocalizations {
   /// No description provided for @adminSelectRequest.
   ///
   /// In en, this message translates to:
-  /// **'Choose a request to review it'**
+  /// **'Choose a doctor to see their account'**
   String get adminSelectRequest;
 
   /// No description provided for @adminSubmittedShort.
@@ -7623,6 +7617,930 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to {section}'**
   String backToSection(String section);
+
+  /// No description provided for @trialEndedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your free trial has ended'**
+  String get trialEndedTitle;
+
+  /// No description provided for @trialEndedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us to activate the service and keep using el3yada. Your patients and records are kept safe.'**
+  String get trialEndedBody;
+
+  /// No description provided for @trialEndedTitleAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'The clinic\'s free trial has ended'**
+  String get trialEndedTitleAssistant;
+
+  /// No description provided for @trialEndedBodyAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the doctor to contact us to activate the service. Then you can carry on as usual.'**
+  String get trialEndedBodyAssistant;
+
+  /// No description provided for @trialCheckAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get trialCheckAgain;
+
+  /// No description provided for @trialStillEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'The service isn\'t active yet.'**
+  String get trialStillEnded;
+
+  /// BR-T6: the shell banner in the last days of the free trial.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Your free trial ends today} =1{1 day left in your free trial} other{{days} days left in your free trial}}'**
+  String trialBanner(int days);
+
+  /// No description provided for @trialContactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact us'**
+  String get trialContactUs;
+
+  /// No description provided for @errorTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial has ended. Contact us to activate the service.'**
+  String get errorTrialEnded;
+
+  /// No description provided for @sessionFeeFreeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Free (trial)'**
+  String get sessionFeeFreeTrial;
+
+  /// No description provided for @sessionPlatformFeeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'No platform fee (free trial)'**
+  String get sessionPlatformFeeFree;
+
+  /// No description provided for @sessionConfirmFeeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'No fee: the clinic is in its free trial.'**
+  String get sessionConfirmFeeFree;
+
+  /// No description provided for @sessionSavedBodyFree.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} for {patient}. No fee (free trial).'**
+  String sessionSavedBodyFree(String type, String patient);
+
+  /// No description provided for @adminErrorServiceAlreadyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor\'s service is already active, so there\'s no trial to extend.'**
+  String get adminErrorServiceAlreadyActive;
+
+  /// No description provided for @adminErrorDoctorStatusNotChangeable.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be done for a doctor who is pending, rejected or disabled.'**
+  String get adminErrorDoctorStatusNotChangeable;
+
+  /// No description provided for @adminSettingTrialDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Free trial'**
+  String get adminSettingTrialDays;
+
+  /// No description provided for @adminAppliesToNewDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to doctors approved after the change'**
+  String get adminAppliesToNewDoctors;
+
+  /// No description provided for @adminDoctorsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All doctors'**
+  String get adminDoctorsFilterAll;
+
+  /// No description provided for @adminSignupsFilterTrialRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'In free trial'**
+  String get adminSignupsFilterTrialRunning;
+
+  /// No description provided for @adminSignupsFilterTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial ended'**
+  String get adminSignupsFilterTrialEnded;
+
+  /// No description provided for @adminDoctorsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No doctors} =1{1 doctor} other{{count} doctors}}'**
+  String adminDoctorsCount(int count);
+
+  /// No description provided for @adminTrialListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctors here'**
+  String get adminTrialListEmpty;
+
+  /// No description provided for @adminTrialListEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctors show up here by the state of their free trial.'**
+  String get adminTrialListEmptyBody;
+
+  /// No description provided for @adminServiceActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Service active'**
+  String get adminServiceActive;
+
+  /// No description provided for @adminTrialEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial ended'**
+  String get adminTrialEnded;
+
+  /// No description provided for @adminTrialDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Trial: ends today} =1{Trial: 1 day left} other{Trial: {days} days left}}'**
+  String adminTrialDaysLeft(int days);
+
+  /// No description provided for @adminSectionTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Free trial'**
+  String get adminSectionTrial;
+
+  /// No description provided for @adminServiceActiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The service is active. Sessions carry the platform fees.'**
+  String get adminServiceActiveBody;
+
+  /// No description provided for @adminTrialRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial ends on {date}. Sessions until then carry no fee.'**
+  String adminTrialRunningBody(String date);
+
+  /// No description provided for @adminTrialEndedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial ended on {date}. The doctor and their assistants can\'t use the clinic until you activate the service or extend the trial.'**
+  String adminTrialEndedBody(String date);
+
+  /// No description provided for @adminActivateService.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate service'**
+  String get adminActivateService;
+
+  /// No description provided for @adminActivateServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate the service for Dr. {name}?'**
+  String adminActivateServiceTitle(String name);
+
+  /// No description provided for @adminActivateServiceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The free trial ends now, and platform fees apply to every session from now on.'**
+  String get adminActivateServiceBody;
+
+  /// No description provided for @adminServiceActivatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Service activated for Dr. {name}.'**
+  String adminServiceActivatedMessage(String name);
+
+  /// No description provided for @adminExtendTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend trial'**
+  String get adminExtendTrial;
+
+  /// No description provided for @adminExtendTrialTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend Dr. {name}\'s free trial'**
+  String adminExtendTrialTitle(String name);
+
+  /// No description provided for @adminExtendTrialBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The days are added to the end of the trial, or to today if it has ended.'**
+  String get adminExtendTrialBody;
+
+  /// No description provided for @adminExtendTrialDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get adminExtendTrialDays;
+
+  /// No description provided for @adminTrialExtendedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name}\'s free trial now ends on {date}.'**
+  String adminTrialExtendedMessage(String name, String date);
+
+  /// No description provided for @adminAuditServiceActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Activated a doctor\'s service'**
+  String get adminAuditServiceActivated;
+
+  /// No description provided for @adminAuditTrialExtended.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Extended a doctor\'s free trial by 1 day} other{Extended a doctor\'s free trial by {days} days}}'**
+  String adminAuditTrialExtended(int days);
+
+  /// No description provided for @adminActionServiceActivated.
+  ///
+  /// In en, this message translates to:
+  /// **'Service activated'**
+  String get adminActionServiceActivated;
+
+  /// No description provided for @adminActionTrialExtended.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial extended'**
+  String get adminActionTrialExtended;
+
+  /// No description provided for @regWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to el3yada'**
+  String get regWelcomeTitle;
+
+  /// The welcome after sign-up: the free trial length (spec 6.16).
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{You have a free trial for 1 day.} other{You have a free trial for {days} days.}}'**
+  String regWelcomeTrial(int days);
+
+  /// No description provided for @regWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your patients and record sessions with no platform fees during the trial.'**
+  String get regWelcomeBody;
+
+  /// No description provided for @regWelcomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get regWelcomeStart;
+
+  /// No description provided for @adminDoctorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor account'**
+  String get adminDoctorTitle;
+
+  /// No description provided for @emailBannerDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide for now'**
+  String get emailBannerDismiss;
+
+  /// No description provided for @settingsVerifyEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your email address'**
+  String get settingsVerifyEmail;
+
+  /// No description provided for @patientTabFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get patientTabFiles;
+
+  /// No description provided for @recordCategoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get recordCategoryAll;
+
+  /// No description provided for @recordCategoryRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get recordCategoryRadiology;
+
+  /// No description provided for @recordCategoryLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests'**
+  String get recordCategoryLab;
+
+  /// No description provided for @recordCategoryPrescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescriptions'**
+  String get recordCategoryPrescription;
+
+  /// No description provided for @recordCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get recordCategoryOther;
+
+  /// No description provided for @recordChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} {count}'**
+  String recordChip(String name, int count);
+
+  /// No description provided for @recordOtherReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical report'**
+  String get recordOtherReport;
+
+  /// No description provided for @recordOtherReferral.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral'**
+  String get recordOtherReferral;
+
+  /// No description provided for @recordOtherSickLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Sick leave'**
+  String get recordOtherSickLeave;
+
+  /// No description provided for @recordOtherEcg.
+  ///
+  /// In en, this message translates to:
+  /// **'ECG'**
+  String get recordOtherEcg;
+
+  /// No description provided for @recordOtherEegEmg.
+  ///
+  /// In en, this message translates to:
+  /// **'EEG / EMG'**
+  String get recordOtherEegEmg;
+
+  /// No description provided for @recordOtherEndoscopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Endoscopy'**
+  String get recordOtherEndoscopy;
+
+  /// No description provided for @recordOtherConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Consent form'**
+  String get recordOtherConsent;
+
+  /// No description provided for @recordOtherCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Another type (type it)'**
+  String get recordOtherCustom;
+
+  /// No description provided for @recordOtherNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No type'**
+  String get recordOtherNone;
+
+  /// No description provided for @recordsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No files yet'**
+  String get recordsEmptyTitle;
+
+  /// No description provided for @recordsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan or upload lab results, X-rays and other papers. The patient sees them in their app.'**
+  String get recordsEmptyBody;
+
+  /// No description provided for @recordsEmptyCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'No files in this category'**
+  String get recordsEmptyCategory;
+
+  /// No description provided for @recordAddFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload files'**
+  String get recordAddFiles;
+
+  /// No description provided for @recordScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get recordScan;
+
+  /// No description provided for @recordDropHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop the files to upload them'**
+  String get recordDropHint;
+
+  /// No description provided for @recordFilesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file} other{{count} files}}'**
+  String recordFilesCount(int count);
+
+  /// No description provided for @recordPagesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 page} other{{count} pages}}'**
+  String recordPagesCount(int count);
+
+  /// No description provided for @sizeBytes.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} B'**
+  String sizeBytes(String value);
+
+  /// No description provided for @sizeKb.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} KB'**
+  String sizeKb(String value);
+
+  /// No description provided for @sizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} MB'**
+  String sizeMb(String value);
+
+  /// No description provided for @recordUploadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload files'**
+  String get recordUploadTitle;
+
+  /// No description provided for @recordScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a document'**
+  String get recordScanTitle;
+
+  /// No description provided for @recordEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit file details'**
+  String get recordEditTitle;
+
+  /// No description provided for @recordFieldCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get recordFieldCategory;
+
+  /// No description provided for @recordFieldOtherType.
+  ///
+  /// In en, this message translates to:
+  /// **'Document type (optional)'**
+  String get recordFieldOtherType;
+
+  /// No description provided for @recordFieldOtherTypeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get recordFieldOtherTypeText;
+
+  /// No description provided for @recordFieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (optional)'**
+  String get recordFieldTitle;
+
+  /// No description provided for @recordTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If left empty: {title}'**
+  String recordTitleHint(String title);
+
+  /// No description provided for @recordFieldDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Document date'**
+  String get recordFieldDate;
+
+  /// No description provided for @recordFieldNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get recordFieldNotes;
+
+  /// No description provided for @recordFieldSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Link to a visit'**
+  String get recordFieldSession;
+
+  /// No description provided for @recordNoSession.
+  ///
+  /// In en, this message translates to:
+  /// **'No visit'**
+  String get recordNoSession;
+
+  /// No description provided for @recordSessionOption.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} · {date}'**
+  String recordSessionOption(String type, String date);
+
+  /// No description provided for @recordCategoryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category'**
+  String get recordCategoryRequired;
+
+  /// No description provided for @recordFilesHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get recordFilesHeading;
+
+  /// No description provided for @recordDetailsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get recordDetailsHeading;
+
+  /// No description provided for @recordAddMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Add files'**
+  String get recordAddMore;
+
+  /// No description provided for @recordFromFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose files'**
+  String get recordFromFiles;
+
+  /// No description provided for @recordFromCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get recordFromCamera;
+
+  /// No description provided for @recordFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get recordFromGallery;
+
+  /// No description provided for @recordSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to the patient\'s file'**
+  String get recordSave;
+
+  /// No description provided for @recordSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to the patient\'s file'**
+  String get recordSaved;
+
+  /// No description provided for @recordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'File details saved'**
+  String get recordUpdated;
+
+  /// No description provided for @recordPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Making it smaller…'**
+  String get recordPreparing;
+
+  /// No description provided for @recordUploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {percent}%'**
+  String recordUploading(int percent);
+
+  /// No description provided for @recordUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get recordUploaded;
+
+  /// No description provided for @recordUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed'**
+  String get recordUploadFailed;
+
+  /// No description provided for @recordRemoveFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get recordRemoveFile;
+
+  /// No description provided for @recordTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'File larger than allowed ({mb} MB)'**
+  String recordTooLarge(int mb);
+
+  /// No description provided for @recordSavedSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduced from {from} to {to}'**
+  String recordSavedSpace(String from, String to);
+
+  /// No description provided for @recordWaitForUploads.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for every file to upload, or remove the ones that failed.'**
+  String get recordWaitForUploads;
+
+  /// No description provided for @recordNeedFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one file'**
+  String get recordNeedFiles;
+
+  /// No description provided for @recordUploadExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is no longer waiting. Upload it again.'**
+  String get recordUploadExpired;
+
+  /// No description provided for @recordErrorInvalidSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one of this patient\'s visits'**
+  String get recordErrorInvalidSession;
+
+  /// No description provided for @recordErrorInvalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'The document date can\'t be in the future'**
+  String get recordErrorInvalidDate;
+
+  /// No description provided for @recordErrorTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'One file can hold at most 20 attachments'**
+  String get recordErrorTooMany;
+
+  /// No description provided for @recordNoFilesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No files added yet'**
+  String get recordNoFilesYet;
+
+  /// No description provided for @recordScanReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the pages'**
+  String get recordScanReviewTitle;
+
+  /// No description provided for @recordScanAddPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan more pages'**
+  String get recordScanAddPages;
+
+  /// No description provided for @recordScanPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {number}'**
+  String recordScanPage(int number);
+
+  /// No description provided for @recordScanMoveEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Move earlier'**
+  String get recordScanMoveEarlier;
+
+  /// No description provided for @recordScanMoveLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Move later'**
+  String get recordScanMoveLater;
+
+  /// No description provided for @recordScanDeletePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete page'**
+  String get recordScanDeletePage;
+
+  /// No description provided for @recordScanMakePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Make one PDF'**
+  String get recordScanMakePdf;
+
+  /// No description provided for @recordScanBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the PDF…'**
+  String get recordScanBuilding;
+
+  /// No description provided for @recordScanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The scanner isn\'t available on this device.'**
+  String get recordScanUnavailable;
+
+  /// No description provided for @recordScanDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow camera access in the settings to scan.'**
+  String get recordScanDenied;
+
+  /// No description provided for @recordScanFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The scan didn\'t work. Try again.'**
+  String get recordScanFailed;
+
+  /// No description provided for @recordDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get recordDetails;
+
+  /// No description provided for @recordOpenWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Open with…'**
+  String get recordOpenWith;
+
+  /// No description provided for @recordDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get recordDownload;
+
+  /// No description provided for @recordShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get recordShare;
+
+  /// No description provided for @recordEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get recordEdit;
+
+  /// No description provided for @recordDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get recordDelete;
+
+  /// No description provided for @recordDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this file?'**
+  String get recordDeleteTitle;
+
+  /// No description provided for @recordDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears from the patient\'s file, for you and for the patient.'**
+  String get recordDeleteBody;
+
+  /// No description provided for @recordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'File deleted'**
+  String get recordDeleted;
+
+  /// No description provided for @recordDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'File saved'**
+  String get recordDownloaded;
+
+  /// No description provided for @recordCantOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'No app on this device opens this type of file.'**
+  String get recordCantOpen;
+
+  /// No description provided for @recordNoPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'This type of file opens in another app.'**
+  String get recordNoPreview;
+
+  /// No description provided for @recordPdfFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'This PDF couldn\'t be shown here. Open it with another app.'**
+  String get recordPdfFailed;
+
+  /// No description provided for @recordAttachmentOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{index} of {count}'**
+  String recordAttachmentOf(int index, int count);
+
+  /// No description provided for @recordAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {date}'**
+  String recordAdded(String date);
+
+  /// No description provided for @recordSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get recordSize;
+
+  /// No description provided for @recordSourceScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanned'**
+  String get recordSourceScan;
+
+  /// No description provided for @recordSourceUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploaded'**
+  String get recordSourceUpload;
+
+  /// No description provided for @recordSourceChat.
+  ///
+  /// In en, this message translates to:
+  /// **'From the chat'**
+  String get recordSourceChat;
+
+  /// No description provided for @recordVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get recordVisit;
+
+  /// No description provided for @recordPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous file'**
+  String get recordPrevious;
+
+  /// No description provided for @recordNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next file'**
+  String get recordNext;
+
+  /// No description provided for @recordLoadingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening the file…'**
+  String get recordLoadingFile;
+
+  /// No description provided for @activityRecordCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Added a file to the patient\'s record'**
+  String get activityRecordCreated;
+
+  /// No description provided for @activityRecordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited a file\'s details'**
+  String get activityRecordUpdated;
+
+  /// No description provided for @activityRecordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted a file'**
+  String get activityRecordDeleted;
+
+  /// No description provided for @activityActionRecordCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'File added'**
+  String get activityActionRecordCreated;
+
+  /// No description provided for @activityActionRecordUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'File edited'**
+  String get activityActionRecordUpdated;
+
+  /// No description provided for @activityActionRecordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'File deleted'**
+  String get activityActionRecordDeleted;
 }
 
 class _AppLocalizationsDelegate

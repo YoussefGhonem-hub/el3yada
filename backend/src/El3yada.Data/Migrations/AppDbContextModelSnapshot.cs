@@ -166,6 +166,10 @@ namespace El3yada.Data.Migrations
                     b.Property<string>("TermsEn")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TrialDays")
+                        .HasColumnType("int")
+                        .HasDefaultValue(14);
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)")
@@ -189,6 +193,8 @@ namespace El3yada.Data.Migrations
                             t.HasCheckConstraint("CK_AppSettings_MaxUpload", "([MaxUploadMb]>=(1) AND [MaxUploadMb]<=(200))");
 
                             t.HasCheckConstraint("CK_AppSettings_SingleRow", "([Id]=(1))");
+
+                            t.HasCheckConstraint("CK_AppSettings_TrialDays", "([TrialDays]>=(1) AND [TrialDays]<=(90))");
                         });
                 });
 
@@ -1627,7 +1633,7 @@ namespace El3yada.Data.Migrations
                         .HasMaxLength(7)
                         .IsUnicode(false)
                         .HasColumnType("char(7)")
-                        .HasDefaultValue("#0B5C8E")
+                        .HasDefaultValue("#0F4C45")
                         .IsFixedLength();
 
                     b.Property<decimal?>("RxCustomHeightMm")
@@ -1698,6 +1704,10 @@ namespace El3yada.Data.Migrations
                     b.Property<string>("TitleEn")
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime?>("TrialEndsAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasPrecision(3)
@@ -2358,6 +2368,9 @@ namespace El3yada.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<long>("StoredSizeBytes")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ThumbPath")
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
@@ -2369,6 +2382,8 @@ namespace El3yada.Data.Migrations
                     b.ToTable("MedicalRecordAttachments", null, t =>
                         {
                             t.HasCheckConstraint("CK_MedicalRecordAttachments_Size", "([SizeBytes]>(0))");
+
+                            t.HasCheckConstraint("CK_MedicalRecordAttachments_StoredSize", "([StoredSizeBytes]>(0))");
                         });
                 });
 
@@ -2721,6 +2736,69 @@ namespace El3yada.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("El3yada.Data.Entities.PendingUpload", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<long>("OriginalSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("PageCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StoredSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ThumbPath")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<Guid>("UploadedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "DoctorId" }, "IX_PendingUploads_DoctorId");
+
+                    b.HasIndex(new[] { "ExpiresAt" }, "IX_PendingUploads_ExpiresAt");
+
+                    b.ToTable("PendingUploads", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_PendingUploads_Sizes", "([SizeBytes]>(0) AND [StoredSizeBytes]>(0) AND [OriginalSizeBytes]>(0))");
+                        });
+                });
+
             modelBuilder.Entity("El3yada.Data.Entities.Prescription", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2750,6 +2828,9 @@ namespace El3yada.Data.Migrations
 
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly?>("FollowUpDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Kind")
                         .IsRequired()
@@ -4419,6 +4500,21 @@ namespace El3yada.Data.Migrations
                         .HasConstraintName("FK_PaymentScreenshots_PaymentId");
 
                     b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("El3yada.Data.Entities.PendingUpload", b =>
+                {
+                    b.HasOne("El3yada.Data.Entities.Doctor", null)
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .IsRequired()
+                        .HasConstraintName("FK_PendingUploads_DoctorId");
+
+                    b.HasOne("El3yada.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UploadedBy")
+                        .IsRequired()
+                        .HasConstraintName("FK_PendingUploads_UploadedBy");
                 });
 
             modelBuilder.Entity("El3yada.Data.Entities.Prescription", b =>

@@ -125,6 +125,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ConsultationFeePiasters).HasDefaultValue(1500);
             entity.Property(e => e.ExamFeePiasters).HasDefaultValue(3000);
             entity.Property(e => e.GracePeriodDays).HasDefaultValue(7);
+            entity.Property(e => e.TrialDays).HasDefaultValue(14);
             entity.Property(e => e.InstapayAccountName).HasMaxLength(100);
             entity.Property(e => e.InstapayAddress).HasMaxLength(200);
             entity.Property(e => e.InstapayInstructionsAr).HasMaxLength(2000);
@@ -844,7 +845,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.RxAccentColor)
                 .HasMaxLength(7)
                 .IsUnicode(false)
-                .HasDefaultValue("#0B5C8E")
+                .HasDefaultValue("#0F4C45")
                 .IsFixedLength();
             entity.Property(e => e.RxCustomHeightMm).HasColumnType("decimal(5, 1)");
             entity.Property(e => e.RxCustomWidthMm).HasColumnType("decimal(5, 1)");
@@ -867,6 +868,7 @@ public partial class AppDbContext : DbContext
                 .HasDefaultValue("pendingApproval");
             entity.Property(e => e.StatusChangedAt).HasPrecision(3);
             entity.Property(e => e.StatusReason).HasMaxLength(500);
+            entity.Property(e => e.TrialEndsAt).HasPrecision(3);
             entity.Property(e => e.Title).HasMaxLength(40);
             entity.Property(e => e.TitleEn).HasMaxLength(40);
             entity.Property(e => e.UpdatedAt)

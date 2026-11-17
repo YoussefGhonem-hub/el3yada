@@ -45,15 +45,19 @@ public static partial class NotificationTexts
     public const string DoctorRegistrationReceived = "doctorRegistrationReceived";
     public const string DoctorRegistrationResubmitted = "doctorRegistrationResubmitted";
     public const string DoctorRegistrationApproved = "doctorRegistrationApproved";
+    public const string DoctorWelcome = "doctorWelcome";
     public const string DoctorRegistrationRejected = "doctorRegistrationRejected";
     public const string PatientPasswordResetRequested = "patientPasswordResetRequested";
     public const string AssistantPasswordResetRequested = "assistantPasswordResetRequested";
 
-    /// <summary>To every active admin: «طلب تسجيل جديد».</summary>
+    /// <summary>
+    /// To every active admin: «طبيب جديد». For information only: the doctor's clinic is already open, on a free
+    /// trial (spec 6.16).
+    /// </summary>
     public static NotificationText RegistrationReceived(string doctorName, string specialtyAr, string specialtyEn) => new(
         DoctorRegistrationReceived,
-        "طلب تسجيل جديد",
-        "New sign-up request",
+        "طبيب جديد",
+        "New doctor",
         $"د. {doctorName} — {specialtyAr}",
         $"Dr {doctorName} — {specialtyEn}");
 
@@ -66,12 +70,30 @@ public static partial class NotificationTexts
         $"Dr {doctorName} — {specialtyEn}");
 
     /// <summary>To the doctor: «تم تفعيل حسابك».</summary>
-    public static NotificationText RegistrationApproved() => new(
+    /// <summary>To a new doctor at sign-up: the clinic is ready, with the free trial's length (spec 6.16).</summary>
+    public static NotificationText Welcome(int trialDays) => new(
+        DoctorWelcome,
+        "أهلاً بك في «العيادة»",
+        "Welcome to el3yada",
+        $"حسابك جاهز ويمكنك استخدام العيادة الآن. معك فترة تجريبية مجانية لمدة {ArabicDays(trialDays)}.",
+        $"Your account is ready and you can use your clinic now, with a free trial of {trialDays} {(trialDays == 1 ? "day" : "days")}.");
+
+    /// <summary>To a doctor who signed up before the free trial existed and was approved by an admin.</summary>
+    public static NotificationText RegistrationApproved(int trialDays) => new(
         DoctorRegistrationApproved,
         "تم تفعيل حسابك",
         "Your account is approved",
-        "تمت الموافقة على طلبك، ويمكنك الآن استخدام العيادة.",
-        "Your sign-up was approved. You can start using el3yada now.");
+        $"تمت الموافقة على طلبك، ويمكنك الآن استخدام العيادة. معك فترة تجريبية مجانية لمدة {ArabicDays(trialDays)}.",
+        $"Your sign-up was approved. You can start using el3yada now, with a free trial of {trialDays} {(trialDays == 1 ? "day" : "days")}.");
+
+    /// <summary>«يوم واحد»، «يومين»، «٣ أيام»، «١٤ يوماً» in the app's Arabic plural forms.</summary>
+    internal static string ArabicDays(int days) => days switch
+    {
+        1 => "يوم واحد",
+        2 => "يومين",
+        >= 3 and <= 10 => $"{days} أيام",
+        _ => $"{days} يوماً",
+    };
 
     /// <summary>To the doctor: «تم رفض طلبك» with the admin's reason (A7).</summary>
     public static NotificationText RegistrationRejected(string reason) => new(

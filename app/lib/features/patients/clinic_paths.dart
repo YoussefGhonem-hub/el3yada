@@ -39,6 +39,15 @@ class ClinicPaths {
   /// D9 from the patient's Sessions tab.
   String patientSession(String patientId, String sessionId) => '${patient(patientId)}/sessions/$sessionId';
 
+  /// D11 upload, or D10 scan with [scan] (spec 6.3).
+  String uploadFiles(String patientId, {bool scan = false}) => '${patient(patientId)}/files/upload${scan ? '?scan=1' : ''}';
+
+  /// D12: one medical record.
+  String record(String patientId, String recordId) => '${patient(patientId)}/files/$recordId';
+
+  /// D12 "edit details".
+  String editRecord(String patientId, String recordId) => '${record(patientId, recordId)}/edit';
+
   /// D8 from the home, with a patient search first.
   String get homeNewSession => '$home/sessions/new';
 

@@ -179,7 +179,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navInvoices => 'Invoices';
 
   @override
-  String get navSignups => 'Sign-up requests';
+  String get navSignups => 'Doctors';
 
   @override
   String get navAccounts => 'Accounts';
@@ -484,7 +484,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get regBack => 'Back';
 
   @override
-  String get regSubmit => 'Send for review';
+  String get regSubmit => 'Create my account';
 
   @override
   String get regResubmit => 'Send again for review';
@@ -729,7 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get regReviewIntro => 'Check your details, then send them for review.';
+  String get regReviewIntro => 'Check your details, then create your account.';
 
   @override
   String get regReviewIntroResubmit =>
@@ -1101,18 +1101,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminFixErrors => 'Fix the highlighted fields, then save.';
 
   @override
-  String adminSignupsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count requests waiting',
-      one: '1 request waiting',
-      zero: 'No requests waiting',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get adminSignupsSearchHint => 'Name, email, mobile or number';
 
   @override
@@ -1128,21 +1116,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminSortOldest => 'Oldest first (queue order)';
 
   @override
-  String get adminSignupsEmptyTitle => 'No sign-up requests waiting';
+  String get adminSignupsEmptyTitle => 'No doctors yet';
 
   @override
   String get adminSignupsEmptyBody =>
-      'New doctors\' requests show up here as soon as they register.';
+      'Doctors show up here as soon as they sign up.';
 
   @override
-  String get adminSignupsNoMatchTitle => 'No requests match your search';
+  String get adminSignupsNoMatchTitle => 'No doctors match your search';
 
   @override
   String get adminSignupsNoMatchBody =>
       'Check the spelling, or search by mobile or syndicate number.';
 
   @override
-  String get adminSelectRequest => 'Choose a request to review it';
+  String get adminSelectRequest => 'Choose a doctor to see their account';
 
   @override
   String adminSubmittedShort(String time) {
@@ -4460,4 +4448,583 @@ class AppLocalizationsEn extends AppLocalizations {
   String backToSection(String section) {
     return 'Back to $section';
   }
+
+  @override
+  String get trialEndedTitle => 'Your free trial has ended';
+
+  @override
+  String get trialEndedBody =>
+      'Contact us to activate the service and keep using el3yada. Your patients and records are kept safe.';
+
+  @override
+  String get trialEndedTitleAssistant => 'The clinic\'s free trial has ended';
+
+  @override
+  String get trialEndedBodyAssistant =>
+      'Ask the doctor to contact us to activate the service. Then you can carry on as usual.';
+
+  @override
+  String get trialCheckAgain => 'Check again';
+
+  @override
+  String get trialStillEnded => 'The service isn\'t active yet.';
+
+  @override
+  String trialBanner(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left in your free trial',
+      one: '1 day left in your free trial',
+      zero: 'Your free trial ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trialContactUs => 'Contact us';
+
+  @override
+  String get errorTrialEnded =>
+      'The free trial has ended. Contact us to activate the service.';
+
+  @override
+  String get sessionFeeFreeTrial => 'Free (trial)';
+
+  @override
+  String get sessionPlatformFeeFree => 'No platform fee (free trial)';
+
+  @override
+  String get sessionConfirmFeeFree =>
+      'No fee: the clinic is in its free trial.';
+
+  @override
+  String sessionSavedBodyFree(String type, String patient) {
+    return '$type for $patient. No fee (free trial).';
+  }
+
+  @override
+  String get adminErrorServiceAlreadyActive =>
+      'This doctor\'s service is already active, so there\'s no trial to extend.';
+
+  @override
+  String get adminErrorDoctorStatusNotChangeable =>
+      'This can\'t be done for a doctor who is pending, rejected or disabled.';
+
+  @override
+  String get adminSettingTrialDays => 'Free trial';
+
+  @override
+  String get adminAppliesToNewDoctors =>
+      'Applies to doctors approved after the change';
+
+  @override
+  String get adminDoctorsFilterAll => 'All doctors';
+
+  @override
+  String get adminSignupsFilterTrialRunning => 'In free trial';
+
+  @override
+  String get adminSignupsFilterTrialEnded => 'Trial ended';
+
+  @override
+  String adminDoctorsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors',
+      one: '1 doctor',
+      zero: 'No doctors',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminTrialListEmpty => 'No doctors here';
+
+  @override
+  String get adminTrialListEmptyBody =>
+      'Doctors show up here by the state of their free trial.';
+
+  @override
+  String get adminServiceActive => 'Service active';
+
+  @override
+  String get adminTrialEnded => 'Trial ended';
+
+  @override
+  String adminTrialDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Trial: $days days left',
+      one: 'Trial: 1 day left',
+      zero: 'Trial: ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminSectionTrial => 'Free trial';
+
+  @override
+  String get adminServiceActiveBody =>
+      'The service is active. Sessions carry the platform fees.';
+
+  @override
+  String adminTrialRunningBody(String date) {
+    return 'The free trial ends on $date. Sessions until then carry no fee.';
+  }
+
+  @override
+  String adminTrialEndedBody(String date) {
+    return 'The free trial ended on $date. The doctor and their assistants can\'t use the clinic until you activate the service or extend the trial.';
+  }
+
+  @override
+  String get adminActivateService => 'Activate service';
+
+  @override
+  String adminActivateServiceTitle(String name) {
+    return 'Activate the service for Dr. $name?';
+  }
+
+  @override
+  String get adminActivateServiceBody =>
+      'The free trial ends now, and platform fees apply to every session from now on.';
+
+  @override
+  String adminServiceActivatedMessage(String name) {
+    return 'Service activated for Dr. $name.';
+  }
+
+  @override
+  String get adminExtendTrial => 'Extend trial';
+
+  @override
+  String adminExtendTrialTitle(String name) {
+    return 'Extend Dr. $name\'s free trial';
+  }
+
+  @override
+  String get adminExtendTrialBody =>
+      'The days are added to the end of the trial, or to today if it has ended.';
+
+  @override
+  String get adminExtendTrialDays => 'Days';
+
+  @override
+  String adminTrialExtendedMessage(String name, String date) {
+    return 'Dr. $name\'s free trial now ends on $date.';
+  }
+
+  @override
+  String get adminAuditServiceActivated => 'Activated a doctor\'s service';
+
+  @override
+  String adminAuditTrialExtended(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Extended a doctor\'s free trial by $days days',
+      one: 'Extended a doctor\'s free trial by 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminActionServiceActivated => 'Service activated';
+
+  @override
+  String get adminActionTrialExtended => 'Trial extended';
+
+  @override
+  String get regWelcomeTitle => 'Welcome to el3yada';
+
+  @override
+  String regWelcomeTrial(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'You have a free trial for $days days.',
+      one: 'You have a free trial for 1 day.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regWelcomeBody =>
+      'Add your patients and record sessions with no platform fees during the trial.';
+
+  @override
+  String get regWelcomeStart => 'Get started';
+
+  @override
+  String get adminDoctorTitle => 'Doctor account';
+
+  @override
+  String get emailBannerDismiss => 'Hide for now';
+
+  @override
+  String get settingsVerifyEmail => 'Verify your email address';
+
+  @override
+  String get patientTabFiles => 'Files';
+
+  @override
+  String get recordCategoryAll => 'All';
+
+  @override
+  String get recordCategoryRadiology => 'Radiology';
+
+  @override
+  String get recordCategoryLab => 'Lab tests';
+
+  @override
+  String get recordCategoryPrescription => 'Prescriptions';
+
+  @override
+  String get recordCategoryOther => 'Other';
+
+  @override
+  String recordChip(String name, int count) {
+    return '$name $count';
+  }
+
+  @override
+  String get recordOtherReport => 'Medical report';
+
+  @override
+  String get recordOtherReferral => 'Referral';
+
+  @override
+  String get recordOtherSickLeave => 'Sick leave';
+
+  @override
+  String get recordOtherEcg => 'ECG';
+
+  @override
+  String get recordOtherEegEmg => 'EEG / EMG';
+
+  @override
+  String get recordOtherEndoscopy => 'Endoscopy';
+
+  @override
+  String get recordOtherConsent => 'Consent form';
+
+  @override
+  String get recordOtherCustom => 'Another type (type it)';
+
+  @override
+  String get recordOtherNone => 'No type';
+
+  @override
+  String get recordsEmptyTitle => 'No files yet';
+
+  @override
+  String get recordsEmptyBody =>
+      'Scan or upload lab results, X-rays and other papers. The patient sees them in their app.';
+
+  @override
+  String get recordsEmptyCategory => 'No files in this category';
+
+  @override
+  String get recordAddFiles => 'Upload files';
+
+  @override
+  String get recordScan => 'Scan';
+
+  @override
+  String get recordDropHint => 'Drop the files to upload them';
+
+  @override
+  String recordFilesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '1 file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordPagesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages',
+      one: '1 page',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
+
+  @override
+  String get recordUploadTitle => 'Upload files';
+
+  @override
+  String get recordScanTitle => 'Scan a document';
+
+  @override
+  String get recordEditTitle => 'Edit file details';
+
+  @override
+  String get recordFieldCategory => 'Category';
+
+  @override
+  String get recordFieldOtherType => 'Document type (optional)';
+
+  @override
+  String get recordFieldOtherTypeText => 'Type';
+
+  @override
+  String get recordFieldTitle => 'Title (optional)';
+
+  @override
+  String recordTitleHint(String title) {
+    return 'If left empty: $title';
+  }
+
+  @override
+  String get recordFieldDate => 'Document date';
+
+  @override
+  String get recordFieldNotes => 'Notes (optional)';
+
+  @override
+  String get recordFieldSession => 'Link to a visit';
+
+  @override
+  String get recordNoSession => 'No visit';
+
+  @override
+  String recordSessionOption(String type, String date) {
+    return '$type · $date';
+  }
+
+  @override
+  String get recordCategoryRequired => 'Choose a category';
+
+  @override
+  String get recordFilesHeading => 'Files';
+
+  @override
+  String get recordDetailsHeading => 'Details';
+
+  @override
+  String get recordAddMore => 'Add files';
+
+  @override
+  String get recordFromFiles => 'Choose files';
+
+  @override
+  String get recordFromCamera => 'Camera';
+
+  @override
+  String get recordFromGallery => 'Photos';
+
+  @override
+  String get recordSave => 'Save to the patient\'s file';
+
+  @override
+  String get recordSaved => 'Saved to the patient\'s file';
+
+  @override
+  String get recordUpdated => 'File details saved';
+
+  @override
+  String get recordPreparing => 'Making it smaller…';
+
+  @override
+  String recordUploading(int percent) {
+    return 'Uploading $percent%';
+  }
+
+  @override
+  String get recordUploaded => 'Uploaded';
+
+  @override
+  String get recordUploadFailed => 'Upload failed';
+
+  @override
+  String get recordRemoveFile => 'Remove';
+
+  @override
+  String recordTooLarge(int mb) {
+    return 'File larger than allowed ($mb MB)';
+  }
+
+  @override
+  String recordSavedSpace(String from, String to) {
+    return 'Reduced from $from to $to';
+  }
+
+  @override
+  String get recordWaitForUploads =>
+      'Wait for every file to upload, or remove the ones that failed.';
+
+  @override
+  String get recordNeedFiles => 'Add at least one file';
+
+  @override
+  String get recordUploadExpired =>
+      'This file is no longer waiting. Upload it again.';
+
+  @override
+  String get recordErrorInvalidSession =>
+      'Choose one of this patient\'s visits';
+
+  @override
+  String get recordErrorInvalidDate =>
+      'The document date can\'t be in the future';
+
+  @override
+  String get recordErrorTooMany => 'One file can hold at most 20 attachments';
+
+  @override
+  String get recordNoFilesYet => 'No files added yet';
+
+  @override
+  String get recordScanReviewTitle => 'Check the pages';
+
+  @override
+  String get recordScanAddPages => 'Scan more pages';
+
+  @override
+  String recordScanPage(int number) {
+    return 'Page $number';
+  }
+
+  @override
+  String get recordScanMoveEarlier => 'Move earlier';
+
+  @override
+  String get recordScanMoveLater => 'Move later';
+
+  @override
+  String get recordScanDeletePage => 'Delete page';
+
+  @override
+  String get recordScanMakePdf => 'Make one PDF';
+
+  @override
+  String get recordScanBuilding => 'Making the PDF…';
+
+  @override
+  String get recordScanUnavailable =>
+      'The scanner isn\'t available on this device.';
+
+  @override
+  String get recordScanDenied => 'Allow camera access in the settings to scan.';
+
+  @override
+  String get recordScanFailed => 'The scan didn\'t work. Try again.';
+
+  @override
+  String get recordDetails => 'Details';
+
+  @override
+  String get recordOpenWith => 'Open with…';
+
+  @override
+  String get recordDownload => 'Download';
+
+  @override
+  String get recordShare => 'Share';
+
+  @override
+  String get recordEdit => 'Edit details';
+
+  @override
+  String get recordDelete => 'Delete';
+
+  @override
+  String get recordDeleteTitle => 'Delete this file?';
+
+  @override
+  String get recordDeleteBody =>
+      'It disappears from the patient\'s file, for you and for the patient.';
+
+  @override
+  String get recordDeleted => 'File deleted';
+
+  @override
+  String get recordDownloaded => 'File saved';
+
+  @override
+  String get recordCantOpen => 'No app on this device opens this type of file.';
+
+  @override
+  String get recordNoPreview => 'This type of file opens in another app.';
+
+  @override
+  String get recordPdfFailed =>
+      'This PDF couldn\'t be shown here. Open it with another app.';
+
+  @override
+  String recordAttachmentOf(int index, int count) {
+    return '$index of $count';
+  }
+
+  @override
+  String recordAdded(String date) {
+    return 'Added $date';
+  }
+
+  @override
+  String get recordSize => 'Size';
+
+  @override
+  String get recordSourceScan => 'Scanned';
+
+  @override
+  String get recordSourceUpload => 'Uploaded';
+
+  @override
+  String get recordSourceChat => 'From the chat';
+
+  @override
+  String get recordVisit => 'Visit';
+
+  @override
+  String get recordPrevious => 'Previous file';
+
+  @override
+  String get recordNext => 'Next file';
+
+  @override
+  String get recordLoadingFile => 'Opening the file…';
+
+  @override
+  String get activityRecordCreated => 'Added a file to the patient\'s record';
+
+  @override
+  String get activityRecordUpdated => 'Edited a file\'s details';
+
+  @override
+  String get activityRecordDeleted => 'Deleted a file';
+
+  @override
+  String get activityActionRecordCreated => 'File added';
+
+  @override
+  String get activityActionRecordUpdated => 'File edited';
+
+  @override
+  String get activityActionRecordDeleted => 'File deleted';
 }

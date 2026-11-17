@@ -318,15 +318,20 @@ void main() {
   });
 
   group('FakeRegistrationRepository', () {
-    test('registers, then answers myRegistration and the license for the new account', () async {
+    test('registers an active doctor in a free trial, then answers myRegistration and the license', () async {
       final auth = FakeAuthRepository(delay: Duration.zero);
       final repository = FakeRegistrationRepository(auth: auth, delay: Duration.zero);
       final form = filledForm();
       final session = await repository.register(form.toData(locale: 'ar'), form.license!);
 
-      expect(session.doctorStatus, DoctorStatus.pendingApproval);
+      // No approval step (backend/docs/api-free-trial.md).
+      expect(session.doctorStatus, DoctorStatus.active);
+      expect(session.trial?.ended, isFalse);
+      expect(session.trial?.daysLeft, FakeRegistrationRepository.trialDays);
+      expect(session.trial!.endsAt.isAfter(DateTime.now().toUtc().add(const Duration(days: 13))), isTrue);
       expect(auth.current, session);
       final view = await repository.myRegistration();
+      expect(view.status, DoctorStatus.active);
       expect(view.specialty.nameEn, 'Cardiology');
       expect(view.branch?.phones.single.number, '+20223581234');
       expect((await repository.myLicense())?.contentType, LicenseFile.png);

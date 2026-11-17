@@ -32,6 +32,9 @@ public sealed class RegistrationListQuery : IPagedQuery
     /// <summary>Submitted before (UTC).</summary>
     public DateTime? To { get; init; }
 
+    /// <summary><c>running</c> or <c>ended</c>: only doctors whose free trial is in that state (spec 6.16).</summary>
+    public string? Trial { get; init; }
+
     /// <summary><c>oldest</c> (default: the queue order) or <c>newest</c>.</summary>
     public string Sort { get; init; } = "oldest";
 
@@ -47,6 +50,7 @@ public sealed class RegistrationListQueryValidator : AbstractValidator<Registrat
         this.AddPagingRules();
         RuleFor(x => x.Status).OneOf([.. DoctorStatuses.All, "all"]);
         RuleFor(x => x.Sort).OneOf("oldest", "newest");
+        RuleFor(x => x.Trial).OneOf("running", "ended");
         RuleFor(x => x.Search).MaxChars(100);
         RuleFor(x => x.Governorate).MaxChars(50);
     }
@@ -62,7 +66,8 @@ public sealed record RegistrationListItem(
     string Status,
     DateTime SubmittedAt,
     DateTime CreatedAt,
-    bool EmailVerified);
+    bool EmailVerified,
+    TrialView? Trial);
 
 /// <summary><c>decision</c>: <c>approve</c>, or <c>reject</c> with a <c>reason</c> (3–500 characters) the doctor sees in A7.</summary>
 public sealed record ReviewDoctorRegistrationRequest(Guid? DoctorId, string? Decision, string? Reason);
@@ -111,6 +116,16 @@ public sealed class AdminRegistrationsController(
                 || (phone != null && d.User.Phone == phone));
         }
 
+        var now = time.GetUtcNow().UtcDateTime;
+        if (query.Trial == "running")
+        {
+            doctors = doctors.Where(d => d.TrialEndsAt > now);
+        }
+        else if (query.Trial == "ended")
+        {
+            doctors = doctors.Where(d => d.TrialEndsAt <= now);
+        }
+
         if (query.SpecialtyId is { } specialtyId)
         {
             doctors = doctors.Where(d => d.SpecialtyId == specialtyId);
@@ -135,27 +150,34 @@ public sealed class AdminRegistrationsController(
             ? doctors.OrderByDescending(d => d.StatusChangedAt ?? d.CreatedAt).ThenByDescending(d => d.UserId)
             : doctors.OrderBy(d => d.StatusChangedAt ?? d.CreatedAt).ThenBy(d => d.UserId);
 
-        var page = await doctors
-            .Select(d => new RegistrationListItem(
-                d.UserId,
-                d.FullName,
-                d.Title,
-                new SpecialtyView(d.Specialty.Id, d.Specialty.NameAr, d.Specialty.NameEn),
-                d.DefaultBranch != null ? d.DefaultBranch.Governorate : null,
-                d.DefaultBranch != null ? d.DefaultBranch.City : null,
-                d.Status,
-                d.StatusChangedAt ?? d.CreatedAt,
-                d.CreatedAt,
-                d.User.EmailVerifiedAt != null))
+        var rows = await doctors
+            .Select(d => new
+            {
+                Item = new RegistrationListItem(
+                    d.UserId,
+                    d.FullName,
+                    d.Title,
+                    new SpecialtyView(d.Specialty.Id, d.Specialty.NameAr, d.Specialty.NameEn),
+                    d.DefaultBranch != null ? d.DefaultBranch.Governorate : null,
+                    d.DefaultBranch != null ? d.DefaultBranch.City : null,
+                    d.Status,
+                    d.StatusChangedAt ?? d.CreatedAt,
+                    d.CreatedAt,
+                    d.User.EmailVerifiedAt != null,
+                    null),
+                d.TrialEndsAt,
+            })
             .ToPageAsync(query, cancellationToken);
-        return Ok(page);
+        return Ok(new PagedResult<RegistrationListItem>(
+            [.. rows.Items.Select(row => row.Item with { Trial = TrialView.Of(row.TrialEndsAt, now) })],
+            rows.Page, rows.PageSize, rows.TotalCount));
     }
 
     /// <summary>AD3: everything the doctor submitted in A4, plus earlier reviews.</summary>
     [HttpGet("doctorRegistrations/{doctorId:guid}")]
     public async Task<IActionResult> Get(Guid doctorId, CancellationToken cancellationToken)
     {
-        var view = await DoctorRegistrationView.LoadAsync(db, doctorId, cancellationToken);
+        var view = await DoctorRegistrationView.LoadAsync(db, doctorId, time.GetUtcNow().UtcDateTime, cancellationToken);
         if (view is null)
         {
             return this.NotFoundProblem();
@@ -208,6 +230,8 @@ public sealed class AdminRegistrationsController(
         var reason = approve ? null : Text.CollapseSpaces(request.Reason!);
         var adminId = User.UserId();
         var now = time.GetUtcNow().UtcDateTime;
+        var trialDays = await db.AppSettings.Select(s => s.TrialDays).SingleAsync(cancellationToken);
+        var trialEndsAt = Trial.EndsAt(now, trialDays);
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         // Only one review wins when two admins answer at the same moment.
@@ -220,6 +244,7 @@ public sealed class AdminRegistrationsController(
                     .SetProperty(d => d.StatusChangedAt, now)
                     .SetProperty(d => d.ApprovedAt, now)
                     .SetProperty(d => d.ApprovedBy, adminId)
+                    .SetProperty(d => d.TrialEndsAt, trialEndsAt)
                     .SetProperty(d => d.UpdatedAt, now), cancellationToken)
             : await db.Doctors
                 .Where(d => d.UserId == doctorId && d.Status == DoctorStatuses.PendingApproval)
@@ -235,17 +260,17 @@ public sealed class AdminRegistrationsController(
 
         notifications.Add(
             doctorId,
-            approve ? NotificationTexts.RegistrationApproved() : NotificationTexts.RegistrationRejected(reason!),
+            approve ? NotificationTexts.RegistrationApproved(trialDays) : NotificationTexts.RegistrationRejected(reason!),
             approve ? "/home" : "/registration/rejected",
             new { doctorId });
         auditor.Add(
             approve ? AuditActions.DoctorRegistrationApproved : AuditActions.DoctorRegistrationRejected,
-            AuditTargets.Doctor, doctorId, approve ? null : new { reason }, doctorId: doctorId);
+            AuditTargets.Doctor, doctorId, approve ? new { trialEndsAt } : new { reason }, doctorId: doctorId);
         await db.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
         stateCache.Invalidate(doctorId);
 
-        return Ok(await DoctorRegistrationView.LoadAsync(db, doctorId, cancellationToken));
+        return Ok(await DoctorRegistrationView.LoadAsync(db, doctorId, now, cancellationToken));
     }
 
     private static string? ReasonOf(string? detailsJson)

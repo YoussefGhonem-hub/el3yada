@@ -32,7 +32,7 @@ public sealed class LocalFileStorage : IFileStorage
         StoragePath path, Stream content, string contentType, long? maxBytes = null,
         CancellationToken cancellationToken = default)
     {
-        var type = FileTypes.Normalize(contentType)
+        var type = FileTypes.NormalizeStored(contentType)
             ?? throw new FileStorageException(ErrorCodes.FileTypeNotAllowed, "Only JPEG, PNG, WebP and PDF files are accepted.");
         if (type != path.ContentType)
         {
@@ -150,6 +150,50 @@ public sealed class LocalFileStorage : IFileStorage
 
         using var content = new MemoryStream(jpeg, writable: false);
         return await SaveAsync(thumbnail, content, FileTypes.Jpeg, cancellationToken: cancellationToken);
+    }
+
+    public async Task<StoredFile> SaveThumbnailAsync(Stream image, StoragePath thumbnail, CancellationToken cancellationToken = default)
+    {
+        if (thumbnail.ContentType != FileTypes.Jpeg)
+        {
+            throw new ArgumentException("A thumbnail path ends in .jpg.", nameof(thumbnail));
+        }
+
+        byte[] jpeg;
+        try
+        {
+            jpeg = Thumbnailer.CreateJpeg(image, _thumbnailMaxPx);
+        }
+        catch (FileStorageException)
+        {
+            throw;
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        {
+            throw new FileStorageException(ErrorCodes.FileContentInvalid, "The thumbnail is not a readable image.");
+        }
+
+        using var content = new MemoryStream(jpeg, writable: false);
+        return await SaveAsync(thumbnail, content, FileTypes.Jpeg, cancellationToken: cancellationToken);
+    }
+
+    public Task<bool> MoveAsync(StoragePath from, StoragePath to, CancellationToken cancellationToken = default)
+    {
+        if (from.ContentType != to.ContentType)
+        {
+            throw new ArgumentException($"A {from.ContentType} file can't move to {to}.", nameof(to));
+        }
+
+        var source = FullPathOf(from);
+        if (!File.Exists(source))
+        {
+            return Task.FromResult(false);
+        }
+
+        var target = FullPathOf(to);
+        Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+        File.Move(source, target, overwrite: true);
+        return Task.FromResult(true);
     }
 
     /// <summary>

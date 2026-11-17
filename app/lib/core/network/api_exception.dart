@@ -130,6 +130,16 @@ abstract final class ApiCodes {
   static const doctorRejected = 'DOCTOR_REJECTED';
   static const doctorSuspended = 'DOCTOR_SUSPENDED';
 
+  // Free trial (backend/docs/api-free-trial.md).
+  static const trialEnded = 'TRIAL_ENDED';
+  // Medical files (backend/docs/api-phase-3-files.md).
+  static const uploadNotFound = 'UPLOAD_NOT_FOUND';
+  static const invalidSession = 'INVALID_SESSION';
+  static const invalidDate = 'INVALID_DATE';
+  static const tooMany = 'TOO_MANY';
+  static const serviceAlreadyActive = 'SERVICE_ALREADY_ACTIVE';
+  static const doctorStatusNotChangeable = 'DOCTOR_STATUS_NOT_CHANGEABLE';
+
   // Patients and sessions (backend/docs/api-phase-2-patients.md).
   static const notLinked = 'NOT_LINKED';
   static const patientAlreadyLinked = 'PATIENT_ALREADY_LINKED';

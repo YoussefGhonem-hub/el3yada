@@ -15,7 +15,7 @@ public sealed partial record StoragePath
     /// <summary>The Path columns are NVARCHAR(400).</summary>
     public const int MaxLength = 400;
 
-    private static readonly string[] Roots = ["medical", "prescriptions", "chat", "payments", "doctors"];
+    private static readonly string[] Roots = ["medical", "prescriptions", "chat", "payments", "doctors", "uploads", "catalogs"];
 
     // Each segment starts with a letter or digit: no "", ".", "..", "\", ":" or spaces, so a path
     // can never leave the storage root. \z, not $: in .NET $ also matches before a final newline.
@@ -43,6 +43,14 @@ public sealed partial record StoragePath
     // medical/{doctorId}/{patientId}/{recordId}/{attachmentId}.thumb.jpg
     public static StoragePath MedicalAttachmentThumbnail(Guid doctorId, Guid patientId, Guid recordId, Guid attachmentId) =>
         Create($"medical/{Id(doctorId)}/{Id(patientId)}/{Id(recordId)}/{Id(attachmentId)}.thumb.jpg");
+
+    // uploads/{doctorId}/{uploadId}.{ext}: a medical file waiting for createRecord (24 hours at most)
+    public static StoragePath PendingUpload(Guid doctorId, Guid uploadId, string contentType) =>
+        Create($"uploads/{Id(doctorId)}/{Id(uploadId)}.{FileTypes.ExtensionFor(contentType)}");
+
+    // uploads/{doctorId}/{uploadId}.thumb.jpg
+    public static StoragePath PendingUploadThumbnail(Guid doctorId, Guid uploadId) =>
+        Create($"uploads/{Id(doctorId)}/{Id(uploadId)}.thumb.jpg");
 
     // prescriptions/{doctorId}/{patientId}/{rxId}.pdf
     public static StoragePath PrescriptionPdf(Guid doctorId, Guid patientId, Guid prescriptionId) =>
@@ -74,6 +82,13 @@ public sealed partial record StoragePath
     public static StoragePath DoctorLicense(Guid doctorId, Guid fileId, string contentType) =>
         Create($"doctors/{Id(doctorId)}/license/{Id(fileId)}.{FileTypes.ExtensionFor(contentType)}");
 
+    // catalogs/v{n}.sqlite.gz: a published catalog version (spec 9.5, AD20)
+    public static StoragePath Catalog(int versionNumber)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(versionNumber, 1);
+        return Create($"catalogs/v{versionNumber}.sqlite.gz");
+    }
+
     // doctors/{doctorId}/branding/{logo|signature}.png
     public static StoragePath DoctorBranding(Guid doctorId, BrandingImage image) =>
         Create($"doctors/{Id(doctorId)}/branding/{(image == BrandingImage.Logo ? "logo" : "signature")}.png");
@@ -91,7 +106,9 @@ public sealed partial record StoragePath
         }
 
         var segments = value.Split('/');
-        if (segments.Length < 3 || !Roots.Contains(segments[0]) || !segments.All(SegmentPattern().IsMatch))
+        // Every path is root/…/file, except catalogs, which are root/file.
+        var minSegments = segments[0] == "catalogs" ? 2 : 3;
+        if (segments.Length < minSegments || !Roots.Contains(segments[0]) || !segments.All(SegmentPattern().IsMatch))
         {
             return false;
         }

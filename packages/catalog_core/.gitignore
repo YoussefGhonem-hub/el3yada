@@ -1,0 +1,3 @@
+.dart_tool/
+# A library package: the app and the builder pin versions in their own lock files.
+pubspec.lock

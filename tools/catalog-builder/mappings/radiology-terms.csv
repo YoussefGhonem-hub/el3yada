@@ -1,0 +1,74 @@
+kind,value,name_en,name_ar,search_terms
+modality,XR,X-ray,أشعة عادية (إكس راي),xray x-ray radiograph plain film أشعة عادية اكس راي
+modality,CT,Computed tomography,أشعة مقطعية,ct scan computed tomography أشعة مقطعية
+modality,MR,MRI,رنين مغناطيسي,mri magnetic resonance رنين مغناطيسي
+modality,US,Ultrasound,سونار (موجات صوتية),ultrasound sonar sonography سونار موجات صوتية
+modality,MG,Mammography,ماموجرام,mammogram mammography ماموجرام أشعة الثدي
+modality,DXA,Bone densitometry,قياس كثافة العظام,dexa dxa bone density densitometry كثافة العظام
+modality,NM,Nuclear medicine,مسح ذري,nuclear isotope scan scintigraphy مسح ذري
+modality,PT,PET,مسح بالبوزيترون (PET),pet مسح بالبوزيترون
+modality,PT+CT,PET-CT,مسح بالبوزيترون (PET-CT),pet ct مسح بالبوزيترون
+modality,NM.SPECT+CT,SPECT-CT,مسح ذري مقطعي (SPECT-CT),spect مسح ذري
+modality,RF,"Fluoroscopy (barium, HSG)",أشعة بالصبغة,fluoroscopy contrast barium أشعة بالصبغة
+subtype,Doppler,Doppler,دوبلر,doppler duplex دوبلر
+subtype,Angio,Angiography,أشعة على الشرايين بالصبغة,angiography angiogram angio قسطرة تشخيصية شرايين
+subtype,Cone beam,Cone beam CT,أشعة مقطعية مخروطية,cbct cone beam
+region,Chest,Chest,الصدر,chest thorax صدر
+region,Abdomen,Abdomen,البطن,abdomen abdominal بطن
+region,Pelvis,Pelvis,الحوض,pelvis pelvic حوض
+region,Head,Head,الرأس,head رأس راس
+region,Neck,Neck,الرقبة,neck رقبة
+region,Breast,Breast,الثدي,breast ثدي
+region,Upper extremity,Upper limb,الطرف العلوي,arm upper limb ذراع طرف علوي
+region,Lower extremity,Lower limb,الطرف السفلي,leg lower limb رجل ساق طرف سفلي
+region,Extremity,Limb,الأطراف,limb extremity أطراف
+region,Whole Body,Whole body,الجسم كله,whole body الجسم كله
+focus,Brain,Brain,المخ,brain مخ دماغ
+focus,Heart,Heart,القلب,heart cardiac قلب
+modality_focus,US/Heart,Echocardiography,إيكو على القلب,echo echocardiography إيكو ايكو
+focus,Kidney,Kidney,الكلى,kidney renal kub كلى كلية مسالك
+focus,Urinary bladder,Urinary bladder,المثانة,bladder kub مثانة مسالك
+focus,Ureter,Ureter,الحالب,ureter kub حالب مسالك
+focus,Prostate,Prostate,البروستاتا,prostate بروستاتا
+focus,Liver,Liver,الكبد,liver hepatic كبد
+focus,Gallbladder,Gallbladder,المرارة,gallbladder مرارة
+focus,Biliary ducts,Biliary ducts,القنوات المرارية,biliary mrcp قنوات مرارية
+focus,Pancreas,Pancreas,البنكرياس,pancreas بنكرياس
+focus,Spleen,Spleen,الطحال,spleen طحال
+focus,Thyroid gland,Thyroid gland,الغدة الدرقية,thyroid درقية
+focus,Lung,Lung,الرئة,lung رئة
+focus,Sinuses,Paranasal sinuses,الجيوب الأنفية,sinus sinuses جيوب أنفية
+focus,Orbit,Orbit,محجر العين,orbit محجر عين
+focus,Teeth,Teeth,الأسنان,teeth dental أسنان
+focus,Mandible,Mandible,الفك السفلي,mandible jaw فك
+focus,Spine,Spine,العمود الفقري,spine back عمود فقري فقرات
+focus,Spine.cervical,Cervical spine,الفقرات العنقية,cervical spine neck فقرات عنقية رقبة
+focus,Spine.thoracic,Thoracic spine,الفقرات الصدرية,dorsal thoracic spine فقرات صدرية ظهر
+focus,Spine.lumbar,Lumbar spine,الفقرات القطنية,lumbar spine lumbosacral back فقرات قطنية ظهر
+focus,Sacrum,Sacrum,العجز,sacrum عجز
+focus,Shoulder,Shoulder,الكتف,shoulder كتف
+focus,Elbow,Elbow,الكوع,elbow كوع
+focus,Wrist,Wrist,الرسغ,wrist رسغ
+focus,Hand,Hand,اليد,hand يد كف
+focus,Hip,Hip,مفصل الفخذ,hip حوض فخذ
+focus,Knee,Knee,الركبة,knee ركبة
+focus,Ankle,Ankle,الكاحل,ankle كاحل
+focus,Foot,Foot,القدم,foot قدم
+focus,Uterus,Uterus,الرحم,uterus رحم
+focus,Ovary,Ovary,المبيض,ovary ovaries مبيض
+focus,Fallopian tubes,Fallopian tubes,قناتا فالوب,hsg tubes قنوات فالوب
+focus,Scrotum,Scrotum,كيس الصفن,scrotum scrotal خصية
+focus,Testicle,Testicle,الخصية,testis testicle خصية
+focus,Carotid arteries,Carotid arteries,الشريان السباتي,carotid شرايين الرقبة
+focus,Coronary arteries,Coronary arteries,الشرايين التاجية,coronary شرايين تاجية القلب
+focus,Lower extremity veins,Leg veins,أوردة الساقين,veins venous dvt أوردة دوالي
+focus,Lower extremity vein,Leg vein,أوردة الساقين,veins venous dvt أوردة دوالي
+focus,Lower extremity artery,Leg arteries,شرايين الساقين,arteries arterial شرايين
+focus,Lower extremity vessels,Leg vessels,أوعية الساقين,vessels أوعية دموية
+focus,Neck vessels,Neck vessels,أوعية الرقبة,carotid vessels أوعية الرقبة
+focus,Salivary gland,Salivary glands,الغدد اللعابية,salivary غدد لعابية
+focus,Temporomandibular joint,Temporomandibular joint,مفصل الفك,tmj مفصل الفك
+focus,Skull,Skull,الجمجمة,skull جمجمة
+focus,Facial bones,Facial bones,عظام الوجه,face facial عظام الوجه
+focus,Bone,Bone,العظام,bone bones عظام
+focus,Skeletal system,Skeleton,الهيكل العظمي,skeleton bone عظام

@@ -1,0 +1,403 @@
+specialty_name_en,item_type,value
+General,drugGroup,analgesics
+General,drugGroup,nsaids
+General,drugGroup,antibiotics
+General,drugGroup,gastric_acid
+General,drugGroup,vitamins
+General,drugGroup,supplements
+General,drugGroup,antihistamines
+General,labCode,58410-2
+General,labCode,57021-8
+General,labCode,30341-2
+General,labCode,1988-5
+General,labCode,1558-6
+General,labCode,24356-8
+Internal Medicine,drugGroup,antihypertensives
+Internal Medicine,drugGroup,antidiabetics_oral
+Internal Medicine,drugGroup,insulins
+Internal Medicine,drugGroup,gastric_acid
+Internal Medicine,drugGroup,antiemetics
+Internal Medicine,drugGroup,antispasmodics
+Internal Medicine,drugGroup,laxatives
+Internal Medicine,drugGroup,antidiarrheals
+Internal Medicine,drugGroup,digestive
+Internal Medicine,drugGroup,antibiotics
+Internal Medicine,drugGroup,lipid_lowering
+Internal Medicine,labCode,58410-2
+Internal Medicine,labCode,57021-8
+Internal Medicine,labCode,24325-3
+Internal Medicine,labCode,1742-6
+Internal Medicine,labCode,1920-8
+Internal Medicine,labCode,24362-6
+Internal Medicine,labCode,2160-0
+Internal Medicine,labCode,3091-6
+Internal Medicine,labCode,24331-1
+Internal Medicine,labCode,4548-4
+Internal Medicine,labCode,1558-6
+Internal Medicine,labCode,1521-4
+Internal Medicine,labCode,3016-3
+Internal Medicine,labCode,24356-8
+Internal Medicine,radiologyCode,36643-5
+Internal Medicine,radiologyCode,24558-9
+Pediatrics,drugGroup,analgesics
+Pediatrics,drugGroup,antibiotics
+Pediatrics,drugGroup,antihistamines
+Pediatrics,drugGroup,ors
+Pediatrics,drugGroup,vitamins
+Pediatrics,drugGroup,iron_folic
+Pediatrics,drugGroup,cough
+Pediatrics,drugGroup,cold_flu
+Pediatrics,drugGroup,antidiarrheals
+Pediatrics,drugGroup,infant_nutrition
+Pediatrics,route,ORAL.LIQUID
+Pediatrics,route,RECTAL
+Pediatrics,labCode,58410-2
+Pediatrics,labCode,57021-8
+Pediatrics,labCode,1988-5
+Pediatrics,labCode,10704-5
+Pediatrics,labCode,24356-8
+Pediatrics,radiologyCode,36643-5
+Pediatrics,radiologyCode,36554-4
+Pediatrics,radiologyCode,24558-9
+Obstetrics and Gynecology,drugGroup,sex_hormones
+Obstetrics and Gynecology,drugGroup,fertility
+Obstetrics and Gynecology,drugGroup,iron_folic
+Obstetrics and Gynecology,drugGroup,antifungals
+Obstetrics and Gynecology,drugGroup,obstetric
+Obstetrics and Gynecology,drugGroup,vaginal_care
+Obstetrics and Gynecology,route,VAGINAL
+Obstetrics and Gynecology,labCode,21198-7
+Obstetrics and Gynecology,labCode,2106-3
+Obstetrics and Gynecology,labCode,58410-2
+Obstetrics and Gynecology,labCode,882-1
+Obstetrics and Gynecology,labCode,8040-8
+Obstetrics and Gynecology,labCode,8039-0
+Obstetrics and Gynecology,labCode,8015-0
+Obstetrics and Gynecology,labCode,8014-3
+Obstetrics and Gynecology,labCode,7853-5
+Obstetrics and Gynecology,labCode,13949-3
+Obstetrics and Gynecology,labCode,15067-2
+Obstetrics and Gynecology,labCode,10501-5
+Obstetrics and Gynecology,labCode,2842-3
+Obstetrics and Gynecology,labCode,38476-8
+Obstetrics and Gynecology,radiologyCode,24869-0
+Obstetrics and Gynecology,radiologyCode,11525-3
+Obstetrics and Gynecology,radiologyCode,24677-7
+Obstetrics and Gynecology,radiologyCode,25022-5
+Obstetrics and Gynecology,radiologyCode,26175-0
+Obstetrics and Gynecology,radiologyCode,26214-7
+Obstetrics and Gynecology,radiologyRegion,Pelvis
+Obstetrics and Gynecology,radiologyRegion,Breast
+Obstetrics and Gynecology,radiologyModality,MG
+Orthopedics,drugGroup,nsaids
+Orthopedics,drugGroup,muscle_relaxants
+Orthopedics,drugGroup,vitamins
+Orthopedics,drugGroup,osteoporosis
+Orthopedics,drugGroup,joint_care
+Orthopedics,drugGroup,topical_analgesics
+Orthopedics,drugGroup,analgesics
+Orthopedics,labCode,62292-8
+Orthopedics,labCode,17861-6
+Orthopedics,labCode,3084-1
+Orthopedics,labCode,30341-2
+Orthopedics,labCode,1988-5
+Orthopedics,radiologyCode,38268-9
+Orthopedics,radiologyCode,24970-6
+Orthopedics,radiologyCode,24942-5
+Orthopedics,radiologyCode,36709-4
+Orthopedics,radiologyCode,24802-1
+Orthopedics,radiologyCode,30691-0
+Orthopedics,radiologyCode,24968-0
+Orthopedics,radiologyCode,30679-5
+Orthopedics,radiologyCode,24935-9
+Orthopedics,radiologyRegion,Upper extremity
+Orthopedics,radiologyRegion,Lower extremity
+Orthopedics,radiologyRegion,Extremity
+Orthopedics,radiologyRegion,Spine
+Orthopedics,radiologyRegion,Spine.cervical
+Orthopedics,radiologyRegion,Spine.thoracic
+Orthopedics,radiologyRegion,Spine.lumbar
+Orthopedics,radiologyRegion,Sacrum
+Orthopedics,radiologyModality,DXA
+Dermatology,drugGroup,topical_steroids
+Dermatology,drugGroup,anti_acne
+Dermatology,drugGroup,antifungals
+Dermatology,drugGroup,antihistamines
+Dermatology,drugGroup,skin_other
+Dermatology,drugGroup,cosmetics
+Dermatology,route,TOPICAL
+Dermatology,labCode,667-6
+Dermatology,labCode,580-1
+Dermatology,labCode,58410-2
+ENT,drugGroup,nasal
+ENT,drugGroup,cold_flu
+ENT,drugGroup,antihistamines
+ENT,drugGroup,ear
+ENT,drugGroup,antibiotics
+ENT,drugGroup,cough
+ENT,labCode,58410-2
+ENT,labCode,5370-2
+ENT,labCode,626-2
+ENT,radiologyCode,30588-8
+ENT,radiologyCode,24843-5
+ENT,radiologyCode,30721-5
+ENT,radiologyRegion,Sinuses
+Ophthalmology,drugGroup,eye
+Ophthalmology,drugGroup,antiglaucoma
+Ophthalmology,route,EYE
+Ophthalmology,labCode,1558-6
+Ophthalmology,labCode,4548-4
+Ophthalmology,radiologyCode,30587-0
+Ophthalmology,radiologyRegion,Orbit
+Cardiology,drugGroup,antihypertensives
+Cardiology,drugGroup,antiplatelets
+Cardiology,drugGroup,anticoagulants
+Cardiology,drugGroup,lipid_lowering
+Cardiology,drugGroup,antiarrhythmics
+Cardiology,drugGroup,antianginals
+Cardiology,drugGroup,diuretics
+Cardiology,drugGroup,heart_failure
+Cardiology,labCode,24331-1
+Cardiology,labCode,10839-9
+Cardiology,labCode,6598-7
+Cardiology,labCode,13969-1
+Cardiology,labCode,30934-4
+Cardiology,labCode,33762-6
+Cardiology,labCode,6301-6
+Cardiology,labCode,5902-2
+Cardiology,labCode,24326-1
+Cardiology,labCode,2951-2
+Cardiology,labCode,2823-3
+Cardiology,radiologyCode,42148-7
+Cardiology,radiologyCode,80859-2
+Cardiology,radiologyCode,36643-5
+Cardiology,radiologyCode,79073-3
+Cardiology,radiologyCode,39420-5
+Cardiology,radiologyCode,39421-3
+Cardiology,radiologyCode,43765-7
+Cardiology,radiologyRegion,Heart
+Cardiology,radiologyRegion,Coronary arteries
+Neurology,drugGroup,antiepileptics
+Neurology,drugGroup,antiparkinson
+Neurology,drugGroup,migraine
+Neurology,drugGroup,neuropathic
+Neurology,drugGroup,dementia
+Neurology,labCode,2132-9
+Neurology,labCode,4086-5
+Neurology,labCode,3432-2
+Neurology,labCode,3968-5
+Neurology,labCode,30471-7
+Neurology,radiologyCode,24590-2
+Neurology,radiologyCode,24725-4
+Neurology,radiologyCode,30799-1
+Neurology,radiologyCode,24968-0
+Neurology,radiologyCode,30679-5
+Neurology,radiologyCode,24935-9
+Neurology,radiologyRegion,Brain
+Neurology,radiologyRegion,Spine.cervical
+Neurology,radiologyRegion,Spine.thoracic
+Neurology,radiologyRegion,Spine.lumbar
+Urology,drugGroup,prostate_urinary
+Urology,drugGroup,urinary_antiseptics
+Urology,drugGroup,erectile
+Urology,labCode,24356-8
+Urology,labCode,630-4
+Urology,labCode,2857-1
+Urology,labCode,10886-0
+Urology,labCode,13361-1
+Urology,labCode,2160-0
+Urology,radiologyCode,38036-0
+Urology,radiologyCode,115638-9
+Urology,radiologyCode,24799-9
+Urology,radiologyCode,25019-1
+Urology,radiologyCode,25002-7
+Urology,radiologyRegion,Kidney
+Urology,radiologyRegion,Urinary bladder
+Urology,radiologyRegion,Ureter
+Urology,radiologyRegion,Prostate
+Urology,radiologyRegion,Scrotum
+Urology,radiologyRegion,Testicle
+Chest and Pulmonology,drugGroup,respiratory_inhaled
+Chest and Pulmonology,drugGroup,cough
+Chest and Pulmonology,drugGroup,antibiotics
+Chest and Pulmonology,labCode,58410-2
+Chest and Pulmonology,labCode,24336-0
+Chest and Pulmonology,labCode,624-7
+Chest and Pulmonology,radiologyCode,36643-5
+Chest and Pulmonology,radiologyCode,36554-4
+Chest and Pulmonology,radiologyCode,29252-4
+Chest and Pulmonology,radiologyRegion,Chest
+Chest and Pulmonology,radiologyRegion,Lung
+Gastroenterology and Hepatology,drugGroup,gastric_acid
+Gastroenterology and Hepatology,drugGroup,antiemetics
+Gastroenterology and Hepatology,drugGroup,laxatives
+Gastroenterology and Hepatology,drugGroup,antispasmodics
+Gastroenterology and Hepatology,drugGroup,hepatoprotectives
+Gastroenterology and Hepatology,drugGroup,antidiarrheals
+Gastroenterology and Hepatology,drugGroup,digestive
+Gastroenterology and Hepatology,labCode,24325-3
+Gastroenterology and Hepatology,labCode,1742-6
+Gastroenterology and Hepatology,labCode,1920-8
+Gastroenterology and Hepatology,labCode,1975-2
+Gastroenterology and Hepatology,labCode,1751-7
+Gastroenterology and Hepatology,labCode,16128-1
+Gastroenterology and Hepatology,labCode,5196-1
+Gastroenterology and Hepatology,labCode,10704-5
+Gastroenterology and Hepatology,labCode,17780-8
+Gastroenterology and Hepatology,labCode,5176-3
+Gastroenterology and Hepatology,labCode,5902-2
+Gastroenterology and Hepatology,labCode,6301-6
+Gastroenterology and Hepatology,labCode,1834-1
+Gastroenterology and Hepatology,radiologyCode,24558-9
+Gastroenterology and Hepatology,radiologyCode,36813-4
+Gastroenterology and Hepatology,radiologyCode,36952-0
+Gastroenterology and Hepatology,radiologyCode,58740-2
+Gastroenterology and Hepatology,radiologyCode,28614-6
+Gastroenterology and Hepatology,radiologyRegion,Abdomen
+Gastroenterology and Hepatology,radiologyRegion,Liver
+Gastroenterology and Hepatology,radiologyRegion,Biliary ducts
+Endocrinology and Diabetes,drugGroup,antidiabetics_oral
+Endocrinology and Diabetes,drugGroup,insulins
+Endocrinology and Diabetes,drugGroup,thyroid
+Endocrinology and Diabetes,drugGroup,osteoporosis
+Endocrinology and Diabetes,labCode,4548-4
+Endocrinology and Diabetes,labCode,1558-6
+Endocrinology and Diabetes,labCode,1521-4
+Endocrinology and Diabetes,labCode,3016-3
+Endocrinology and Diabetes,labCode,3024-7
+Endocrinology and Diabetes,labCode,3051-0
+Endocrinology and Diabetes,labCode,2143-6
+Endocrinology and Diabetes,labCode,8099-4
+Endocrinology and Diabetes,labCode,62292-8
+Endocrinology and Diabetes,labCode,2731-8
+Endocrinology and Diabetes,labCode,2842-3
+Endocrinology and Diabetes,labCode,9318-7
+Endocrinology and Diabetes,radiologyCode,25010-0
+Endocrinology and Diabetes,radiologyCode,38268-9
+Endocrinology and Diabetes,radiologyRegion,Thyroid gland
+Endocrinology and Diabetes,radiologyModality,DXA
+Nephrology,drugGroup,antihypertensives
+Nephrology,drugGroup,diuretics
+Nephrology,drugGroup,renal
+Nephrology,drugGroup,iron_folic
+Nephrology,drugGroup,hematology
+Nephrology,labCode,24362-6
+Nephrology,labCode,2160-0
+Nephrology,labCode,3091-6
+Nephrology,labCode,24326-1
+Nephrology,labCode,2951-2
+Nephrology,labCode,2823-3
+Nephrology,labCode,9318-7
+Nephrology,labCode,24356-8
+Nephrology,labCode,17861-6
+Nephrology,labCode,2777-1
+Nephrology,labCode,2731-8
+Nephrology,labCode,58410-2
+Nephrology,radiologyCode,38036-0
+Nephrology,radiologyRegion,Kidney
+Psychiatry,drugGroup,antipsychotics
+Psychiatry,drugGroup,antidepressants
+Psychiatry,drugGroup,anxiolytics_hypnotics
+Psychiatry,drugGroup,mood_stabilizers
+Psychiatry,drugGroup,dementia
+Psychiatry,labCode,14334-7
+Psychiatry,labCode,3016-3
+Psychiatry,labCode,4086-5
+Psychiatry,radiologyCode,24590-2
+General Surgery,drugGroup,antibiotics
+General Surgery,drugGroup,analgesics
+General Surgery,drugGroup,nsaids
+General Surgery,drugGroup,local_anesthetics
+General Surgery,drugGroup,venous_hemorrhoids
+General Surgery,drugGroup,skin_other
+General Surgery,drugGroup,gastric_acid
+General Surgery,drugGroup,antiemetics
+General Surgery,labCode,58410-2
+General Surgery,labCode,5902-2
+General Surgery,labCode,6301-6
+General Surgery,labCode,14979-9
+General Surgery,labCode,1558-6
+General Surgery,labCode,2345-7
+General Surgery,labCode,2160-0
+General Surgery,labCode,24325-3
+General Surgery,labCode,882-1
+General Surgery,labCode,5196-1
+General Surgery,labCode,16128-1
+General Surgery,labCode,7918-6
+General Surgery,radiologyCode,24558-9
+General Surgery,radiologyCode,36813-4
+General Surgery,radiologyCode,36952-0
+General Surgery,radiologyCode,36643-5
+General Surgery,radiologyCode,26214-7
+General Surgery,radiologyCode,26175-0
+General Surgery,radiologyCode,39420-5
+General Surgery,radiologyCode,24842-7
+General Surgery,radiologyRegion,Abdomen
+Dentistry,drugGroup,analgesics
+Dentistry,drugGroup,nsaids
+Dentistry,drugGroup,antibiotics
+Dentistry,drugGroup,oral_dental
+Dentistry,drugGroup,local_anesthetics
+Dentistry,route,MOUTH
+Dentistry,radiologyCode,24828-6
+Dentistry,radiologyCode,115585-2
+Dentistry,radiologyCode,99633-0
+Dentistry,radiologyRegion,Teeth
+Dentistry,radiologyRegion,Mandible
+Dentistry,radiologyRegion,Temporomandibular joint
+Physiotherapy,drugGroup,nsaids
+Physiotherapy,drugGroup,muscle_relaxants
+Physiotherapy,drugGroup,topical_analgesics
+Physiotherapy,drugGroup,joint_care
+Physiotherapy,drugGroup,analgesics
+Physiotherapy,labCode,62292-8
+Physiotherapy,labCode,17861-6
+Physiotherapy,labCode,30341-2
+Physiotherapy,labCode,1988-5
+Physiotherapy,radiologyCode,24970-6
+Physiotherapy,radiologyCode,24942-5
+Physiotherapy,radiologyCode,36709-4
+Physiotherapy,radiologyCode,24968-0
+Physiotherapy,radiologyCode,30679-5
+Physiotherapy,radiologyCode,24935-9
+Physiotherapy,radiologyCode,24802-1
+Physiotherapy,radiologyRegion,Upper extremity
+Physiotherapy,radiologyRegion,Lower extremity
+Physiotherapy,radiologyRegion,Extremity
+Physiotherapy,radiologyRegion,Spine
+Physiotherapy,radiologyRegion,Spine.cervical
+Physiotherapy,radiologyRegion,Spine.thoracic
+Physiotherapy,radiologyRegion,Spine.lumbar
+General Practice,drugGroup,analgesics
+General Practice,drugGroup,nsaids
+General Practice,drugGroup,antibiotics
+General Practice,drugGroup,gastric_acid
+General Practice,drugGroup,antihistamines
+General Practice,drugGroup,cold_flu
+General Practice,drugGroup,cough
+General Practice,drugGroup,antispasmodics
+General Practice,drugGroup,antiemetics
+General Practice,drugGroup,antidiarrheals
+General Practice,drugGroup,ors
+General Practice,drugGroup,vitamins
+General Practice,drugGroup,iron_folic
+General Practice,drugGroup,antiparasitics
+General Practice,drugGroup,antihypertensives
+General Practice,drugGroup,antidiabetics_oral
+General Practice,labCode,58410-2
+General Practice,labCode,57021-8
+General Practice,labCode,30341-2
+General Practice,labCode,1988-5
+General Practice,labCode,1558-6
+General Practice,labCode,2345-7
+General Practice,labCode,1521-4
+General Practice,labCode,4548-4
+General Practice,labCode,24356-8
+General Practice,labCode,10704-5
+General Practice,labCode,24325-3
+General Practice,labCode,24362-6
+General Practice,labCode,24331-1
+General Practice,labCode,3016-3
+General Practice,radiologyCode,36643-5
+General Practice,radiologyCode,24558-9
+General Practice,radiologyCode,24869-0

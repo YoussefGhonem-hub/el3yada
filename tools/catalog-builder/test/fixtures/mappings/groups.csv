@@ -1,0 +1,13 @@
+id,name_en,name_ar
+analgesics,Analgesics & antipyretics,مسكنات وخافض للحرارة
+nsaids,NSAIDs,مضادات الالتهاب غير الستيرويدية
+gastric_acid,"Antacids, PPIs & H2 blockers",مضادات الحموضة وحماية المعدة
+antihypertensives,Antihypertensives,أدوية الضغط
+lipid_lowering,Lipid-lowering drugs,أدوية الكوليسترول والدهون
+corticosteroids,Systemic corticosteroids,الكورتيزون
+topical_steroids,Topical corticosteroids,كريمات الكورتيزون
+eye,Eye preparations,قطرات ومراهم العين
+antipsychotics,Antipsychotics,مضادات الذهان
+cold_flu,Cold & flu products,أدوية البرد والإنفلونزا
+supplements,Supplements & herbal products,مكملات غذائية وأعشاب
+other,Other,أخرى

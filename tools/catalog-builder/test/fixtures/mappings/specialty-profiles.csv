@@ -1,0 +1,13 @@
+specialty_name_en,item_type,value
+General,drugGroup,analgesics
+General,drugGroup,gastric_acid
+General,labCode,99001-0
+Cardiology,drugGroup,antihypertensives
+Cardiology,drugGroup,lipid_lowering
+Cardiology,labCode,99002-8
+Cardiology,radiologyCode,99022-6
+Cardiology,radiologyRegion,Heart
+Cardiology,radiologyModality,US
+Dermatology,drugGroup,topical_steroids
+Dermatology,route,TOPICAL
+Psychiatry,drugGroup,antipsychotics

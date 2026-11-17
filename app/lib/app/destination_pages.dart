@@ -9,6 +9,9 @@ import '../features/admin/presentation/profile/admin_profile_screen.dart';
 import '../features/admin/presentation/settings/admin_settings_screen.dart';
 import '../features/admin/presentation/signups/signup_requests_screen.dart';
 import '../features/admin/presentation/signups/signup_review.dart';
+import '../features/catalog/presentation/admin/catalogs_screen.dart';
+import '../features/catalog/presentation/admin/specialties_screen.dart';
+import '../features/catalog/presentation/admin/specialty_editor_screen.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/clinic/domain/clinic_permissions.dart';
 import '../features/clinic_admin/clinic_admin_routes.dart';
@@ -39,6 +42,9 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   AdminRoutes.settings: (_) => const AdminSettingsScreen(),
   AdminRoutes.admins: (_) => const AdminUsersScreen(),
   AdminRoutes.audit: (_) => const AuditLogScreen(),
+  // AD19 specialty profiles, AD20 catalogs.
+  AdminRoutes.specialties: (_) => const SpecialtiesScreen(),
+  AdminRoutes.catalogs: (_) => const CatalogsScreen(),
   // Clinic settings (D24, AS12), branches (D28), assistants (D25), activity (D27).
   ClinicAdminRoutes.doctorSettings: (_) => const ClinicSettingsScreen(),
   ClinicAdminRoutes.assistantSettings: (_) => const ClinicSettingsScreen(),
@@ -62,6 +68,13 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
   // AD18, opened from the profile button in the top bar.
   AdminRoutes.settings: [
     GoRoute(path: 'profile', builder: (context, state) => const AdminProfileScreen()),
+  ],
+  // AD19's editor.
+  AdminRoutes.specialties: [
+    GoRoute(
+      path: ':specialtyId',
+      builder: (context, state) => SpecialtyEditorScreen(specialtyId: state.pathParameters['specialtyId']!),
+    ),
   ],
   // D22 (also the top bar's profile button) and D37.
   ClinicAdminRoutes.doctorSettings: [

@@ -7,6 +7,8 @@ import '../../../../core/search/search_normalizer.dart' show parseStrength;
 import '../../../../core/theme/motion.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../catalog/application/catalog_search_provider.dart';
+import '../../../catalog/data/local_catalog_search.dart' show mayBeUnavailable;
+import '../../../catalog/presentation/catalog_text.dart';
 import '../../../catalog/domain/catalog_search.dart';
 import '../../domain/prescription_models.dart';
 import '../../pdf/rx_text.dart';
@@ -715,7 +717,8 @@ class _DrugHitTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final details = [?hit.activeIngredient, ?hit.route, ?hit.manufacturer, if (hit.strengthHint != null && hit.activeIngredient == null) hit.strengthHint!];
+    final l10n = AppLocalizations.of(context);
+    final details = [?hit.activeIngredient, if (hit.route case final route?) l10n.catalogRouteName(route), ?hit.manufacturer, if (hit.strengthHint != null && hit.activeIngredient == null) hit.strengthHint!];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: Row(
@@ -732,6 +735,12 @@ class _DrugHitTile extends StatelessWidget {
                   Text(
                     details.join(' · '),
                     style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  ),
+                // The drug dataset marks it N/A: it comes last, muted (catalog feature).
+                if (mayBeUnavailable(hit))
+                  Text(
+                    l10n.catalogMayBeUnavailable,
+                    style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontStyle: FontStyle.italic),
                   ),
               ],
             ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/platform/app_platform.dart';
 import '../core/settings/app_settings.dart';
 import '../core/theme/app_theme.dart';
+import '../features/catalog/presentation/catalog_setup_host.dart';
 import '../l10n/gen/app_localizations.dart';
 import 'router.dart';
 
@@ -27,6 +28,8 @@ class El3yadaApp extends ConsumerWidget {
       theme: desktop ? AppTheme.desktopLight() : AppTheme.light(),
       darkTheme: desktop ? AppTheme.desktopDark() : AppTheme.dark(),
       themeMode: settings.themeMode,
+      // Keeps the medical catalog current and opens D0 when it's needed.
+      builder: (context, child) => CatalogSetupHost(child: child ?? const SizedBox.shrink()),
     );
   }
 }

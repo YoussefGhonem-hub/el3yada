@@ -18,4 +18,13 @@ abstract final class AdminRoutes {
 
   /// AD15.
   static const audit = '/admin/audit';
+
+  /// AD19: specialty profiles, and one specialty's editor.
+  static const specialties = '/admin/specialties';
+
+  static String specialty(String specialtyId) => '$specialties/$specialtyId';
+
+  /// AD20: catalog versions, custom items and doctor reports (also the route
+  /// of the «بلاغ عن عنصر في الكتالوج» notification).
+  static const catalogs = '/admin/catalogs';
 }

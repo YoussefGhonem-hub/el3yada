@@ -8,6 +8,12 @@ environment:
 
 dependencies:
   animations: ^3.0.0
+  # Shared with the catalog builder: search normalization, schema, FTS5 SQL
+  # (spec A.6, 9.5).
+  catalog_core:
+    path: ../packages/catalog_core
+  # sha256 of the downloaded catalog (D0, spec 9.5).
+  crypto: ^3.0.8
   cunning_document_scanner: ^3.1.0
   desktop_drop: ^0.8.4
   dio: ^5.11.1
@@ -33,10 +39,6 @@ dependencies:
   path_provider: ^2.1.6
   pdf: ^3.13.1
   printing: ^5.15.1
-  # Search normalization and the strength parser shared with the catalog
-  # builder (spec Appendix A.6), so both sides always match.
-  catalog_core:
-    path: ../packages/catalog_core
   share_plus: ^13.3.1
   shared_preferences: ^2.5.6
   skeletonizer: ^3.0.0

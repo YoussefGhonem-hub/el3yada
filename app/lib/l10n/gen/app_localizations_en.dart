@@ -4639,6 +4639,631 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminActionTrialExtended => 'Trial extended';
 
   @override
+  String get catalogSetupTitle => 'Getting the medicines and tests guide ready';
+
+  @override
+  String get catalogSetupBody =>
+      'We\'re downloading the Egyptian medicines, lab tests and radiology guide to your device, so search is instant and works offline.';
+
+  @override
+  String get catalogSetupMeanwhile =>
+      'You can keep working. Until it finishes, search suggests what you\'ve written before and you can type any name.';
+
+  @override
+  String get catalogSetupWifi => 'Wi-Fi recommended';
+
+  @override
+  String catalogSetupProgress(String received, String total) {
+    return '$received of $total';
+  }
+
+  @override
+  String catalogVersionLine(String version, String size) {
+    return 'Version $version · $size';
+  }
+
+  @override
+  String catalogVersionTitle(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get catalogContinue => 'Keep using the app';
+
+  @override
+  String get catalogPhaseChecking => 'Checking for the latest version…';
+
+  @override
+  String catalogPhaseDownloading(String percent) {
+    return 'Downloading… $percent%';
+  }
+
+  @override
+  String get catalogPhaseVerifying => 'Checking and preparing the file…';
+
+  @override
+  String get catalogPhaseReady => 'The guide is ready on your device';
+
+  @override
+  String get catalogPhaseNotPublished =>
+      'No guide is published yet. Until it is, type names yourself; they\'re saved to your list.';
+
+  @override
+  String get catalogPhaseUnavailable =>
+      'The guide isn\'t available on this device. Search covers what you\'ve written before.';
+
+  @override
+  String get catalogFailureNetwork =>
+      'No internet connection. Try again picks up where it stopped.';
+
+  @override
+  String get catalogFailureServer =>
+      'The server had a problem. Try again in a little while.';
+
+  @override
+  String get catalogFailureChecksum =>
+      'The downloaded file was damaged and has been deleted. Try again.';
+
+  @override
+  String get catalogFailureCorrupt =>
+      'The file isn\'t a valid guide and has been deleted. Try again.';
+
+  @override
+  String get catalogFailureSchema =>
+      'The new version needs a newer app. Update the app to use it.';
+
+  @override
+  String get catalogFailureStorage =>
+      'There isn\'t enough space on this device.';
+
+  @override
+  String catalogStatusReady(String version) {
+    return 'Version $version · ready';
+  }
+
+  @override
+  String get catalogStatusFailed => 'Download stopped. Open it to try again.';
+
+  @override
+  String get catalogStatusNotPublished => 'No version published yet';
+
+  @override
+  String get catalogStatusUnavailable => 'Not on this device';
+
+  @override
+  String get catalogSettingsTile => 'Medicines and tests guide';
+
+  @override
+  String get catalogNotPublished => 'No catalog version is published yet';
+
+  @override
+  String get catalogMayBeUnavailable => 'May not be available';
+
+  @override
+  String get catalogCustomTag => 'Added';
+
+  @override
+  String get catalogTypeDrug => 'Medicine';
+
+  @override
+  String get catalogTypeLab => 'Lab test';
+
+  @override
+  String get catalogTypeRadiology => 'Radiology';
+
+  @override
+  String get catalogTypeDrugs => 'Medicines';
+
+  @override
+  String get catalogTypeLabs => 'Lab tests';
+
+  @override
+  String get catalogTypeRadiologyPlural => 'Radiology';
+
+  @override
+  String get catalogReportMissing => 'Missing item';
+
+  @override
+  String get catalogReportWrong => 'Wrong details';
+
+  @override
+  String get catalogReportOther => 'Other';
+
+  @override
+  String get catalogRouteOralSolid => 'Oral (tablets, capsules)';
+
+  @override
+  String get catalogRouteOralLiquid => 'Oral liquids (syrups, drops)';
+
+  @override
+  String get catalogRouteInjection => 'Injection';
+
+  @override
+  String get catalogRouteTopical => 'Topical (creams, ointments)';
+
+  @override
+  String get catalogRouteEffervescent => 'Effervescent';
+
+  @override
+  String get catalogRouteRectal => 'Rectal (suppositories)';
+
+  @override
+  String get catalogRouteEye => 'Eye';
+
+  @override
+  String get catalogRouteEar => 'Ear';
+
+  @override
+  String get catalogRouteSpray => 'Spray';
+
+  @override
+  String get catalogRouteVaginal => 'Vaginal';
+
+  @override
+  String get catalogRouteMouth => 'Mouth and teeth';
+
+  @override
+  String get catalogRouteSoap => 'Soap and wash';
+
+  @override
+  String get catalogRouteUnknown => 'Not stated';
+
+  @override
+  String get catalogErrorShaMismatch =>
+      'The file doesn\'t match its manifest (sha256). Choose the pair the builder made together.';
+
+  @override
+  String get catalogErrorManifest =>
+      'The manifest has no valid sha256. Choose the .json the builder wrote with this file.';
+
+  @override
+  String get catalogErrorFileInvalid =>
+      'This isn\'t a catalog made by the catalog builder.';
+
+  @override
+  String catalogErrorSchema(String actual, String expected) {
+    return 'This file\'s format is version $actual; the apps read version $expected. Build it with the matching catalog builder.';
+  }
+
+  @override
+  String get catalogErrorTooLarge => 'The file is larger than 150 MB.';
+
+  @override
+  String get catalogSourcesTitle => 'Data sources and licences';
+
+  @override
+  String get catalogSourcesIntro =>
+      'The app\'s medicines, lab tests and radiology guide is built from these sources. LOINC names are shown exactly as published.';
+
+  @override
+  String get catalogSourceDrugsTitle => 'Medicines';
+
+  @override
+  String get catalogSourceDrugsBody =>
+      'The Egyptian Drug Database by karem505, in the public domain (CC0). Prices aren\'t shown because they go out of date.';
+
+  @override
+  String catalogSourceDrugsDate(String date) {
+    return 'Data as of $date';
+  }
+
+  @override
+  String get catalogSourceLoincTitle => 'Lab tests and radiology (LOINC)';
+
+  @override
+  String get catalogSourceLoincBody =>
+      'Lab test names and codes come from LOINC, kept exactly as published. The required copyright notice:';
+
+  @override
+  String catalogSourceLoincRelease(String release) {
+    return 'LOINC release on this device: $release';
+  }
+
+  @override
+  String get catalogSourceRadlexTitle =>
+      'Radiology (LOINC/RSNA Radiology Playbook)';
+
+  @override
+  String get catalogSourceRadlexBody =>
+      'Radiology procedures, modalities and body regions come from the LOINC/RSNA Radiology Playbook, which includes RadLex content:';
+
+  @override
+  String get catalogSourceOursTitle => 'Arabic names and short names';
+
+  @override
+  String get catalogSourceOursBody =>
+      'Arabic names and short names such as «صورة دم كاملة» and CBC are written by the el3yada team and kept separate from LOINC content.';
+
+  @override
+  String get adminCatalogSubtitle =>
+      'Medicines, lab tests and radiology on doctors\' devices';
+
+  @override
+  String get adminCatalogPublish => 'Publish new version';
+
+  @override
+  String get adminCatalogTabVersions => 'Versions';
+
+  @override
+  String get adminCatalogTabCustom => 'Custom items';
+
+  @override
+  String get adminCatalogTabReports => 'Doctor reports';
+
+  @override
+  String get adminCatalogCurrent => 'Current version';
+
+  @override
+  String get adminCatalogCurrentPill => 'Current';
+
+  @override
+  String get adminCatalogAllVersions => 'All versions';
+
+  @override
+  String adminCatalogPublishedOn(String date) {
+    return 'Published $date';
+  }
+
+  @override
+  String adminCatalogCounts(String drugs, String labs, String radiology) {
+    return '$drugs medicines · $labs lab tests · $radiology radiology';
+  }
+
+  @override
+  String adminCatalogDrugSource(String date) {
+    return 'Drug data of $date';
+  }
+
+  @override
+  String adminCatalogLoincRelease(String release) {
+    return 'LOINC $release';
+  }
+
+  @override
+  String get adminCatalogNothingPublishedBody =>
+      'Until a version is published, doctors\' search covers only what they\'ve written before.';
+
+  @override
+  String get adminCatalogThisDevice => 'On this device';
+
+  @override
+  String get adminCatalogOpenSetup => 'Details';
+
+  @override
+  String get adminCatalogPublishTitle => 'Publish a new catalog version';
+
+  @override
+  String get adminCatalogPublishBody =>
+      'Upload the file the catalog builder made (catalog-v<n>.sqlite.gz) with its manifest. The server checks it, then devices download it in the background.';
+
+  @override
+  String get adminCatalogNoFile => 'No file chosen yet';
+
+  @override
+  String get adminCatalogNoManifest => 'No manifest (.json) yet';
+
+  @override
+  String get adminCatalogPickFile => 'Choose file';
+
+  @override
+  String get adminCatalogPickManifest => 'Choose manifest';
+
+  @override
+  String get adminCatalogChecking => 'Checking the file\'s sha256…';
+
+  @override
+  String get adminCatalogShaMatches => 'The file matches its manifest (sha256)';
+
+  @override
+  String adminCatalogUploading(String sent, String total) {
+    return 'Uploading… $sent of $total';
+  }
+
+  @override
+  String get adminCatalogServerChecking => 'The server is checking the file…';
+
+  @override
+  String get adminCatalogDropTitle =>
+      'This version has far fewer items than the current one:';
+
+  @override
+  String adminCatalogDropRow(String table, String previous, String current) {
+    return '$table: $previous → $current';
+  }
+
+  @override
+  String get adminCatalogDropBody =>
+      'Publish anyway only if that\'s intended, for example a cleaned-up medicines list.';
+
+  @override
+  String get adminCatalogPublishAnyway => 'Publish anyway';
+
+  @override
+  String adminCatalogPublished(String version) {
+    return 'Version $version published';
+  }
+
+  @override
+  String get adminCatalogPublishedBody =>
+      'Doctors\' devices download it in the background and switch to it when it\'s complete.';
+
+  @override
+  String get adminCatalogAllTypes => 'All';
+
+  @override
+  String get adminCatalogShowDisabled => 'Show disabled';
+
+  @override
+  String get adminCatalogSearchItems => 'Search items';
+
+  @override
+  String get adminCatalogAddItem => 'Add item';
+
+  @override
+  String get adminCatalogEditItem => 'Edit item';
+
+  @override
+  String get adminCatalogEdit => 'Edit';
+
+  @override
+  String adminCatalogItemActions(String name) {
+    return 'Actions for $name';
+  }
+
+  @override
+  String get adminCatalogItemBody =>
+      'Every doctor sees it in search within a minute, without a new catalog version.';
+
+  @override
+  String get adminCatalogNoItems =>
+      'No items here yet. Add the medicines or tests the catalog is missing.';
+
+  @override
+  String adminCatalogItemDisabled(String name) {
+    return '$name is off. Doctors stop seeing it within a minute.';
+  }
+
+  @override
+  String adminCatalogItemEnabled(String name) {
+    return '$name is back on. Doctors see it within a minute.';
+  }
+
+  @override
+  String adminCatalogUpdated(String when) {
+    return 'Changed $when';
+  }
+
+  @override
+  String get adminCatalogFieldTradeName => 'Trade name';
+
+  @override
+  String get adminCatalogFieldTradeNameHint =>
+      'As on the box, e.g. NEWCILLIN 500 MG 12 CAPS.';
+
+  @override
+  String get adminCatalogFieldTestName => 'Name';
+
+  @override
+  String get adminCatalogFieldNameAr => 'Arabic name (optional)';
+
+  @override
+  String get adminCatalogFieldIngredient => 'Active ingredient';
+
+  @override
+  String get adminCatalogFieldGroup => 'Medicine group';
+
+  @override
+  String get adminCatalogFieldRoute => 'Route';
+
+  @override
+  String get adminCatalogFieldCode => 'LOINC code (optional)';
+
+  @override
+  String get adminCatalogFieldCodeHint => 'e.g. 2093-3';
+
+  @override
+  String get adminCatalogFieldAliases => 'Short names';
+
+  @override
+  String get adminCatalogFieldAliasesHint =>
+      'Separated by commas, e.g. CBC, Blood count';
+
+  @override
+  String get adminCatalogAliasesTooMany =>
+      'Up to 10 short names, each up to 100 characters';
+
+  @override
+  String get adminCatalogItemActive => 'Shown to doctors';
+
+  @override
+  String get adminCatalogItemActiveHint =>
+      'Turn off to hide it from every doctor\'s search.';
+
+  @override
+  String get adminCatalogSave => 'Save';
+
+  @override
+  String get adminCatalogReportsOpen => 'Open';
+
+  @override
+  String get adminCatalogReportsDone => 'Done';
+
+  @override
+  String get adminCatalogMarkDone => 'Mark as done';
+
+  @override
+  String get adminCatalogReportHandled => 'Marked as done';
+
+  @override
+  String adminCatalogHandledOn(String date) {
+    return 'Handled $date';
+  }
+
+  @override
+  String get adminCatalogNoReports => 'No reports here.';
+
+  @override
+  String get specialtyProfilesSubtitle =>
+      'What each specialty sees first when searching medicines and tests';
+
+  @override
+  String specialtyDoctorCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors',
+      one: '1 doctor',
+      zero: 'No doctors',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String specialtyItemsSummary(int groups, int labs, int radiology) {
+    return '$groups medicine groups · $labs lab tests · $radiology radiology';
+  }
+
+  @override
+  String get specialtyGeneralBadge => 'Added to every specialty';
+
+  @override
+  String get specialtyWithGeneral => 'With General';
+
+  @override
+  String get specialtyGeneralBody =>
+      'Added to every specialty that includes it';
+
+  @override
+  String get specialtyGeneralExplained =>
+      'This is the General profile: the common medicines and tests (painkillers, antibiotics, CBC …) that come first in every specialty that includes it.';
+
+  @override
+  String specialtyUpdated(String when) {
+    return 'Changed $when';
+  }
+
+  @override
+  String get specialtyCatalogNotReady =>
+      'The catalog is still downloading on this device; counts, names and search show up when it\'s done.';
+
+  @override
+  String get specialtyIncludeGeneral => 'Include the General profile';
+
+  @override
+  String get specialtyIncludeGeneralHint =>
+      'Painkillers, antibiotics, stomach protection, CBC and the other common items come first too.';
+
+  @override
+  String get specialtyGroupsTitle => 'Medicine groups';
+
+  @override
+  String get specialtyGroupsHint =>
+      'Medicines in these groups appear under «Your specialty». The number is how many products each group has.';
+
+  @override
+  String get specialtyGroupsFilter => 'Filter groups';
+
+  @override
+  String specialtySelectedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count chosen',
+      one: '1 chosen',
+      zero: 'None chosen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get specialtyRoutesTitle => 'Preferred routes';
+
+  @override
+  String get specialtyRoutesHint =>
+      'Shown first inside each section, for example syrups and suppositories for children';
+
+  @override
+  String get specialtyLabsTitle => 'Recommended lab tests';
+
+  @override
+  String get specialtyNoLabs => 'No recommended lab tests yet.';
+
+  @override
+  String get specialtyAddLab => 'Search the catalog to add a lab test';
+
+  @override
+  String get specialtyRadiologyTitle => 'Radiology';
+
+  @override
+  String get specialtyRadiologyHint =>
+      'Procedures of these body regions or modalities appear under «Your specialty»';
+
+  @override
+  String get specialtyRegions => 'Body regions';
+
+  @override
+  String get specialtyModalities => 'Modalities';
+
+  @override
+  String get specialtyProcedures => 'Recommended procedures';
+
+  @override
+  String get specialtyNoProcedures => 'No recommended procedures yet.';
+
+  @override
+  String get specialtyAddProcedure => 'Search the catalog to add a procedure';
+
+  @override
+  String specialtyShowAll(int count) {
+    return 'Show all ($count)';
+  }
+
+  @override
+  String get specialtyShowFewer => 'Show fewer';
+
+  @override
+  String get specialtyRemove => 'Remove';
+
+  @override
+  String get specialtyCopyTitle => 'Copy from another specialty';
+
+  @override
+  String specialtyCopyConfirmTitle(String name) {
+    return 'Copy the $name profile?';
+  }
+
+  @override
+  String get specialtyCopyConfirmBody =>
+      'Its medicine groups, routes, tests and radiology replace this profile\'s. You can still change them afterwards.';
+
+  @override
+  String get specialtyCopy => 'Copy';
+
+  @override
+  String specialtyCopied(String name) {
+    return 'Copied from $name';
+  }
+
+  @override
+  String get specialtyPreviewTitle => 'Search preview';
+
+  @override
+  String get specialtyPreviewHint =>
+      'What a doctor of this specialty sees first, with your unsaved changes';
+
+  @override
+  String get specialtyPreviewTests => 'Tests';
+
+  @override
+  String get specialtyPreviewDrugsSample => 'Try: ator, omep, panadol';
+
+  @override
+  String get specialtyPreviewTestsSample => 'Try: CBC, echo, X-ray';
+
+  @override
+  String get specialtyPreviewNothing => 'Nothing matches.';
+
+  @override
   String get regWelcomeTitle => 'Welcome to el3yada';
 
   @override

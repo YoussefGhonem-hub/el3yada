@@ -48,4 +48,12 @@ abstract final class AppRoutes {
   static const legal = '/legal';
   static const terms = '/legal/terms';
   static const privacy = '/legal/privacy';
+
+  /// BR-CAT14: the data sources and their licences (LOINC, RSNA Playbook,
+  /// the Egyptian drug dataset). Under /legal, so it opens from anywhere.
+  static const dataSources = '/legal/sources';
+
+  /// D0: the catalog download, over the role's area (doctors, admins and
+  /// `prescriptionsDraft` assistants).
+  static const catalogSetup = '/catalog-setup';
 }

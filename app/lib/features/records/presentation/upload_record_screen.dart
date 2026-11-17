@@ -122,7 +122,8 @@ class _UploadFormState extends ConsumerState<_UploadForm> {
       return;
     }
     if (pages == null || pages.isEmpty || !mounted) return;
-    final reviewed = await Navigator.of(context).push<List<Uint8List>>(
+    // Full screen, over the shell's bars, like a camera flow.
+    final reviewed = await Navigator.of(context, rootNavigator: true).push<List<Uint8List>>(
       MaterialPageRoute(fullscreenDialog: true, builder: (_) => ScanReviewScreen(pages: pages!)),
     );
     if (reviewed == null || reviewed.isEmpty || !mounted) return;

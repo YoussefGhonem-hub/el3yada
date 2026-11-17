@@ -184,7 +184,8 @@ class _FilesTabState extends ConsumerState<FilesTab> {
   Widget _grid(BuildContext context, List<MedicalRecordView> records, {bool skeleton = false}) => LayoutBuilder(
         builder: (context, constraints) {
           const spacing = 12.0;
-          final columns = (constraints.maxWidth / 220).floor().clamp(1, 4);
+          // Two cards a row even on a small phone; up to four on desktop.
+          final columns = constraints.maxWidth < 300 ? 1 : (constraints.maxWidth / 200).floor().clamp(2, 4);
           final width = (constraints.maxWidth - spacing * (columns - 1)) / columns;
           return Wrap(
             spacing: spacing,

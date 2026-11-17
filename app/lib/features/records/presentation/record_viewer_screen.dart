@@ -335,6 +335,7 @@ class _RecordViewerScreenState extends ConsumerState<RecordViewerScreen> {
         child: !wide
             ? viewer
             : Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(child: viewer),
                   SizedBox(

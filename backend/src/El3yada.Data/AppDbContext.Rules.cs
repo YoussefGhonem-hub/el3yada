@@ -17,8 +17,28 @@ public partial class AppDbContext
         configurationBuilder.Conventions.Remove(typeof(ForeignKeyIndexConvention));
     }
 
+    /// <summary>Medical files waiting for createRecord (Phase 3, api-phase-3-files.md).</summary>
+    public virtual DbSet<PendingUpload> PendingUploads { get; set; }
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<PendingUpload>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Path).HasMaxLength(400);
+            entity.Property(e => e.ThumbPath).HasMaxLength(400);
+            entity.Property(e => e.FileName).HasMaxLength(255);
+            entity.Property(e => e.MimeType).HasMaxLength(100).IsUnicode(false);
+            entity.Property(e => e.CreatedAt).HasPrecision(3);
+            entity.Property(e => e.ExpiresAt).HasPrecision(3);
+            entity.HasIndex(e => e.ExpiresAt, "IX_PendingUploads_ExpiresAt");
+            entity.HasIndex(e => e.DoctorId, "IX_PendingUploads_DoctorId");
+            entity.HasOne<Doctor>().WithMany().HasForeignKey(e => e.DoctorId)
+                .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PendingUploads_DoctorId");
+            entity.HasOne<User>().WithMany().HasForeignKey(e => e.UploadedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_PendingUploads_UploadedBy");
+        });
+
         // The audit log key is an IDENTITY column (BIGINT, high volume, ordered by insert).
         modelBuilder.Entity<AuditLog>().Property(e => e.Id).UseIdentityColumn();
 

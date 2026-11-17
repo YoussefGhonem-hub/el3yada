@@ -17,6 +17,9 @@ public partial class MedicalRecordAttachment
 
     public long SizeBytes { get; set; }
 
+    /// <summary>The size on disk: smaller than <see cref="SizeBytes"/> when the file is stored gzip-compressed.</summary>
+    public long StoredSizeBytes { get; set; }
+
     public int? PageCount { get; set; }
 
     public string? ThumbPath { get; set; }

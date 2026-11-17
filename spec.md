@@ -1155,7 +1155,7 @@ Assistant screens reuse the doctor's screens with **permission checks**. Anythin
 
 The names below are **logical collections**. In the API they map to SQL Server tables (and related tables for nested lists). The Flutter app never writes the database directly; it only calls the Web API.
 
-> **The real tables** are created by the EF Core migrations in [`backend/src/El3yada.Data`](backend/README.md) (55 tables plus starting data). Their original design, with comments, is [`database/schema.sql`](database/schema.sql). When this section and the migrations differ, the migrations win. It adds what this logical model leaves out: password and token tables, child tables for nested lists, and the `revenueView` and `pricesManage` assistant permissions from section 6.10.
+> **The real tables** are created by the EF Core migrations in [`backend/src/El3yada.Data`](backend/README.md) (55 tables from the original design, plus `PendingUploads` from Phase 3, plus starting data). Their original design, with comments, is [`database/schema.sql`](database/schema.sql). When this section and the migrations differ, the migrations win. It adds what this logical model leaves out: password and token tables, child tables for nested lists, and the `revenueView` and `pricesManage` assistant permissions from section 6.10.
 >
 > Medical profile items (Phase 2): an item removed from a patient's medical profile is kept with `PatientMedicalProfileItems.DeletedAt` and `DeletedBy` (migration `SoftDeleteMedicalProfileItems`, BR-P8) and hidden from every query. The Phase 2 contract is [`backend/docs/api-phase-2.md`](backend/docs/api-phase-2.md).
 >
@@ -1387,7 +1387,7 @@ priceHistory/{id}                                  (fn)  // BR-PR5
   after: { examinationPiasters?, consultationPiasters? }, changedBy, changedByRole, at
 ```
 
-**File storage paths** (object storage or a secured server folder, served through the API, not as public URLs). Paths are built only from IDs (lower-case GUIDs), never from the uploaded file name; the original name is kept in the database for display. `{ext}` comes from the checked file type (jpg, png, webp or pdf). Code: `backend/src/El3yada.Api/Storage/StoragePath.cs`.
+**File storage paths** (object storage or a secured server folder, served through the API, not as public URLs). Paths are built only from IDs (lower-case GUIDs), never from the uploaded file name; the original name is kept in the database for display. `{ext}` comes from the checked file type (jpg, png, webp or pdf), or is `bin` for any other medical file and `gz` for one stored gzip-compressed (BR-F4; the real type is in the database). Medical files are optimized for storage before they are saved: images are cut to 2560 px, saved as JPEG quality 80 and stripped of location data, and other files are compressed when that helps ([`backend/docs/api-phase-3-files.md`](backend/docs/api-phase-3-files.md)). Uploads wait at `uploads/{doctorId}/{uploadId}.{ext}` for at most 24 hours until a record claims them. Code: `backend/src/El3yada.Api/Storage/StoragePath.cs`.
 
 ```text
 medical/{doctorId}/{patientId}/{recordId}/{attachmentId}.{ext}

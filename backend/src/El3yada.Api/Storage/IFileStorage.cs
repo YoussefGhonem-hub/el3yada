@@ -30,6 +30,15 @@ public interface IFileStorage
     /// </summary>
     Task<StoredFile> CreateThumbnailAsync(
         StoragePath image, StoragePath thumbnail, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// The same thumbnail, made from an image that is not stored (the first page of a PDF, rendered by the app).
+    /// Throws <see cref="FileStorageException"/> with FILE_CONTENT_INVALID when it is not a readable image.
+    /// </summary>
+    Task<StoredFile> SaveThumbnailAsync(Stream image, StoragePath thumbnail, CancellationToken cancellationToken = default);
+
+    /// <summary>Moves a stored file to another path of the same type, replacing any file there. False when there was none.</summary>
+    Task<bool> MoveAsync(StoragePath from, StoragePath to, CancellationToken cancellationToken = default);
 }
 
 public sealed record StoredFile(StoragePath Path, string ContentType, long SizeBytes);

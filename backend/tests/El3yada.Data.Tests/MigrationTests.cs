@@ -13,7 +13,8 @@ public class MigrationTests(MigratedDatabase database) : IClassFixture<MigratedD
         var tables = await db.Database
             .SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM sys.tables WHERE name <> '__EFMigrationsHistory'")
             .SingleAsync();
-        Assert.Equal(55, tables);
+        // The 55 tables of database/schema.sql, plus PendingUploads (Phase 3, migration MedicalFileStorage).
+        Assert.Equal(56, tables);
 
         Assert.Empty(await db.Database.GetPendingMigrationsAsync());
 

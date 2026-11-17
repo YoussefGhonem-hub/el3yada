@@ -52,6 +52,9 @@ try
     builder.Services.AddAppEmail();
     builder.Services.AddScoped<Auditor>();
     builder.Services.AddScoped<NotificationWriter>();
+    // Deletes medical files uploaded but never claimed by createRecord (Phase 3).
+    builder.Services.AddSingleton<El3yada.Api.Records.PendingUploadCleanup>();
+    builder.Services.AddHostedService(services => services.GetRequiredService<El3yada.Api.Records.PendingUploadCleanup>());
 
     // FluentValidation: every validator in this assembly runs on the matching action argument
     // before the action (ValidationFilter), and failures return a 400 ValidationProblem.

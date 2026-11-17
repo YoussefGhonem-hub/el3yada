@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="512" height="512">
+  <title>el3yada</title>
+  <!-- The ع (also a mirrored 3) with a plus, as drawn by AppLogoMark (app/lib/core/widgets/app_logo.dart). For light backgrounds. -->
+  <path d="M62 24C54 16 34 18 34 32C34 42 42 46 50 46C36 46 28 54 28 64C28 78 46 84 66 76" fill="none" stroke="#0F4C45" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M73 39V58M63.5 48.5H82.5" fill="none" stroke="#2BB594" stroke-width="8" stroke-linecap="round"/>
+</svg>

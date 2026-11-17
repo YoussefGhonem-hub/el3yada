@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get loginTitle;
 
+  /// A3: the heading on the sign-in sheet, above the fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get loginWelcome;
+
+  /// A3: the line under the heading. Every role signs in here.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue.'**
+  String get loginWelcomeBody;
+
   /// No description provided for @identifierLabel.
   ///
   /// In en, this message translates to:
@@ -7605,6 +7617,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} of {max}'**
   String sessionConsultationShort(int count, int max);
+
+  /// Screen-reader name of the desktop Back pill, which shows the section it returns to.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to {section}'**
+  String backToSection(String section);
 }
 
 class _AppLocalizationsDelegate

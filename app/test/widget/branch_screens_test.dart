@@ -1,3 +1,4 @@
+import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/core/platform/external_links.dart';
 import 'package:el3yada/features/clinic_admin/data/fake_clinic_admin_repository.dart';
@@ -151,14 +152,14 @@ void main() {
       await tester.pump();
       expect(find.text('1 change not saved'), findsOneWidget);
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(AppBackButton));
       await settle(tester);
       expect(find.text('Discard your changes?'), findsOneWidget);
       await tester.tap(find.text('Cancel'));
       await settle(tester);
       expect(find.byType(BranchEditorScreen), findsOneWidget);
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(AppBackButton));
       await settle(tester);
       await tester.tap(find.widgetWithText(FilledButton, 'Discard'));
       await settle(tester);

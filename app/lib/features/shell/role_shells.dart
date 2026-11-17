@@ -86,6 +86,24 @@ class RoleShell {
     return null;
   }
 
+  /// Where the top bar's Back goes from [location], or null for no Back:
+  /// - a screen below a menu item → that item (when there's nothing to pop);
+  /// - an item that lives under More (phones and tablets) → More;
+  /// - a menu root in the bar (also its middle logo, [center]) or the side
+  ///   menu ([menuShowsAll]) → none.
+  String? backTarget(String location, {required bool menuShowsAll, String? center}) {
+    final destination = destinationAt(location);
+    if (destination == null) return null;
+    if (location != destination.path) return destination.path;
+    if (!destination.primary && !menuShowsAll && destination.path != center) return morePath;
+    return null;
+  }
+
+  /// The menu item behind the logo in the middle of the phone's bottom bar:
+  /// the dashboard when the user may see it, otherwise the home.
+  NavDestinationSpec centerOf(List<NavDestinationSpec> visible) =>
+      visible.firstWhere((d) => d.path == '$basePath/dashboard', orElse: () => visible.first);
+
   static RoleShell forRole(UserRole role) => all.firstWhere((shell) => shell.role == role);
 
   static final List<RoleShell> all = [admin, doctor, assistant, patient];

@@ -79,11 +79,18 @@ class NavItemIcon extends StatefulWidget {
     required this.color,
     required this.badgeRing,
     this.showBadge = true,
+    this.size = 24,
+    this.shadows,
   });
 
   final NavItem item;
   final bool selected;
   final Color color;
+
+  final double size;
+
+  /// A glow around the icon (the bottom bar's selected icon).
+  final List<Shadow>? shadows;
 
   /// False when the badge is shown elsewhere (the side menu puts it at the end).
   final bool showBadge;
@@ -130,7 +137,8 @@ class _NavItemIconState extends State<NavItemIcon> with SingleTickerProviderStat
         widget.selected ? widget.item.selectedIcon : widget.item.icon,
         key: ValueKey(widget.selected),
         color: widget.color,
-        size: 24,
+        size: widget.size,
+        shadows: widget.shadows,
       ),
     );
     return Stack(

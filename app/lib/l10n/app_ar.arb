@@ -3,6 +3,8 @@
   "appTitle": "العيادة",
   "appTagline": "عيادتك منظمة.",
   "loginTitle": "تسجيل الدخول",
+  "loginWelcome": "أهلاً بعودتك",
+  "loginWelcomeBody": "سجّل دخولك للمتابعة.",
   "identifierLabel": "رقم الموبايل أو البريد الإلكتروني",
   "passwordLabel": "كلمة المرور",
   "showPassword": "إظهار كلمة المرور",
@@ -1251,5 +1253,6 @@
   "sessionErrorBranchArchived": "هذا الفرع مؤرشف. اختر فرعاً آخر.",
   "sessionErrorAmountNotEditable": "لا يمكن تعديل المبلغ إلا في يوم الزيارة.",
   "sessionNoClinical": "لا توجد بيانات طبية بعد.",
-  "sessionConsultationShort": "{count} من {max}"
+  "sessionConsultationShort": "{count} من {max}",
+  "backToSection": "رجوع إلى {section}"
 }

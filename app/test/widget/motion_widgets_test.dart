@@ -281,19 +281,32 @@ void main() {
   });
 
   group('AppLogoMark', () {
-    testWidgets('draws the stroke, then the plus, and can fly as a Hero', (tester) async {
+    testWidgets('writes the stroke, pops the plus, spreads the rings, and can fly as a Hero', (tester) async {
       var drawn = 0;
       await pumpHarness(tester, Center(child: AppLogoMark(animate: true, hero: true, onDrawn: () => drawn++)));
       expect(tester.widget<Hero>(find.byType(Hero)).tag, AppLogoMark.heroTag);
       expect(find.descendant(of: find.byType(AppLogoMark), matching: find.byType(RepaintBoundary)), findsOneWidget);
       await tester.pump(); // the ticker starts on this frame
-      await tester.pump(Motion.slow);
-      expect(tester.hasRunningAnimations, isTrue, reason: 'the plus is still popping in');
+      await tester.pump(AppLogoMark.drawDuration * 0.6);
+      expect(tester.hasRunningAnimations, isTrue, reason: 'the plus and the rings are still going');
       expect(drawn, 0);
-      await tester.pump(Motion.normal);
+      await tester.pump(AppLogoMark.drawDuration * 0.4);
       await tester.pump(Motion.fast); // completion is reported on a frame after the end
       expect(drawn, 1);
       expect(tester.hasRunningAnimations, isFalse);
+    });
+
+    testWidgets('beats on a loop only while ambient loops are on', (tester) async {
+      await pumpHarness(tester, const Center(child: AppLogoMark(beat: true)));
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isFalse, reason: 'tests turn ambient loops off');
+
+      Motion.ambientLoops = true;
+      addTearDown(() => Motion.ambientLoops = false);
+      await pumpHarness(tester, const Center(child: AppLogoMark(key: ValueKey('beating'), beat: true)));
+      await tester.pump();
+      expect(tester.hasRunningAnimations, isTrue);
+      await tester.pumpWidget(const SizedBox());
     });
 
     testWidgets('with reduced motion the static mark shows', (tester) async {

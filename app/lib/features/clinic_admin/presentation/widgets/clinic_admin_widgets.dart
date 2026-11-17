@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/motion.dart';
 import '../../../../core/widgets/pressable.dart';
 import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../admin/presentation/widgets/admin_widgets.dart';
+import '../../../../core/widgets/navigation/app_back_button.dart';
 
 export '../../../../core/widgets/motion_size.dart';
 export '../../../admin/presentation/widgets/admin_widgets.dart'
@@ -38,16 +38,8 @@ class ClinicBackButton extends StatelessWidget {
   final String fallback;
 
   @override
-  Widget build(BuildContext context) => BackButton(
-        onPressed: () async {
-          final navigator = Navigator.of(context);
-          if (navigator.canPop()) {
-            await navigator.maybePop();
-          } else if (context.mounted) {
-            context.go(fallback);
-          }
-        },
-      );
+  Widget build(BuildContext context) =>
+      ShellBackScope.handlesBack(context) ? const SizedBox.shrink() : AppBackButton(fallback: fallback);
 }
 
 /// Asks before throwing away [count] unsaved changes. True to discard.

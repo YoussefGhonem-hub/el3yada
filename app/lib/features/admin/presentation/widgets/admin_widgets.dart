@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/motion_size.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../domain/admin_models.dart';
+import '../../../../core/widgets/navigation/app_back_button.dart';
 
 /// Content wider than this gets the desktop layout inside admin screens
 /// (tables, master-detail, two columns). It is measured on the content
@@ -80,16 +80,8 @@ class AdminBackButton extends StatelessWidget {
   final String fallback;
 
   @override
-  Widget build(BuildContext context) => BackButton(
-        onPressed: () {
-          final navigator = Navigator.of(context);
-          if (navigator.canPop()) {
-            navigator.pop();
-          } else {
-            context.go(fallback);
-          }
-        },
-      );
+  Widget build(BuildContext context) =>
+      ShellBackScope.handlesBack(context) ? const SizedBox.shrink() : AppBackButton(fallback: fallback);
 }
 
 /// A white card (radius 20) with a title row and content: one section of a

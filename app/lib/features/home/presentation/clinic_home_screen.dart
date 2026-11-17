@@ -58,11 +58,11 @@ class _HomeContent extends ConsumerWidget {
 
     final actions = <_QuickAction>[
       if (clinic.can(ClinicPermission.patientsManage) && !suspended)
-        _QuickAction(icon: Icons.person_add_alt_1_outlined, label: l10n.patientAdd, onTap: () => context.go(paths.addPatient)),
+        _QuickAction(icon: Icons.person_add_alt_1_rounded, label: l10n.patientAdd, onTap: () => context.go(paths.addPatient)),
       if (clinic.can(ClinicPermission.sessionsCreate) && !suspended)
-        _QuickAction(icon: Icons.add_circle_outline, label: l10n.sessionNew, primary: true, onTap: () => context.push(paths.homeNewSession)),
+        _QuickAction(icon: Icons.add_rounded, label: l10n.sessionNew, primary: true, onTap: () => context.push(paths.homeNewSession)),
       _QuickAction(
-        icon: Icons.person_search_outlined,
+        icon: Icons.person_search_rounded,
         label: l10n.homeSearchPatient,
         onTap: () {
           ref.read(registerSearchRequestProvider.notifier).request();
@@ -179,6 +179,63 @@ class _HomeContent extends ConsumerWidget {
   }
 }
 
+/// One quick action: an icon in a tinted tile over a bold label. New
+/// session is a pine gradient with a soft glow.
+class _QuickTile extends StatelessWidget {
+  const _QuickTile({required this.action, required this.theme, required this.scheme});
+
+  final _QuickAction action;
+  final ThemeData theme;
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = action.primary;
+    final dark = theme.brightness == Brightness.dark;
+    final onTile = primary ? (dark ? scheme.onPrimary : Colors.white) : scheme.onSurface;
+    return Container(
+      constraints: const BoxConstraints(minHeight: 84),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: primary ? null : scheme.surfaceContainerLow,
+        gradient: primary
+            ? LinearGradient(
+                begin: AlignmentDirectional.topStart.resolve(Directionality.of(context)),
+                end: AlignmentDirectional.bottomEnd.resolve(Directionality.of(context)),
+                colors: dark ? [scheme.primary, const Color(0xFF4FC7A6)] : const [Color(0xFF1B6B5D), Color(0xFF0B3D37)],
+              )
+            : null,
+        boxShadow: [
+          BoxShadow(
+            color: primary ? scheme.primary.withValues(alpha: 0.30) : scheme.shadow.withValues(alpha: 0.05),
+            blurRadius: primary ? 16 : 10,
+            spreadRadius: primary ? -4 : 0,
+            offset: Offset(0, primary ? 8 : 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: primary ? Colors.white.withValues(alpha: dark ? 0.22 : 0.16) : scheme.primaryContainer,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Icon(action.icon, size: 19, color: primary ? onTile : scheme.onPrimaryContainer),
+          ),
+          const SizedBox(height: 10),
+          Text(action.label, style: theme.textTheme.titleSmall?.copyWith(color: onTile)),
+        ],
+      ),
+    );
+  }
+}
+
 class _QuickAction {
   const _QuickAction({required this.icon, required this.label, required this.onTap, this.primary = false});
 
@@ -201,7 +258,7 @@ class _QuickActions extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final columns = constraints.maxWidth < 280 ? 1 : actions.length.clamp(1, 3);
-        final spacing = 12.0;
+        final spacing = 10.0;
         final tileWidth = (constraints.maxWidth - spacing * (columns - 1)) / columns;
         return Wrap(
           spacing: spacing,
@@ -213,26 +270,8 @@ class _QuickActions extends StatelessWidget {
                 child: Pressable(
                   onTap: action.onTap,
                   semanticLabel: action.label,
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 92),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: action.primary ? scheme.primary : scheme.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(action.icon, color: action.primary ? scheme.onPrimary : scheme.primary),
-                        const SizedBox(height: 12),
-                        Text(
-                          action.label,
-                          style: theme.textTheme.titleSmall?.copyWith(color: action.primary ? scheme.onPrimary : scheme.onSurface),
-                        ),
-                      ],
-                    ),
-                  ),
+                  borderRadius: BorderRadius.circular(18),
+                  child: _QuickTile(action: action, theme: theme, scheme: scheme),
                 ),
               ),
           ],

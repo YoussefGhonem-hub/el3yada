@@ -850,14 +850,19 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
       numeric: true,
       cell: (context, row) => Text('${row.fileNumber}', style: theme.textTheme.titleSmall),
     ),
+    // The name gets the most room: with the desktop type scale a full
+    // four-part name needs it to stay on one line.
     _Column(
       label: l10n.patientColumnName,
-      flex: 3,
+      flex: 4,
       sort: RegisterSort.name,
       cell: (context, row) => Row(
         children: [
-          InitialAvatar(name: row.fullName, size: 32, muted: row.archived),
-          const SizedBox(width: 10),
+          // A narrow table keeps the room for the name.
+          if (width >= 1000) ...[
+            InitialAvatar(name: row.fullName, size: 32, muted: row.archived),
+            const SizedBox(width: 10),
+          ],
           Flexible(
             child: Text(row.fullName, maxLines: 2, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall),
           ),
@@ -866,7 +871,7 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
     ),
     _Column(
       label: l10n.patientColumnPhone,
-      width: 132,
+      width: 128,
       cell: (context, row) => LtrText(AppFormat.phone(row.phone), style: theme.textTheme.bodyMedium),
     ),
     _Column(
@@ -901,7 +906,7 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
     ),
     _Column(
       label: l10n.patientColumnVisits,
-      width: 128,
+      width: 120,
       sort: RegisterSort.visits,
       cell: (context, row) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -921,7 +926,7 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
     if (clinic.can(ClinicPermission.revenueView))
       _Column(
         label: l10n.patientColumnPaid,
-        width: 104,
+        width: 96,
         sort: RegisterSort.totalPaid,
         numeric: true,
         cell: (context, row) => Text(AppFormat.egp(context, row.totalPaidPiasters ?? 0), style: theme.textTheme.bodyMedium),

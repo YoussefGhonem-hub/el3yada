@@ -3,6 +3,10 @@
   "appTitle": "el3yada",
   "appTagline": "Your clinic, organised.",
   "loginTitle": "Sign in",
+  "loginWelcome": "Welcome back",
+  "@loginWelcome": { "description": "A3: the heading on the sign-in sheet, above the fields." },
+  "loginWelcomeBody": "Sign in to continue.",
+  "@loginWelcomeBody": { "description": "A3: the line under the heading. Every role signs in here." },
   "identifierLabel": "Mobile number or email",
   "passwordLabel": "Password",
   "showPassword": "Show password",
@@ -1446,5 +1450,7 @@
   "sessionErrorAmountNotEditable": "The amount can be changed only on the day of the session.",
   "sessionNoClinical": "No clinical notes yet.",
   "sessionConsultationShort": "{count} of {max}",
-  "@sessionConsultationShort": {"description":"Consultations since the last examination, D6 summary.","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}}
+  "@sessionConsultationShort": {"description":"Consultations since the last examination, D6 summary.","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}},
+  "backToSection": "Back to {section}",
+  "@backToSection": {"description":"Screen-reader name of the desktop Back pill, which shows the section it returns to.","placeholders":{"section":{"type":"String"}}}
 }

@@ -18,6 +18,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginTitle => 'تسجيل الدخول';
 
   @override
+  String get loginWelcome => 'أهلاً بعودتك';
+
+  @override
+  String get loginWelcomeBody => 'سجّل دخولك للمتابعة.';
+
+  @override
   String get identifierLabel => 'رقم الموبايل أو البريد الإلكتروني';
 
   @override
@@ -4428,5 +4434,10 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String sessionConsultationShort(int count, int max) {
     return '$count من $max';
+  }
+
+  @override
+  String backToSection(String section) {
+    return 'رجوع إلى $section';
   }
 }

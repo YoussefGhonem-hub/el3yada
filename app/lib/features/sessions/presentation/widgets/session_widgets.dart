@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/format/app_format.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/motion.dart';
 import '../../../../core/widgets/pressable.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../patients/presentation/widgets/clinic_ui.dart';
@@ -277,12 +278,12 @@ class FeeCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Text(
-            AppFormat.egp(context, totals.totalPiasters),
-            style: theme.textTheme.displaySmall?.copyWith(color: foreground, fontWeight: FontWeight.w700),
+          _CountUp(
+            piasters: totals.totalPiasters,
+            style: theme.textTheme.headlineLarge?.copyWith(color: foreground),
           ),
           const SizedBox(height: 6),
-          Text(equation, style: theme.textTheme.titleMedium?.copyWith(color: foreground)),
+          Text(equation, style: theme.textTheme.bodyLarge?.copyWith(color: foreground)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 16,
@@ -305,17 +306,105 @@ class FeeCard extends StatelessWidget {
       ),
     );
 
-    final card = Material(
-      color: background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      clipBehavior: Clip.antiAlias,
-      child: body,
-    );
+    final card = highlight
+        ? _GlowCard(dark: dark, base: background, accent: accent, child: body)
+        : Material(
+            color: background,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+            clipBehavior: Clip.antiAlias,
+            child: body,
+          );
     return Semantics(
       label: '$title, $equation',
       button: onTap != null,
       excludeSemantics: true,
       child: onTap == null ? card : Pressable(onTap: onTap, borderRadius: BorderRadius.circular(20), child: card),
+    );
+  }
+}
+
+/// The highlighted fee card's surface: a pine gradient with two soft mint
+/// circles in the top end corner and a tinted shadow.
+class _GlowCard extends StatelessWidget {
+  const _GlowCard({required this.dark, required this.base, required this.accent, required this.child});
+
+  final bool dark;
+  final Color base;
+  final Color accent;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    const radius = BorderRadius.all(Radius.circular(24));
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: [
+          BoxShadow(color: base.withValues(alpha: dark ? 0.5 : 0.35), blurRadius: 24, spreadRadius: -6, offset: const Offset(0, 12)),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: radius,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.topStart.resolve(Directionality.of(context)),
+              end: AlignmentDirectional.bottomEnd.resolve(Directionality.of(context)),
+              colors: [Color.lerp(base, accent, 0.18)!, base, Color.lerp(base, Colors.black, 0.18)!],
+            ),
+          ),
+          child: Stack(
+            children: [
+              PositionedDirectional(
+                end: -40,
+                top: -50,
+                child: _Circle(size: 160, color: accent.withValues(alpha: 0.12)),
+              ),
+              PositionedDirectional(
+                end: 50,
+                top: -70,
+                child: _Circle(size: 120, color: accent.withValues(alpha: 0.08)),
+              ),
+              child,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Circle extends StatelessWidget {
+  const _Circle({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+        child: Container(width: size, height: size, decoration: BoxDecoration(shape: BoxShape.circle, color: color)),
+      );
+}
+
+/// A money amount that counts up to its value when it appears, and from the
+/// old value to the new one when it changes. Plain with reduced motion.
+class _CountUp extends StatelessWidget {
+  const _CountUp({required this.piasters, this.style});
+
+  final int piasters;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    if (Motion.of(context).reduced) return Text(AppFormat.egp(context, piasters), style: style);
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: piasters.toDouble()),
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, _) => Text(
+        AppFormat.egp(context, value.round()),
+        style: style?.copyWith(fontFeatures: const [ui.FontFeature.tabularFigures()]),
+      ),
     );
   }
 }

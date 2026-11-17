@@ -145,6 +145,8 @@ CatalogContent assembleCatalog({
       for (final s in entry.subtypes) termWords['subtype|$s'],
       for (final r in entry.regions) termWords['region|$r'],
       for (final f in entry.foci) termWords['focus|$f'],
+      for (final m in entry.modalities)
+        for (final f in entry.foci) termWords['modality_focus|$m/$f'],
     ].whereType<RadiologyTerm>();
     final nameAr = _firstArabic(aliases);
     final ftsName = normalizeAndDedupe([term.longName, term.shortName]);
@@ -194,11 +196,16 @@ CatalogContent assembleCatalog({
   final subtypes = {for (final e in playbook.values) ...e.subtypes};
   final regions = {for (final e in playbook.values) ...e.regions};
   final foci = {for (final e in playbook.values) ...e.foci};
+  final pairs = {
+    for (final e in playbook.values)
+      for (final m in e.modalities) ...[for (final f in e.foci) '$m/$f'],
+  };
   for (final t in mappings.radiologyTerms) {
     final present = switch (t.kind) {
       'modality' => modalities.contains(t.value),
       'subtype' => subtypes.contains(t.value),
       'region' => regions.contains(t.value),
+      'modality_focus' => pairs.contains(t.value),
       _ => foci.contains(t.value),
     };
     if (!present) warn?.call('radiology-terms.csv: ${t.kind} "${t.value}" does not occur in the Playbook');

@@ -86,7 +86,8 @@ class ProfileItem {
 class RadiologyTerm {
   const RadiologyTerm(this.kind, this.value, this.nameEn, this.nameAr, this.searchTerms);
 
-  /// `modality`, `subtype`, `region` or `focus`.
+  /// `modality`, `subtype`, `region`, `focus`, or `modality_focus` for a
+  /// pair such as `US/Heart` (echocardiography).
   final String kind;
   final String value;
   final String nameEn;
@@ -241,9 +242,13 @@ class Mappings {
     for (final row in termsCsv.rows) {
       final kind = CsvTable.cell(row, termsCsv.column('kind')).trim();
       final value = CsvTable.cell(row, termsCsv.column('value')).trim();
-      if (!const {'modality', 'subtype', 'region', 'focus'}.contains(kind) || value.isEmpty) {
-        problems.add('radiology-terms.csv: kind must be modality, subtype, region or focus, with a value ($row)');
+      if (!const {'modality', 'subtype', 'region', 'focus', 'modality_focus'}.contains(kind) || value.isEmpty) {
+        problems.add('radiology-terms.csv: kind must be modality, subtype, region, focus or modality_focus, '
+            'with a value ($row)');
         continue;
+      }
+      if (kind == 'modality_focus' && !value.contains('/')) {
+        problems.add('radiology-terms.csv: a modality_focus value is "<modality>/<focus>", e.g. US/Heart ($row)');
       }
       if (!seenTerms.add('$kind|$value')) problems.add('radiology-terms.csv: $kind "$value" is listed twice');
       radiologyTerms.add(RadiologyTerm(

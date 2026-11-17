@@ -133,12 +133,14 @@ List<CheckResult> runSearchChecks(Database db, Mappings mappings) {
     ));
   }
 
-  // 6. "CBC" and «صورة دم كاملة» find the complete blood count.
+  // 6. "CBC" and «صورة دم كاملة» find the complete blood count: the lab test
+  //    that aliases.csv names "CBC" (58410-2 in the real mappings).
+  final cbc = mappings.aliases.where((a) => a.type == 'lab' && a.aliasEn.toUpperCase() == 'CBC').map((a) => a.code).toSet();
   for (final typed in ['CBC', 'صورة دم كاملة']) {
     final codes = searchCodes(CatalogSearchSql.labs, typed, 5);
     results.add(CheckResult(
-      'AC-18 "$typed" finds the complete blood count (58410-2) in the top 5',
-      codes.contains('58410-2'),
+      'AC-18 "$typed" finds the complete blood count (${cbc.join(', ')}) in the top 5',
+      cbc.isNotEmpty && codes.any(cbc.contains),
       'top 5: ${codes.join(', ')}',
     ));
   }
@@ -146,26 +148,28 @@ List<CheckResult> runSearchChecks(Database db, Mappings mappings) {
   return results;
 }
 
-/// Extra searches that are not in AC-18 but guard the Egyptian aliases and
-/// Arabic radiology words. They fail the build like the others.
-List<CheckResult> runExtraSearchChecks(Database db) {
-  final cases = [
-    (CatalogSearchSql.labs, 'HbA1c', '4548-4'),
-    (CatalogSearchSql.labs, 'السكر التراكمي', '4548-4'),
-    (CatalogSearchSql.labs, 'وظائف كلى', '24362-6'),
-    (CatalogSearchSql.labs, 'ESR', '30341-2'),
-    (CatalogSearchSql.radiology, 'سونار بطن', '24558-9'),
-    (CatalogSearchSql.radiology, 'chest x-ray', '36643-5'),
-    (CatalogSearchSql.radiology, 'إيكو', '42148-7'),
-  ];
-  return [
-    for (final (sql, typed, code) in cases)
-      () {
-        final query = ftsPrefixQuery(typed)!;
-        final codes = [for (final row in db.select(sql, [query, 5])) row['loinc_code'] as String];
-        return CheckResult('Search "$typed" finds $code in the top 5', codes.contains(code), 'top 5: ${codes.join(', ')}');
-      }(),
-  ];
+/// Every alias marked `priority` in aliases.csv, typed as it is written
+/// (English and Arabic), must find its own LOINC code in the first [top]
+/// results. This guards the Egyptian short names and Arabic names (A.4.4)
+/// against ranking or normalization changes.
+CheckResult runAliasCheck(Database db, Mappings mappings, {int top = 5}) {
+  final failures = <String>[];
+  var searches = 0;
+  for (final alias in mappings.aliases.where((a) => a.priority)) {
+    final sql = alias.type == 'lab' ? CatalogSearchSql.labs : CatalogSearchSql.radiology;
+    for (final typed in [alias.aliasEn, alias.nameAr]) {
+      final query = ftsPrefixQuery(typed);
+      if (query == null) continue;
+      searches++;
+      final codes = [for (final row in db.select(sql, [query, top])) row['loinc_code'] as String];
+      if (!codes.contains(alias.code)) failures.add('"$typed" → ${alias.code} not in top $top');
+    }
+  }
+  return CheckResult(
+    'Every priority alias in aliases.csv finds its code in the top $top',
+    failures.isEmpty,
+    '$searches searches, ${failures.length} failed${failures.isEmpty ? '' : ': ${failures.join('; ')}'}',
+  );
 }
 
 /// Structural checks on the built file.

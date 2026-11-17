@@ -24,7 +24,8 @@ region,Lower extremity,Lower limb,الطرف السفلي,leg lower limb رجل 
 region,Extremity,Limb,الأطراف,limb extremity أطراف
 region,Whole Body,Whole body,الجسم كله,whole body الجسم كله
 focus,Brain,Brain,المخ,brain مخ دماغ
-focus,Heart,Heart,القلب,heart cardiac echo echocardiography قلب إيكو ايكو
+focus,Heart,Heart,القلب,heart cardiac قلب
+modality_focus,US/Heart,Echocardiography,إيكو على القلب,echo echocardiography إيكو ايكو
 focus,Kidney,Kidney,الكلى,kidney renal kub كلى كلية مسالك
 focus,Urinary bladder,Urinary bladder,المثانة,bladder kub مثانة مسالك
 focus,Ureter,Ureter,الحالب,ureter kub حالب مسالك

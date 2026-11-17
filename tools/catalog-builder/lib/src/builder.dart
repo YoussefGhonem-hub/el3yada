@@ -219,7 +219,7 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
     for (final (name, run) in [
       ('integrity checks', () => runIntegrityChecks(db)),
       ('AC-18 searches', () => runSearchChecks(db, mappings)),
-      ('extra searches', () => runExtraSearchChecks(db)),
+      ('alias searches', () => [runAliasCheck(db, mappings)]),
     ]) {
       try {
         checks.addAll(run());

@@ -1,4 +1,7 @@
 # Downloaded source files (LOINC licence: never commit them, spec A.7) and build output.
-sources/
-out/
+# Anchored, so the synthetic fixtures under test/fixtures/sources stay tracked.
+/sources/
+/out/
 .dart_tool/
+# Local probes.
+/tool/

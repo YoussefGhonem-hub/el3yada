@@ -16,6 +16,7 @@ import 'package:el3yada/features/catalog/domain/catalog_search.dart';
 import 'package:el3yada/features/catalog/presentation/catalog_setup_screen.dart';
 import 'package:el3yada/features/catalog/presentation/catalog_sources_screen.dart';
 import 'package:el3yada/features/catalog/presentation/widgets/catalog_hits_view.dart';
+import 'package:el3yada/features/doctor_registration/presentation/registration_text.dart' show ltrIsolate;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -162,7 +163,7 @@ void main() {
       expect(find.text('24'), findsOneWidget);
       expect(find.text('Medicines'), findsWidgets);
       // Dates and releases read left to right inside Arabic (Unicode isolates).
-      expect(find.text('Drug data of ⁦2026-06-20⁩ · LOINC ⁦sample⁩'), findsOneWidget);
+      expect(find.text('Drug data of ${ltrIsolate('2026-06-20')} · LOINC ${ltrIsolate('sample')}'), findsOneWidget);
       expect(find.text('On this device'), findsOneWidget);
       expect(find.text('Version 1 · ready'), findsOneWidget);
       expect(find.text('All versions'), findsOneWidget);

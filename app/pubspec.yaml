@@ -27,6 +27,7 @@ dependencies:
   lottie: ^3.7.0
   package_info_plus: ^10.2.2
   pdf: ^3.13.1
+  printing: ^5.14.3
   shared_preferences: ^2.5.6
   skeletonizer: ^3.0.0
   sqlite3: ^3.5.2
@@ -50,6 +51,9 @@ flutter:
   # assets/lottie/SOURCES.txt.
   assets:
     - assets/lottie/
+    # Arabic text in prescription PDFs (spec 6.4.1); the app's own text uses Alexandria.
+    - assets/fonts/NotoSansArabic-Regular.ttf
+    - assets/fonts/NotoSansArabic-Bold.ttf
 
   # Alexandria (SIL Open Font License, assets/fonts/OFL-Alexandria.txt) covers
   # Arabic and Latin, so both languages look the same on every platform and

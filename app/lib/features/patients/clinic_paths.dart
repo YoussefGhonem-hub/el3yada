@@ -39,6 +39,13 @@ class ClinicPaths {
   /// D9 from the patient's Sessions tab.
   String patientSession(String patientId, String sessionId) => '${patient(patientId)}/sessions/$sessionId';
 
+  /// D13/D14 while it's a draft the caller may edit, otherwise D15 (AS7, AS8).
+  String prescription(String patientId, String prescriptionId) => '${patient(patientId)}/prescriptions/$prescriptionId';
+
+  /// D15 preview and send, also for an editable draft.
+  String prescriptionPreview(String patientId, String prescriptionId) =>
+      '${prescription(patientId, prescriptionId)}/preview';
+
   /// D8 from the home, with a patient search first.
   String get homeNewSession => '$home/sessions/new';
 

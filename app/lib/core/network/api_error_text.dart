@@ -49,6 +49,11 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.amountNotEditable => sessionErrorAmountNotEditable,
       ApiCodes.sessionNotDeletable =>
         error.details['reason'] == 'notSameDay' ? sessionNotDeletableDay : sessionNotDeletableLatest,
+      // Prescriptions (backend/docs/api-phase-3-prescriptions.md).
+      ApiCodes.prescriptionNotEditable => rxErrorNotEditable,
+      ApiCodes.prescriptionNotSent => rxErrorNotSent,
+      ApiCodes.prescriptionEmpty => rxErrorEmpty,
+      ApiCodes.invalidCopySource => rxErrorInvalidCopySource,
       ApiCodes.selectionTokenInvalid ||
       ApiCodes.refreshTokenInvalid ||
       ApiCodes.refreshTokenReused ||
@@ -112,6 +117,10 @@ extension ApiErrorText on AppLocalizations {
         'PERIOD_LENGTH_OUT_OF_RANGE' => branchErrorPeriodLength,
         'PERIODS_OVERLAP' => branchErrorPeriodsOverlap,
         'ASSISTANT_PHONE_TAKEN' => assistantErrorPhoneTaken,
+        // Prescriptions.
+        'INVALID_SESSION' => rxErrorInvalidSession,
+        'INVALID_DATE' => rxErrorInvalidDate,
+        'TOO_MANY' => rxErrorTooMany,
         _ => null,
       };
 

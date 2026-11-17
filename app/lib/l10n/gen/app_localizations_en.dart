@@ -4667,4 +4667,788 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsVerifyEmail => 'Verify your email address';
+
+  @override
+  String get patientTabPrescriptions => 'Prescriptions';
+
+  @override
+  String get rxKindMedication => 'Medication prescription';
+
+  @override
+  String get rxKindInvestigations => 'Investigations request';
+
+  @override
+  String get rxKindMedicationHint => 'Medicines with dose, timing and duration';
+
+  @override
+  String get rxKindInvestigationsHint => 'Lab tests and radiology';
+
+  @override
+  String get rxNewTitle => 'New prescription';
+
+  @override
+  String get rxNewMedication => 'New prescription';
+
+  @override
+  String get rxNewInvestigations => 'New request';
+
+  @override
+  String get rxStatusDraft => 'Draft';
+
+  @override
+  String get rxStatusReadyForReview => 'Ready for review';
+
+  @override
+  String get rxStatusSent => 'Sent';
+
+  @override
+  String get rxStatusCancelled => 'Cancelled';
+
+  @override
+  String get rxNoItems => 'No items yet';
+
+  @override
+  String rxItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rxPreparedBy(String name) {
+    return 'Prepared by $name';
+  }
+
+  @override
+  String get rxListSeparator => ', ';
+
+  @override
+  String get rxSessionCardTitle => 'Prescriptions and requests';
+
+  @override
+  String get rxSessionEmpty => 'No prescription for this visit yet.';
+
+  @override
+  String get rxEmptyTitle => 'No prescriptions yet';
+
+  @override
+  String get rxEmptyBody =>
+      'Write a medication prescription or a lab and radiology request from one of today’s visits.';
+
+  @override
+  String get rxPickSession => 'Which visit is this for?';
+
+  @override
+  String get rxNoSessionTodayTitle => 'No visit today';
+
+  @override
+  String get rxNoSessionTodayBody =>
+      'A prescription belongs to a visit. Record today’s visit first, then write the prescription from it.';
+
+  @override
+  String get rxDiagnosis => 'Diagnosis';
+
+  @override
+  String get rxMedicines => 'Medicines';
+
+  @override
+  String get rxTests => 'Tests';
+
+  @override
+  String get rxNoMedicinesYet => 'Add the first medicine.';
+
+  @override
+  String get rxNoTestsYet => 'Add the first test.';
+
+  @override
+  String get rxAddMedicine => 'Add medicine';
+
+  @override
+  String get rxEditMedicine => 'Edit medicine';
+
+  @override
+  String get rxAddTest => 'Add test';
+
+  @override
+  String get rxEditTest => 'Edit test';
+
+  @override
+  String get rxAddToPrescription => 'Add';
+
+  @override
+  String get rxAdvice => 'General advice';
+
+  @override
+  String get rxRequestNotes => 'Notes';
+
+  @override
+  String get rxFollowUp => 'Follow-up date';
+
+  @override
+  String get rxResultsOn => 'Bring the results on';
+
+  @override
+  String get rxClearDate => 'Clear the date';
+
+  @override
+  String get rxSaveDraft => 'Save draft';
+
+  @override
+  String get rxDraftSaved => 'Saved';
+
+  @override
+  String get rxPreview => 'Preview';
+
+  @override
+  String get rxSubmitForReview => 'Send to the doctor for review';
+
+  @override
+  String get rxSubmittedForReview => 'Sent to the doctor for review.';
+
+  @override
+  String get rxMore => 'More';
+
+  @override
+  String get rxSaveAsTemplate => 'Save as template';
+
+  @override
+  String get rxDeleteDraft => 'Delete draft';
+
+  @override
+  String get rxDeleteDraftTitle => 'Delete this draft?';
+
+  @override
+  String get rxDeleteDraftBody =>
+      'The patient never saw it. This can’t be undone.';
+
+  @override
+  String get rxDraftDeleted => 'Draft deleted.';
+
+  @override
+  String get rxItemRemoved => 'Item removed.';
+
+  @override
+  String get rxUndo => 'Undo';
+
+  @override
+  String get rxRemoveItem => 'Remove';
+
+  @override
+  String get rxDragToReorder => 'Drag to reorder';
+
+  @override
+  String get rxFromTemplate => 'From template';
+
+  @override
+  String get rxNoTemplates => 'No templates yet';
+
+  @override
+  String get rxNoTemplatesBody =>
+      'Save a prescription as a template from its “More” menu to reuse it.';
+
+  @override
+  String get rxTemplateName => 'Template name';
+
+  @override
+  String get rxTemplateSaved => 'Template saved.';
+
+  @override
+  String get rxErrorEmpty => 'Add at least one item.';
+
+  @override
+  String get rxErrorNotEditable =>
+      'This prescription was already sent or cancelled, so it can’t be changed.';
+
+  @override
+  String get rxErrorNotSent => 'Only a sent prescription can be cancelled.';
+
+  @override
+  String get rxErrorInvalidCopySource =>
+      'A new copy can only be made from a sent or cancelled prescription of the same patient.';
+
+  @override
+  String get rxErrorInvalidSession => 'Pick one of this patient’s visits.';
+
+  @override
+  String get rxErrorInvalidDate => 'Pick a valid date.';
+
+  @override
+  String get rxErrorTooMany => 'Too many items.';
+
+  @override
+  String get rxSearchMedicine =>
+      'Search medicines (trade name or active ingredient)';
+
+  @override
+  String get rxSearchLab => 'Search lab tests';
+
+  @override
+  String get rxSearchRadiology => 'Search radiology';
+
+  @override
+  String get rxMySpecialtyOnly => 'My specialty only';
+
+  @override
+  String get rxSectionUsedBefore => 'Used before';
+
+  @override
+  String get rxSectionMySpecialty => 'Your specialty';
+
+  @override
+  String get rxSectionOthers => 'From other specialties';
+
+  @override
+  String get rxCatalogNotReady =>
+      'The catalog is still downloading: only your own history is searched. You can type any name.';
+
+  @override
+  String rxUseTyped(String text) {
+    return 'Use “$text”';
+  }
+
+  @override
+  String get rxNoMatches => 'Nothing matches in the catalog.';
+
+  @override
+  String get rxDrugName => 'Medicine name';
+
+  @override
+  String get rxActiveIngredient => 'Active ingredient';
+
+  @override
+  String get rxStrength => 'Strength';
+
+  @override
+  String get rxForm => 'Form';
+
+  @override
+  String get rxFormOtherText => 'Form (type it)';
+
+  @override
+  String get rxDose => 'Dose';
+
+  @override
+  String get rxDoseHint => '1 tablet';
+
+  @override
+  String get rxFrequency => 'How often';
+
+  @override
+  String get rxFrequencyHint => 'Every 8 hours';
+
+  @override
+  String get rxTiming => 'Timing';
+
+  @override
+  String get rxTimingBeforeFood => 'Before food';
+
+  @override
+  String get rxTimingAfterFood => 'After food';
+
+  @override
+  String get rxTimingWithFood => 'With food';
+
+  @override
+  String get rxTimingUnspecified => 'Not specified';
+
+  @override
+  String get rxDuration => 'Duration';
+
+  @override
+  String get rxDurationCount => 'Number';
+
+  @override
+  String get rxDurationUnitDays => 'Days';
+
+  @override
+  String get rxDurationUnitWeeks => 'Weeks';
+
+  @override
+  String get rxDurationContinuous => 'Continuous';
+
+  @override
+  String rxDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rxDurationWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks',
+      one: '1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rxInstructions => 'Instructions';
+
+  @override
+  String get rxFormTablet => 'Tablet';
+
+  @override
+  String get rxFormCapsule => 'Capsule';
+
+  @override
+  String get rxFormSyrup => 'Syrup';
+
+  @override
+  String get rxFormInjection => 'Injection';
+
+  @override
+  String get rxFormCream => 'Cream / ointment';
+
+  @override
+  String get rxFormDrops => 'Drops';
+
+  @override
+  String get rxFormInhaler => 'Inhaler';
+
+  @override
+  String get rxFormSuppository => 'Suppository';
+
+  @override
+  String get rxFormSachet => 'Sachet';
+
+  @override
+  String get rxFormOther => 'Other';
+
+  @override
+  String get rxCategoryLab => 'Lab test';
+
+  @override
+  String get rxCategoryRadiology => 'Radiology';
+
+  @override
+  String get rxTestName => 'Test name';
+
+  @override
+  String get rxTestNotes => 'Notes';
+
+  @override
+  String get rxTestNotesHint => 'Fasting 12 hours';
+
+  @override
+  String get rxEdit => 'Edit';
+
+  @override
+  String get rxSend => 'Send to patient';
+
+  @override
+  String get rxSendTitle => 'Send to the patient?';
+
+  @override
+  String get rxSendBody =>
+      'The patient gets it in the app at once. A sent prescription can’t be changed: to correct it, cancel it and issue a new copy.';
+
+  @override
+  String get rxSendAndPrint => 'Send and print';
+
+  @override
+  String get rxSendAndPrintTitle => 'Send and print?';
+
+  @override
+  String get rxSendAndPrintBody =>
+      'Printing sends it to the patient at the same moment, so the paper and the app always match.';
+
+  @override
+  String get rxSent => 'Sent to the patient.';
+
+  @override
+  String get rxPrint => 'Print';
+
+  @override
+  String get rxPrintAll => 'Print all';
+
+  @override
+  String get rxShare => 'Share PDF';
+
+  @override
+  String get rxPrintFailed => 'Printing didn’t work. Try again.';
+
+  @override
+  String get rxCancelAction => 'Cancel prescription';
+
+  @override
+  String get rxCancelTitle => 'Cancel this prescription?';
+
+  @override
+  String get rxCancelBody =>
+      'The patient sees it struck through, with your reason. You can then issue a new copy.';
+
+  @override
+  String get rxCancelReason => 'Reason';
+
+  @override
+  String get rxCancelConfirm => 'Cancel prescription';
+
+  @override
+  String get rxCancelled => 'Prescription cancelled.';
+
+  @override
+  String get rxCancelledNotice => 'Cancelled. It can’t be printed.';
+
+  @override
+  String rxCancelledReason(String reason) {
+    return 'Cancelled: $reason';
+  }
+
+  @override
+  String get rxNewCopy => 'Issue new copy';
+
+  @override
+  String get rxPreviewFailed => 'The preview couldn’t be built.';
+
+  @override
+  String get rxSettingsTitle => 'Prescription header and printing';
+
+  @override
+  String get rxSettingsSubtitle =>
+      'How your prescriptions look on paper and in the patient’s app.';
+
+  @override
+  String get rxSettingsTileHint =>
+      'Logo, signature, colour, language and paper';
+
+  @override
+  String get rxSettingsHeaderGroup => 'Header';
+
+  @override
+  String get rxSettingsNamesHint =>
+      'Your names, titles and degrees come from your profile; the branches in the footer come from Branches.';
+
+  @override
+  String get rxLogo => 'Clinic logo';
+
+  @override
+  String get rxSignature => 'Signature';
+
+  @override
+  String get rxUploadImage => 'Upload';
+
+  @override
+  String get rxReplaceImage => 'Replace';
+
+  @override
+  String get rxRemoveImage => 'Remove';
+
+  @override
+  String get rxImagesGroup => 'Images';
+
+  @override
+  String get rxSettingsColor => 'Clinic colour';
+
+  @override
+  String get rxSettingsHex => 'Colour code';
+
+  @override
+  String get rxSettingsFooter => 'Footer text';
+
+  @override
+  String get rxSettingsFooterHint => 'Optional, for example your working days.';
+
+  @override
+  String get rxSettingsPrintGroup => 'Language and paper';
+
+  @override
+  String get rxSettingsLanguage => 'Prescription language';
+
+  @override
+  String get rxSettingsArabic => 'العربية';
+
+  @override
+  String get rxSettingsEnglish => 'English';
+
+  @override
+  String get rxSettingsPaper => 'Paper';
+
+  @override
+  String get rxPaperA5 => 'A5';
+
+  @override
+  String get rxPaperA4 => 'A4';
+
+  @override
+  String get rxPaperCustom => 'Custom';
+
+  @override
+  String get rxPaperWidth => 'Width';
+
+  @override
+  String get rxPaperHeight => 'Height';
+
+  @override
+  String get rxMm => 'mm';
+
+  @override
+  String get rxPreprinted => 'Pre-printed paper';
+
+  @override
+  String get rxPreprintedHint =>
+      'For your own letterhead: the header and footer aren’t printed, and the text starts at the top margin.';
+
+  @override
+  String get rxMarginTop => 'Top margin';
+
+  @override
+  String get rxMarginBottom => 'Bottom margin';
+
+  @override
+  String get rxSettingsPreview => 'Live preview';
+
+  @override
+  String get rxTestPrint => 'Test print';
+
+  @override
+  String get rxSettingsSaved => 'Print settings saved.';
+
+  @override
+  String get rxSamplePatient => 'Sample patient';
+
+  @override
+  String get rxSampleDiagnosis => 'Acute tonsillitis';
+
+  @override
+  String get rxSampleAdvice => 'Rest and warm fluids.';
+
+  @override
+  String get rxSampleDose => '1 tablet';
+
+  @override
+  String get rxSampleFrequency => 'Every 12 hours';
+
+  @override
+  String get rxSampleWhenNeeded => 'When needed';
+
+  @override
+  String get rxTemplatesTitle => 'Templates and favourites';
+
+  @override
+  String get rxTemplatesSubtitle => 'Reuse prescriptions you write often.';
+
+  @override
+  String get rxTemplatesTileHint =>
+      'Saved prescriptions and frequently used items';
+
+  @override
+  String get rxTemplatesGroup => 'Templates';
+
+  @override
+  String get rxRenameTemplate => 'Rename';
+
+  @override
+  String get rxDeleteTemplate => 'Delete template';
+
+  @override
+  String get rxDeleteTemplateTitle => 'Delete this template?';
+
+  @override
+  String rxDeleteTemplateBody(String name) {
+    return '“$name” will be removed. Prescriptions made from it stay as they are.';
+  }
+
+  @override
+  String get rxTemplateDeleted => 'Template deleted.';
+
+  @override
+  String get rxFrequentGroup => 'Frequently used';
+
+  @override
+  String get rxFrequentHint =>
+      'They come first when you search. Remove one to stop suggesting it.';
+
+  @override
+  String get rxNoHistory => 'Items you prescribe will appear here.';
+
+  @override
+  String rxUsedTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Used $count times',
+      one: 'Used once',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rxRemoveFromHistory => 'Remove from suggestions';
+
+  @override
+  String rxHistoryItemRemoved(String name) {
+    return '“$name” removed from suggestions.';
+  }
+
+  @override
+  String rxPdfTitle(String kind) {
+    return 'el3yada $kind';
+  }
+
+  @override
+  String get rxPdfDiagnosis => 'Diagnosis:';
+
+  @override
+  String get rxPdfInstructions => 'Instructions:';
+
+  @override
+  String get rxPdfNotes => 'Notes:';
+
+  @override
+  String rxPdfFollowUp(String date) {
+    return 'Follow-up: $date';
+  }
+
+  @override
+  String rxPdfResultsOn(String date) {
+    return 'Bring the results on: $date';
+  }
+
+  @override
+  String get rxPdfTestsIntro => 'Please do the following tests:';
+
+  @override
+  String get rxPdfLabGroup => 'Lab tests';
+
+  @override
+  String get rxPdfRadiologyGroup => 'Radiology';
+
+  @override
+  String get rxPdfPatient => 'Patient';
+
+  @override
+  String get rxPdfDate => 'Date';
+
+  @override
+  String get rxPdfAge => 'Age';
+
+  @override
+  String rxPdfAgeValue(int years) {
+    return '$years y';
+  }
+
+  @override
+  String get rxPdfFile => 'File no.';
+
+  @override
+  String get rxPdfVisit => 'Visit';
+
+  @override
+  String get rxPdfExamination => 'Examination';
+
+  @override
+  String get rxPdfConsultation => 'Consultation';
+
+  @override
+  String get rxPdfSignature => 'Signature';
+
+  @override
+  String get rxPdfScan => 'Scan the code';
+
+  @override
+  String rxPdfPage(int page, int total) {
+    return 'Page $page of $total';
+  }
+
+  @override
+  String get rxPdfTel => 'Tel';
+
+  @override
+  String get rxPdfWhatsapp => 'WhatsApp';
+
+  @override
+  String activityPrescriptionDraftCreated(String kind) {
+    return 'started a draft: $kind';
+  }
+
+  @override
+  String activityPrescriptionCopied(String kind) {
+    return 'issued a new copy: $kind';
+  }
+
+  @override
+  String activityPrescriptionDraftUpdated(String kind) {
+    return 'edited a draft: $kind';
+  }
+
+  @override
+  String activityPrescriptionDraftDeleted(String kind) {
+    return 'deleted a draft: $kind';
+  }
+
+  @override
+  String activityPrescriptionSubmitted(String kind) {
+    return 'sent a draft for review: $kind';
+  }
+
+  @override
+  String activityPrescriptionSent(String kind) {
+    return 'sent to the patient: $kind';
+  }
+
+  @override
+  String activityPrescriptionCancelled(String kind) {
+    return 'cancelled: $kind';
+  }
+
+  @override
+  String activityRxItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityRxSettingsUpdated => 'changed the print settings';
+
+  @override
+  String get activityRxLogoUpdated => 'changed the prescription logo';
+
+  @override
+  String get activityRxLogoRemoved => 'removed the prescription logo';
+
+  @override
+  String get activityRxSignatureUpdated => 'changed the signature';
+
+  @override
+  String get activityRxSignatureRemoved => 'removed the signature';
+
+  @override
+  String get activityActionPrescriptionDraftCreated => 'Draft started';
+
+  @override
+  String get activityActionPrescriptionDraftUpdated => 'Draft edited';
+
+  @override
+  String get activityActionPrescriptionDraftDeleted => 'Draft deleted';
+
+  @override
+  String get activityActionPrescriptionSubmitted => 'Sent for review';
+
+  @override
+  String get activityActionPrescriptionSent => 'Prescription sent';
+
+  @override
+  String get activityActionPrescriptionCancelled => 'Prescription cancelled';
+
+  @override
+  String get activityActionRxSettingsUpdated => 'Print settings';
+
+  @override
+  String get activityActionRxBrandingUpdated => 'Logo or signature';
 }

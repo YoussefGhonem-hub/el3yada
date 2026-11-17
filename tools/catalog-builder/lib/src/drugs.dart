@@ -29,10 +29,10 @@ enum DrugMarker {
   bool get withdrawnFromMarket => this == cancelled || this == illegalImport || this == withdrawn;
 
   int get status => switch (this) {
-        notAvailable => DrugStatus.notAvailable,
-        notAvailableYet => DrugStatus.notAvailableYet,
-        _ => DrugStatus.available,
-      };
+    notAvailable => DrugStatus.notAvailable,
+    notAvailableYet => DrugStatus.notAvailableYet,
+    _ => DrugStatus.available,
+  };
 }
 
 final _markerPattern = RegExp(
@@ -215,19 +215,21 @@ DrugSet readDrugs(String path, Mappings mappings, {bool keepWithdrawn = false}) 
     }
     final route = CsvTable.cell(row, routeCol).trim();
     final ingredientText = CsvTable.cell(row, scientific).trim();
-    drugs.add(Drug(
-      tradeNameEn: name,
-      tradeNameAr: stripMarkers(CsvTable.cell(row, nameAr).trim()).$1,
-      activeIngredient: ingredientText,
-      manufacturer: CsvTable.cell(row, manufacturer).trim(),
-      rawClass: CsvTable.cell(row, drugClass).trim(),
-      route: route.isEmpty ? 'UNKNOWN' : route,
-      priceEgp: double.tryParse(CsvTable.cell(row, price).trim()),
-      marker: marker,
-      ingredients: splitIngredients(ingredientText),
-      form: suggester.suggest(name, route),
-      strength: parseStrength(name),
-    ));
+    drugs.add(
+      Drug(
+        tradeNameEn: name,
+        tradeNameAr: stripMarkers(CsvTable.cell(row, nameAr).trim()).$1,
+        activeIngredient: ingredientText,
+        manufacturer: CsvTable.cell(row, manufacturer).trim(),
+        rawClass: CsvTable.cell(row, drugClass).trim(),
+        route: route.isEmpty ? 'UNKNOWN' : route,
+        priceEgp: double.tryParse(CsvTable.cell(row, price).trim()),
+        marker: marker,
+        ingredients: splitIngredients(ingredientText),
+        form: suggester.suggest(name, route),
+        strength: parseStrength(name),
+      ),
+    );
   }
   return DrugSet(drugs, rowsRead: table.rows.length, excluded: excluded);
 }

@@ -30,14 +30,7 @@ const knownSpecialties = {
 
 /// Values allowed in SpecialtyProfileItems.ItemType (database CHECK
 /// constraint CK_SpecialtyProfileItems_ItemType).
-const profileItemTypes = {
-  'drugGroup',
-  'labCode',
-  'radiologyRegion',
-  'radiologyModality',
-  'radiologyCode',
-  'route',
-};
+const profileItemTypes = {'drugGroup', 'labCode', 'radiologyRegion', 'radiologyModality', 'radiologyCode', 'route'};
 
 class DrugGroup {
   const DrugGroup(this.id, this.nameEn, this.nameAr);
@@ -243,21 +236,25 @@ class Mappings {
       final kind = CsvTable.cell(row, termsCsv.column('kind')).trim();
       final value = CsvTable.cell(row, termsCsv.column('value')).trim();
       if (!const {'modality', 'subtype', 'region', 'focus', 'modality_focus'}.contains(kind) || value.isEmpty) {
-        problems.add('radiology-terms.csv: kind must be modality, subtype, region, focus or modality_focus, '
-            'with a value ($row)');
+        problems.add(
+          'radiology-terms.csv: kind must be modality, subtype, region, focus or modality_focus, '
+          'with a value ($row)',
+        );
         continue;
       }
       if (kind == 'modality_focus' && !value.contains('/')) {
         problems.add('radiology-terms.csv: a modality_focus value is "<modality>/<focus>", e.g. US/Heart ($row)');
       }
       if (!seenTerms.add('$kind|$value')) problems.add('radiology-terms.csv: $kind "$value" is listed twice');
-      radiologyTerms.add(RadiologyTerm(
-        kind,
-        value,
-        CsvTable.cell(row, termsCsv.column('name_en')).trim(),
-        CsvTable.cell(row, termsCsv.column('name_ar')).trim(),
-        CsvTable.cell(row, termsCsv.column('search_terms')).trim(),
-      ));
+      radiologyTerms.add(
+        RadiologyTerm(
+          kind,
+          value,
+          CsvTable.cell(row, termsCsv.column('name_en')).trim(),
+          CsvTable.cell(row, termsCsv.column('name_ar')).trim(),
+          CsvTable.cell(row, termsCsv.column('search_terms')).trim(),
+        ),
+      );
     }
 
     if (problems.isNotEmpty) {

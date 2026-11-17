@@ -7,18 +7,30 @@ import 'paths.dart';
 void main() {
   group('stripMarkers', () {
     test('moves the availability marker out of the trade name', () {
-      expect(stripMarkers('ABILIFY 10 MG 10 DISCMELT ORALLY DIS.TABS. (N/A)'),
-          ('ABILIFY 10 MG 10 DISCMELT ORALLY DIS.TABS.', DrugMarker.notAvailable));
-      expect(stripMarkers('ABSTAIN SR 150 MG 20TABS.(N/A YET)'), ('ABSTAIN SR 150 MG 20TABS.', DrugMarker.notAvailableYet));
-      expect(stripMarkers('A.T.G FRESENIUS 20MG/ML CONC. VIAL 5 ML (CANCELLED)'),
-          ('A.T.G FRESENIUS 20MG/ML CONC. VIAL 5 ML', DrugMarker.cancelled));
+      expect(stripMarkers('ABILIFY 10 MG 10 DISCMELT ORALLY DIS.TABS. (N/A)'), (
+        'ABILIFY 10 MG 10 DISCMELT ORALLY DIS.TABS.',
+        DrugMarker.notAvailable,
+      ));
+      expect(stripMarkers('ABSTAIN SR 150 MG 20TABS.(N/A YET)'), (
+        'ABSTAIN SR 150 MG 20TABS.',
+        DrugMarker.notAvailableYet,
+      ));
+      expect(stripMarkers('A.T.G FRESENIUS 20MG/ML CONC. VIAL 5 ML (CANCELLED)'), (
+        'A.T.G FRESENIUS 20MG/ML CONC. VIAL 5 ML',
+        DrugMarker.cancelled,
+      ));
       expect(stripMarkers('5-HT 200 MG 60 CAPS. (ILLEGAL IMPORT)'), ('5-HT 200 MG 60 CAPS.', DrugMarker.illegalImport));
-      expect(stripMarkers('ACOMPLIA 20MG  14F.C.TABLET (WITHDRAWAL)'), ('ACOMPLIA 20MG 14F.C.TABLET', DrugMarker.withdrawn));
+      expect(stripMarkers('ACOMPLIA 20MG  14F.C.TABLET (WITHDRAWAL)'), (
+        'ACOMPLIA 20MG 14F.C.TABLET',
+        DrugMarker.withdrawn,
+      ));
     });
 
     test('leaves names without a marker alone, including other brackets', () {
-      expect(stripMarkers('GINKGO BILOBA 120 MG 60 CAPS. (NATROL)'),
-          ('GINKGO BILOBA 120 MG 60 CAPS. (NATROL)', DrugMarker.none));
+      expect(stripMarkers('GINKGO BILOBA 120 MG 60 CAPS. (NATROL)'), (
+        'GINKGO BILOBA 120 MG 60 CAPS. (NATROL)',
+        DrugMarker.none,
+      ));
     });
 
     test('maps markers to the stored status, and knows which are left out', () {
@@ -32,8 +44,11 @@ void main() {
 
   group('splitIngredients', () {
     test('splits on top-level plus signs only (A.3.3)', () {
-      expect(splitIngredients('CHLORPHENIRAMINE+PARACETAMOL(ACETAMINOPHEN)+PSEUDOEPHEDRINE'),
-          ['CHLORPHENIRAMINE', 'PARACETAMOL(ACETAMINOPHEN)', 'PSEUDOEPHEDRINE']);
+      expect(splitIngredients('CHLORPHENIRAMINE+PARACETAMOL(ACETAMINOPHEN)+PSEUDOEPHEDRINE'), [
+        'CHLORPHENIRAMINE',
+        'PARACETAMOL(ACETAMINOPHEN)',
+        'PSEUDOEPHEDRINE',
+      ]);
       expect(splitIngredients('A+B (C+D) + E'), ['A', 'B (C+D)', 'E']);
       expect(splitIngredients(''), isEmpty);
     });
@@ -73,18 +88,18 @@ void main() {
     final mappings = Mappings.load(fixtureMappings);
 
     Drug drug(String name, String rawClass, String ingredient, {String route = 'ORAL.SOLID'}) => Drug(
-          tradeNameEn: name,
-          tradeNameAr: '',
-          activeIngredient: ingredient,
-          manufacturer: '',
-          rawClass: rawClass,
-          route: route,
-          priceEgp: null,
-          marker: DrugMarker.none,
-          ingredients: splitIngredients(ingredient),
-          form: null,
-          strength: null,
-        );
+      tradeNameEn: name,
+      tradeNameAr: '',
+      activeIngredient: ingredient,
+      manufacturer: '',
+      rawClass: rawClass,
+      route: route,
+      priceEgp: null,
+      marker: DrugMarker.none,
+      ingredients: splitIngredients(ingredient),
+      form: null,
+      strength: null,
+    );
 
     test('uses class-to-group.csv, with route-specific rows first', () {
       final drugs = [
@@ -108,10 +123,7 @@ void main() {
     });
 
     test('needs two agreeing products before it guesses', () {
-      final drugs = [
-        drug('ONE', 'ANTIHYPERLIPIDEMIC.STATINS', 'ROSUVASTATIN'),
-        drug('MYSTERY', '.', 'ROSUVASTATIN'),
-      ];
+      final drugs = [drug('ONE', 'ANTIHYPERLIPIDEMIC.STATINS', 'ROSUVASTATIN'), drug('MYSTERY', '.', 'ROSUVASTATIN')];
       assignGroups(drugs, mappings);
       expect(drugs.last.groupId, 'other');
       expect(drugs.last.groupSource, GroupSource.other);

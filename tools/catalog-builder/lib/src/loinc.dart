@@ -16,13 +16,14 @@ class LoincRelease {
       throw FileSystemException('No loinc folder in the sources folder', loincDir.path);
     }
     if (version != null) return LoincRelease(p.join(loincDir.path, version), version)..check();
-    final versions = loincDir
-        .listSync()
-        .whereType<Directory>()
-        .map((d) => p.basename(d.path))
-        .where((name) => RegExp(r'^\d+\.\d+$').hasMatch(name))
-        .toList()
-      ..sort(_compareVersions);
+    final versions =
+        loincDir
+            .listSync()
+            .whereType<Directory>()
+            .map((d) => p.basename(d.path))
+            .where((name) => RegExp(r'^\d+\.\d+$').hasMatch(name))
+            .toList()
+          ..sort(_compareVersions);
     if (versions.isEmpty) {
       throw FileSystemException('No LOINC release folder (such as 2.83) found', loincDir.path);
     }
@@ -163,9 +164,9 @@ Map<String, LoincTerm> readLoincTable(String path) {
 }
 
 List<String> splitRelatedNames(String value) => [
-      for (final part in value.split(';'))
-        if (part.trim().isNotEmpty) part.trim(),
-    ];
+  for (final part in value.split(';'))
+    if (part.trim().isNotEmpty) part.trim(),
+];
 
 /// The LOINC codes of the Universal Lab Orders Value Set.
 Set<String> readUniversalLabOrders(String path) {

@@ -45,8 +45,8 @@ String normalizeForSearch(String input) {
       pendingSpace = true;
       continue;
     }
-    final boundary = (previousKind == _Kind.digit && kind == _Kind.letter) ||
-        (previousKind == _Kind.letter && kind == _Kind.digit);
+    final boundary =
+        (previousKind == _Kind.digit && kind == _Kind.letter) || (previousKind == _Kind.letter && kind == _Kind.digit);
     if ((pendingSpace || boundary) && out.isNotEmpty) out.writeCharCode(_space);
     pendingSpace = false;
     out.writeCharCode(rune);

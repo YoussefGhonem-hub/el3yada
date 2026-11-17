@@ -128,8 +128,8 @@ CatalogContent assembleCatalog({
       final why = term == null
           ? 'not in LOINC'
           : alias.type == 'lab'
-              ? 'not an active orderable lab term (CLASSTYPE ${term.classType}, ${term.status}, ${term.orderObs})'
-              : 'not an active Radiology Playbook procedure (${term.status})';
+          ? 'not an active orderable lab term (CLASSTYPE ${term.classType}, ${term.status}, ${term.orderObs})'
+          : 'not an active Radiology Playbook procedure (${term.status})';
       problems.add('aliases.csv: ${alias.type} ${alias.code} "${alias.aliasEn}" is $why');
       continue;
     }
@@ -137,9 +137,7 @@ CatalogContent assembleCatalog({
   }
 
   // Search words for Playbook attributes.
-  final termWords = <String, RadiologyTerm>{
-    for (final t in mappings.radiologyTerms) '${t.kind}|${t.value}': t,
-  };
+  final termWords = <String, RadiologyTerm>{for (final t in mappings.radiologyTerms) '${t.kind}|${t.value}': t};
 
   final labs = [
     for (final term in labTerms)
@@ -161,24 +159,28 @@ CatalogContent assembleCatalog({
     final nameAr = _firstArabic(aliases);
     final ftsName = normalizeAndDedupe([term.longName, term.shortName]);
     final ftsAlias = _without(
-      withArabicSkeletons(normalizeAndDedupe([
-        for (final a in aliases) ...[a.aliasEn, a.nameAr],
-        for (final t in attributeTerms) ...[t.nameEn, t.nameAr, t.searchTerms],
-        arabic[term.code]?.displayName,
-        ...?arabic[term.code]?.relatedNames,
-      ])),
+      withArabicSkeletons(
+        normalizeAndDedupe([
+          for (final a in aliases) ...[a.aliasEn, a.nameAr],
+          for (final t in attributeTerms) ...[t.nameEn, t.nameAr, t.searchTerms],
+          arabic[term.code]?.displayName,
+          ...?arabic[term.code]?.relatedNames,
+        ]),
+      ),
       ftsName,
     );
-    radiology.add(RadiologyRow(
-      term: term,
-      entry: entry,
-      nameAr: nameAr,
-      aliases: _englishAliases(aliases),
-      priority: aliases.any((a) => a.priority) ? CatalogPriority.egypt : CatalogPriority.none,
-      ftsName: ftsName,
-      ftsAlias: ftsAlias,
-      ftsRelated: _relatedWords(term, '$ftsName $ftsAlias'),
-    ));
+    radiology.add(
+      RadiologyRow(
+        term: term,
+        entry: entry,
+        nameAr: nameAr,
+        aliases: _englishAliases(aliases),
+        priority: aliases.any((a) => a.priority) ? CatalogPriority.egypt : CatalogPriority.none,
+        ftsName: ftsName,
+        ftsAlias: ftsAlias,
+        ftsRelated: _relatedWords(term, '$ftsName $ftsAlias'),
+      ),
+    );
   }
 
   // Specialty profiles must point at real items.
@@ -197,8 +199,10 @@ CatalogContent assembleCatalog({
       _ => true, // drugGroup is checked when the mappings are loaded
     };
     if (!ok) {
-      problems.add('specialty-profiles.csv: ${item.specialty} ${item.itemType} "${item.value}" '
-          'is not in the catalog');
+      problems.add(
+        'specialty-profiles.csv: ${item.specialty} ${item.itemType} "${item.value}" '
+        'is not in the catalog',
+      );
     }
   }
 
@@ -223,7 +227,8 @@ CatalogContent assembleCatalog({
 
   if (problems.isNotEmpty) throw MappingDataErrors(problems);
 
-  final sortedDrugs = [...drugs]..sort((a, b) {
+  final sortedDrugs = [...drugs]
+    ..sort((a, b) {
       final byName = a.tradeNameEn.compareTo(b.tradeNameEn);
       return byName != 0 ? byName : a.activeIngredient.compareTo(b.activeIngredient);
     });
@@ -232,7 +237,10 @@ CatalogContent assembleCatalog({
     groups: mappings.groups,
     labs: labs,
     radiology: radiology,
-    modalities: [for (final t in mappings.radiologyTerms) if (t.kind == 'modality') t],
+    modalities: [
+      for (final t in mappings.radiologyTerms)
+        if (t.kind == 'modality') t,
+    ],
     thirdPartyExcluded: thirdParty..sort(),
   );
 }
@@ -241,11 +249,13 @@ LabRow _labRow(LoincTerm term, List<Alias> aliases, VariantNames? arabic, Set<St
   final common = universalLabOrders.contains(term.code) || term.commonOrderRank > 0;
   final ftsName = normalizeAndDedupe([term.longName, term.shortName]);
   final ftsAlias = _without(
-    withArabicSkeletons(normalizeAndDedupe([
-      for (final a in aliases) ...[a.aliasEn, a.nameAr],
-      arabic?.displayName,
-      ...?arabic?.relatedNames,
-    ])),
+    withArabicSkeletons(
+      normalizeAndDedupe([
+        for (final a in aliases) ...[a.aliasEn, a.nameAr],
+        arabic?.displayName,
+        ...?arabic?.relatedNames,
+      ]),
+    ),
     ftsName,
   );
   return LabRow(
@@ -256,8 +266,8 @@ LabRow _labRow(LoincTerm term, List<Alias> aliases, VariantNames? arabic, Set<St
     priority: aliases.any((a) => a.priority)
         ? CatalogPriority.egypt
         : common
-            ? CatalogPriority.common
-            : CatalogPriority.none,
+        ? CatalogPriority.common
+        : CatalogPriority.none,
     ftsName: ftsName,
     ftsAlias: ftsAlias,
     ftsRelated: _relatedWords(term, '$ftsName $ftsAlias'),
@@ -272,10 +282,9 @@ LabRow _labRow(LoincTerm term, List<Alias> aliases, VariantNames? arabic, Set<St
 /// these took about half of the lab index.
 String _relatedWords(LoincTerm term, String alreadyIndexed) {
   final taken = alreadyIndexed.split(' ').toSet();
-  return normalizeAndDedupe(term.relatedNames)
-      .split(' ')
-      .where((w) => w.length > 1 && !taken.contains(w) && !relatedStopWords.contains(w))
-      .join(' ');
+  return normalizeAndDedupe(
+    term.relatedNames,
+  ).split(' ').where((w) => w.length > 1 && !taken.contains(w) && !relatedStopWords.contains(w)).join(' ');
 }
 
 /// See [_relatedWords]. Normalized (lower case) LOINC RELATEDNAMES2 words.

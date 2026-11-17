@@ -203,7 +203,8 @@ abstract final class CatalogSchema {
   ///   took under 15 ms either way on a desktop, and one-letter queries are
   ///   slow because of ranking, not lookup. To add one, append
   ///   `, prefix='2 3'` here and bump [catalogSchemaVersion].
-  static const ftsOptions = "content='', "
+  static const ftsOptions =
+      "content='', "
       "tokenize=\"unicode61 remove_diacritics 0 tokenchars './'\"";
 
   static const List<String> createStatements = [

@@ -18,10 +18,12 @@ String? ftsPrefixQuery(String typed) {
   // digits, so quoting is safe; "*" after the closing quote makes a prefix.
   // FTS5 does not accept an implicit AND after a bracketed group, so the
   // words are joined with an explicit AND.
-  return words.map((word) {
-    final skeleton = arabicSkeleton(word);
-    return skeleton == null ? '"$word"*' : '("$word"* OR "$skeleton"*)';
-  }).join(' AND ');
+  return words
+      .map((word) {
+        final skeleton = arabicSkeleton(word);
+        return skeleton == null ? '"$word"*' : '("$word"* OR "$skeleton"*)';
+      })
+      .join(' AND ');
 }
 
 /// Base search statements. Each takes two parameters: the MATCH expression
@@ -31,7 +33,8 @@ String? ftsPrefixQuery(String typed) {
 abstract final class CatalogSearchSql {
   /// Column weights for `bm25()`: a match in the name counts more than a
   /// match in the ingredient or a LOINC synonym.
-  static const drugs = '''
+  static const drugs =
+      '''
 SELECT d.${DrugsTable.id}, d.${DrugsTable.tradeNameEn}, d.${DrugsTable.activeIngredient},
        d.${DrugsTable.manufacturer}, d.${DrugsTable.groupId}, d.${DrugsTable.route},
        d.${DrugsTable.form}, d.${DrugsTable.strengthHint}, d.${DrugsTable.status}
@@ -41,7 +44,8 @@ WHERE ${FtsTables.drugs} MATCH ?1
 ORDER BY d.${DrugsTable.status} > 0, bm25(${FtsTables.drugs}, 10.0, 4.0), d.${DrugsTable.tradeNameEn}
 LIMIT ?2''';
 
-  static const labs = '''
+  static const labs =
+      '''
 SELECT l.${LabTestsTable.id}, l.${LabTestsTable.loincCode}, l.${LabTestsTable.nameEn},
        l.${LabTestsTable.shortName}, l.${LabTestsTable.nameAr}, l.${LabTestsTable.aliases},
        l.${LabTestsTable.loincClass}, l.${LabTestsTable.priority}
@@ -52,7 +56,8 @@ ORDER BY l.${LabTestsTable.priority} DESC, bm25(${FtsTables.labs}, 10.0, 12.0, 2
          l.${LabTestsTable.orderRank} IS NULL, l.${LabTestsTable.orderRank}
 LIMIT ?2''';
 
-  static const radiology = '''
+  static const radiology =
+      '''
 SELECT r.${RadiologyTable.id}, r.${RadiologyTable.loincCode}, r.${RadiologyTable.nameEn},
        r.${RadiologyTable.nameAr}, r.${RadiologyTable.modality}, r.${RadiologyTable.region},
        r.${RadiologyTable.aliases}, r.${RadiologyTable.focus}, r.${RadiologyTable.priority}

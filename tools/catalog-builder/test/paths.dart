@@ -13,13 +13,14 @@ final fixtureDrugs = p.join(fixtureSources, 'drugs', '2026-01', 'egyptian-drugs.
 String? realDrugCsv() {
   final dir = Directory(p.join('sources', 'drugs'));
   if (!dir.existsSync()) return null;
-  final files = dir
-      .listSync()
-      .whereType<Directory>()
-      .map((d) => p.join(d.path, 'egyptian-drugs.csv'))
-      .where((f) => File(f).existsSync())
-      .toList()
-    ..sort();
+  final files =
+      dir
+          .listSync()
+          .whereType<Directory>()
+          .map((d) => p.join(d.path, 'egyptian-drugs.csv'))
+          .where((f) => File(f).existsSync())
+          .toList()
+        ..sort();
   return files.isEmpty ? null : files.last;
 }
 

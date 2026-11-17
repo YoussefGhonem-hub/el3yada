@@ -84,23 +84,29 @@ void main() {
       append('specialty-profiles.csv', 'Cardiology,drugGroup,no_such_group');
       expect(
         () => Mappings.load(dir.path),
-        throwsA(isA<FormatException>()
-            .having((e) => e.message, 'message', contains('unknown specialty "Astrology"'))
-            .having((e) => e.message, 'message', contains('item_type "favouriteColour"'))
-            .having((e) => e.message, 'message', contains('unknown drug group "no_such_group"'))),
+        throwsA(
+          isA<FormatException>()
+              .having((e) => e.message, 'message', contains('unknown specialty "Astrology"'))
+              .having((e) => e.message, 'message', contains('item_type "favouriteColour"'))
+              .having((e) => e.message, 'message', contains('unknown drug group "no_such_group"')),
+        ),
       );
     });
 
     test('rejects a class mapped twice to different groups', () {
       append('class-to-group.csv', 'ANTIPYRETIC,nsaids,');
-      expect(() => Mappings.load(dir.path),
-          throwsA(isA<FormatException>().having((e) => e.message, 'message', contains('mapped twice'))));
+      expect(
+        () => Mappings.load(dir.path),
+        throwsA(isA<FormatException>().having((e) => e.message, 'message', contains('mapped twice'))),
+      );
     });
 
     test('rejects an alias that is not a LOINC code', () {
       append('aliases.csv', 'lab,CBC,CBC,,1');
-      expect(() => Mappings.load(dir.path),
-          throwsA(isA<FormatException>().having((e) => e.message, 'message', contains('not a LOINC code'))));
+      expect(
+        () => Mappings.load(dir.path),
+        throwsA(isA<FormatException>().having((e) => e.message, 'message', contains('not a LOINC code'))),
+      );
     });
   });
 }

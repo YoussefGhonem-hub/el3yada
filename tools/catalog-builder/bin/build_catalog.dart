@@ -13,16 +13,21 @@ Future<void> main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption('sources', help: 'Folder with loinc/<release>/ (and optionally drugs/<date>/egyptian-drugs.csv).')
     ..addOption('drugs', help: 'The drug CSV. Default: the newest <sources>/drugs/*/egyptian-drugs.csv.')
-    ..addOption('drug-source-date',
-        help: 'When the drug dataset last changed (YYYY-MM-DD). Default: the name of the folder holding the CSV.')
+    ..addOption(
+      'drug-source-date',
+      help: 'When the drug dataset last changed (YYYY-MM-DD). Default: the name of the folder holding the CSV.',
+    )
     ..addOption('loinc-release', help: 'LOINC release folder under <sources>/loinc. Default: the highest one.')
     ..addOption('mappings', defaultsTo: 'mappings', help: 'Folder with the mapping CSV files.')
     ..addOption('out', defaultsTo: 'out', help: 'Output folder.')
     ..addOption('catalog-version', help: 'Catalog version number. Default: the last one in --out plus 1.')
     ..addOption('page-size', defaultsTo: '$defaultPageSize', help: 'SQLite page size.')
     ..addFlag('allow-drop', negatable: false, help: 'Accept counts more than 5% lower than the previous version.')
-    ..addFlag('keep-withdrawn',
-        negatable: false, help: 'Keep products marked (CANCELLED), (ILLEGAL IMPORT) or (WITHDRAWAL).')
+    ..addFlag(
+      'keep-withdrawn',
+      negatable: false,
+      help: 'Keep products marked (CANCELLED), (ILLEGAL IMPORT) or (WITHDRAWAL).',
+    )
     ..addFlag('help', abbr: 'h', negatable: false);
 
   final ArgResults args;
@@ -83,12 +88,13 @@ Future<void> main(List<String> arguments) async {
 String? _findDrugCsv(String sources) {
   final dir = Directory(p.join(sources, 'drugs'));
   if (!dir.existsSync()) return null;
-  final candidates = dir
-      .listSync()
-      .whereType<Directory>()
-      .map((d) => p.join(d.path, 'egyptian-drugs.csv'))
-      .where((f) => File(f).existsSync())
-      .toList()
-    ..sort();
+  final candidates =
+      dir
+          .listSync()
+          .whereType<Directory>()
+          .map((d) => p.join(d.path, 'egyptian-drugs.csv'))
+          .where((f) => File(f).existsSync())
+          .toList()
+        ..sort();
   return candidates.isEmpty ? null : candidates.last;
 }

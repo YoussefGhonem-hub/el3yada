@@ -62,19 +62,15 @@ void _insertAll(Database db, CatalogContent content, CatalogMeta meta) {
     }
   }
 
-  db.execute(
-    'INSERT INTO ${MetaTable.name} VALUES (?, ?, ?, ?, ?)',
-    [
-      catalogSchemaVersion,
-      meta.catalogVersion,
-      meta.builtAt.toUtc().toIso8601String(),
-      meta.drugSourceDate,
-      meta.loincRelease,
-    ],
-  );
+  db.execute('INSERT INTO ${MetaTable.name} VALUES (?, ?, ?, ?, ?)', [
+    catalogSchemaVersion,
+    meta.catalogVersion,
+    meta.builtAt.toUtc().toIso8601String(),
+    meta.drugSourceDate,
+    meta.loincRelease,
+  ]);
 
-  insertEach('INSERT INTO ${DrugGroupsTable.name} VALUES (?, ?, ?)', content.groups,
-      (g) => [g.id, g.nameEn, g.nameAr]);
+  insertEach('INSERT INTO ${DrugGroupsTable.name} VALUES (?, ?, ?)', content.groups, (g) => [g.id, g.nameEn, g.nameAr]);
 
   // Drugs: ids follow the sorted order, so similar names sit together.
   final drugs = content.drugs;
@@ -167,8 +163,11 @@ void _insertAll(Database db, CatalogContent content, CatalogMeta meta) {
     (r) => [r.id, r.ftsName, r.ftsAlias, r.ftsRelated],
   );
 
-  insertEach('INSERT INTO ${ModalitiesTable.name} VALUES (?, ?, ?)', content.modalities,
-      (m) => [m.value, m.nameEn, m.nameAr]);
+  insertEach(
+    'INSERT INTO ${ModalitiesTable.name} VALUES (?, ?, ?)',
+    content.modalities,
+    (m) => [m.value, m.nameEn, m.nameAr],
+  );
 }
 
 String? _nullIfEmpty(String value) => value.isEmpty ? null : value;

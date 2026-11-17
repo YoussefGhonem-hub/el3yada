@@ -95,5 +95,4 @@ String _canonicalUnit(String unit) {
   return unit;
 }
 
-String _tidyNumbers(String numbers) =>
-    numbers.replaceAll(RegExp(r'\s*/\s*'), '/');
+String _tidyNumbers(String numbers) => numbers.replaceAll(RegExp(r'\s*/\s*'), '/');

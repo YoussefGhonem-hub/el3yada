@@ -4,8 +4,7 @@ import 'dart:io';
 /// A CSV file read into memory: its header and its rows (RFC 4180, as used
 /// by the drug dataset, LOINC and our mapping files).
 class CsvTable {
-  CsvTable(this.path, this.header, this.rows)
-      : _index = {for (var i = 0; i < header.length; i++) header[i]: i};
+  CsvTable(this.path, this.header, this.rows) : _index = {for (var i = 0; i < header.length; i++) header[i]: i};
 
   /// Reads [path] as UTF-8. A byte-order mark is ignored, and so are blank
   /// lines.
@@ -125,7 +124,8 @@ void forEachCsvRow(String text, void Function(List<String> row) onRow) {
 
 /// Quotes [value] for a CSV file when needed.
 String csvField(String value) {
-  final needsQuotes = value.isEmpty ||
+  final needsQuotes =
+      value.isEmpty ||
       value.contains(',') ||
       value.contains('"') ||
       value.contains('\n') ||

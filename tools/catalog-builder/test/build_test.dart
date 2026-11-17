@@ -17,16 +17,18 @@ void main() {
   setUp(() => out = Directory.systemTemp.createTempSync('catalog_build_'));
   tearDown(() => out.deleteSync(recursive: true));
 
-  BuildResult build({String? drugs, bool allowDrop = false, int? version}) => buildCatalog(BuildOptions(
-        sourcesDir: fixtureSources,
-        drugsCsv: drugs ?? fixtureDrugs,
-        drugSourceDate: '2026-01-15',
-        mappingsDir: fixtureMappings,
-        outDir: out.path,
-        catalogVersion: version,
-        allowDrop: allowDrop,
-        builtAt: DateTime.utc(2026, 11, 17, 10),
-      ));
+  BuildResult build({String? drugs, bool allowDrop = false, int? version}) => buildCatalog(
+    BuildOptions(
+      sourcesDir: fixtureSources,
+      drugsCsv: drugs ?? fixtureDrugs,
+      drugSourceDate: '2026-01-15',
+      mappingsDir: fixtureMappings,
+      outDir: out.path,
+      catalogVersion: version,
+      allowDrop: allowDrop,
+      builtAt: DateTime.utc(2026, 11, 17, 10),
+    ),
+  );
 
   test('builds the file, the gzip copy and a matching manifest', () {
     final result = build();
@@ -75,10 +77,14 @@ void main() {
     expect(db.select("SELECT * FROM drugs WHERE trade_name_en LIKE 'ACILIGHT%'"), isEmpty);
 
     // Route-specific class rows and the ingredient fallback.
-    expect(db.select("SELECT group_id FROM drugs WHERE trade_name_en LIKE 'BETADERM%'").single['group_id'],
-        'topical_steroids');
-    expect(db.select("SELECT group_id FROM drugs WHERE trade_name_en LIKE 'FIXTURE STATIN%'").single['group_id'],
-        'lipid_lowering');
+    expect(
+      db.select("SELECT group_id FROM drugs WHERE trade_name_en LIKE 'BETADERM%'").single['group_id'],
+      'topical_steroids',
+    );
+    expect(
+      db.select("SELECT group_id FROM drugs WHERE trade_name_en LIKE 'FIXTURE STATIN%'").single['group_id'],
+      'lipid_lowering',
+    );
 
     // Every product containing paracetamol is linked to that ingredient.
     final paracetamol = db.select('''
@@ -121,11 +127,13 @@ void main() {
 
   test('fails when too many products land in "other", and writes no .gz', () {
     final drugs = File(p.join(out.path, 'drugs.csv'))
-      ..writeAsStringSync([
-        File(fixtureDrugs).readAsStringSync().trimRight(),
-        'NEW ONE 10 TABS.,نيو,ZZZ,X,A BRAND NEW CLASS,ORAL.SOLID,1',
-        'NEW TWO 10 TABS.,نيو,YYY,X,A BRAND NEW CLASS,ORAL.SOLID,1',
-      ].join('\n'));
+      ..writeAsStringSync(
+        [
+          File(fixtureDrugs).readAsStringSync().trimRight(),
+          'NEW ONE 10 TABS.,نيو,ZZZ,X,A BRAND NEW CLASS,ORAL.SOLID,1',
+          'NEW TWO 10 TABS.,نيو,YYY,X,A BRAND NEW CLASS,ORAL.SOLID,1',
+        ].join('\n'),
+      );
     final result = build(drugs: drugs.path);
     expect(result.passed, isFalse);
     expect(result.gzipPath, isNull);
@@ -153,16 +161,19 @@ void main() {
   test('stops with a clear error when a profile points at a missing item', () {
     final mappings = copyToTemp(fixtureMappings);
     addTearDown(() => mappings.deleteSync(recursive: true));
-    File(p.join(mappings.path, 'specialty-profiles.csv'))
-        .writeAsStringSync('Cardiology,labCode,12345-6\n', mode: FileMode.append);
+    File(
+      p.join(mappings.path, 'specialty-profiles.csv'),
+    ).writeAsStringSync('Cardiology,labCode,12345-6\n', mode: FileMode.append);
     expect(
-      () => buildCatalog(BuildOptions(
-        sourcesDir: fixtureSources,
-        drugsCsv: fixtureDrugs,
-        drugSourceDate: '2026-01-15',
-        mappingsDir: mappings.path,
-        outDir: out.path,
-      )),
+      () => buildCatalog(
+        BuildOptions(
+          sourcesDir: fixtureSources,
+          drugsCsv: fixtureDrugs,
+          drugSourceDate: '2026-01-15',
+          mappingsDir: mappings.path,
+          outDir: out.path,
+        ),
+      ),
       throwsA(isA<MappingDataErrors>().having((e) => e.toString(), 'message', contains('12345-6'))),
     );
   });

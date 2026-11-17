@@ -89,9 +89,11 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
   say('el3yada catalog builder — catalog v$version, schema v$catalogSchemaVersion');
 
   final mappings = Mappings.load(options.mappingsDir);
-  say('Mappings: ${mappings.groups.length} groups, ${mappings.classToGroup.length} class rows, '
-      '${mappings.formTokens.length} form tokens, ${mappings.aliases.length} aliases, '
-      '${mappings.profiles.length} specialty profile rows');
+  say(
+    'Mappings: ${mappings.groups.length} groups, ${mappings.classToGroup.length} class rows, '
+    '${mappings.formTokens.length} form tokens, ${mappings.aliases.length} aliases, '
+    '${mappings.profiles.length} specialty profile rows',
+  );
 
   // Medicines.
   final drugSet = readDrugs(options.drugsCsv, mappings, keepWithdrawn: options.keepWithdrawn);
@@ -100,15 +102,19 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
   say('');
   say('Medicines: ${drugSet.rowsRead} rows read from ${p.basename(options.drugsCsv)}');
   if (drugSet.excluded.isNotEmpty) {
-    say('  left out: ${drugSet.excluded.entries.map((e) => '${e.value} ${e.key.name}').join(', ')}'
-        '${options.keepWithdrawn ? '' : ' (use --keep-withdrawn to keep them)'}');
+    say(
+      '  left out: ${drugSet.excluded.entries.map((e) => '${e.value} ${e.key.name}').join(', ')}'
+      '${options.keepWithdrawn ? '' : ' (use --keep-withdrawn to keep them)'}',
+    );
   }
   final byStatus = <int, int>{};
   for (final d in drugs) {
     byStatus[d.marker.status] = (byStatus[d.marker.status] ?? 0) + 1;
   }
-  say('  kept: ${drugs.length} (${byStatus[DrugStatus.notAvailable] ?? 0} marked N/A, '
-      '${byStatus[DrugStatus.notAvailableYet] ?? 0} marked N/A YET)');
+  say(
+    '  kept: ${drugs.length} (${byStatus[DrugStatus.notAvailable] ?? 0} marked N/A, '
+    '${byStatus[DrugStatus.notAvailableYet] ?? 0} marked N/A YET)',
+  );
   final otherDrugs = drugs.where((d) => d.groupId == DrugGroupsTable.otherId).toList();
   final fallback = drugs.where((d) => d.groupSource == GroupSource.ingredientFallback).length;
   final unmapped = <String, int>{};
@@ -116,17 +122,23 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
     unmapped[d.rawClass] = (unmapped[d.rawClass] ?? 0) + 1;
   }
   final otherShare = drugs.isEmpty ? 0.0 : otherDrugs.length / drugs.length;
-  say('  group "other": ${otherDrugs.length} (${_percent(otherShare)}); '
-      '$fallback placed by the ingredient fallback');
+  say(
+    '  group "other": ${otherDrugs.length} (${_percent(otherShare)}); '
+    '$fallback placed by the ingredient fallback',
+  );
   if (unmapped.isNotEmpty) {
     final list = unmapped.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-    say('  classes not in class-to-group.csv (${list.length}): '
-        '${list.map((e) => '"${e.key}" ${e.value}').join(', ')}');
+    say(
+      '  classes not in class-to-group.csv (${list.length}): '
+      '${list.map((e) => '"${e.key}" ${e.value}').join(', ')}',
+    );
   }
   final withStrength = drugs.where((d) => d.strength != null).length;
   final withForm = drugs.where((d) => d.form != null).length;
-  say('  strength found: $withStrength (${_percent(withStrength / drugs.length)}); '
-      'form suggested: $withForm (${_percent(withForm / drugs.length)})');
+  say(
+    '  strength found: $withStrength (${_percent(withStrength / drugs.length)}); '
+    'form suggested: $withForm (${_percent(withForm / drugs.length)})',
+  );
 
   // LOINC.
   final release = LoincRelease.find(options.sourcesDir, version: options.loincVersion);
@@ -136,9 +148,11 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
   final arabic = arabicFile == null ? <String, VariantNames>{} : readVariant(arabicFile);
   final playbook = readPlaybook(release.playbook);
   say('');
-  say('LOINC ${release.version}: ${loinc.length} terms; Universal Lab Orders: ${ulo.length}; '
-      'Arabic variant: ${arabicFile == null ? 'none' : '${arabic.length} terms (${p.basename(arabicFile)})'}; '
-      'Playbook: ${playbook.length} procedures');
+  say(
+    'LOINC ${release.version}: ${loinc.length} terms; Universal Lab Orders: ${ulo.length}; '
+    'Arabic variant: ${arabicFile == null ? 'none' : '${arabic.length} terms (${p.basename(arabicFile)})'}; '
+    'Playbook: ${playbook.length} procedures',
+  );
 
   final warnings = <String>[];
   final content = assembleCatalog(
@@ -165,15 +179,19 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
     labClasses[l.term.loincClass] = (labClasses[l.term.loincClass] ?? 0) + 1;
   }
   final topClasses = labClasses.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-  say('  lab tests kept: ${content.labs.length} '
-      '(${labPriority[CatalogPriority.egypt] ?? 0} Egypt priority, ${labPriority[CatalogPriority.common] ?? 0} common); '
-      'largest classes: ${topClasses.take(8).map((e) => '${e.key} ${e.value}').join(', ')}');
+  say(
+    '  lab tests kept: ${content.labs.length} '
+    '(${labPriority[CatalogPriority.egypt] ?? 0} Egypt priority, ${labPriority[CatalogPriority.common] ?? 0} common); '
+    'largest classes: ${topClasses.take(8).map((e) => '${e.key} ${e.value}').join(', ')}',
+  );
   say('  radiology procedures kept: ${content.radiology.length}');
   if (content.thirdPartyExcluded.isNotEmpty) {
     say('  left out for third-party copyright (LOINC licence 10.2): ${content.thirdPartyExcluded.join(', ')}');
   }
-  say('  Arabic names: labs $labsArabic of ${content.labs.length} '
-      '($labsLoincArabic from the LOINC Arabic variant), radiology $radiologyArabic of ${content.radiology.length}');
+  say(
+    '  Arabic names: labs $labsArabic of ${content.labs.length} '
+    '($labsLoincArabic from the LOINC Arabic variant), radiology $radiologyArabic of ${content.radiology.length}',
+  );
 
   // Database.
   final base = 'catalog-v$version';
@@ -199,21 +217,25 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
 
   // Checks (A.8).
   final checks = <CheckResult>[];
-  checks.add(CheckResult(
-    'Share of medicines in group "other" is at most 5%',
-    otherShare <= 0.05,
-    '${otherDrugs.length} of ${drugs.length} (${_percent(otherShare)})',
-  ));
+  checks.add(
+    CheckResult(
+      'Share of medicines in group "other" is at most 5%',
+      otherShare <= 0.05,
+      '${otherDrugs.length} of ${drugs.length} (${_percent(otherShare)})',
+    ),
+  );
   final previousCounts = (previous?['counts'] as Map?)?.cast<String, Object?>();
   for (final entry in counts.entries) {
     final before = previousCounts?[entry.key];
     if (before is! int || before == 0) continue;
     final drop = (before - entry.value) / before;
-    checks.add(CheckResult(
-      'Count of ${entry.key} did not drop by more than 5% since v${previous!['catalog_version']}',
-      drop <= 0.05 || options.allowDrop,
-      '$before → ${entry.value}${drop > 0.05 && options.allowDrop ? ' (allowed with --allow-drop)' : ''}',
-    ));
+    checks.add(
+      CheckResult(
+        'Count of ${entry.key} did not drop by more than 5% since v${previous!['catalog_version']}',
+        drop <= 0.05 || options.allowDrop,
+        '$before → ${entry.value}${drop > 0.05 && options.allowDrop ? ' (allowed with --allow-drop)' : ''}',
+      ),
+    );
   }
   // FTS5 'integrity-check' is issued as an INSERT, so it needs a writable
   // connection; it does not change the file.
@@ -260,10 +282,14 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
       'loinc_release': release.version,
       'built_at': builtAt.toIso8601String(),
     };
-    File(p.join(options.outDir, '$base.json')).writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(manifest)}\n');
+    File(
+      p.join(options.outDir, '$base.json'),
+    ).writeAsStringSync('${const JsonEncoder.withIndent('  ').convert(manifest)}\n');
     say('');
-    say('Size: ${_size(rawBytes)} uncompressed, ${_size(gz.length)} gzip -9 '
-        '(${(gz.length * 100 / rawBytes).toStringAsFixed(1)}%)');
+    say(
+      'Size: ${_size(rawBytes)} uncompressed, ${_size(gz.length)} gzip -9 '
+      '(${(gz.length * 100 / rawBytes).toStringAsFixed(1)}%)',
+    );
     say('Wrote $gzipPath and $base.json');
   } else {
     say('');
@@ -310,7 +336,9 @@ void _writeSizeBreakdown(String dbPath, void Function(String) say) {
     final byTable = <String, int>{};
     for (final row in rows) {
       final name = row['name'] as String;
-      final table = name.startsWith('fts_') ? name.replaceAll(RegExp(r'_(data|idx|docsize|config|content)$'), '') : name;
+      final table = name.startsWith('fts_')
+          ? name.replaceAll(RegExp(r'_(data|idx|docsize|config|content)$'), '')
+          : name;
       byTable[table] = (byTable[table] ?? 0) + (row['bytes'] as int);
     }
     final sorted = byTable.entries.toList()..sort((a, b) => b.value.compareTo(a.value));

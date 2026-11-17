@@ -10,10 +10,7 @@ void main() {
 
     test('normalizes Arabic and also searches each word by its skeleton', () {
       expect(ftsPrefixQuery('بَنادول'), '("بنادول"* OR "بندل"*)');
-      expect(
-        ftsPrefixQuery('صورة دم كاملة'),
-        '("صوره"* OR "صره"*) AND "دم"* AND ("كامله"* OR "كمله"*)',
-      );
+      expect(ftsPrefixQuery('صورة دم كاملة'), '("صوره"* OR "صره"*) AND "دم"* AND ("كامله"* OR "كمله"*)');
     });
 
     test('keeps numbers with / and . as one word', () {

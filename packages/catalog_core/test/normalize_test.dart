@@ -9,8 +9,14 @@ void main() {
 
     test('unifies the Arabic alef variants (A.6 step 4)', () {
       for (final alef in ['أ', 'إ', 'آ', 'ٱ', 'ا']) {
-        expect(normalizeForSearch('$alef' 'موكسيسيلين'), 'اموكسيسيلين',
-            reason: 'alef variant $alef');
+        expect(
+          normalizeForSearch(
+            '$alef'
+            'موكسيسيلين',
+          ),
+          'اموكسيسيلين',
+          reason: 'alef variant $alef',
+        );
       }
     });
 
@@ -44,8 +50,7 @@ void main() {
         normalizeForSearch('CHLORPHENIRAMINE+PARACETAMOL(ACETAMINOPHEN)'),
         'chlorpheniramine paracetamol acetaminophen',
       );
-      expect(normalizeForSearch('1 2 3 (ONE TWO THREE) 20 F.C.TABS.'),
-          '1 2 3 one two three 20 f c tabs');
+      expect(normalizeForSearch('1 2 3 (ONE TWO THREE) 20 F.C.TABS.'), '1 2 3 one two three 20 f c tabs');
       expect(normalizeForSearch('ANTI-HISTAMINE.ANTI-ALLERGY'), 'anti histamine anti allergy');
       expect(normalizeForSearch('بنادول، اكسترا؟'), 'بنادول اكسترا');
     });
@@ -127,10 +132,7 @@ void main() {
 
   group('normalizeAndDedupe', () {
     test('joins values and drops repeated words', () {
-      expect(
-        normalizeAndDedupe(['CBC panel - Blood', null, 'CBC Pnl Bld', '']),
-        'cbc panel blood pnl bld',
-      );
+      expect(normalizeAndDedupe(['CBC panel - Blood', null, 'CBC Pnl Bld', '']), 'cbc panel blood pnl bld');
     });
   });
 }

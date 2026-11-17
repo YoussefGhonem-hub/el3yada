@@ -483,7 +483,7 @@ The app includes a full catalog of medicines on the Egyptian market, plus labora
   3. Everything else in the catalog, under the heading «من تخصصات أخرى» (from other specialties).
 
   A chip «تخصصي فقط» (my specialty only) hides group 3. It is **off by default**, so a cardiologist who needs omeprazole still finds it in one search (Q20).
-- **BR-CAT5 [M]** The dataset's therapeutic class is free text with inconsistent values (for example `ANTIHYPERTENSIVE.ACE`, `ANTI-ACNE`, `.`). The catalog build (section 9.5) maps the raw values to about 60 clean groups with Arabic and English names (the list is in Appendix A.3.6), for example `ANTIHYPERTENSIVE.ACE` → Antihypertensives. Unmapped values go to "Other" and are still searchable.
+- **BR-CAT5 [M]** The dataset's therapeutic class is free text with inconsistent values (for example `ANTIHYPERTENSIVE.ACE`, `ANTI-ACNE`, `.`). The catalog build (section 9.5) maps the raw values to about 70 clean groups with Arabic and English names (the list is in Appendix A.3.6), for example `ANTIHYPERTENSIVE.ACE` → Antihypertensives. Unmapped values go to "Other" and are still searchable.
 - **BR-CAT6 [M]** A medicine can be found by:
   - its trade name, in English or in Arabic letters (for example «بنادول»)
   - its active ingredient: searching "paracetamol" lists every brand that contains it
@@ -1569,28 +1569,38 @@ A command-line tool in the repository (`tools/catalog-builder`) turns the source
 **Inputs:**
 
 - the Egyptian drug dataset (CSV)
-- `class-to-group.csv`, kept in the repo: maps each raw therapeutic class to one of about 60 clean groups (BR-CAT5)
+- `class-to-group.csv`, kept in the repo: maps each raw therapeutic class to one of about 70 clean groups (BR-CAT5)
 - `form-tokens.csv` and `route-to-form.csv`: suggest a form for each medicine (Appendix A.3.5)
 - the LOINC release files: the main table, the Arabic linguistic variant, and the radiology attributes
 - `aliases.csv`, kept in the repo: our Arabic names and common short names (BR-CAT10)
+- `radiology-terms.csv`, kept in the repo: our Arabic names and search words for radiology modalities and regions (A.5.3)
+- `specialty-profiles.csv`, kept in the repo: the default specialty profiles (6.9 table). The `seed-specialty-profiles` API command loads them into the database, where the admin edits them (AD19).
 
 **Steps:**
 
 1. Keep only LOINC laboratory and radiology terms. Drop surveys, document types, claims attachments and deprecated terms.
 2. Read the strength out of each trade name (e.g. "500 MG"). Map the dataset's route to a suggested form.
-3. Normalize text for search: lower case, remove Arabic diacritics, unify Arabic letter variants.
-4. Build a SQLite database with FTS5 full-text tables, compress it, and print the counts and file size.
+3. Normalize text for search: lower case, remove Arabic diacritics, unify Arabic letter variants, and index Arabic words by their skeleton too (A.6).
+4. Build a SQLite database with FTS5 full-text tables, compress it, and print the counts and file size. There is no FTS prefix index: measured on the real data, it made the download about 45% bigger and searches no faster.
+5. Run the checks of A.8 and AC-18, and stop if a mapping row points at a group, code or specialty that does not exist.
 
 **Local database (on the device):**
 
 ```text
-drugs(id, trade_name_en, trade_name_ar, active_ingredient, manufacturer, group_id, route, strength_hint, price_egp)
+drugs(id, trade_name_en, trade_name_ar, active_ingredient, manufacturer, group_id, route, form, strength_hint, price_egp, status)
 drug_groups(id, name_en, name_ar)
-lab_tests(loinc_code, name_en, short_name, name_ar, aliases, loinc_class)
-radiology(loinc_code, name_en, name_ar, modality, region, aliases)
-fts_drugs, fts_labs, fts_radiology   -- FTS5 tables over the names, ingredients and aliases
-meta(schema_version, catalog_version, built_at, drug_source_date, loinc_release)
+ingredients(id, name), drug_ingredients(ingredient_id, drug_id)   -- A.3.3
+lab_tests(id, loinc_code, name_en, short_name, name_ar, aliases, loinc_class, priority, order_rank)
+radiology(id, loinc_code, name_en, name_ar, modality, region, aliases, modality_subtype, focus, priority)
+modalities(code, name_en, name_ar)
+fts_drugs, fts_labs, fts_radiology   -- contentless FTS5 tables over the normalized names, ingredients and aliases
+meta(schema_version, catalog_version, built_at, drug_source_date, loinc_release)   -- one row
 ```
+
+- The schema is version 1, defined once in `packages/catalog_core` (shared by the builder and the app). The API (`publishCatalog`) and the apps refuse a `meta.schema_version` they don't know.
+- `drugs.status`: 0 available, 1 "(N/A)", 2 "(N/A YET)" (A.3.2). Those products are shown last in search.
+- `lab_tests.id` and `radiology.id` are the LOINC number without its dash; `priority` is 2 for our Egypt priority aliases, 1 for tests common in US labs, 0 otherwise.
+- Column details, the mapping files and every decision: [`tools/catalog-builder/README.md`](tools/catalog-builder/README.md).
 
 **Publishing:** the admin uploads the result in AD20, and `publishCatalog` rolls it out. On launch, each doctor and admin app compares its catalog version with `settings/public.catalog`, downloads the new file in the background, checks its sha256, and swaps it in atomically.
 
@@ -2139,6 +2149,8 @@ Each question lists the default used in this spec, which stays in place until it
 29. **One real-time system:** The live board uses Firebase, as requested, while chat, unread counts and Windows toasts use SignalR. Should chat move to Firebase too, so there is only one real-time system to build and run? *(Default: keep both. The live board on Firebase, the rest on SignalR.)*
 30. **Unpaid visits:** Should a session be able to record "not paid yet" or a partial payment from the patient, with a list of what patients still owe? *(Default: no. The amount charged is what was paid.)*
 31. **Consultation limit:** ✅ **Answered:** at most 2 consultations in a row. 0 or 1 consultation before the next examination is also fine. It is stored as an admin setting (default 2), so it can change later without code. *(D2, BR-S3.)*
+32. **LOINC translation notice:** Should we email Regenstrief (loinc@loinc.org) before publishing our Arabic names for LOINC tests? Section 12 of the LOINC licence asks for notice before translations, and our names may count as one. *(Default: write to them before catalog version 1 goes live. A.7.)*
+33. **Lab catalog size:** The lab list has 43,459 LOINC terms, most of the catalog file. Should rarely ordered classes (allergy panels, drug and toxicology, molecular pathology) be dropped to make the download about 30% smaller? *(Default: keep them all. Search ranks common tests first.)*
 
 ---
 
@@ -2185,8 +2197,8 @@ tools/catalog-builder/
 - **Files:** `data/egyptian-drugs.csv` and `data/egyptian-drugs.json`. Use the CSV.
 - **Licence:** CC0, so there are no legal obligations. Credit the dataset in the About screen anyway.
 - Record the commit hash and date you downloaded in `tools/catalog-builder/README.md`.
-- **Size:** the README gives two different counts, 24,868 (May 2026) and 25,070 (June 2026). Count the rows yourself.
-- **Source of the data:** not stated in the repository. This is why the EDA check in A.3.8 is required.
+- **Size:** the README gives two different counts, 24,868 (May 2026) and 25,070 (June 2026). Count the rows yourself. The June 2026 file has 25,070 rows.
+- **Source of the data:** the repository's June 2026 commit says it was built from the Drug Eye registry, which is not an official source. This is why the EDA check in A.3.8 is required.
 
 #### A.3.2 Columns
 
@@ -2206,6 +2218,10 @@ Sample row (the first row of the file):
 |---|---|---|---|---|---|---|
 | 1 2 3 (ONE TWO THREE) 20 F.C.TABS. | 1 2 3 | CHLORPHENIRAMINE+PARACETAMOL(ACETAMINOPHEN)+PSEUDOEPHEDRINE | HIKMA PHARMA | COLD PRODUCTS | ORAL.SOLID | 10.0 |
 
+**Availability markers.** The dataset writes `(N/A)`, `(N/A YET)`, `(CANCELLED)`, `(ILLEGAL IMPORT)` and `(WITHDRAWAL)` inside the trade name. The builder removes them from the name, so they are never printed on a prescription:
+- cancelled, illegal-import and withdrawn products are left out (355 in the June 2026 file);
+- N/A products are kept, with `drugs.status` 1 or 2, and shown last in their search section.
+
 #### A.3.3 Active ingredients
 
 - Several ingredients are joined with `+`. Split on `+` and trim each part.
@@ -2222,6 +2238,7 @@ The strength is only inside the trade name. Pull it out with a regular expressio
 
 - It should catch "500 MG", "1 GM", "250 MG/5 ML", "875/125 MG" and "0.1 %".
 - If nothing matches, leave `strength_hint` empty. Never guess.
+- The pattern above also matches pack sizes ("SUSP. 120 ML", "CREAM 50 GM"): about 4,800 products in the real file. The parser (`parseStrength` in `packages/catalog_core`) counts a volume only after a slash ("250 MG/5 ML") and treats the grams of creams, gels, ointments and powders as pack sizes. About half the products get a strength; most of the rest (cosmetics, supplements) have none in the name.
 
 #### A.3.5 Form
 
@@ -2254,6 +2271,9 @@ The form comes from words in the trade name. Use the route only as a fallback. *
 | `EYE` | Eye drops |
 | `SPRAY` | Spray |
 | `SOAP` | (none, cosmetic product) |
+| `EAR` | Ear drops |
+| `VAGINAL` | (none: washes, pessaries and gels are mixed) |
+| `MOUTH` | (none: washes, gels and sprays are mixed) |
 | `UNKNOWN` | (none) |
 
 #### A.3.6 Medicine groups
@@ -2266,6 +2286,8 @@ How to build `class-to-group.csv`:
 2. Map from the top down until at least 95% of products are covered. Map whole prefixes where possible: everything starting with `ANTIBIOTIC.` → `antibiotics`.
 3. Everything left over goes to `other`. Those products are still searchable; they just never appear in a specialty section.
 4. The builder prints the unmapped classes with their counts, so the list can be improved over time.
+5. A row can name a `route`, because one class often covers tablets, eye drops and creams: `GLUCOCORTICOID` is `corticosteroids`, but `topical_steroids` for route TOPICAL and `eye` for route EYE. A row with a route wins over the row without.
+6. A product whose class maps to `other` takes the group of the products with exactly the same active ingredients, when at least two of them have a real group and two thirds agree.
 5. A doctor or pharmacist reviews the final mapping.
 
 Initial `groups.csv` (the specialty profiles in section 6.9 refer to these ids):
@@ -2334,7 +2356,19 @@ Initial `groups.csv` (the specialty profiles in section 6.9 refer to these ids):
 | `oral_dental` | Mouth & dental preparations | مستحضرات الفم والأسنان |
 | `supplements` | Supplements & herbal products | مكملات غذائية وأعشاب |
 | `cosmetics` | Cosmetics & skin care | مستحضرات تجميل وعناية بالبشرة |
+| `topical_analgesics` | Massage & topical pain relief | كريمات المساج والمسكنات الموضعية |
+| `joint_care` | Joint & cartilage supplements | مكملات المفاصل والغضاريف |
+| `vaginal_care` | Vaginal washes & feminine care | غسول ودش مهبلي ومستحضرات نسائية |
+| `infant_nutrition` | Infant formula & baby foods | ألبان وأغذية الأطفال |
+| `hematology` | Blood disorders & clotting factors | أدوية الدم وعوامل التجلط |
+| `venous_hemorrhoids` | Venotonics & hemorrhoid preparations | أدوية الدوالي والبواسير |
+| `digestive` | Digestive enzymes & other GI drugs | إنزيمات هاضمة وأدوية هضمية أخرى |
+| `dementia` | Dementia drugs | أدوية الزهايمر وضعف الذاكرة |
+| `renal` | Kidney failure drugs | أدوية الفشل الكلوي |
+| `obstetric` | Obstetric drugs (tocolytics & uterotonics) | أدوية الولادة (مثبطات ومنشطات الطلق) |
 | `other` | Other | أخرى |
+
+The last 10 groups before `other` were added while building version 1, because large parts of the real data had no fitting group (for example 577 massage creams and gels). In the June 2026 file, 2.7% of products are in `other`.
 
 #### A.3.7 Display
 
@@ -2459,6 +2493,10 @@ Apply the same function when building the index and when the doctor types, other
 3. Remove Arabic diacritics (U+064B–U+0652, U+0670) and tatweel (U+0640).
 4. أ إ آ ٱ → ا; ة → ه; ى → ي.
 5. Replace punctuation with spaces, but keep `/` and `.` inside numbers ("250/5", "0.1").
+6. Put a space between digits and letters ("500MG" = "500 MG"). Map Persian ی, ک and digits, and the Arabic decimal separator ٫ to ".". Remove all Arabic combining marks (U+064B–U+065F).
+7. **Arabic skeleton.** The dataset spells trade names phonetically (Panadol is «بانادول», while doctors type «بنادول»). Arabic words are also indexed and searched by their skeleton: ا و ي ء ؤ ئ are dropped after the first letter, so both become «بندل». Skeletons shorter than 3 letters are not used.
+
+The code is `normalizeForSearch` and `arabicSkeleton` in `packages/catalog_core`, used by both the builder and the app.
 
 **Querying:**
 
@@ -2468,6 +2506,8 @@ Apply the same function when building the index and when the doctor types, other
   - `priority`/`common` flag
   - FTS5 `bm25` relevance
 - Show at most 50 results per section. Wait about 150 ms after the last keystroke before searching.
+- The catalog sections start at 2 typed characters (a one-letter search ranks thousands of rows and is slow on phones). The history section answers from the first character.
+- Products with `status` 1 or 2 (N/A) come last in their section.
 - Admin custom items (BR-CAT9) are few, so keep them in memory and merge them into the results.
 
 ### A.7 Licensing checklist
@@ -2477,6 +2517,11 @@ Apply the same function when building the index and when the doctor types, other
 - [ ] LOINC names are not edited. All our names are in `aliases.csv`.
 - [ ] WHO ATC/DDD data is not used anywhere.
 - [ ] The result of the EDA check is recorded (A.3.8).
+- [x] LOINC terms with a third-party copyright notice (`EXTERNAL_COPYRIGHT_NOTICE`, LOINC licence 10.2) are left out. Six lab terms in 2.83.
+- [ ] The About screen also shows the RadLex attribution that the RSNA Playbook licence requires.
+- [ ] **Translation notice (open question 32).** LOINC licence section 12 asks that Regenstrief be told by email (loinc@loinc.org) before LOINC material is translated. Our Arabic test names in `aliases.csv` may count as a translation.
+
+The exact notice texts are in [`tools/catalog-builder/README.md`](tools/catalog-builder/README.md).
 
 ### A.8 Output checks before publishing
 

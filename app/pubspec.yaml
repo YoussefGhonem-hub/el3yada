@@ -63,6 +63,9 @@ flutter:
   # assets/lottie/SOURCES.txt.
   assets:
     - assets/lottie/
+    # Arabic text in prescription PDFs (spec 6.4.1); the app's own text uses Alexandria.
+    - assets/fonts/NotoSansArabic-Regular.ttf
+    - assets/fonts/NotoSansArabic-Bold.ttf
 
   # Alexandria (SIL Open Font License, assets/fonts/OFL-Alexandria.txt) covers
   # Arabic and Latin, so both languages look the same on every platform and

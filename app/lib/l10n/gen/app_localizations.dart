@@ -8032,24 +8032,6 @@ abstract class AppLocalizations {
   /// **'No catalog version is published yet'**
   String get catalogNotPublished;
 
-  /// No description provided for @catalogSectionUsedBefore.
-  ///
-  /// In en, this message translates to:
-  /// **'Used before'**
-  String get catalogSectionUsedBefore;
-
-  /// No description provided for @catalogSectionMySpecialty.
-  ///
-  /// In en, this message translates to:
-  /// **'Your specialty'**
-  String get catalogSectionMySpecialty;
-
-  /// No description provided for @catalogSectionOthers.
-  ///
-  /// In en, this message translates to:
-  /// **'From other specialties'**
-  String get catalogSectionOthers;
-
   /// Under a product the drug dataset marks N/A (not on the market).
   ///
   /// In en, this message translates to:
@@ -9591,6 +9573,1392 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'File deleted'**
   String get activityActionRecordDeleted;
+
+  /// No description provided for @patientTabPrescriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescriptions'**
+  String get patientTabPrescriptions;
+
+  /// No description provided for @rxKindMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication prescription'**
+  String get rxKindMedication;
+
+  /// No description provided for @rxKindInvestigations.
+  ///
+  /// In en, this message translates to:
+  /// **'Investigations request'**
+  String get rxKindInvestigations;
+
+  /// No description provided for @rxKindMedicationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines with dose, timing and duration'**
+  String get rxKindMedicationHint;
+
+  /// No description provided for @rxKindInvestigationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests and radiology'**
+  String get rxKindInvestigationsHint;
+
+  /// No description provided for @rxNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New prescription'**
+  String get rxNewTitle;
+
+  /// No description provided for @rxNewMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'New prescription'**
+  String get rxNewMedication;
+
+  /// No description provided for @rxNewInvestigations.
+  ///
+  /// In en, this message translates to:
+  /// **'New request'**
+  String get rxNewInvestigations;
+
+  /// No description provided for @rxStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get rxStatusDraft;
+
+  /// No description provided for @rxStatusReadyForReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for review'**
+  String get rxStatusReadyForReview;
+
+  /// No description provided for @rxStatusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get rxStatusSent;
+
+  /// No description provided for @rxStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get rxStatusCancelled;
+
+  /// No description provided for @rxNoItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No items yet'**
+  String get rxNoItems;
+
+  /// Items on a prescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String rxItemCount(int count);
+
+  /// BR-AS10: the doctor sees who prepared a draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared by {name}'**
+  String rxPreparedBy(String name);
+
+  /// No description provided for @rxListSeparator.
+  ///
+  /// In en, this message translates to:
+  /// **', '**
+  String get rxListSeparator;
+
+  /// No description provided for @rxSessionCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescriptions and requests'**
+  String get rxSessionCardTitle;
+
+  /// No description provided for @rxSessionEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No prescription for this visit yet.'**
+  String get rxSessionEmpty;
+
+  /// No description provided for @rxEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No prescriptions yet'**
+  String get rxEmptyTitle;
+
+  /// No description provided for @rxEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a medication prescription or a lab and radiology request from one of today’s visits.'**
+  String get rxEmptyBody;
+
+  /// No description provided for @rxPickSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Which visit is this for?'**
+  String get rxPickSession;
+
+  /// No description provided for @rxNoSessionTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No visit today'**
+  String get rxNoSessionTodayTitle;
+
+  /// No description provided for @rxNoSessionTodayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A prescription belongs to a visit. Record today’s visit first, then write the prescription from it.'**
+  String get rxNoSessionTodayBody;
+
+  /// No description provided for @rxDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnosis'**
+  String get rxDiagnosis;
+
+  /// No description provided for @rxMedicines.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicines'**
+  String get rxMedicines;
+
+  /// No description provided for @rxTests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tests'**
+  String get rxTests;
+
+  /// No description provided for @rxNoMedicinesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first medicine.'**
+  String get rxNoMedicinesYet;
+
+  /// No description provided for @rxNoTestsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the first test.'**
+  String get rxNoTestsYet;
+
+  /// No description provided for @rxAddMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add medicine'**
+  String get rxAddMedicine;
+
+  /// No description provided for @rxEditMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit medicine'**
+  String get rxEditMedicine;
+
+  /// No description provided for @rxAddTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Add test'**
+  String get rxAddTest;
+
+  /// No description provided for @rxEditTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit test'**
+  String get rxEditTest;
+
+  /// No description provided for @rxAddToPrescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get rxAddToPrescription;
+
+  /// No description provided for @rxAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'General advice'**
+  String get rxAdvice;
+
+  /// No description provided for @rxRequestNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get rxRequestNotes;
+
+  /// No description provided for @rxFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up date'**
+  String get rxFollowUp;
+
+  /// No description provided for @rxResultsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the results on'**
+  String get rxResultsOn;
+
+  /// No description provided for @rxClearDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the date'**
+  String get rxClearDate;
+
+  /// No description provided for @rxSaveDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save draft'**
+  String get rxSaveDraft;
+
+  /// No description provided for @rxDraftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get rxDraftSaved;
+
+  /// No description provided for @rxPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get rxPreview;
+
+  /// No description provided for @rxSubmitForReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to the doctor for review'**
+  String get rxSubmitForReview;
+
+  /// No description provided for @rxSubmittedForReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the doctor for review.'**
+  String get rxSubmittedForReview;
+
+  /// No description provided for @rxMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get rxMore;
+
+  /// No description provided for @rxSaveAsTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as template'**
+  String get rxSaveAsTemplate;
+
+  /// No description provided for @rxDeleteDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete draft'**
+  String get rxDeleteDraft;
+
+  /// No description provided for @rxDeleteDraftTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this draft?'**
+  String get rxDeleteDraftTitle;
+
+  /// No description provided for @rxDeleteDraftBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient never saw it. This can’t be undone.'**
+  String get rxDeleteDraftBody;
+
+  /// No description provided for @rxDraftDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft deleted.'**
+  String get rxDraftDeleted;
+
+  /// No description provided for @rxItemRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Item removed.'**
+  String get rxItemRemoved;
+
+  /// No description provided for @rxUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get rxUndo;
+
+  /// No description provided for @rxRemoveItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get rxRemoveItem;
+
+  /// No description provided for @rxDragToReorder.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get rxDragToReorder;
+
+  /// No description provided for @rxFromTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'From template'**
+  String get rxFromTemplate;
+
+  /// No description provided for @rxNoTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'No templates yet'**
+  String get rxNoTemplates;
+
+  /// No description provided for @rxNoTemplatesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a prescription as a template from its “More” menu to reuse it.'**
+  String get rxNoTemplatesBody;
+
+  /// No description provided for @rxTemplateName.
+  ///
+  /// In en, this message translates to:
+  /// **'Template name'**
+  String get rxTemplateName;
+
+  /// No description provided for @rxTemplateSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Template saved.'**
+  String get rxTemplateSaved;
+
+  /// No description provided for @rxErrorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one item.'**
+  String get rxErrorEmpty;
+
+  /// No description provided for @rxErrorNotEditable.
+  ///
+  /// In en, this message translates to:
+  /// **'This prescription was already sent or cancelled, so it can’t be changed.'**
+  String get rxErrorNotEditable;
+
+  /// No description provided for @rxErrorNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a sent prescription can be cancelled.'**
+  String get rxErrorNotSent;
+
+  /// No description provided for @rxErrorInvalidCopySource.
+  ///
+  /// In en, this message translates to:
+  /// **'A new copy can only be made from a sent or cancelled prescription of the same patient.'**
+  String get rxErrorInvalidCopySource;
+
+  /// No description provided for @rxErrorInvalidSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one of this patient’s visits.'**
+  String get rxErrorInvalidSession;
+
+  /// No description provided for @rxErrorInvalidDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a valid date.'**
+  String get rxErrorInvalidDate;
+
+  /// No description provided for @rxErrorTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many items.'**
+  String get rxErrorTooMany;
+
+  /// No description provided for @rxSearchMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Search medicines (trade name or active ingredient)'**
+  String get rxSearchMedicine;
+
+  /// No description provided for @rxSearchLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Search lab tests'**
+  String get rxSearchLab;
+
+  /// No description provided for @rxSearchRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Search radiology'**
+  String get rxSearchRadiology;
+
+  /// No description provided for @rxMySpecialtyOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'My specialty only'**
+  String get rxMySpecialtyOnly;
+
+  /// No description provided for @rxSectionUsedBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Used before'**
+  String get rxSectionUsedBefore;
+
+  /// No description provided for @rxSectionMySpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your specialty'**
+  String get rxSectionMySpecialty;
+
+  /// No description provided for @rxSectionOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'From other specialties'**
+  String get rxSectionOthers;
+
+  /// No description provided for @rxCatalogNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'The catalog is still downloading: only your own history is searched. You can type any name.'**
+  String get rxCatalogNotReady;
+
+  /// BR-CAT8: a name that isn’t in the catalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Use “{text}”'**
+  String rxUseTyped(String text);
+
+  /// No description provided for @rxNoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing matches in the catalog.'**
+  String get rxNoMatches;
+
+  /// No description provided for @rxDrugName.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine name'**
+  String get rxDrugName;
+
+  /// No description provided for @rxActiveIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Active ingredient'**
+  String get rxActiveIngredient;
+
+  /// No description provided for @rxStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get rxStrength;
+
+  /// No description provided for @rxForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Form'**
+  String get rxForm;
+
+  /// No description provided for @rxFormOtherText.
+  ///
+  /// In en, this message translates to:
+  /// **'Form (type it)'**
+  String get rxFormOtherText;
+
+  /// No description provided for @rxDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose'**
+  String get rxDose;
+
+  /// No description provided for @rxDoseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1 tablet'**
+  String get rxDoseHint;
+
+  /// No description provided for @rxFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'How often'**
+  String get rxFrequency;
+
+  /// No description provided for @rxFrequencyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 8 hours'**
+  String get rxFrequencyHint;
+
+  /// No description provided for @rxTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Timing'**
+  String get rxTiming;
+
+  /// No description provided for @rxTimingBeforeFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Before food'**
+  String get rxTimingBeforeFood;
+
+  /// No description provided for @rxTimingAfterFood.
+  ///
+  /// In en, this message translates to:
+  /// **'After food'**
+  String get rxTimingAfterFood;
+
+  /// No description provided for @rxTimingWithFood.
+  ///
+  /// In en, this message translates to:
+  /// **'With food'**
+  String get rxTimingWithFood;
+
+  /// No description provided for @rxTimingUnspecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get rxTimingUnspecified;
+
+  /// No description provided for @rxDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get rxDuration;
+
+  /// No description provided for @rxDurationCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Number'**
+  String get rxDurationCount;
+
+  /// No description provided for @rxDurationUnitDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get rxDurationUnitDays;
+
+  /// No description provided for @rxDurationUnitWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Weeks'**
+  String get rxDurationUnitWeeks;
+
+  /// No description provided for @rxDurationContinuous.
+  ///
+  /// In en, this message translates to:
+  /// **'Continuous'**
+  String get rxDurationContinuous;
+
+  /// A medicine’s duration in days.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String rxDurationDays(int count);
+
+  /// A medicine’s duration in weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week} other{{count} weeks}}'**
+  String rxDurationWeeks(int count);
+
+  /// No description provided for @rxInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get rxInstructions;
+
+  /// No description provided for @rxFormTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablet'**
+  String get rxFormTablet;
+
+  /// No description provided for @rxFormCapsule.
+  ///
+  /// In en, this message translates to:
+  /// **'Capsule'**
+  String get rxFormCapsule;
+
+  /// No description provided for @rxFormSyrup.
+  ///
+  /// In en, this message translates to:
+  /// **'Syrup'**
+  String get rxFormSyrup;
+
+  /// No description provided for @rxFormInjection.
+  ///
+  /// In en, this message translates to:
+  /// **'Injection'**
+  String get rxFormInjection;
+
+  /// No description provided for @rxFormCream.
+  ///
+  /// In en, this message translates to:
+  /// **'Cream / ointment'**
+  String get rxFormCream;
+
+  /// No description provided for @rxFormDrops.
+  ///
+  /// In en, this message translates to:
+  /// **'Drops'**
+  String get rxFormDrops;
+
+  /// No description provided for @rxFormInhaler.
+  ///
+  /// In en, this message translates to:
+  /// **'Inhaler'**
+  String get rxFormInhaler;
+
+  /// No description provided for @rxFormSuppository.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppository'**
+  String get rxFormSuppository;
+
+  /// No description provided for @rxFormSachet.
+  ///
+  /// In en, this message translates to:
+  /// **'Sachet'**
+  String get rxFormSachet;
+
+  /// No description provided for @rxFormOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get rxFormOther;
+
+  /// No description provided for @rxCategoryLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test'**
+  String get rxCategoryLab;
+
+  /// No description provided for @rxCategoryRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get rxCategoryRadiology;
+
+  /// No description provided for @rxTestName.
+  ///
+  /// In en, this message translates to:
+  /// **'Test name'**
+  String get rxTestName;
+
+  /// No description provided for @rxTestNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get rxTestNotes;
+
+  /// No description provided for @rxTestNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasting 12 hours'**
+  String get rxTestNotesHint;
+
+  /// No description provided for @rxEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get rxEdit;
+
+  /// No description provided for @rxSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to patient'**
+  String get rxSend;
+
+  /// No description provided for @rxSendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to the patient?'**
+  String get rxSendTitle;
+
+  /// No description provided for @rxSendBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient gets it in the app at once. A sent prescription can’t be changed: to correct it, cancel it and issue a new copy.'**
+  String get rxSendBody;
+
+  /// No description provided for @rxSendAndPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send and print'**
+  String get rxSendAndPrint;
+
+  /// No description provided for @rxSendAndPrintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send and print?'**
+  String get rxSendAndPrintTitle;
+
+  /// No description provided for @rxSendAndPrintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Printing sends it to the patient at the same moment, so the paper and the app always match.'**
+  String get rxSendAndPrintBody;
+
+  /// No description provided for @rxSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the patient.'**
+  String get rxSent;
+
+  /// No description provided for @rxPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get rxPrint;
+
+  /// No description provided for @rxPrintAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Print all'**
+  String get rxPrintAll;
+
+  /// No description provided for @rxShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get rxShare;
+
+  /// No description provided for @rxPrintFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Printing didn’t work. Try again.'**
+  String get rxPrintFailed;
+
+  /// No description provided for @rxCancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel prescription'**
+  String get rxCancelAction;
+
+  /// No description provided for @rxCancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this prescription?'**
+  String get rxCancelTitle;
+
+  /// No description provided for @rxCancelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient sees it struck through, with your reason. You can then issue a new copy.'**
+  String get rxCancelBody;
+
+  /// No description provided for @rxCancelReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get rxCancelReason;
+
+  /// No description provided for @rxCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel prescription'**
+  String get rxCancelConfirm;
+
+  /// No description provided for @rxCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription cancelled.'**
+  String get rxCancelled;
+
+  /// No description provided for @rxCancelledNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled. It can’t be printed.'**
+  String get rxCancelledNotice;
+
+  /// D15 banner on a cancelled document.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled: {reason}'**
+  String rxCancelledReason(String reason);
+
+  /// No description provided for @rxNewCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue new copy'**
+  String get rxNewCopy;
+
+  /// No description provided for @rxPreviewFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The preview couldn’t be built.'**
+  String get rxPreviewFailed;
+
+  /// No description provided for @rxSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription header and printing'**
+  String get rxSettingsTitle;
+
+  /// No description provided for @rxSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How your prescriptions look on paper and in the patient’s app.'**
+  String get rxSettingsSubtitle;
+
+  /// No description provided for @rxSettingsTileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Logo, signature, colour, language and paper'**
+  String get rxSettingsTileHint;
+
+  /// No description provided for @rxSettingsHeaderGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Header'**
+  String get rxSettingsHeaderGroup;
+
+  /// No description provided for @rxSettingsNamesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your names, titles and degrees come from your profile; the branches in the footer come from Branches.'**
+  String get rxSettingsNamesHint;
+
+  /// No description provided for @rxLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic logo'**
+  String get rxLogo;
+
+  /// No description provided for @rxSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature'**
+  String get rxSignature;
+
+  /// No description provided for @rxUploadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get rxUploadImage;
+
+  /// No description provided for @rxReplaceImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get rxReplaceImage;
+
+  /// No description provided for @rxRemoveImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get rxRemoveImage;
+
+  /// No description provided for @rxImagesGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get rxImagesGroup;
+
+  /// No description provided for @rxSettingsColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic colour'**
+  String get rxSettingsColor;
+
+  /// No description provided for @rxSettingsHex.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour code'**
+  String get rxSettingsHex;
+
+  /// No description provided for @rxSettingsFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Footer text'**
+  String get rxSettingsFooter;
+
+  /// No description provided for @rxSettingsFooterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional, for example your working days.'**
+  String get rxSettingsFooterHint;
+
+  /// No description provided for @rxSettingsPrintGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Language and paper'**
+  String get rxSettingsPrintGroup;
+
+  /// No description provided for @rxSettingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription language'**
+  String get rxSettingsLanguage;
+
+  /// No description provided for @rxSettingsArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get rxSettingsArabic;
+
+  /// No description provided for @rxSettingsEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get rxSettingsEnglish;
+
+  /// No description provided for @rxSettingsPaper.
+  ///
+  /// In en, this message translates to:
+  /// **'Paper'**
+  String get rxSettingsPaper;
+
+  /// No description provided for @rxPaperA5.
+  ///
+  /// In en, this message translates to:
+  /// **'A5'**
+  String get rxPaperA5;
+
+  /// No description provided for @rxPaperA4.
+  ///
+  /// In en, this message translates to:
+  /// **'A4'**
+  String get rxPaperA4;
+
+  /// No description provided for @rxPaperCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get rxPaperCustom;
+
+  /// No description provided for @rxPaperWidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get rxPaperWidth;
+
+  /// No description provided for @rxPaperHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get rxPaperHeight;
+
+  /// No description provided for @rxMm.
+  ///
+  /// In en, this message translates to:
+  /// **'mm'**
+  String get rxMm;
+
+  /// No description provided for @rxPreprinted.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-printed paper'**
+  String get rxPreprinted;
+
+  /// No description provided for @rxPreprintedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For your own letterhead: the header and footer aren’t printed, and the text starts at the top margin.'**
+  String get rxPreprintedHint;
+
+  /// No description provided for @rxMarginTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Top margin'**
+  String get rxMarginTop;
+
+  /// No description provided for @rxMarginBottom.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom margin'**
+  String get rxMarginBottom;
+
+  /// No description provided for @rxSettingsPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Live preview'**
+  String get rxSettingsPreview;
+
+  /// No description provided for @rxTestPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Test print'**
+  String get rxTestPrint;
+
+  /// No description provided for @rxSettingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Print settings saved.'**
+  String get rxSettingsSaved;
+
+  /// No description provided for @rxSamplePatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample patient'**
+  String get rxSamplePatient;
+
+  /// No description provided for @rxSampleDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Acute tonsillitis'**
+  String get rxSampleDiagnosis;
+
+  /// No description provided for @rxSampleAdvice.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest and warm fluids.'**
+  String get rxSampleAdvice;
+
+  /// No description provided for @rxSampleDose.
+  ///
+  /// In en, this message translates to:
+  /// **'1 tablet'**
+  String get rxSampleDose;
+
+  /// No description provided for @rxSampleFrequency.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 12 hours'**
+  String get rxSampleFrequency;
+
+  /// No description provided for @rxSampleWhenNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'When needed'**
+  String get rxSampleWhenNeeded;
+
+  /// No description provided for @rxTemplatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates and favourites'**
+  String get rxTemplatesTitle;
+
+  /// No description provided for @rxTemplatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reuse prescriptions you write often.'**
+  String get rxTemplatesSubtitle;
+
+  /// No description provided for @rxTemplatesTileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved prescriptions and frequently used items'**
+  String get rxTemplatesTileHint;
+
+  /// No description provided for @rxTemplatesGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get rxTemplatesGroup;
+
+  /// No description provided for @rxRenameTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rxRenameTemplate;
+
+  /// No description provided for @rxDeleteTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete template'**
+  String get rxDeleteTemplate;
+
+  /// No description provided for @rxDeleteTemplateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this template?'**
+  String get rxDeleteTemplateTitle;
+
+  /// D23.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” will be removed. Prescriptions made from it stay as they are.'**
+  String rxDeleteTemplateBody(String name);
+
+  /// No description provided for @rxTemplateDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Template deleted.'**
+  String get rxTemplateDeleted;
+
+  /// No description provided for @rxFrequentGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently used'**
+  String get rxFrequentGroup;
+
+  /// No description provided for @rxFrequentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They come first when you search. Remove one to stop suggesting it.'**
+  String get rxFrequentHint;
+
+  /// No description provided for @rxNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Items you prescribe will appear here.'**
+  String get rxNoHistory;
+
+  /// D23.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Used once} other{Used {count} times}}'**
+  String rxUsedTimes(int count);
+
+  /// No description provided for @rxRemoveFromHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from suggestions'**
+  String get rxRemoveFromHistory;
+
+  /// D23.
+  ///
+  /// In en, this message translates to:
+  /// **'“{name}” removed from suggestions.'**
+  String rxHistoryItemRemoved(String name);
+
+  /// PDF document title.
+  ///
+  /// In en, this message translates to:
+  /// **'el3yada {kind}'**
+  String rxPdfTitle(String kind);
+
+  /// No description provided for @rxPdfDiagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnosis:'**
+  String get rxPdfDiagnosis;
+
+  /// No description provided for @rxPdfInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions:'**
+  String get rxPdfInstructions;
+
+  /// No description provided for @rxPdfNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes:'**
+  String get rxPdfNotes;
+
+  /// 6.4.1 zone 6.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up: {date}'**
+  String rxPdfFollowUp(String date);
+
+  /// 6.4.1 zone 6.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the results on: {date}'**
+  String rxPdfResultsOn(String date);
+
+  /// No description provided for @rxPdfTestsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Please do the following tests:'**
+  String get rxPdfTestsIntro;
+
+  /// No description provided for @rxPdfLabGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests'**
+  String get rxPdfLabGroup;
+
+  /// No description provided for @rxPdfRadiologyGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get rxPdfRadiologyGroup;
+
+  /// No description provided for @rxPdfPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient'**
+  String get rxPdfPatient;
+
+  /// No description provided for @rxPdfDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get rxPdfDate;
+
+  /// No description provided for @rxPdfAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get rxPdfAge;
+
+  /// Patient strip.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} y'**
+  String rxPdfAgeValue(int years);
+
+  /// No description provided for @rxPdfFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File no.'**
+  String get rxPdfFile;
+
+  /// No description provided for @rxPdfVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get rxPdfVisit;
+
+  /// No description provided for @rxPdfExamination.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination'**
+  String get rxPdfExamination;
+
+  /// No description provided for @rxPdfConsultation.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get rxPdfConsultation;
+
+  /// No description provided for @rxPdfSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature'**
+  String get rxPdfSignature;
+
+  /// No description provided for @rxPdfScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the code'**
+  String get rxPdfScan;
+
+  /// Page 2 of a long prescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {total}'**
+  String rxPdfPage(int page, int total);
+
+  /// No description provided for @rxPdfTel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tel'**
+  String get rxPdfTel;
+
+  /// No description provided for @rxPdfWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get rxPdfWhatsapp;
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'started a draft: {kind}'**
+  String activityPrescriptionDraftCreated(String kind);
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'issued a new copy: {kind}'**
+  String activityPrescriptionCopied(String kind);
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'edited a draft: {kind}'**
+  String activityPrescriptionDraftUpdated(String kind);
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted a draft: {kind}'**
+  String activityPrescriptionDraftDeleted(String kind);
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'sent a draft for review: {kind}'**
+  String activityPrescriptionSubmitted(String kind);
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'sent to the patient: {kind}'**
+  String activityPrescriptionSent(String kind);
+
+  /// D27.
+  ///
+  /// In en, this message translates to:
+  /// **'cancelled: {kind}'**
+  String activityPrescriptionCancelled(String kind);
+
+  /// D27 detail line.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String activityRxItems(int count);
+
+  /// No description provided for @activityRxSettingsUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the print settings'**
+  String get activityRxSettingsUpdated;
+
+  /// No description provided for @activityRxLogoUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the prescription logo'**
+  String get activityRxLogoUpdated;
+
+  /// No description provided for @activityRxLogoRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'removed the prescription logo'**
+  String get activityRxLogoRemoved;
+
+  /// No description provided for @activityRxSignatureUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the signature'**
+  String get activityRxSignatureUpdated;
+
+  /// No description provided for @activityRxSignatureRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'removed the signature'**
+  String get activityRxSignatureRemoved;
+
+  /// No description provided for @activityActionPrescriptionDraftCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft started'**
+  String get activityActionPrescriptionDraftCreated;
+
+  /// No description provided for @activityActionPrescriptionDraftUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft edited'**
+  String get activityActionPrescriptionDraftUpdated;
+
+  /// No description provided for @activityActionPrescriptionDraftDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft deleted'**
+  String get activityActionPrescriptionDraftDeleted;
+
+  /// No description provided for @activityActionPrescriptionSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent for review'**
+  String get activityActionPrescriptionSubmitted;
+
+  /// No description provided for @activityActionPrescriptionSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription sent'**
+  String get activityActionPrescriptionSent;
+
+  /// No description provided for @activityActionPrescriptionCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription cancelled'**
+  String get activityActionPrescriptionCancelled;
+
+  /// No description provided for @activityActionRxSettingsUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Print settings'**
+  String get activityActionRxSettingsUpdated;
+
+  /// No description provided for @activityActionRxBrandingUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Logo or signature'**
+  String get activityActionRxBrandingUpdated;
 }
 
 class _AppLocalizationsDelegate

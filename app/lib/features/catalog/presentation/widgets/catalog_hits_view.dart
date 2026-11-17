@@ -22,9 +22,9 @@ class CatalogHitsView<T> extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final sections = [
-      (CatalogSection.usedBefore, l10n.catalogSectionUsedBefore, Icons.history),
-      (CatalogSection.mySpecialty, l10n.catalogSectionMySpecialty, Icons.star_outline_rounded),
-      (CatalogSection.others, l10n.catalogSectionOthers, Icons.layers_outlined),
+      (CatalogSection.usedBefore, l10n.rxSectionUsedBefore, Icons.history),
+      (CatalogSection.mySpecialty, l10n.rxSectionMySpecialty, Icons.star_outline_rounded),
+      (CatalogSection.others, l10n.rxSectionOthers, Icons.layers_outlined),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

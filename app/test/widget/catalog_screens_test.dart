@@ -6,9 +6,11 @@ import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/features/catalog/application/admin_catalog_providers.dart';
 import 'package:el3yada/features/catalog/application/catalog_providers.dart';
+import 'package:el3yada/features/catalog/application/catalog_search_provider.dart';
 import 'package:el3yada/features/catalog/data/admin_catalog_repository.dart';
 import 'package:el3yada/features/catalog/data/catalog_files.dart';
 import 'package:el3yada/features/catalog/data/fake_catalog_backend.dart';
+import 'package:el3yada/features/catalog/data/history_catalog_search.dart';
 import 'package:el3yada/features/catalog/data/local_catalog_search.dart';
 import 'package:el3yada/features/catalog/data/sample_catalog.dart';
 import 'package:el3yada/features/catalog/domain/catalog_models.dart';
@@ -25,6 +27,7 @@ import '../support/admin_support.dart';
 import '../support/app_flow.dart' show settle, signIn;
 import '../support/app_overrides.dart';
 import '../support/catalog_support.dart';
+import '../support/clinic_records_support.dart';
 import '../support/harness.dart';
 
 const _desktop = Size(1400, 900);
@@ -54,6 +57,7 @@ void main() {
             fakeAdminOverride(),
             ...catalogOverrides(backend: server, controller: controller),
             if (picker != null) catalogFilePickerProvider.overrideWithValue(picker),
+            fakeRecordsOverride(),
           ],
         ),
         child: const El3yadaApp(),
@@ -337,6 +341,86 @@ void main() {
       await settle(tester);
       expect(backend.profiles['sp-derma']!.drugGroups, backend.profiles['sp-cardio']!.drugGroups);
       expect(find.text('Copied from Cardiology'), findsOneWidget);
+    });
+  });
+
+  group('the editors\' search (D13, D14) over the local catalog', () {
+    testWidgets('catalogSearchProvider: history only until the catalog is open, and for patients', (tester) async {
+      final controller = FixedCatalogController();
+      await pumpSignedIn(tester, 'doctor@el3yada.dev', size: _phone, controller: () => controller);
+      final container = appContainer(tester);
+      expect(container.read(catalogSearchProvider), isA<HistoryOnlyCatalogSearch>());
+      late CatalogHits<DrugHit> hits;
+      await tester.runAsync(() async => hits = await container.read(catalogSearchProvider).drugs('ator'));
+      expect(hits.catalogReady, isFalse);
+
+      controller.set(
+        const CatalogState(
+          phase: CatalogPhase.ready,
+          installed: CatalogVersionInfo(version: 1, schemaVersion: 1, sha256: '', sizeBytes: 1),
+        ),
+      );
+      await settle(tester);
+      expect(container.read(catalogSearchProvider), isA<LocalCatalogSearch>());
+    });
+
+    testWidgets('patients keep the history-only search', (tester) async {
+      await pumpSignedIn(tester, '01000000002', size: _phone);
+      expect(appContainer(tester).read(catalogSearchProvider), isA<HistoryOnlyCatalogSearch>());
+    });
+
+    testWidgets('D13: sections from the catalog, the chip, and the N/A line', (tester) async {
+      await pumpSignedIn(tester, 'doctor@el3yada.dev');
+      final records = recordsOf(tester);
+      final patient = records.patientIdByName(SeedPatients.mona);
+      await open(tester, '/doctor/patients/$patient/sessions/${records.sessionIdsOf(patient).first}');
+      await tapVisible(tester, find.widgetWithText(FilledButton, 'New prescription'));
+      await settle(tester);
+      await tapVisible(tester, find.widgetWithText(FilledButton, 'Add medicine'));
+      await settle(tester);
+      await tester.enterText(find.descendant(of: find.byType(Dialog), matching: find.byType(TextField)).first, 'ator');
+      await tester.pump(const Duration(milliseconds: 300));
+      await settle(tester);
+      // The offline doctor is Internal Medicine (lipid-lowering) + General.
+      expect(find.text('Your specialty'), findsOneWidget);
+      expect(find.text('LIPITOR 20 MG 30 F.C.TABS.'), findsOneWidget);
+      expect(find.text('ATORVASTATIN · Oral (tablets, capsules) · Pfizer'), findsOneWidget);
+      expect(find.text('May not be available'), findsOneWidget);
+      expect(
+        find.text('The catalog is still downloading: only your own history is searched. You can type any name.'),
+        findsNothing,
+      );
+
+      await tester.enterText(
+        find.descendant(of: find.byType(Dialog), matching: find.byType(TextField)).first,
+        'aspocid',
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      await settle(tester);
+      expect(find.text('From other specialties'), findsOneWidget);
+      await tapVisible(tester, find.widgetWithText(FilterChip, 'My specialty only'));
+      await settle(tester);
+      expect(find.text('From other specialties'), findsNothing);
+      expect(find.text('ASPOCID 75 MG 30 TABS.'), findsNothing);
+    });
+
+    testWidgets('D13 before the catalog is ready: the "still downloading" line', (tester) async {
+      await pumpSignedIn(tester, 'doctor@el3yada.dev', controller: FixedCatalogController.new);
+      final records = recordsOf(tester);
+      final patient = records.patientIdByName(SeedPatients.mona);
+      await open(tester, '/doctor/patients/$patient/sessions/${records.sessionIdsOf(patient).first}');
+      await tapVisible(tester, find.widgetWithText(FilledButton, 'New prescription'));
+      await settle(tester);
+      await tapVisible(tester, find.widgetWithText(FilledButton, 'Add medicine'));
+      await settle(tester);
+      await tester.enterText(find.descendant(of: find.byType(Dialog), matching: find.byType(TextField)).first, 'ator');
+      await tester.pump(const Duration(milliseconds: 300));
+      await settle(tester);
+      expect(
+        find.text('The catalog is still downloading: only your own history is searched. You can type any name.'),
+        findsOneWidget,
+      );
+      expect(find.text('LIPITOR 20 MG 30 F.C.TABS.'), findsNothing);
     });
   });
 

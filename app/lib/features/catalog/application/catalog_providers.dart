@@ -503,13 +503,8 @@ final catalogReaderProvider = Provider<CatalogReader?>((ref) {
 });
 
 /// The editors' search (D13, D14) over the local catalog, with [history]
-/// for "Used before" (BR-CAT4). At merge, `catalogSearchProvider` becomes:
-///
-/// ```dart
-/// final catalogSearchProvider = Provider<CatalogSearch>(
-///   (ref) => localCatalogSearch(ref, HistoryOnlyCatalogSearch(() => ref.read(itemHistoryProvider.future))),
-/// );
-/// ```
+/// for "Used before" (BR-CAT4): what `catalogSearchProvider` answers once
+/// the catalog file is open.
 CatalogSearch localCatalogSearch(Ref ref, CatalogSearch history) {
   // Keep the catalog, the custom items and the profile alive with the search.
   ref.watch(catalogControllerProvider.select((s) => s.installed?.version));

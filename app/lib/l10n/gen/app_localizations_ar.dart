@@ -4722,15 +4722,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get catalogNotPublished => 'لسه مفيش إصدار منشور من الكتالوج';
 
   @override
-  String get catalogSectionUsedBefore => 'استخدمته قبل كده';
-
-  @override
-  String get catalogSectionMySpecialty => 'تخصصك';
-
-  @override
-  String get catalogSectionOthers => 'من تخصصات أخرى';
-
-  @override
   String get catalogMayBeUnavailable => 'قد لا يكون متوفرًا';
 
   @override
@@ -5654,4 +5645,811 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activityActionRecordDeleted => 'حذف ملف';
+
+  @override
+  String get patientTabPrescriptions => 'الروشتات';
+
+  @override
+  String get rxKindMedication => 'روشتة علاج';
+
+  @override
+  String get rxKindInvestigations => 'روشتة تحاليل وأشعة';
+
+  @override
+  String get rxKindMedicationHint => 'أدوية بالجرعة والمواعيد والمدة';
+
+  @override
+  String get rxKindInvestigationsHint => 'تحاليل وأشعة';
+
+  @override
+  String get rxNewTitle => 'روشتة جديدة';
+
+  @override
+  String get rxNewMedication => 'روشتة علاج جديدة';
+
+  @override
+  String get rxNewInvestigations => 'طلب تحاليل وأشعة';
+
+  @override
+  String get rxStatusDraft => 'مسودة';
+
+  @override
+  String get rxStatusReadyForReview => 'جاهزة للمراجعة';
+
+  @override
+  String get rxStatusSent => 'مُرسلة';
+
+  @override
+  String get rxStatusCancelled => 'ملغاة';
+
+  @override
+  String get rxNoItems => 'لا توجد عناصر بعد';
+
+  @override
+  String rxItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عنصر',
+      many: '$count عنصراً',
+      few: '$count عناصر',
+      two: 'عنصران',
+      one: 'عنصر واحد',
+      zero: 'بدون عناصر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rxPreparedBy(String name) {
+    return 'أعدّها $name';
+  }
+
+  @override
+  String get rxListSeparator => '، ';
+
+  @override
+  String get rxSessionCardTitle => 'الروشتات والطلبات';
+
+  @override
+  String get rxSessionEmpty => 'لا توجد روشتة لهذه الزيارة بعد.';
+
+  @override
+  String get rxEmptyTitle => 'لا توجد روشتات بعد';
+
+  @override
+  String get rxEmptyBody =>
+      'اكتب روشتة علاج أو طلب تحاليل وأشعة من إحدى زيارات اليوم.';
+
+  @override
+  String get rxPickSession => 'لأي زيارة؟';
+
+  @override
+  String get rxNoSessionTodayTitle => 'لا توجد زيارة اليوم';
+
+  @override
+  String get rxNoSessionTodayBody =>
+      'كل روشتة تتبع زيارة. سجّل زيارة اليوم أولاً ثم اكتب الروشتة منها.';
+
+  @override
+  String get rxDiagnosis => 'التشخيص';
+
+  @override
+  String get rxMedicines => 'الأدوية';
+
+  @override
+  String get rxTests => 'الفحوصات';
+
+  @override
+  String get rxNoMedicinesYet => 'أضف أول دواء.';
+
+  @override
+  String get rxNoTestsYet => 'أضف أول فحص.';
+
+  @override
+  String get rxAddMedicine => 'إضافة دواء';
+
+  @override
+  String get rxEditMedicine => 'تعديل الدواء';
+
+  @override
+  String get rxAddTest => 'إضافة فحص';
+
+  @override
+  String get rxEditTest => 'تعديل الفحص';
+
+  @override
+  String get rxAddToPrescription => 'إضافة';
+
+  @override
+  String get rxAdvice => 'نصائح عامة';
+
+  @override
+  String get rxRequestNotes => 'ملاحظات';
+
+  @override
+  String get rxFollowUp => 'موعد المتابعة';
+
+  @override
+  String get rxResultsOn => 'إحضار النتائج في';
+
+  @override
+  String get rxClearDate => 'مسح التاريخ';
+
+  @override
+  String get rxSaveDraft => 'حفظ المسودة';
+
+  @override
+  String get rxDraftSaved => 'تم الحفظ';
+
+  @override
+  String get rxPreview => 'معاينة';
+
+  @override
+  String get rxSubmitForReview => 'إرسال للطبيب للمراجعة';
+
+  @override
+  String get rxSubmittedForReview => 'تم الإرسال للطبيب للمراجعة.';
+
+  @override
+  String get rxMore => 'المزيد';
+
+  @override
+  String get rxSaveAsTemplate => 'حفظ كقالب';
+
+  @override
+  String get rxDeleteDraft => 'حذف المسودة';
+
+  @override
+  String get rxDeleteDraftTitle => 'حذف هذه المسودة؟';
+
+  @override
+  String get rxDeleteDraftBody => 'المريض لم يرها. لا يمكن التراجع عن الحذف.';
+
+  @override
+  String get rxDraftDeleted => 'تم حذف المسودة.';
+
+  @override
+  String get rxItemRemoved => 'تم حذف العنصر.';
+
+  @override
+  String get rxUndo => 'تراجع';
+
+  @override
+  String get rxRemoveItem => 'حذف';
+
+  @override
+  String get rxDragToReorder => 'اسحب لتغيير الترتيب';
+
+  @override
+  String get rxFromTemplate => 'من قالب';
+
+  @override
+  String get rxNoTemplates => 'لا توجد قوالب بعد';
+
+  @override
+  String get rxNoTemplatesBody =>
+      'احفظ أي روشتة كقالب من قائمة «المزيد» لتستخدمها مرة أخرى.';
+
+  @override
+  String get rxTemplateName => 'اسم القالب';
+
+  @override
+  String get rxTemplateSaved => 'تم حفظ القالب.';
+
+  @override
+  String get rxErrorEmpty => 'أضف عنصراً واحداً على الأقل.';
+
+  @override
+  String get rxErrorNotEditable =>
+      'هذه الروشتة أُرسلت أو أُلغيت ولا يمكن تعديلها.';
+
+  @override
+  String get rxErrorNotSent => 'لا يمكن إلغاء إلا روشتة مُرسلة.';
+
+  @override
+  String get rxErrorInvalidCopySource =>
+      'يمكن إصدار نسخة جديدة فقط من روشتة مُرسلة أو ملغاة لنفس المريض.';
+
+  @override
+  String get rxErrorInvalidSession => 'اختر إحدى زيارات هذا المريض.';
+
+  @override
+  String get rxErrorInvalidDate => 'اختر تاريخاً صحيحاً.';
+
+  @override
+  String get rxErrorTooMany => 'عدد العناصر أكبر من المسموح.';
+
+  @override
+  String get rxSearchMedicine =>
+      'ابحث عن دواء (الاسم التجاري أو المادة الفعالة)';
+
+  @override
+  String get rxSearchLab => 'ابحث عن تحليل';
+
+  @override
+  String get rxSearchRadiology => 'ابحث عن أشعة';
+
+  @override
+  String get rxMySpecialtyOnly => 'تخصصي فقط';
+
+  @override
+  String get rxSectionUsedBefore => 'استخدمتها من قبل';
+
+  @override
+  String get rxSectionMySpecialty => 'من تخصصك';
+
+  @override
+  String get rxSectionOthers => 'من تخصصات أخرى';
+
+  @override
+  String get rxCatalogNotReady =>
+      'الكتالوج لسه بيتحمّل: البحث في سجلك فقط. تقدر تكتب أي اسم.';
+
+  @override
+  String rxUseTyped(String text) {
+    return 'استخدام «$text»';
+  }
+
+  @override
+  String get rxNoMatches => 'لا توجد نتائج في الكتالوج.';
+
+  @override
+  String get rxDrugName => 'اسم الدواء';
+
+  @override
+  String get rxActiveIngredient => 'المادة الفعالة';
+
+  @override
+  String get rxStrength => 'التركيز';
+
+  @override
+  String get rxForm => 'الشكل';
+
+  @override
+  String get rxFormOtherText => 'الشكل (اكتبه)';
+
+  @override
+  String get rxDose => 'الجرعة';
+
+  @override
+  String get rxDoseHint => 'قرص واحد';
+
+  @override
+  String get rxFrequency => 'عدد المرات';
+
+  @override
+  String get rxFrequencyHint => 'كل 8 ساعات';
+
+  @override
+  String get rxTiming => 'التوقيت';
+
+  @override
+  String get rxTimingBeforeFood => 'قبل الأكل';
+
+  @override
+  String get rxTimingAfterFood => 'بعد الأكل';
+
+  @override
+  String get rxTimingWithFood => 'مع الأكل';
+
+  @override
+  String get rxTimingUnspecified => 'غير محدد';
+
+  @override
+  String get rxDuration => 'المدة';
+
+  @override
+  String get rxDurationCount => 'العدد';
+
+  @override
+  String get rxDurationUnitDays => 'أيام';
+
+  @override
+  String get rxDurationUnitWeeks => 'أسابيع';
+
+  @override
+  String get rxDurationContinuous => 'مستمر';
+
+  @override
+  String rxDurationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      many: '$count يوماً',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rxDurationWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أسبوع',
+      many: '$count أسبوعاً',
+      few: '$count أسابيع',
+      two: 'أسبوعين',
+      one: 'أسبوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rxInstructions => 'تعليمات';
+
+  @override
+  String get rxFormTablet => 'أقراص';
+
+  @override
+  String get rxFormCapsule => 'كبسولات';
+
+  @override
+  String get rxFormSyrup => 'شراب';
+
+  @override
+  String get rxFormInjection => 'حقن';
+
+  @override
+  String get rxFormCream => 'كريم / مرهم';
+
+  @override
+  String get rxFormDrops => 'نقط';
+
+  @override
+  String get rxFormInhaler => 'بخاخ';
+
+  @override
+  String get rxFormSuppository => 'لبوس';
+
+  @override
+  String get rxFormSachet => 'أكياس';
+
+  @override
+  String get rxFormOther => 'أخرى';
+
+  @override
+  String get rxCategoryLab => 'تحليل';
+
+  @override
+  String get rxCategoryRadiology => 'أشعة';
+
+  @override
+  String get rxTestName => 'اسم الفحص';
+
+  @override
+  String get rxTestNotes => 'ملاحظات';
+
+  @override
+  String get rxTestNotesHint => 'صائم 12 ساعة';
+
+  @override
+  String get rxEdit => 'تعديل';
+
+  @override
+  String get rxSend => 'إرسال للمريض';
+
+  @override
+  String get rxSendTitle => 'إرسال للمريض؟';
+
+  @override
+  String get rxSendBody =>
+      'سيصل للمريض في التطبيق فوراً. لا يمكن تعديل الروشتة بعد الإرسال: للتصحيح ألغِها وأصدر نسخة جديدة.';
+
+  @override
+  String get rxSendAndPrint => 'إرسال وطباعة';
+
+  @override
+  String get rxSendAndPrintTitle => 'إرسال وطباعة؟';
+
+  @override
+  String get rxSendAndPrintBody =>
+      'الطباعة ترسلها للمريض في نفس اللحظة، علشان الورقة والتطبيق يكونوا متطابقين دايماً.';
+
+  @override
+  String get rxSent => 'تم الإرسال للمريض.';
+
+  @override
+  String get rxPrint => 'طباعة';
+
+  @override
+  String get rxPrintAll => 'طباعة الكل';
+
+  @override
+  String get rxShare => 'مشاركة PDF';
+
+  @override
+  String get rxPrintFailed => 'لم تنجح الطباعة. حاول مرة أخرى.';
+
+  @override
+  String get rxCancelAction => 'إلغاء الروشتة';
+
+  @override
+  String get rxCancelTitle => 'إلغاء هذه الروشتة؟';
+
+  @override
+  String get rxCancelBody =>
+      'سيراها المريض مشطوبة مع السبب. بعدها تقدر تصدر نسخة جديدة.';
+
+  @override
+  String get rxCancelReason => 'السبب';
+
+  @override
+  String get rxCancelConfirm => 'إلغاء الروشتة';
+
+  @override
+  String get rxCancelled => 'تم إلغاء الروشتة.';
+
+  @override
+  String get rxCancelledNotice => 'ملغاة ولا يمكن طباعتها.';
+
+  @override
+  String rxCancelledReason(String reason) {
+    return 'ملغاة: $reason';
+  }
+
+  @override
+  String get rxNewCopy => 'إصدار نسخة جديدة';
+
+  @override
+  String get rxPreviewFailed => 'تعذّر عرض المعاينة.';
+
+  @override
+  String get rxSettingsTitle => 'رأس الروشتة والطباعة';
+
+  @override
+  String get rxSettingsSubtitle => 'شكل روشتاتك على الورق وفي تطبيق المريض.';
+
+  @override
+  String get rxSettingsTileHint => 'الشعار والتوقيع واللون واللغة والورق';
+
+  @override
+  String get rxSettingsHeaderGroup => 'رأس الروشتة';
+
+  @override
+  String get rxSettingsNamesHint =>
+      'الأسماء والألقاب والدرجات من ملفك الشخصي، والفروع في أسفل الروشتة من صفحة الفروع.';
+
+  @override
+  String get rxLogo => 'شعار العيادة';
+
+  @override
+  String get rxSignature => 'التوقيع';
+
+  @override
+  String get rxUploadImage => 'رفع';
+
+  @override
+  String get rxReplaceImage => 'تغيير';
+
+  @override
+  String get rxRemoveImage => 'حذف';
+
+  @override
+  String get rxImagesGroup => 'صور';
+
+  @override
+  String get rxSettingsColor => 'لون العيادة';
+
+  @override
+  String get rxSettingsHex => 'كود اللون';
+
+  @override
+  String get rxSettingsFooter => 'نص أسفل الروشتة';
+
+  @override
+  String get rxSettingsFooterHint => 'اختياري، مثلاً أيام العمل.';
+
+  @override
+  String get rxSettingsPrintGroup => 'اللغة والورق';
+
+  @override
+  String get rxSettingsLanguage => 'لغة الروشتة';
+
+  @override
+  String get rxSettingsArabic => 'العربية';
+
+  @override
+  String get rxSettingsEnglish => 'English';
+
+  @override
+  String get rxSettingsPaper => 'الورق';
+
+  @override
+  String get rxPaperA5 => 'A5';
+
+  @override
+  String get rxPaperA4 => 'A4';
+
+  @override
+  String get rxPaperCustom => 'مقاس خاص';
+
+  @override
+  String get rxPaperWidth => 'العرض';
+
+  @override
+  String get rxPaperHeight => 'الطول';
+
+  @override
+  String get rxMm => 'مم';
+
+  @override
+  String get rxPreprinted => 'ورق مطبوع مسبقاً';
+
+  @override
+  String get rxPreprintedHint =>
+      'لورق العيادة المطبوع: لا يُطبع الرأس والتذييل، ويبدأ النص من الهامش العلوي.';
+
+  @override
+  String get rxMarginTop => 'الهامش العلوي';
+
+  @override
+  String get rxMarginBottom => 'الهامش السفلي';
+
+  @override
+  String get rxSettingsPreview => 'معاينة مباشرة';
+
+  @override
+  String get rxTestPrint => 'طباعة تجريبية';
+
+  @override
+  String get rxSettingsSaved => 'تم حفظ إعدادات الطباعة.';
+
+  @override
+  String get rxSamplePatient => 'مريض تجريبي';
+
+  @override
+  String get rxSampleDiagnosis => 'التهاب اللوزتين الحاد';
+
+  @override
+  String get rxSampleAdvice => 'راحة ومشروبات دافئة.';
+
+  @override
+  String get rxSampleDose => 'قرص';
+
+  @override
+  String get rxSampleFrequency => 'كل 12 ساعة';
+
+  @override
+  String get rxSampleWhenNeeded => 'عند اللزوم';
+
+  @override
+  String get rxTemplatesTitle => 'القوالب والمفضلة';
+
+  @override
+  String get rxTemplatesSubtitle => 'أعد استخدام الروشتات التي تكتبها كثيراً.';
+
+  @override
+  String get rxTemplatesTileHint =>
+      'الروشتات المحفوظة والعناصر الأكثر استخداماً';
+
+  @override
+  String get rxTemplatesGroup => 'القوالب';
+
+  @override
+  String get rxRenameTemplate => 'إعادة تسمية';
+
+  @override
+  String get rxDeleteTemplate => 'حذف القالب';
+
+  @override
+  String get rxDeleteTemplateTitle => 'حذف هذا القالب؟';
+
+  @override
+  String rxDeleteTemplateBody(String name) {
+    return 'سيتم حذف «$name». الروشتات التي استخدمته تبقى كما هي.';
+  }
+
+  @override
+  String get rxTemplateDeleted => 'تم حذف القالب.';
+
+  @override
+  String get rxFrequentGroup => 'الأكثر استخداماً';
+
+  @override
+  String get rxFrequentHint =>
+      'تظهر أولاً عند البحث. احذف أي عنصر لإيقاف اقتراحه.';
+
+  @override
+  String get rxNoHistory => 'ستظهر هنا العناصر التي تكتبها.';
+
+  @override
+  String rxUsedTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'استُخدم $count مرة',
+      many: 'استُخدم $count مرة',
+      few: 'استُخدم $count مرات',
+      two: 'استُخدم مرتين',
+      one: 'استُخدم مرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rxRemoveFromHistory => 'إزالة من الاقتراحات';
+
+  @override
+  String rxHistoryItemRemoved(String name) {
+    return 'تمت إزالة «$name» من الاقتراحات.';
+  }
+
+  @override
+  String rxPdfTitle(String kind) {
+    return '$kind — العيادة';
+  }
+
+  @override
+  String get rxPdfDiagnosis => 'التشخيص:';
+
+  @override
+  String get rxPdfInstructions => 'تعليمات:';
+
+  @override
+  String get rxPdfNotes => 'ملاحظات:';
+
+  @override
+  String rxPdfFollowUp(String date) {
+    return 'موعد المتابعة: $date';
+  }
+
+  @override
+  String rxPdfResultsOn(String date) {
+    return 'إحضار النتائج في: $date';
+  }
+
+  @override
+  String get rxPdfTestsIntro => 'مطلوب عمل الفحوصات الآتية:';
+
+  @override
+  String get rxPdfLabGroup => 'تحاليل';
+
+  @override
+  String get rxPdfRadiologyGroup => 'أشعة';
+
+  @override
+  String get rxPdfPatient => 'المريض';
+
+  @override
+  String get rxPdfDate => 'التاريخ';
+
+  @override
+  String get rxPdfAge => 'السن';
+
+  @override
+  String rxPdfAgeValue(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years سنة',
+      many: '$years سنة',
+      few: '$years سنوات',
+      two: 'سنتان',
+      one: 'سنة',
+      zero: 'أقل من سنة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rxPdfFile => 'رقم الملف';
+
+  @override
+  String get rxPdfVisit => 'الزيارة';
+
+  @override
+  String get rxPdfExamination => 'كشف';
+
+  @override
+  String get rxPdfConsultation => 'استشارة';
+
+  @override
+  String get rxPdfSignature => 'التوقيع';
+
+  @override
+  String get rxPdfScan => 'امسح الكود';
+
+  @override
+  String rxPdfPage(int page, int total) {
+    return 'صفحة $page من $total';
+  }
+
+  @override
+  String get rxPdfTel => 'ت';
+
+  @override
+  String get rxPdfWhatsapp => 'واتساب';
+
+  @override
+  String activityPrescriptionDraftCreated(String kind) {
+    return 'بدأ مسودة: $kind';
+  }
+
+  @override
+  String activityPrescriptionCopied(String kind) {
+    return 'أصدر نسخة جديدة: $kind';
+  }
+
+  @override
+  String activityPrescriptionDraftUpdated(String kind) {
+    return 'عدّل مسودة: $kind';
+  }
+
+  @override
+  String activityPrescriptionDraftDeleted(String kind) {
+    return 'حذف مسودة: $kind';
+  }
+
+  @override
+  String activityPrescriptionSubmitted(String kind) {
+    return 'أرسل مسودة للمراجعة: $kind';
+  }
+
+  @override
+  String activityPrescriptionSent(String kind) {
+    return 'أرسل للمريض: $kind';
+  }
+
+  @override
+  String activityPrescriptionCancelled(String kind) {
+    return 'ألغى: $kind';
+  }
+
+  @override
+  String activityRxItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عنصر',
+      many: '$count عنصراً',
+      few: '$count عناصر',
+      two: 'عنصران',
+      one: 'عنصر واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityRxSettingsUpdated => 'غيّر إعدادات الطباعة';
+
+  @override
+  String get activityRxLogoUpdated => 'غيّر شعار الروشتة';
+
+  @override
+  String get activityRxLogoRemoved => 'حذف شعار الروشتة';
+
+  @override
+  String get activityRxSignatureUpdated => 'غيّر التوقيع';
+
+  @override
+  String get activityRxSignatureRemoved => 'حذف التوقيع';
+
+  @override
+  String get activityActionPrescriptionDraftCreated => 'بدء مسودة';
+
+  @override
+  String get activityActionPrescriptionDraftUpdated => 'تعديل مسودة';
+
+  @override
+  String get activityActionPrescriptionDraftDeleted => 'حذف مسودة';
+
+  @override
+  String get activityActionPrescriptionSubmitted => 'إرسال للمراجعة';
+
+  @override
+  String get activityActionPrescriptionSent => 'إرسال روشتة';
+
+  @override
+  String get activityActionPrescriptionCancelled => 'إلغاء روشتة';
+
+  @override
+  String get activityActionRxSettingsUpdated => 'إعدادات الطباعة';
+
+  @override
+  String get activityActionRxBrandingUpdated => 'الشعار أو التوقيع';
 }

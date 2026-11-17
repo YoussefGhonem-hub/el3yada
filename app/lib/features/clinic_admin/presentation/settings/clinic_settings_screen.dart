@@ -284,6 +284,20 @@ class _ClinicGroup extends StatelessWidget {
           subtitle: l10n.settingsPricesHint,
           onTap: () => context.go(ClinicAdminRoutes.pricesFor(doctor: doctor)),
         ),
+        if (doctor) ...[
+          SettingsTile(
+            icon: Icons.print_outlined,
+            title: l10n.rxSettingsTitle,
+            subtitle: l10n.rxSettingsTileHint,
+            onTap: () => context.go(ClinicAdminRoutes.doctorRxSettings),
+          ),
+          SettingsTile(
+            icon: Icons.bookmarks_outlined,
+            title: l10n.rxTemplatesTitle,
+            subtitle: l10n.rxTemplatesTileHint,
+            onTap: () => context.go(ClinicAdminRoutes.doctorTemplates),
+          ),
+        ],
       ],
     );
   }

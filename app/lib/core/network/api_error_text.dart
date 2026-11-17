@@ -49,6 +49,11 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.amountNotEditable => sessionErrorAmountNotEditable,
       ApiCodes.sessionNotDeletable =>
         error.details['reason'] == 'notSameDay' ? sessionNotDeletableDay : sessionNotDeletableLatest,
+      // Prescriptions (backend/docs/api-phase-3-prescriptions.md).
+      ApiCodes.prescriptionNotEditable => rxErrorNotEditable,
+      ApiCodes.prescriptionNotSent => rxErrorNotSent,
+      ApiCodes.prescriptionEmpty => rxErrorEmpty,
+      ApiCodes.invalidCopySource => rxErrorInvalidCopySource,
       ApiCodes.selectionTokenInvalid ||
       ApiCodes.refreshTokenInvalid ||
       ApiCodes.refreshTokenReused ||

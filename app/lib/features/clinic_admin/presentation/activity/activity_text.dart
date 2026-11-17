@@ -70,6 +70,19 @@ extension ActivityText on AppLocalizations {
       'medicalRecordCreated' => activityRecordCreated,
       'medicalRecordUpdated' => activityRecordUpdated,
       'medicalRecordDeleted' => activityRecordDeleted,
+      // Prescriptions and print settings (api-phase-3-prescriptions.md).
+      'prescriptionDraftCreated' => d['copyFromId'] != null
+          ? activityPrescriptionCopied(_rxKind(d['kind']))
+          : activityPrescriptionDraftCreated(_rxKind(d['kind'])),
+      'prescriptionDraftUpdated' => activityPrescriptionDraftUpdated(_rxKind(d['kind'])),
+      'prescriptionDraftDeleted' => activityPrescriptionDraftDeleted(_rxKind(d['kind'])),
+      'prescriptionSubmittedForReview' => activityPrescriptionSubmitted(_rxKind(d['kind'])),
+      'prescriptionSent' => activityPrescriptionSent(_rxKind(d['kind'])),
+      'prescriptionCancelled' => activityPrescriptionCancelled(_rxKind(d['kind'])),
+      'rxSettingsUpdated' => activityRxSettingsUpdated,
+      'rxBrandingUpdated' => d['image'] == 'signature'
+          ? (d['removed'] == true ? activityRxSignatureRemoved : activityRxSignatureUpdated)
+          : (d['removed'] == true ? activityRxLogoRemoved : activityRxLogoUpdated),
       _ => activityOther(humanizeAction(entry.action)),
     };
   }
@@ -112,6 +125,14 @@ extension ActivityText on AppLocalizations {
         'medicalRecordCreated' => activityActionRecordCreated,
         'medicalRecordUpdated' => activityActionRecordUpdated,
         'medicalRecordDeleted' => activityActionRecordDeleted,
+        'prescriptionDraftCreated' => activityActionPrescriptionDraftCreated,
+        'prescriptionDraftUpdated' => activityActionPrescriptionDraftUpdated,
+        'prescriptionDraftDeleted' => activityActionPrescriptionDraftDeleted,
+        'prescriptionSubmittedForReview' => activityActionPrescriptionSubmitted,
+        'prescriptionSent' => activityActionPrescriptionSent,
+        'prescriptionCancelled' => activityActionPrescriptionCancelled,
+        'rxSettingsUpdated' => activityActionRxSettingsUpdated,
+        'rxBrandingUpdated' => activityActionRxBrandingUpdated,
         _ => humanizeAction(action),
       };
 
@@ -163,6 +184,9 @@ extension ActivityText on AppLocalizations {
       case 'medicalRecordUpdated' || 'medicalRecordDeleted':
         final category = d['category'];
         return category is String ? recordCategoryName(RecordCategory.fromWire(category)) : null;
+      case 'prescriptionSent' || 'prescriptionDraftUpdated':
+        final items = d['items'];
+        return items is int ? activityRxItems(items) : null;
       default:
         return null;
     }
@@ -175,6 +199,9 @@ extension ActivityText on AppLocalizations {
         'clinicInfo' => branchTabClinic,
         _ => group,
       };
+
+  /// «روشتة علاج» or «روشتة تحاليل وأشعة» from an audit row's `kind`.
+  String _rxKind(Object? kind) => kind == 'investigations' ? rxKindInvestigations : rxKindMedication;
 
   String activityRole(String role) => switch (role) {
         'doctor' => roleDoctor,
@@ -211,6 +238,11 @@ IconData activityIcon(String action) => switch (action) {
       'sessionDeleted' || 'medicalRecordDeleted' => Icons.delete_outline,
       'medicalRecordCreated' => Icons.note_add_outlined,
       'medicalRecordUpdated' => Icons.edit_document,
+      'prescriptionDraftCreated' || 'prescriptionDraftUpdated' || 'prescriptionSubmittedForReview' => Icons.edit_note_outlined,
+      'prescriptionDraftDeleted' => Icons.delete_outline,
+      'prescriptionSent' => Icons.send_outlined,
+      'prescriptionCancelled' => Icons.block,
+      'rxSettingsUpdated' || 'rxBrandingUpdated' => Icons.print_outlined,
       _ => Icons.history,
     };
 
@@ -226,6 +258,10 @@ String? activityTargetPath(ActivityEntry entry) {
     ('session', _) when id != null && patientId != null => ClinicPaths.doctor.patientSession(patientId, id),
     ('medicalRecord', 'medicalRecordDeleted') when patientId != null => ClinicPaths.doctor.patient(patientId),
     ('medicalRecord', _) when id != null && patientId != null => ClinicPaths.doctor.record(patientId, id),
+    // A deleted draft opens its patient.
+    ('prescription', 'prescriptionDraftDeleted') when patientId != null => ClinicPaths.doctor.patient(patientId),
+    ('prescription', _) when id != null && patientId != null => ClinicPaths.doctor.prescription(patientId, id),
+    ('doctor', 'rxSettingsUpdated' || 'rxBrandingUpdated') => ClinicAdminRoutes.doctorRxSettings,
     ('branch', _) when id != null => ClinicAdminRoutes.branch(id),
     ('assistant', _) when id != null => ClinicAdminRoutes.assistant(id),
     ('doctor', 'pricesUpdated') => ClinicAdminRoutes.doctorPrices,

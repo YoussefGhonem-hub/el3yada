@@ -23,6 +23,8 @@ import '../features/clinic_admin/presentation/prices/visit_prices_screen.dart';
 import '../features/clinic_admin/presentation/profile/doctor_profile_screen.dart';
 import '../features/clinic_admin/presentation/settings/clinic_settings_screen.dart';
 import '../features/patients/clinic_routes.dart';
+import '../features/prescriptions/presentation/rx_settings_screen.dart';
+import '../features/prescriptions/presentation/templates_screen.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_shells.dart';
 
@@ -78,6 +80,9 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
   ClinicAdminRoutes.doctorSettings: [
     GoRoute(path: 'profile', builder: (context, state) => const DoctorProfileScreen()),
     GoRoute(path: 'prices', builder: (context, state) => const VisitPricesScreen()),
+    // D22 prescription header and print settings, D23 templates.
+    GoRoute(path: 'rx', builder: (context, state) => const RxSettingsScreen()),
+    GoRoute(path: 'templates', builder: (context, state) => const TemplatesScreen()),
   ],
   // D29: a new branch, or one branch (`?tab=hours` opens a tab).
   ClinicAdminRoutes.branches: [

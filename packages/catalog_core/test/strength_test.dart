@@ -25,6 +25,9 @@ void main() {
       'ADAPALENE 0.1% GEL 30 GM': '0.1%',
       'ACNE FREE 0.025% GEL 30 GM': '0.025%',
       'ACESOLV 2% SYRUP 60ML': '2%',
+      'ECONAZOLE 1%TOPICAL SPRAY 120 ML': '1%',
+      'CLEAR FACE 10%W/W TOPICAL SOLUTION': '10%',
+      'DOXY M.R.100 MG 10 CAPS.': '100 MG',
       // Spec A.3.4 examples (not all are real rows).
       'PANADOL 500 MG 24 TABS.': '500 MG',
       'AUGMENTIN 875/125 MG 14 F.C.TABS.': '875/125 MG',
@@ -50,6 +53,8 @@ void main() {
       'AMINOLEBAN ORAL POWDER 450 GM',
       // "G" must be a whole word.
       'ADVANCED VITAMIN C 30 GUMMIES',
+      // A number glued to letters is not read: "D3" + "10000IU" written together.
+      'G.XIR (D310000IU)30 TABLETS',
       // Numbers without a unit.
       '1 2 3 (ONE TWO THREE) 20 F.C.TABS.',
       'PANADOL EXTRA 24 TABS.',

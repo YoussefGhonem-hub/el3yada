@@ -77,6 +77,54 @@ String normalizeAndDedupe(Iterable<String?> values) {
   return out.join(' ');
 }
 
+/// The Arabic "skeleton" of a normalized word: the word without the
+/// long-vowel letters ا و ي and the hamza letters ء ؤ ئ after its first
+/// letter, so that spellings that differ only in long vowels match.
+///
+/// The drug dataset spells trade names phonetically («بانادول»), while
+/// doctors often write them the colloquial way («بنادول»); both have the
+/// skeleton «بندل». Returns null when [word] has no Arabic letters, or when
+/// its skeleton is the word itself or shorter than three letters: a short
+/// skeleton such as «اك» (from «ايكو») would prefix-match far too much
+/// («اكس راي»).
+///
+/// This is an addition to A.6: the builder indexes the skeletons next to the
+/// normalized words ([withArabicSkeletons]), and [ftsPrefixQuery] searches
+/// each Arabic word as "word or its skeleton".
+String? arabicSkeleton(String word) {
+  if (word.isEmpty) return null;
+  final runes = word.runes.toList();
+  if (!runes.any(_isArabicLetter)) return null;
+  final out = StringBuffer()..writeCharCode(runes.first);
+  var length = 1;
+  for (final rune in runes.skip(1)) {
+    if (_skeletonDrops.contains(rune)) continue;
+    out.writeCharCode(rune);
+    length++;
+  }
+  final skeleton = out.toString();
+  return length < 3 || skeleton == word ? null : skeleton;
+}
+
+/// [normalizedText] followed by the skeletons ([arabicSkeleton]) of its
+/// Arabic words that are new, for indexing.
+String withArabicSkeletons(String normalizedText) {
+  if (normalizedText.isEmpty) return normalizedText;
+  final words = normalizedText.split(' ');
+  final seen = words.toSet();
+  final extra = <String>[];
+  for (final word in words) {
+    final skeleton = arabicSkeleton(word);
+    if (skeleton != null && seen.add(skeleton)) extra.add(skeleton);
+  }
+  return extra.isEmpty ? normalizedText : '$normalizedText ${extra.join(' ')}';
+}
+
+bool _isArabicLetter(int rune) => rune >= 0x0621 && rune <= 0x064A;
+
+/// ا و ي ء ؤ ئ
+const _skeletonDrops = {0x0627, 0x0648, 0x064A, 0x0621, 0x0624, 0x0626};
+
 const _space = 0x20;
 const _slash = 0x2F;
 const _dot = 0x2E;

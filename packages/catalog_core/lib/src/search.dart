@@ -8,14 +8,20 @@ import 'schema.dart';
 /// Builds an FTS5 MATCH expression from what the doctor typed.
 ///
 /// Every word becomes a prefix query and all words must match, so "ator"
-/// finds "atorvastatin" and «بنادول» finds "بنادول اكسترا". Returns null when
-/// nothing searchable is left (for example only punctuation was typed).
+/// finds "atorvastatin". An Arabic word also matches through its skeleton
+/// ([arabicSkeleton]), so «بنادول» finds the dataset's «بانادول». Returns
+/// null when nothing searchable is left (for example only punctuation).
 String? ftsPrefixQuery(String typed) {
   final words = searchWords(typed);
   if (words.isEmpty) return null;
   // Normalized words contain only letters, digits and "/" or "." between
   // digits, so quoting is safe; "*" after the closing quote makes a prefix.
-  return words.map((word) => '"$word"*').join(' ');
+  // FTS5 does not accept an implicit AND after a bracketed group, so the
+  // words are joined with an explicit AND.
+  return words.map((word) {
+    final skeleton = arabicSkeleton(word);
+    return skeleton == null ? '"$word"*' : '("$word"* OR "$skeleton"*)';
+  }).join(' AND ');
 }
 
 /// Base search statements. Each takes two parameters: the MATCH expression

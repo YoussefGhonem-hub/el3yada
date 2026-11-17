@@ -187,13 +187,23 @@ abstract final class FtsTables {
 
 /// The statements that create an empty catalog database, in order.
 abstract final class CatalogSchema {
-  /// FTS5 options shared by the three full-text tables. Text is normalized
-  /// by [normalizeForSearch] before it is indexed, so the tokenizer only has
-  /// to split on spaces; `/` and `.` are token characters so that "250/5"
-  /// and "0.1" stay one word. The prefix indexes make "ator*" fast.
+  /// FTS5 options shared by the three full-text tables.
+  ///
+  /// * Text is normalized by `normalizeForSearch` before it is indexed, so
+  ///   the tokenizer only has to split on spaces; `/` and `.` are token
+  ///   characters so that "250/5" and "0.1" stay one word.
+  /// * `content=''`: the index only; rows are read from the base tables.
+  /// * `detail=column`: no word positions (only single-word prefix queries
+  ///   are used), but column weights still work in `bm25()`.
+  /// * No `prefix=` index. Prefix queries ("ator"*) work without one, and on
+  ///   the real catalog a `prefix='2 3'` index made the gzip file 45% larger
+  ///   (5.6 → 8.1 MB) without making searches faster: queries of two letters
+  ///   or more took under 15 ms either way on a desktop, and one-letter
+  ///   queries are slow because of ranking, not lookup. To add one, append
+  ///   `, prefix='2 3'` here and bump [catalogSchemaVersion].
   static const ftsOptions = "content='', "
       "tokenize=\"unicode61 remove_diacritics 0 tokenchars './'\", "
-      "prefix='2 3'";
+      'detail=column';
 
   static const List<String> createStatements = [
     'CREATE TABLE ${MetaTable.name} ('

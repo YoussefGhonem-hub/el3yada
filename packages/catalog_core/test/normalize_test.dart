@@ -87,6 +87,44 @@ void main() {
     });
   });
 
+  group('arabicSkeleton', () {
+    test('matches the dataset spelling and the colloquial one', () {
+      // The dataset writes «بانادول»; doctors type «بنادول».
+      expect(arabicSkeleton(normalizeForSearch('بانادول')), 'بندل');
+      expect(arabicSkeleton(normalizeForSearch('بنادول')), 'بندل');
+      expect(arabicSkeleton(normalizeForSearch('أوجمينتين')), arabicSkeleton(normalizeForSearch('اوجمنتين')));
+    });
+
+    test('keeps the first letter even when it is a vowel letter', () {
+      expect(arabicSkeleton('اوميبرازول'), 'امبرزل');
+    });
+
+    test('drops hamza letters', () {
+      expect(arabicSkeleton('كوئنزايم'), 'كنزم');
+    });
+
+    test('is null when there is nothing to gain', () {
+      expect(arabicSkeleton('omeprazole'), isNull);
+      expect(arabicSkeleton('دم'), isNull); // no vowel letters
+      expect(arabicSkeleton(''), isNull);
+    });
+
+    test('is null when the skeleton would be shorter than three letters', () {
+      // «ايكو» → «اك» would match every «اكس راي».
+      expect(arabicSkeleton('ايكو'), isNull);
+      expect(arabicSkeleton('بنا'), isNull);
+      expect(arabicSkeleton('بناد'), 'بند');
+    });
+  });
+
+  group('withArabicSkeletons', () {
+    test('adds new skeletons after the words', () {
+      expect(withArabicSkeletons('بانادول اكسترا 500 mg'), 'بانادول اكسترا 500 mg بندل اكستر');
+      expect(withArabicSkeletons('panadol extra'), 'panadol extra');
+      expect(withArabicSkeletons(''), '');
+    });
+  });
+
   group('normalizeAndDedupe', () {
     test('joins values and drops repeated words', () {
       expect(

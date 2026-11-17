@@ -23,12 +23,12 @@ String? parseStrength(String tradeName) {
   final name = tradeName.toUpperCase();
   String? firstGrams;
   for (final match in _strengthPattern.allMatches(name)) {
-    final unit = _canonicalUnit(match.group(2)!);
-    final denominatorUnit = match.group(4);
+    final unit = _canonicalUnit(match.group(2) ?? match.group(3)!);
+    final denominatorUnit = match.group(5);
     final amount = _tidyNumbers(match.group(1)!);
     var text = unit == '%' ? '$amount%' : '$amount $unit';
     if (denominatorUnit != null) {
-      final denominatorAmount = match.group(3);
+      final denominatorAmount = match.group(4);
       final den = _canonicalUnit(denominatorUnit);
       text += denominatorAmount == null || denominatorAmount.isEmpty
           ? '/$den'
@@ -52,12 +52,13 @@ String? parseStrength(String tradeName) {
 /// Numbers, optionally several joined by "/" ("875/125"); a unit; then an
 /// optional denominator ("/5 ML", "/ML", "/G", "/DOSE").
 final _strengthPattern = RegExp(
-  r'(?<![A-Z0-9.,])'
+  // Not glued to a letter or another number ("B12", "D310000IU"); a dot
+  // before is fine ("M.R.100 MG").
+  r'(?<![A-Z0-9,])'
   r'(\d+(?:[.,]\d+)?(?:\s*/\s*\d+(?:[.,]\d+)?)*)'
   r'\s*'
-  r'(MCG|µG|UG|MG|GM|GRAMS?|G|M\.I\.U\.?|MIU|I\.U\.?|IU|MMOL|MEQ|ML|%)'
-  r'(?:\s*/\s*(\d+(?:[.,]\d+)?)?\s*(ML|GM|G|L|DOSE|ACTUATION)(?![A-Z]))?'
-  r'(?![A-Z])',
+  r'(?:(MCG|µG|UG|MG|GM|GRAMS?|G|M\.I\.U\.?|MIU|I\.U\.?|IU|MMOL|MEQ|ML)(?![A-Z])|(%))'
+  r'(?:\s*/\s*(\d+(?:[.,]\d+)?)?\s*(ML|GM|G|L|DOSE|ACTUATION)(?![A-Z]))?',
 );
 
 /// Words that mean the grams in the name are the size of a tube, jar, bar

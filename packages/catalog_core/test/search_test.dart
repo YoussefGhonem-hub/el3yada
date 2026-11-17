@@ -3,14 +3,17 @@ import 'package:test/test.dart';
 
 void main() {
   group('ftsPrefixQuery', () {
-    test('makes every word a prefix query', () {
+    test('makes every word a prefix query and requires all of them', () {
       expect(ftsPrefixQuery('ator'), '"ator"*');
-      expect(ftsPrefixQuery('Omep 20'), '"omep"* "20"*');
+      expect(ftsPrefixQuery('Omep 20'), '"omep"* AND "20"*');
     });
 
-    test('normalizes Arabic before querying', () {
-      expect(ftsPrefixQuery('بَنادول'), '"بنادول"*');
-      expect(ftsPrefixQuery('صورة دم كاملة'), '"صوره"* "دم"* "كامله"*');
+    test('normalizes Arabic and also searches each word by its skeleton', () {
+      expect(ftsPrefixQuery('بَنادول'), '("بنادول"* OR "بندل"*)');
+      expect(
+        ftsPrefixQuery('صورة دم كاملة'),
+        '("صوره"* OR "صره"*) AND "دم"* AND ("كامله"* OR "كمله"*)',
+      );
     });
 
     test('keeps numbers with / and . as one word', () {
@@ -23,8 +26,8 @@ void main() {
     });
 
     test('never lets FTS5 syntax through', () {
-      expect(ftsPrefixQuery('a" OR b*'), '"a"* "or"* "b"*');
-      expect(ftsPrefixQuery('NEAR(x y)'), '"near"* "x"* "y"*');
+      expect(ftsPrefixQuery('a" OR b*'), '"a"* AND "or"* AND "b"*');
+      expect(ftsPrefixQuery('NEAR(x y)'), '"near"* AND "x"* AND "y"*');
     });
   });
 

@@ -42,6 +42,14 @@ public static class OptionsSetup
                 "Production needs real email links and sender: set Email__ResetPasswordUrl, Email__VerifyEmailUrl and Email__FromAddress.")
             .ValidateOnStart();
 
+        services.AddOptions<AppLinksOptions>()
+            .Bind(configuration.GetSection(AppLinksOptions.SectionName))
+            .ValidateDataAnnotations()
+            .Validate(
+                options => !environment.IsProduction() || !IsLocal(options.PublicBaseUrl),
+                "AppLinks:PublicBaseUrl must be the API's public https address in production (it is printed in every prescription QR code).")
+            .ValidateOnStart();
+
         services.AddOptions<StorageOptions>()
             .Bind(configuration.GetSection(StorageOptions.SectionName))
             .ValidateDataAnnotations()

@@ -844,7 +844,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.RxAccentColor)
                 .HasMaxLength(7)
                 .IsUnicode(false)
-                .HasDefaultValue("#0B5C8E")
+                .HasDefaultValue("#0F4C45")
                 .IsFixedLength();
             entity.Property(e => e.RxCustomHeightMm).HasColumnType("decimal(5, 1)");
             entity.Property(e => e.RxCustomWidthMm).HasColumnType("decimal(5, 1)");

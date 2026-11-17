@@ -19,6 +19,12 @@ public partial class Prescription
 
     public string? Advice { get; set; }
 
+    /// <summary>
+    /// Zone 6 of the printed page (spec 6.4.1): «موعد المتابعة» on a medication prescription, «إحضار النتائج في» on
+    /// an investigations request. Optional.
+    /// </summary>
+    public DateOnly? FollowUpDate { get; set; }
+
     public string Status { get; set; } = "draft";
 
     public Guid? PreparedBy { get; set; }

@@ -1627,7 +1627,7 @@ namespace El3yada.Data.Migrations
                         .HasMaxLength(7)
                         .IsUnicode(false)
                         .HasColumnType("char(7)")
-                        .HasDefaultValue("#0B5C8E")
+                        .HasDefaultValue("#0F4C45")
                         .IsFixedLength();
 
                     b.Property<decimal?>("RxCustomHeightMm")
@@ -2818,6 +2818,9 @@ namespace El3yada.Data.Migrations
 
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly?>("FollowUpDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Kind")
                         .IsRequired()

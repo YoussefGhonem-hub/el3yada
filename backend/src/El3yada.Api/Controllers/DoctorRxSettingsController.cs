@@ -34,11 +34,13 @@ public sealed class UpdateRxSettingsRequestValidator : AbstractValidator<UpdateR
         RuleFor(x => x.PaperSize).Required().OneOf(RxPaper.A5, RxPaper.A4, RxPaper.Custom);
         RuleFor(x => x.CustomWidthMm)
             .Must((x, width) => x.PaperSize != RxPaper.Custom || width is not null)
-            .WithErrorCode(ErrorCodes.Required).WithMessage("Enter the paper width.")
+            .WithErrorCode(ErrorCodes.Required).WithMessage("Enter the paper width.");
+        RuleFor(x => x.CustomWidthMm)
             .InclusiveBetween(90, 300).WithErrorCode(ErrorCodes.OutOfRange).When(x => x.CustomWidthMm is not null);
         RuleFor(x => x.CustomHeightMm)
             .Must((x, height) => x.PaperSize != RxPaper.Custom || height is not null)
-            .WithErrorCode(ErrorCodes.Required).WithMessage("Enter the paper height.")
+            .WithErrorCode(ErrorCodes.Required).WithMessage("Enter the paper height.");
+        RuleFor(x => x.CustomHeightMm)
             .InclusiveBetween(120, 420).WithErrorCode(ErrorCodes.OutOfRange).When(x => x.CustomHeightMm is not null);
         RuleFor(x => x.Preprinted).NotNull().WithErrorCode(ErrorCodes.Required);
         RuleFor(x => x.MarginTopMm).InclusiveBetween(0, 100).WithErrorCode(ErrorCodes.OutOfRange).When(x => x.MarginTopMm is not null);

@@ -48,7 +48,7 @@ public sealed class BranchAddressMigrationTests : IAsyncLifetime
         Assert.Null(rows[partial].MapUrl);
         Assert.Equal("عباس العقاد، عمارة النور، الدور الأول", rows[labelled].AddressDetails);
         Assert.Null(rows[labelled].MapUrl); // a pin needs both numbers
-        Assert.Empty(await db.Database.GetPendingMigrationsAsync());
+        Assert.Contains(Migration, await db.Database.GetAppliedMigrationsAsync());
 
         await db.GetService<IMigrator>().MigrateAsync(Before);
 
@@ -96,16 +96,13 @@ public sealed class BranchAddressMigrationTests : IAsyncLifetime
         var userId = Guid.NewGuid();
         var specialtyId = await db.Specialties.Select(s => s.Id).FirstAsync();
         db.Users.Add(new User { Id = userId, Role = "doctor", DisplayName = "د. تجربة", Email = $"{userId:N}@el3yada.dev" });
-        db.Doctors.Add(new Doctor
-        {
-            UserId = userId,
-            FullName = "د. تجربة",
-            Title = "أخصائي",
-            SpecialtyId = specialtyId,
-            LicenseNumber = "12345",
-            LicenseDocPath = $"doctors/{userId}/license/card.jpg",
-        });
         await db.SaveChangesAsync();
+        // SQL rather than the entity: the model has columns that later migrations add (Doctors.TrialEndsAt).
+        var licensePath = $"doctors/{userId}/license/card.jpg";
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO [Doctors] ([UserId], [FullName], [Title], [SpecialtyId], [LicenseNumber], [LicenseDocPath], [CreatedAt], [UpdatedAt])
+            VALUES ({userId}, {"د. تجربة"}, {"أخصائي"}, {specialtyId}, {"12345"}, {licensePath}, SYSUTCDATETIME(), SYSUTCDATETIME())
+            """);
         return userId;
     }
 }

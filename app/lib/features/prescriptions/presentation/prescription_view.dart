@@ -341,7 +341,7 @@ class _ItemsList extends StatelessWidget {
             leading: const Icon(Icons.medication_outlined),
             title: Text([item.drugName, ?item.strength].join(' · ')),
             subtitle: Text(rxInstructionLine(l10n, item)),
-            trailing: item.duration == null ? null : Text(item.duration!, style: theme.textTheme.bodySmall),
+            trailing: item.duration == null ? null : Text(rxDurationLabel(l10n, item.duration!), style: theme.textTheme.bodySmall),
           ),
         for (final item in rx.investigations)
           ListTile(

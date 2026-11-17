@@ -585,7 +585,7 @@ class _RxLayout {
                 border: pw.Border.all(color: accent, width: 0.8),
                 borderRadius: pw.BorderRadius.circular(3 * mm),
               ),
-              child: text(item.duration!, size: 9.5, color: accent),
+              child: text(rxDurationLabel(l10n, item.duration!), size: 9.5, color: accent),
             ),
           ],
         ],

@@ -323,7 +323,7 @@
   "regResent": "Sent. Check your inbox and your spam folder.",
   "regNotVerifiedYet": "Not verified yet. Open the link in the email, then try again.",
   "regVerifiedTitle": "Email verified",
-  "regVerifiedBody": "Thank you. Your email address is confirmed.",
+  "regVerifiedBody": "Thank you. Your email address is confirmed.",
 
   "adminMyProfile": "My profile",
   "@adminMyProfile": {"description":"Admin top-bar button and AD18 title."},

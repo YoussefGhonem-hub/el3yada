@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart' show Locale;
+
 import '../../../l10n/gen/app_localizations.dart';
 import '../../sessions/domain/session_models.dart' show SessionType;
 import '../domain/prescription_models.dart';
@@ -55,3 +57,32 @@ String rxDurationText(AppLocalizations l10n, RxDurationUnit unit, int count) => 
       RxDurationUnit.weeks => l10n.rxDurationWeeks(count),
       RxDurationUnit.continuous => l10n.rxDurationContinuous,
     };
+
+/// A duration the app wrote with [rxDurationText], in Arabic or English, read
+/// back into its parts. Null for a duration the doctor typed freely.
+({RxDurationUnit unit, int count})? parseRxDuration(String text) {
+  final trimmed = text.trim();
+  if (trimmed.isEmpty) return null;
+  final digits = RegExp(r'\d+').firstMatch(trimmed)?.group(0);
+  // «يوم واحد» and «يومين» have no digits.
+  final counts = digits == null ? const [1, 2] : [int.parse(digits)];
+  for (final language in const ['ar', 'en']) {
+    final l10n = lookupAppLocalizations(Locale(language));
+    if (trimmed == l10n.rxDurationContinuous) return (unit: RxDurationUnit.continuous, count: 0);
+    for (final count in counts) {
+      for (final unit in const [RxDurationUnit.days, RxDurationUnit.weeks]) {
+        if (rxDurationText(l10n, unit, count) == trimmed) return (unit: unit, count: count);
+      }
+    }
+  }
+  return null;
+}
+
+/// A medicine's duration in [l10n]'s language. The duration is stored as text
+/// in the language of the app that wrote it, so one the app wrote is
+/// translated: an English prescription written from the Arabic app says
+/// "7 days", not «7 أيام». A duration the doctor typed stays as typed.
+String rxDurationLabel(AppLocalizations l10n, String duration) {
+  final parts = parseRxDuration(duration);
+  return parts == null ? duration : rxDurationText(l10n, parts.unit, parts.count);
+}

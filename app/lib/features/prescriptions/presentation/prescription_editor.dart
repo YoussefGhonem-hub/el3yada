@@ -486,7 +486,9 @@ class _PrescriptionEditorState extends ConsumerState<PrescriptionEditor> {
                   subtitle: _medication
                       ? rxInstructionLine(l10n, _medications[index])
                       : _investigations[index].notes,
-                  chip: _medication ? _medications[index].duration : null,
+                  chip: _medication && _medications[index].duration != null
+                      ? rxDurationLabel(l10n, _medications[index].duration!)
+                      : null,
                   icon: _medication
                       ? null
                       : (_investigations[index].category == InvestigationCategory.lab

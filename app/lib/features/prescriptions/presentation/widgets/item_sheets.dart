@@ -92,19 +92,10 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
     // An existing duration written by the app is read back into its parts.
     final duration = widget.initial?.duration;
     if (duration != null && _durationUnit == null && _durationCount.text.isEmpty) {
-      final l10n = AppLocalizations.of(context);
-      if (duration == l10n.rxDurationContinuous) {
-        _durationUnit = RxDurationUnit.continuous;
-      } else {
-        final count = int.tryParse(RegExp(r'\d+').firstMatch(duration)?.group(0) ?? '');
-        if (count != null) {
-          for (final unit in [RxDurationUnit.days, RxDurationUnit.weeks]) {
-            if (rxDurationText(l10n, unit, count) == duration) {
-              _durationUnit = unit;
-              _durationCount.text = '$count';
-            }
-          }
-        }
+      final parts = parseRxDuration(duration);
+      if (parts != null) {
+        _durationUnit = parts.unit;
+        if (parts.unit != RxDurationUnit.continuous) _durationCount.text = '${parts.count}';
       }
     }
   }

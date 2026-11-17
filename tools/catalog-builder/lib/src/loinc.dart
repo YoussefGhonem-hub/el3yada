@@ -84,6 +84,7 @@ class LoincTerm {
     required this.orderObs,
     required this.status,
     required this.commonOrderRank,
+    this.externalCopyright = '',
   });
 
   final String code;
@@ -100,6 +101,13 @@ class LoincTerm {
   /// COMMON_ORDER_RANK, or 0.
   final int commonOrderRank;
 
+  /// EXTERNAL_COPYRIGHT_NOTICE: set for third-party content, which the LOINC
+  /// licence (section 10.2) lets us use only under the owner's own terms.
+  /// Such terms are left out of the catalog.
+  final String externalCopyright;
+
+  bool get hasThirdPartyCopyright => externalCopyright.isNotEmpty;
+
   bool get isActive => status == 'ACTIVE';
 
   /// A.4.3: a laboratory term (CLASSTYPE 1) that is active and can be
@@ -112,7 +120,7 @@ class LoincTerm {
 /// Reads the main LOINC table, keeping only the columns we use.
 Map<String, LoincTerm> readLoincTable(String path) {
   final terms = <String, LoincTerm>{};
-  late int code, longName, shortName, related, loincClass, classType, orderObs, status, rank;
+  late int code, longName, shortName, related, loincClass, classType, orderObs, status, rank, copyright;
   streamCsvFile(
     path,
     onHeader: (header) {
@@ -122,6 +130,8 @@ Map<String, LoincTerm> readLoincTable(String path) {
         return index;
       }
 
+      // Optional only so small test fixtures can leave it out.
+      copyright = header.indexOf('EXTERNAL_COPYRIGHT_NOTICE');
       code = col('LOINC_NUM');
       longName = col('LONG_COMMON_NAME');
       shortName = col('SHORTNAME');
@@ -145,6 +155,7 @@ Map<String, LoincTerm> readLoincTable(String path) {
         orderObs: CsvTable.cell(row, orderObs).trim(),
         status: CsvTable.cell(row, status).trim(),
         commonOrderRank: int.tryParse(CsvTable.cell(row, rank).trim()) ?? 0,
+        externalCopyright: copyright < 0 ? '' : CsvTable.cell(row, copyright).trim(),
       );
     },
   );

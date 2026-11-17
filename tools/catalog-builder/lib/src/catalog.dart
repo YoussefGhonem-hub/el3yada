@@ -62,7 +62,11 @@ class CatalogContent {
     required this.labs,
     required this.radiology,
     required this.modalities,
+    this.thirdPartyExcluded = const [],
   });
+
+  /// LOINC codes left out because of a third-party copyright notice.
+  final List<String> thirdPartyExcluded;
 
   /// Sorted by trade name; a drug's id is its position + 1.
   final List<Drug> drugs;
@@ -94,16 +98,22 @@ CatalogContent assembleCatalog({
 }) {
   final problems = <String>[];
 
-  // Labs: A.4.3 filter.
-  final labTerms = loinc.values.where((t) => t.isOrderableLab).toList()
-    ..sort((a, b) => loincToId(a.code).compareTo(loincToId(b.code)));
+  // Labs: A.4.3 filter. Terms with third-party copyright are left out
+  // (LOINC licence section 10.2).
+  final thirdParty = <String>[];
+  final labTerms = <LoincTerm>[];
+  for (final term in loinc.values.where((t) => t.isOrderableLab)) {
+    term.hasThirdPartyCopyright ? thirdParty.add(term.code) : labTerms.add(term);
+  }
+  labTerms.sort((a, b) => loincToId(a.code).compareTo(loincToId(b.code)));
   final labCodes = {for (final t in labTerms) t.code};
 
   // Radiology: Playbook procedures that are active in the main table (A.5.3).
   final radiologyTerms = <LoincTerm>[];
   for (final code in playbook.keys) {
     final term = loinc[code];
-    if (term != null && term.isActive) radiologyTerms.add(term);
+    if (term == null || !term.isActive) continue;
+    term.hasThirdPartyCopyright ? thirdParty.add(term.code) : radiologyTerms.add(term);
   }
   radiologyTerms.sort((a, b) => loincToId(a.code).compareTo(loincToId(b.code)));
   final radiologyCodes = {for (final t in radiologyTerms) t.code};
@@ -223,6 +233,7 @@ CatalogContent assembleCatalog({
     labs: labs,
     radiology: radiology,
     modalities: [for (final t in mappings.radiologyTerms) if (t.kind == 'modality') t],
+    thirdPartyExcluded: thirdParty..sort(),
   );
 }
 

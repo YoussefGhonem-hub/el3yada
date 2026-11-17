@@ -32,6 +32,13 @@ void main() {
       expect(kept, isNot(contains('99008-5')));
     });
     test('does not take radiology terms as labs', () => expect(kept, isNot(contains('99020-0'))));
+
+    test('leaves out terms with a third-party copyright notice (licence 10.2)', () {
+      expect(terms['99011-9']!.hasThirdPartyCopyright, isTrue);
+      final content = _assemble(release, terms);
+      expect(content.labs.map((l) => l.term.code), isNot(contains('99011-9')));
+      expect(content.thirdPartyExcluded, ['99011-9']);
+    });
   });
 
   group('radiology (A.5)', () {

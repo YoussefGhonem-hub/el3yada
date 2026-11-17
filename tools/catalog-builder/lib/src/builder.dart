@@ -169,6 +169,9 @@ BuildResult buildCatalog(BuildOptions options, {void Function(String line)? log}
       '(${labPriority[CatalogPriority.egypt] ?? 0} Egypt priority, ${labPriority[CatalogPriority.common] ?? 0} common); '
       'largest classes: ${topClasses.take(8).map((e) => '${e.key} ${e.value}').join(', ')}');
   say('  radiology procedures kept: ${content.radiology.length}');
+  if (content.thirdPartyExcluded.isNotEmpty) {
+    say('  left out for third-party copyright (LOINC licence 10.2): ${content.thirdPartyExcluded.join(', ')}');
+  }
   say('  Arabic names: labs $labsArabic of ${content.labs.length} '
       '($labsLoincArabic from the LOINC Arabic variant), radiology $radiologyArabic of ${content.radiology.length}');
 

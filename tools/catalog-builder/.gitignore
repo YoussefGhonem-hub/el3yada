@@ -1,0 +1,4 @@
+# Downloaded source files (LOINC licence: never commit them, spec A.7) and build output.
+sources/
+out/
+.dart_tool/

@@ -15,6 +15,14 @@ import 'rx_text.dart';
 /// The fonts of the prescription PDF (6.4.1): Noto Sans Arabic for Arabic
 /// and Alexandria for Latin. The PDF library embeds only the glyphs used
 /// (a subset), which keeps the file small.
+///
+/// Noto Sans Arabic declares a line height of 2.11 em (room for stacked
+/// marks the prescriptions never use), so every Arabic line would take as
+/// much room as two. The PDF library sizes lines from the font's `hhea`
+/// ascender and descender, so the copy used here gets compact ones
+/// ([arabicAscender], [arabicDescender]: 1.55 em in all). The glyphs and their
+/// drawing are untouched; only the line box is smaller, so an A5 page holds
+/// the 6.4.1 layout.
 class RxPdfFonts {
   const RxPdfFonts({required this.arabic, required this.arabicBold, required this.latin, required this.latinBold});
 
@@ -28,12 +36,12 @@ class RxPdfFonts {
   /// From the app's assets, loaded once.
   static Future<RxPdfFonts> load() async {
     if (_cached != null) return _cached!;
-    Future<pw.Font> font(String file) async => pw.Font.ttf(await rootBundle.load('assets/fonts/$file'));
-    return _cached = RxPdfFonts(
-      arabic: await font('NotoSansArabic-Regular.ttf'),
-      arabicBold: await font('NotoSansArabic-Bold.ttf'),
-      latin: await font('Alexandria-Regular.ttf'),
-      latinBold: await font('Alexandria-Bold.ttf'),
+    Future<ByteData> bytes(String file) => rootBundle.load('assets/fonts/$file');
+    return _cached = RxPdfFonts.fromBytes(
+      arabic: await bytes('NotoSansArabic-Regular.ttf'),
+      arabicBold: await bytes('NotoSansArabic-Bold.ttf'),
+      latin: await bytes('Alexandria-Regular.ttf'),
+      latinBold: await bytes('Alexandria-Bold.ttf'),
     );
   }
 
@@ -45,11 +53,36 @@ class RxPdfFonts {
     required ByteData latinBold,
   }) =>
       RxPdfFonts(
-        arabic: pw.Font.ttf(arabic),
-        arabicBold: pw.Font.ttf(arabicBold),
+        arabic: pw.Font.ttf(compactLineMetrics(arabic)),
+        arabicBold: pw.Font.ttf(compactLineMetrics(arabicBold)),
         latin: pw.Font.ttf(latin),
         latinBold: pw.Font.ttf(latinBold),
       );
+
+  /// The Arabic font's line box, in font units (1000 per em).
+  static const arabicAscender = 1080;
+  static const arabicDescender = -470;
+
+  /// A copy of a TrueType font with [arabicAscender] and [arabicDescender] in
+  /// its `hhea` table. Anything that isn't a font with an `hhea` table is
+  /// returned as it is.
+  static ByteData compactLineMetrics(ByteData font) {
+    final copy = ByteData.sublistView(Uint8List.fromList(font.buffer.asUint8List(font.offsetInBytes, font.lengthInBytes)));
+    if (copy.lengthInBytes < 12) return font;
+    final tables = copy.getUint16(4);
+    for (var i = 0; i < tables; i++) {
+      final entry = 12 + i * 16;
+      if (entry + 16 > copy.lengthInBytes) return font;
+      final tag = String.fromCharCodes(copy.buffer.asUint8List(copy.offsetInBytes + entry, 4));
+      if (tag != 'hhea') continue;
+      final offset = copy.getUint32(entry + 8);
+      if (offset + 8 > copy.lengthInBytes) return font;
+      copy.setInt16(offset + 4, arabicAscender);
+      copy.setInt16(offset + 6, arabicDescender);
+      return copy;
+    }
+    return font;
+  }
 }
 
 /// The doctor's names for the header (D22 profile).
@@ -172,7 +205,12 @@ int rxFooterBranches(RxSettings settings) => switch (settings.paperSize) {
 /// Builds the A5 (or A4, or custom) prescription of 6.4.1. A white page in
 /// black, grey and one clinic colour; nothing under 9 pt; page 2 repeats the
 /// header, the patient strip and the footer with «صفحة 2 من 2».
-Future<Uint8List> buildRxPdf(RxPdfData data, RxPdfFonts fonts) async {
+Future<Uint8List> buildRxPdf(RxPdfData data, RxPdfFonts fonts, {bool compress = true}) async =>
+    (await buildRxDocument(data, fonts, compress: compress)).save();
+
+/// The document behind [buildRxPdf]; its pages exist once it is saved (tests
+/// count them). [compress] off keeps the drawing commands readable.
+Future<pw.Document> buildRxDocument(RxPdfData data, RxPdfFonts fonts, {bool compress = true}) async {
   final english = data.settings.english;
   final language = english ? 'en' : 'ar';
   await initializeDateFormatting(language);
@@ -186,7 +224,7 @@ Future<Uint8List> buildRxPdf(RxPdfData data, RxPdfFonts fonts) async {
       bold: fonts.arabicBold,
       fontFallback: [fonts.latin, fonts.latinBold],
     ),
-    compress: true,
+    compress: compress,
   );
   final layout = _RxLayout(data: data, fonts: fonts, l10n: l10n, en: en, english: english);
   final mm = PdfPageFormat.mm;
@@ -211,7 +249,7 @@ Future<Uint8List> buildRxPdf(RxPdfData data, RxPdfFonts fonts) async {
       build: layout.body,
     ),
   );
-  return doc.save();
+  return doc;
 }
 
 class _RxLayout {
@@ -287,10 +325,10 @@ class _RxLayout {
           if (!data.settings.preprinted) ...[
             pw.SizedBox(height: (headerMm - 2) * mm, child: _letterhead()),
             pw.Container(height: 1.5, color: accent),
-            pw.SizedBox(height: 2.5 * mm),
+            pw.SizedBox(height: 2 * mm),
           ],
           _patientStrip(),
-          pw.SizedBox(height: 3 * mm),
+          pw.SizedBox(height: 2 * mm),
         ],
       );
 
@@ -354,7 +392,7 @@ class _RxLayout {
           ),
         );
     return pw.Container(
-      padding: pw.EdgeInsets.symmetric(horizontal: 3 * mm, vertical: 2 * mm),
+      padding: pw.EdgeInsets.symmetric(horizontal: 3 * mm, vertical: 1.2 * mm),
       decoration: pw.BoxDecoration(color: tint, borderRadius: pw.BorderRadius.circular(2 * mm)),
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -375,49 +413,53 @@ class _RxLayout {
   pw.Widget footer(pw.Context context) {
     final many = context.pagesCount > 1;
     // The page line always takes its space, so the footer is the same height
-    // on every pass of the layout.
+    // on every pass of the layout (the page count is only known at the end).
     final pageLine = pw.Opacity(
       opacity: many ? 1 : 0,
-      child: pw.Center(child: text(l10n.rxPdfPage(context.pageNumber, context.pagesCount), size: 9, color: muted)),
+      child: text(l10n.rxPdfPage(context.pageNumber, context.pagesCount), size: 9, color: muted),
     );
-    if (data.settings.preprinted) return pw.Column(children: [pw.SizedBox(height: 2 * mm), pageLine]);
+    if (data.settings.preprinted) {
+      return pw.Column(children: [pw.SizedBox(height: 1.5 * mm), pw.Center(child: pageLine)]);
+    }
     final branches = data.branches.take(rxFooterBranches(data.settings)).toList();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
-        pw.SizedBox(height: 2 * mm),
-        pageLine,
         pw.SizedBox(height: 1.5 * mm),
         pw.Container(height: 1, color: accent),
-        pw.SizedBox(height: 2 * mm),
-        pw.SizedBox(
-          height: (footerMm - 6) * mm,
-          child: pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Expanded(
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Expanded(
-                      child: pw.Row(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          for (final (i, branch) in branches.indexed) ...[
-                            if (i > 0) pw.SizedBox(width: 3 * mm),
-                            pw.Expanded(child: _branch(branch)),
-                          ],
-                        ],
+        pw.SizedBox(height: 1.5 * mm),
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.end,
+          children: [
+            pw.Expanded(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                children: [
+                  pw.Row(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      for (final (i, branch) in branches.indexed) ...[
+                        if (i > 0) pw.SizedBox(width: 3 * mm),
+                        pw.Expanded(child: _branch(branch)),
+                      ],
+                    ],
+                  ),
+                  pw.Row(
+                    children: [
+                      pw.Expanded(
+                        child: data.settings.footerText == null
+                            ? pw.SizedBox()
+                            : text(data.settings.footerText!, size: 9, color: muted, maxLines: 1),
                       ),
-                    ),
-                    if (data.settings.footerText != null) text(data.settings.footerText!, size: 9, color: muted, maxLines: 1),
-                  ],
-                ),
+                      pageLine,
+                    ],
+                  ),
+                ],
               ),
-              pw.SizedBox(width: 3 * mm),
-              _qr(),
-            ],
-          ),
+            ),
+            pw.SizedBox(width: 3 * mm),
+            _qr(),
+          ],
         ),
       ],
     );
@@ -425,15 +467,17 @@ class _RxLayout {
 
   pw.Widget _branch(RxBranch branch) {
     final name = english ? (branch.nameEn ?? branch.nameAr) : branch.nameAr;
+    final phones = [
+      if (branch.phones.isNotEmpty) '${l10n.rxPdfTel}: ${branch.phones.join('  ')}',
+      if (branch.whatsapp.isNotEmpty) '${l10n.rxPdfWhatsapp}: ${branch.whatsapp.join('  ')}',
+    ].join('  ');
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         text(name, size: 9.5, bold: true, color: accent, maxLines: 1),
-        text(branch.address, size: 9, maxLines: 1),
-        if (branch.landmark != null) text(branch.landmark!, size: 9, color: muted, maxLines: 1),
-        if (branch.phones.isNotEmpty) text('${l10n.rxPdfTel}: ${branch.phones.join('  ')}', size: 9, maxLines: 1),
-        if (branch.whatsapp.isNotEmpty) text('${l10n.rxPdfWhatsapp}: ${branch.whatsapp.join('  ')}', size: 9, maxLines: 1),
-        for (final line in branch.hours.take(2)) text(line, size: 9, color: muted, maxLines: 1),
+        text([branch.address, ?branch.landmark].join(' — '), size: 9, maxLines: 1),
+        if (phones.isNotEmpty) text(phones, size: 9, maxLines: 1),
+        if (branch.hours.isNotEmpty) text(branch.hours.first, size: 9, color: muted, maxLines: 1),
       ],
     );
   }
@@ -449,9 +493,15 @@ class _RxLayout {
             height: 20 * mm,
             color: PdfColors.black,
           ),
-          pw.SizedBox(height: 0.8 * mm),
-          text(l10n.rxPdfScan, size: 9, color: muted),
-          pw.Text('el3yada', style: pw.TextStyle(font: fonts.latinBold, fontSize: 9, color: accent)),
+          pw.SizedBox(height: 0.6 * mm),
+          pw.Row(
+            mainAxisSize: pw.MainAxisSize.min,
+            children: [
+              text(l10n.rxPdfScan, size: 9, color: muted),
+              pw.SizedBox(width: 1 * mm),
+              pw.Text('el3yada', style: pw.TextStyle(font: fonts.latinBold, fontSize: 9, color: accent)),
+            ],
+          ),
         ],
       );
 
@@ -468,13 +518,13 @@ class _RxLayout {
               pw.Expanded(child: text(data.diagnosis!, size: 10.5)),
             ],
           ),
-          pw.SizedBox(height: 3 * mm),
+          pw.SizedBox(height: 1.5 * mm),
         ],
         if (data.kind == PrescriptionKind.medication) ..._medications() else ..._investigations(),
         if (data.advice != null) ...[
-          pw.SizedBox(height: 3 * mm),
+          pw.SizedBox(height: 1.5 * mm),
           pw.Container(
-            padding: pw.EdgeInsets.all(2.5 * mm),
+            padding: pw.EdgeInsets.symmetric(horizontal: 2.5 * mm, vertical: 1.2 * mm),
             decoration: pw.BoxDecoration(
               border: pw.Border.all(color: hairline, width: 0.8),
               borderRadius: pw.BorderRadius.circular(2 * mm),
@@ -490,13 +540,12 @@ class _RxLayout {
             ),
           ),
         ],
-        pw.SizedBox(height: 5 * mm),
+        pw.SizedBox(height: 2 * mm),
         _followUpAndSignature(),
       ];
 
   List<pw.Widget> _medications() => [
-        pw.Text('Rx', textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: fonts.latinBold, fontSize: 18, color: accent)),
-        pw.SizedBox(height: 1.5 * mm),
+        pw.Text('Rx', textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: fonts.latinBold, fontSize: 16, color: accent)),
         for (final (i, item) in data.medications.indexed) _medication(i + 1, item),
       ];
 
@@ -505,7 +554,7 @@ class _RxLayout {
     final title = [item.drugName, ?item.strength, ?form].join(' · ');
     final instructions = rxInstructionLine(l10n, item);
     return pw.Padding(
-      padding: pw.EdgeInsets.only(bottom: 2.5 * mm),
+      padding: pw.EdgeInsets.only(bottom: 0.8 * mm),
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -613,7 +662,7 @@ class _RxLayout {
           children: [
             pw.SizedBox(
               width: 40 * mm,
-              height: 12 * mm,
+              height: 10 * mm,
               child: data.signature == null
                   ? null
                   : pw.Image(pw.MemoryImage(data.signature!), fit: pw.BoxFit.contain),

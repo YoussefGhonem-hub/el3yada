@@ -38,7 +38,8 @@ void main() {
     for (final name in drugs) {
       await db.customStatement(
         'INSERT INTO fts_drugs(name) VALUES (?)',
-        [SearchNormalizer.normalize(name)],
+        // Indexed the way the catalog builder does: normalized words plus their Arabic skeletons.
+        [withArabicSkeletons(normalizeForSearch(name))],
       );
     }
   });
@@ -46,7 +47,7 @@ void main() {
   tearDown(() => db.close());
 
   Future<List<int>> search(String typed) async {
-    final query = SearchNormalizer.toFtsQuery(typed);
+    final query = ftsPrefixQuery(typed);
     if (query == null) return const [];
     final rows = await db.customSelect(
       'SELECT rowid FROM fts_drugs WHERE fts_drugs MATCH ? ORDER BY bm25(fts_drugs)',
@@ -87,6 +88,11 @@ void main() {
   });
 
   test('punctuation only gives no query', () {
-    expect(SearchNormalizer.toFtsQuery(' - ،'), isNull);
+    expect(ftsPrefixQuery(' - ،'), isNull);
+  });
+
+  test('a name spelt with or without long vowels matches (Arabic skeletons)', () async {
+    expect(await search('بانادول'), [3]);
+    expect(await search('بنادول'), [3]);
   });
 }

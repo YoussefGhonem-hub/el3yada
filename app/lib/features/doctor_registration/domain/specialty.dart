@@ -33,8 +33,8 @@ abstract class Specialty with _$Specialty {
 
 /// Shared by the specialty and governorate pickers.
 bool matchesNames(String query, List<String> names) {
-  final words = SearchNormalizer.normalize(query).split(' ').where((w) => w.isNotEmpty).toList();
+  final words = searchWords(query);
   if (words.isEmpty) return true;
-  final haystack = names.map(SearchNormalizer.normalize).join(' ').split(' ');
+  final haystack = names.expand(searchWords).toList();
   return words.every((word) => haystack.any((candidate) => candidate.startsWith(word)));
 }

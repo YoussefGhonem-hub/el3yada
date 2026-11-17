@@ -18,9 +18,10 @@
 ///
 /// **Matching (BR-CAT6).** The query matches the start of any word of the
 /// trade name (English or Arabic letters) or the active ingredient, ignoring
-/// case and Arabic letter variants (`core/search/search_normalizer.dart`, the
-/// same rules as the catalog builder, spec A.6). An empty query returns the
-/// used-before items only.
+/// case and Arabic letter variants (`package:catalog_core`'s
+/// `normalizeForSearch` and `ftsPrefixQuery`, the very code the catalog
+/// builder indexes with, spec A.6, including the Arabic skeletons). An empty
+/// query returns the used-before items only.
 ///
 /// **Filling (BR-CAT7).** Picking a [DrugHit] fills the drug name
 /// ([DrugHit.name]), the active ingredient and the catalog ID, and suggests

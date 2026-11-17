@@ -49,7 +49,7 @@ class HistoryOnlyCatalogSearch implements CatalogSearch {
       // Offline or refused: the editor still takes typed names (BR-CAT8).
       return const [];
     }
-    final words = SearchNormalizer.normalize(query).split(' ').where((word) => word.isNotEmpty).toList();
+    final words = searchWords(query);
     return [
       for (final entry in history)
         if (kind(entry) && matchesWordStarts(entry.name, words)) entry,
@@ -57,10 +57,17 @@ class HistoryOnlyCatalogSearch implements CatalogSearch {
   }
 }
 
-/// BR-CAT6: every typed word starts some word of [text] (after A.6
-/// normalization). No words matches everything.
+/// BR-CAT6: every typed word starts some word of [text], after the shared
+/// A.6 normalization; an Arabic word also matches through its skeleton, so
+/// «بنادول» finds «بانادول», as in the catalog's own search. No words
+/// matches everything.
 bool matchesWordStarts(String text, List<String> words) {
   if (words.isEmpty) return true;
-  final target = SearchNormalizer.normalize(text).split(' ');
-  return words.every((word) => target.any((part) => part.startsWith(word)));
+  final target = searchWords(text);
+  final skeletons = [for (final part in target) arabicSkeleton(part) ?? part];
+  return words.every((word) {
+    if (target.any((part) => part.startsWith(word))) return true;
+    final skeleton = arabicSkeleton(word);
+    return skeleton != null && skeletons.any((part) => part.startsWith(skeleton));
+  });
 }

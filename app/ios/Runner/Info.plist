@@ -47,10 +47,15 @@
 			</array>
 		</dict>
 	</dict>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ar</string>
+		<string>en</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>el3yada uses the camera to photograph your syndicate card or license.</string>
+	<string>el3yada uses the camera to scan and photograph medical documents, and your syndicate card or license.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>el3yada opens your photos so you can choose a picture of your syndicate card or license.</string>
+	<string>el3yada opens your photos so you can add medical documents, or a picture of your syndicate card or license.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

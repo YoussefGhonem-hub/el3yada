@@ -1,0 +1,6 @@
+type,code,alias_en,name_ar,priority
+lab,99001-0,CBC,صورة دم كاملة,1
+lab,99002-8,FBS,سكر صائم,1
+lab,99010-1,KFT,وظائف كلى,0
+radiology,99020-0,Chest X-ray,أشعة عادية على الصدر,1
+radiology,99022-6,Echo,إيكو على القلب,1

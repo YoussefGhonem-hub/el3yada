@@ -405,7 +405,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     if (query.search.length > 60) _invalid({'search': 'TOO_LONG'});
 
     final today = _today();
-    final words = SearchNormalizer.normalize(query.search).split(' ').where((w) => w.isNotEmpty).toList();
+    final words = searchWords(query.search);
     final rows = <({_Account account, _Link link, _Visits visits})>[];
     for (final link in _links.values) {
       if (link.archived != query.archived) continue;
@@ -445,7 +445,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
           RegisterSort.lastVisit => a.visits.last!.at.compareTo(b.visits.last!.at),
           RegisterSort.fileNumber => a.link.fileNumber.compareTo(b.link.fileNumber),
           RegisterSort.name =>
-            SearchNormalizer.normalize(a.account.fullName).compareTo(SearchNormalizer.normalize(b.account.fullName)),
+            normalizeForSearch(a.account.fullName).compareTo(normalizeForSearch(b.account.fullName)),
           RegisterSort.phone => a.account.phone.compareTo(b.account.phone),
           RegisterSort.age => _age(a.account.dateOfBirth).compareTo(_age(b.account.dateOfBirth)),
           RegisterSort.gender => a.account.gender.name.compareTo(b.account.gender.name),
@@ -854,6 +854,22 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
   /// A patient by name (tests).
   String patientIdByName(String fullName) => _accounts.values.firstWhere((a) => a.fullName == fullName).id;
 
+  /// Whether [patientId] is one of this clinic's patients (the offline
+  /// medical files check it, like the API's link check).
+  bool hasPatient(String patientId) => _links.containsKey(patientId);
+
+  /// Whether [sessionId] is one of [patientId]'s live sessions.
+  bool hasSession(String patientId, String sessionId) =>
+      _live().any((s) => s.id == sessionId && s.patientId == patientId);
+
+  /// A live session's type and time, for a record's visit link.
+  ({SessionType type, DateTime at})? sessionInfo(String sessionId) {
+    for (final s in _live()) {
+      if (s.id == sessionId) return (type: s.type, at: s.at);
+    }
+    return null;
+  }
+
   /// A live session's patient, Cairo day, type, branch, diagnosis and
   /// follow-up, for the offline prescriptions (BR-RX1), or null.
   ({String patientId, DateTime day, SessionType type, String branchId, String? diagnosis, DateTime? followUpDate})?
@@ -1212,7 +1228,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
 
   bool _matches(List<String> words, _Account account, _Link link) {
     if (words.isEmpty) return true;
-    final name = SearchNormalizer.normalize(account.fullName);
+    final name = normalizeForSearch(account.fullName);
     final phone = account.phone.replaceAll('+20', '0');
     for (final word in words) {
       final digits = RegExp(r'^\d+$').hasMatch(word);

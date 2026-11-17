@@ -1,0 +1,74 @@
+id,name_en,name_ar
+analgesics,Analgesics & antipyretics,مسكنات وخافض للحرارة
+nsaids,NSAIDs,مضادات الالتهاب غير الستيرويدية
+muscle_relaxants,Muscle relaxants,مرخيات العضلات
+antibiotics,Antibiotics,مضادات حيوية
+antivirals,Antivirals,مضادات الفيروسات
+antifungals,Antifungals,مضادات الفطريات
+antiparasitics,Anthelmintics & antiparasitics,طاردات الديدان ومضادات الطفيليات
+gastric_acid,"Antacids, PPIs & H2 blockers",مضادات الحموضة وحماية المعدة
+antiemetics,Antiemetics,مضادات القيء
+laxatives,Laxatives,ملينات
+antidiarrheals,Antidiarrheals,مضادات الإسهال
+antispasmodics,Antispasmodics,مضادات التقلصات
+hepatoprotectives,Hepatoprotectives,أدوية الكبد
+antihypertensives,Antihypertensives,أدوية الضغط
+diuretics,Diuretics,مدرات البول
+lipid_lowering,Lipid-lowering drugs,أدوية الكوليسترول والدهون
+antiplatelets,Antiplatelets,مضادات الصفائح الدموية
+anticoagulants,Anticoagulants,مضادات التجلط
+antiarrhythmics,Antiarrhythmics,مضادات اضطراب ضربات القلب
+antianginals,Nitrates & antianginals,موسعات الشرايين التاجية
+heart_failure,Heart failure drugs,أدوية قصور القلب
+antidiabetics_oral,Oral antidiabetics,أدوية السكر بالفم
+insulins,Insulins,الإنسولين
+thyroid,Thyroid drugs,أدوية الغدة الدرقية
+corticosteroids,Systemic corticosteroids,الكورتيزون
+sex_hormones,Sex hormones & contraceptives,الهرمونات ووسائل منع الحمل
+fertility,Fertility drugs,أدوية الخصوبة
+osteoporosis,Osteoporosis drugs,أدوية هشاشة العظام
+vitamins,Vitamins & minerals,فيتامينات ومعادن
+iron_folic,Iron & folic acid,الحديد وحمض الفوليك
+antihistamines,Antihistamines,مضادات الحساسية
+cold_flu,Cold & flu products,أدوية البرد والإنفلونزا
+cough,Antitussives & mucolytics,أدوية الكحة والبلغم
+respiratory_inhaled,Bronchodilators & inhaled steroids,موسعات الشعب والبخاخات
+nasal,Nasal preparations,بخاخات ونقط الأنف
+ear,Ear preparations,نقط الأذن
+eye,Eye preparations,قطرات ومراهم العين
+antiglaucoma,Antiglaucoma drugs,أدوية المياه الزرقاء
+topical_steroids,Topical corticosteroids,كريمات الكورتيزون
+anti_acne,Anti-acne,أدوية حب الشباب
+skin_other,Other skin preparations,مستحضرات جلدية أخرى
+antiepileptics,Antiepileptics,مضادات الصرع
+antiparkinson,Antiparkinson drugs,أدوية الشلل الرعاش
+migraine,Migraine drugs,أدوية الصداع النصفي
+neuropathic,Neuropathic pain & neurotonics,أدوية الأعصاب الطرفية
+antipsychotics,Antipsychotics,مضادات الذهان
+antidepressants,Antidepressants,مضادات الاكتئاب
+anxiolytics_hypnotics,Anxiolytics & hypnotics,مهدئات ومنومات
+mood_stabilizers,Mood stabilizers,مثبتات المزاج
+prostate_urinary,Prostate & urinary drugs,أدوية البروستاتا والمسالك
+urinary_antiseptics,Urinary antiseptics,مطهرات المسالك البولية
+erectile,Erectile dysfunction drugs,أدوية الضعف الجنسي
+gout,Gout drugs,أدوية النقرس
+dmards,DMARDs & immunosuppressants,أدوية الروماتيزم ومثبطات المناعة
+antineoplastics,Antineoplastics,أدوية الأورام
+vaccines,Vaccines & immunoglobulins,الأمصال واللقاحات
+iv_fluids,IV fluids & electrolytes,محاليل وأملاح وريدية
+ors,Oral rehydration salts,أملاح الإرواء
+local_anesthetics,Local anesthetics,مخدر موضعي
+oral_dental,Mouth & dental preparations,مستحضرات الفم والأسنان
+supplements,Supplements & herbal products,مكملات غذائية وأعشاب
+cosmetics,Cosmetics & skin care,مستحضرات تجميل وعناية بالبشرة
+joint_care,Joint & cartilage supplements,مكملات المفاصل والغضاريف
+topical_analgesics,Massage & topical pain relief,كريمات المساج والمسكنات الموضعية
+hematology,Blood disorders & clotting factors,أدوية الدم وعوامل التجلط
+renal,Kidney failure drugs,أدوية الفشل الكلوي
+infant_nutrition,Infant formula & baby foods,ألبان وأغذية الأطفال
+vaginal_care,Vaginal washes & feminine care,غسول ودش مهبلي ومستحضرات نسائية
+venous_hemorrhoids,Venotonics & hemorrhoid preparations,أدوية الدوالي والبواسير
+digestive,Digestive enzymes & other GI drugs,إنزيمات هاضمة وأدوية هضمية أخرى
+dementia,Dementia drugs,أدوية الزهايمر وضعف الذاكرة
+obstetric,Obstetric drugs (tocolytics & uterotonics),أدوية الولادة (مثبطات ومنشطات الطلق)
+other,Other,أخرى

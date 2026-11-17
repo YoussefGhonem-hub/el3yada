@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/format/app_format.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../patients/clinic_paths.dart';
+import '../../../records/domain/record_models.dart';
+import '../../../records/presentation/record_text.dart';
 import '../../clinic_admin_routes.dart';
 import '../../domain/activity_models.dart';
 import '../assistants/assistant_text.dart';
@@ -64,6 +66,10 @@ extension ActivityText on AppLocalizations {
       'sessionPrivateNoteUpdated' => activitySessionPrivateNoteUpdated,
       'sessionAmountChanged' => activitySessionAmountChanged,
       'sessionDeleted' => activitySessionDeleted,
+      // Medical files (api-phase-3-files.md). The patient shows under the sentence.
+      'medicalRecordCreated' => activityRecordCreated,
+      'medicalRecordUpdated' => activityRecordUpdated,
+      'medicalRecordDeleted' => activityRecordDeleted,
       // Prescriptions and print settings (api-phase-3-prescriptions.md).
       'prescriptionDraftCreated' => d['copyFromId'] != null
           ? activityPrescriptionCopied(_rxKind(d['kind']))
@@ -116,6 +122,9 @@ extension ActivityText on AppLocalizations {
         'sessionPrivateNoteUpdated' => activityActionSessionPrivateNoteUpdated,
         'sessionAmountChanged' => activityActionSessionAmountChanged,
         'sessionDeleted' => activityActionSessionDeleted,
+        'medicalRecordCreated' => activityActionRecordCreated,
+        'medicalRecordUpdated' => activityActionRecordUpdated,
+        'medicalRecordDeleted' => activityActionRecordDeleted,
         'prescriptionDraftCreated' => activityActionPrescriptionDraftCreated,
         'prescriptionDraftUpdated' => activityActionPrescriptionDraftUpdated,
         'prescriptionDraftDeleted' => activityActionPrescriptionDraftDeleted,
@@ -164,6 +173,17 @@ extension ActivityText on AppLocalizations {
       case 'sessionDeleted':
         final reason = d['reason'];
         return reason is String && reason.isNotEmpty ? activityReason(reason) : null;
+      case 'medicalRecordCreated':
+        final category = d['category'];
+        final files = d['attachments'];
+        return [
+          if (category is String) recordCategoryName(RecordCategory.fromWire(category)),
+          if (files is int) recordFilesCount(files),
+          if (d['sizeBytes'] case final int size) fileSize(size),
+        ].join(adminListSeparator);
+      case 'medicalRecordUpdated' || 'medicalRecordDeleted':
+        final category = d['category'];
+        return category is String ? recordCategoryName(RecordCategory.fromWire(category)) : null;
       case 'prescriptionSent' || 'prescriptionDraftUpdated':
         final items = d['items'];
         return items is int ? activityRxItems(items) : null;
@@ -215,7 +235,9 @@ IconData activityIcon(String action) => switch (action) {
       'sessionCreated' => Icons.event_available_outlined,
       'sessionClinicalUpdated' || 'sessionPrivateNoteUpdated' => Icons.edit_note_outlined,
       'sessionAmountChanged' => Icons.payments_outlined,
-      'sessionDeleted' => Icons.delete_outline,
+      'sessionDeleted' || 'medicalRecordDeleted' => Icons.delete_outline,
+      'medicalRecordCreated' => Icons.note_add_outlined,
+      'medicalRecordUpdated' => Icons.edit_document,
       'prescriptionDraftCreated' || 'prescriptionDraftUpdated' || 'prescriptionSubmittedForReview' => Icons.edit_note_outlined,
       'prescriptionDraftDeleted' => Icons.delete_outline,
       'prescriptionSent' => Icons.send_outlined,
@@ -234,6 +256,8 @@ String? activityTargetPath(ActivityEntry entry) {
     ('patient', _) when id != null => ClinicPaths.doctor.patient(id),
     ('session', 'sessionDeleted') when patientId != null => ClinicPaths.doctor.patient(patientId),
     ('session', _) when id != null && patientId != null => ClinicPaths.doctor.patientSession(patientId, id),
+    ('medicalRecord', 'medicalRecordDeleted') when patientId != null => ClinicPaths.doctor.patient(patientId),
+    ('medicalRecord', _) when id != null && patientId != null => ClinicPaths.doctor.record(patientId, id),
     // A deleted draft opens its patient.
     ('prescription', 'prescriptionDraftDeleted') when patientId != null => ClinicPaths.doctor.patient(patientId),
     ('prescription', _) when id != null && patientId != null => ClinicPaths.doctor.prescription(patientId, id),

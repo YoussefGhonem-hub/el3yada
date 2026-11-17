@@ -4669,6 +4669,366 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsVerifyEmail => 'Verify your email address';
 
   @override
+  String get patientTabFiles => 'Files';
+
+  @override
+  String get recordCategoryAll => 'All';
+
+  @override
+  String get recordCategoryRadiology => 'Radiology';
+
+  @override
+  String get recordCategoryLab => 'Lab tests';
+
+  @override
+  String get recordCategoryPrescription => 'Prescriptions';
+
+  @override
+  String get recordCategoryOther => 'Other';
+
+  @override
+  String recordChip(String name, int count) {
+    return '$name $count';
+  }
+
+  @override
+  String get recordOtherReport => 'Medical report';
+
+  @override
+  String get recordOtherReferral => 'Referral';
+
+  @override
+  String get recordOtherSickLeave => 'Sick leave';
+
+  @override
+  String get recordOtherEcg => 'ECG';
+
+  @override
+  String get recordOtherEegEmg => 'EEG / EMG';
+
+  @override
+  String get recordOtherEndoscopy => 'Endoscopy';
+
+  @override
+  String get recordOtherConsent => 'Consent form';
+
+  @override
+  String get recordOtherCustom => 'Another type (type it)';
+
+  @override
+  String get recordOtherNone => 'No type';
+
+  @override
+  String get recordsEmptyTitle => 'No files yet';
+
+  @override
+  String get recordsEmptyBody =>
+      'Scan or upload lab results, X-rays and other papers. The patient sees them in their app.';
+
+  @override
+  String get recordsEmptyCategory => 'No files in this category';
+
+  @override
+  String get recordAddFiles => 'Upload files';
+
+  @override
+  String get recordScan => 'Scan';
+
+  @override
+  String get recordDropHint => 'Drop the files to upload them';
+
+  @override
+  String recordFilesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '1 file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordPagesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pages',
+      one: '1 page',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sizeBytes(String value) {
+    return '$value B';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value MB';
+  }
+
+  @override
+  String get recordUploadTitle => 'Upload files';
+
+  @override
+  String get recordScanTitle => 'Scan a document';
+
+  @override
+  String get recordEditTitle => 'Edit file details';
+
+  @override
+  String get recordFieldCategory => 'Category';
+
+  @override
+  String get recordFieldOtherType => 'Document type (optional)';
+
+  @override
+  String get recordFieldOtherTypeText => 'Type';
+
+  @override
+  String get recordFieldTitle => 'Title (optional)';
+
+  @override
+  String recordTitleHint(String title) {
+    return 'If left empty: $title';
+  }
+
+  @override
+  String get recordFieldDate => 'Document date';
+
+  @override
+  String get recordFieldNotes => 'Notes (optional)';
+
+  @override
+  String get recordFieldSession => 'Link to a visit';
+
+  @override
+  String get recordNoSession => 'No visit';
+
+  @override
+  String recordSessionOption(String type, String date) {
+    return '$type · $date';
+  }
+
+  @override
+  String get recordCategoryRequired => 'Choose a category';
+
+  @override
+  String get recordFilesHeading => 'Files';
+
+  @override
+  String get recordDetailsHeading => 'Details';
+
+  @override
+  String get recordAddMore => 'Add files';
+
+  @override
+  String get recordFromFiles => 'Choose files';
+
+  @override
+  String get recordFromCamera => 'Camera';
+
+  @override
+  String get recordFromGallery => 'Photos';
+
+  @override
+  String get recordSave => 'Save to the patient\'s file';
+
+  @override
+  String get recordSaved => 'Saved to the patient\'s file';
+
+  @override
+  String get recordUpdated => 'File details saved';
+
+  @override
+  String get recordPreparing => 'Making it smaller…';
+
+  @override
+  String recordUploading(int percent) {
+    return 'Uploading $percent%';
+  }
+
+  @override
+  String get recordUploaded => 'Uploaded';
+
+  @override
+  String get recordUploadFailed => 'Upload failed';
+
+  @override
+  String get recordRemoveFile => 'Remove';
+
+  @override
+  String recordTooLarge(int mb) {
+    return 'File larger than allowed ($mb MB)';
+  }
+
+  @override
+  String recordSavedSpace(String from, String to) {
+    return 'Reduced from $from to $to';
+  }
+
+  @override
+  String get recordWaitForUploads =>
+      'Wait for every file to upload, or remove the ones that failed.';
+
+  @override
+  String get recordNeedFiles => 'Add at least one file';
+
+  @override
+  String get recordUploadExpired =>
+      'This file is no longer waiting. Upload it again.';
+
+  @override
+  String get recordErrorInvalidSession =>
+      'Choose one of this patient\'s visits';
+
+  @override
+  String get recordErrorInvalidDate =>
+      'The document date can\'t be in the future';
+
+  @override
+  String get recordErrorTooMany => 'One file can hold at most 20 attachments';
+
+  @override
+  String get recordNoFilesYet => 'No files added yet';
+
+  @override
+  String get recordScanReviewTitle => 'Check the pages';
+
+  @override
+  String get recordScanAddPages => 'Scan more pages';
+
+  @override
+  String recordScanPage(int number) {
+    return 'Page $number';
+  }
+
+  @override
+  String get recordScanMoveEarlier => 'Move earlier';
+
+  @override
+  String get recordScanMoveLater => 'Move later';
+
+  @override
+  String get recordScanDeletePage => 'Delete page';
+
+  @override
+  String get recordScanMakePdf => 'Make one PDF';
+
+  @override
+  String get recordScanBuilding => 'Making the PDF…';
+
+  @override
+  String get recordScanUnavailable =>
+      'The scanner isn\'t available on this device.';
+
+  @override
+  String get recordScanDenied => 'Allow camera access in the settings to scan.';
+
+  @override
+  String get recordScanFailed => 'The scan didn\'t work. Try again.';
+
+  @override
+  String get recordDetails => 'Details';
+
+  @override
+  String get recordOpenWith => 'Open with…';
+
+  @override
+  String get recordDownload => 'Download';
+
+  @override
+  String get recordShare => 'Share';
+
+  @override
+  String get recordEdit => 'Edit details';
+
+  @override
+  String get recordDelete => 'Delete';
+
+  @override
+  String get recordDeleteTitle => 'Delete this file?';
+
+  @override
+  String get recordDeleteBody =>
+      'It disappears from the patient\'s file, for you and for the patient.';
+
+  @override
+  String get recordDeleted => 'File deleted';
+
+  @override
+  String get recordDownloaded => 'File saved';
+
+  @override
+  String get recordCantOpen => 'No app on this device opens this type of file.';
+
+  @override
+  String get recordNoPreview => 'This type of file opens in another app.';
+
+  @override
+  String get recordPdfFailed =>
+      'This PDF couldn\'t be shown here. Open it with another app.';
+
+  @override
+  String recordAttachmentOf(int index, int count) {
+    return '$index of $count';
+  }
+
+  @override
+  String recordAdded(String date) {
+    return 'Added $date';
+  }
+
+  @override
+  String get recordSize => 'Size';
+
+  @override
+  String get recordSourceScan => 'Scanned';
+
+  @override
+  String get recordSourceUpload => 'Uploaded';
+
+  @override
+  String get recordSourceChat => 'From the chat';
+
+  @override
+  String get recordVisit => 'Visit';
+
+  @override
+  String get recordPrevious => 'Previous file';
+
+  @override
+  String get recordNext => 'Next file';
+
+  @override
+  String get recordLoadingFile => 'Opening the file…';
+
+  @override
+  String get activityRecordCreated => 'Added a file to the patient\'s record';
+
+  @override
+  String get activityRecordUpdated => 'Edited a file\'s details';
+
+  @override
+  String get activityRecordDeleted => 'Deleted a file';
+
+  @override
+  String get activityActionRecordCreated => 'File added';
+
+  @override
+  String get activityActionRecordUpdated => 'File edited';
+
+  @override
+  String get activityActionRecordDeleted => 'File deleted';
+
+  @override
   String get patientTabPrescriptions => 'Prescriptions';
 
   @override

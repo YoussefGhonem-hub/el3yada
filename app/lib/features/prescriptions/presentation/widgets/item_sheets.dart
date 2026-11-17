@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/search/search_normalizer.dart' show parseStrength;
 import '../../../../core/theme/motion.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../catalog/application/catalog_search_provider.dart';
@@ -126,7 +127,8 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
       _name.text = hit.name;
       _catalogId = hit.catalogId;
       _ingredient.text = hit.activeIngredient ?? '';
-      if (hit.strengthHint != null) _strength.text = hit.strengthHint!;
+      final strength = hit.strengthHint ?? parseStrength(hit.name);
+      if (strength != null) _strength.text = strength;
       if (DrugForms.isKnown(hit.formHint)) _form = hit.formHint;
     });
   }
@@ -136,6 +138,8 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
         _picked = true;
         _name.text = text.trim();
         _catalogId = null;
+        // "Augmentin 1 GM" typed: the strength is suggested all the same.
+        if (_strength.text.trim().isEmpty) _strength.text = parseStrength(text) ?? '';
       });
 
   String? _duration(AppLocalizations l10n) {

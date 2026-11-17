@@ -132,6 +132,11 @@ abstract final class ApiCodes {
 
   // Free trial (backend/docs/api-free-trial.md).
   static const trialEnded = 'TRIAL_ENDED';
+  // Medical files (backend/docs/api-phase-3-files.md).
+  static const uploadNotFound = 'UPLOAD_NOT_FOUND';
+  static const invalidSession = 'INVALID_SESSION';
+  static const invalidDate = 'INVALID_DATE';
+  static const tooMany = 'TOO_MANY';
   static const serviceAlreadyActive = 'SERVICE_ALREADY_ACTIVE';
   static const doctorStatusNotChangeable = 'DOCTOR_STATUS_NOT_CHANGEABLE';
 

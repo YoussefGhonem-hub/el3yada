@@ -4659,6 +4659,369 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsVerifyEmail => 'تأكيد البريد الإلكتروني';
 
   @override
+  String get patientTabFiles => 'الملفات';
+
+  @override
+  String get recordCategoryAll => 'الكل';
+
+  @override
+  String get recordCategoryRadiology => 'أشعة';
+
+  @override
+  String get recordCategoryLab => 'تحاليل';
+
+  @override
+  String get recordCategoryPrescription => 'روشتات';
+
+  @override
+  String get recordCategoryOther => 'أخرى';
+
+  @override
+  String recordChip(String name, int count) {
+    return '$name $count';
+  }
+
+  @override
+  String get recordOtherReport => 'تقرير طبي';
+
+  @override
+  String get recordOtherReferral => 'تحويل';
+
+  @override
+  String get recordOtherSickLeave => 'إجازة مرضية';
+
+  @override
+  String get recordOtherEcg => 'رسم قلب';
+
+  @override
+  String get recordOtherEegEmg => 'رسم مخ / أعصاب';
+
+  @override
+  String get recordOtherEndoscopy => 'منظار';
+
+  @override
+  String get recordOtherConsent => 'إقرار';
+
+  @override
+  String get recordOtherCustom => 'نوع آخر (اكتبه)';
+
+  @override
+  String get recordOtherNone => 'بدون نوع';
+
+  @override
+  String get recordsEmptyTitle => 'لا توجد ملفات بعد';
+
+  @override
+  String get recordsEmptyBody =>
+      'امسح أو ارفع نتائج التحاليل والأشعة وأي أوراق أخرى. يراها المريض في تطبيقه.';
+
+  @override
+  String get recordsEmptyCategory => 'لا توجد ملفات في هذا التصنيف';
+
+  @override
+  String get recordAddFiles => 'رفع ملفات';
+
+  @override
+  String get recordScan => 'مسح ضوئي';
+
+  @override
+  String get recordDropHint => 'أفلت الملفات لرفعها';
+
+  @override
+  String recordFilesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ملف',
+      many: '$count ملفاً',
+      few: '$count ملفات',
+      two: 'ملفان',
+      one: 'ملف واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recordPagesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صفحة',
+      many: '$count صفحة',
+      few: '$count صفحات',
+      two: 'صفحتان',
+      one: 'صفحة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sizeBytes(String value) {
+    return '$value بايت';
+  }
+
+  @override
+  String sizeKb(String value) {
+    return '$value ك.ب';
+  }
+
+  @override
+  String sizeMb(String value) {
+    return '$value ميجا';
+  }
+
+  @override
+  String get recordUploadTitle => 'رفع ملفات';
+
+  @override
+  String get recordScanTitle => 'مسح مستند';
+
+  @override
+  String get recordEditTitle => 'تعديل بيانات الملف';
+
+  @override
+  String get recordFieldCategory => 'التصنيف';
+
+  @override
+  String get recordFieldOtherType => 'نوع المستند (اختياري)';
+
+  @override
+  String get recordFieldOtherTypeText => 'اكتب النوع';
+
+  @override
+  String get recordFieldTitle => 'العنوان (اختياري)';
+
+  @override
+  String recordTitleHint(String title) {
+    return 'لو تركته فارغاً: $title';
+  }
+
+  @override
+  String get recordFieldDate => 'تاريخ المستند';
+
+  @override
+  String get recordFieldNotes => 'ملاحظات (اختياري)';
+
+  @override
+  String get recordFieldSession => 'ربط بزيارة';
+
+  @override
+  String get recordNoSession => 'بدون زيارة';
+
+  @override
+  String recordSessionOption(String type, String date) {
+    return '$type · $date';
+  }
+
+  @override
+  String get recordCategoryRequired => 'اختر التصنيف';
+
+  @override
+  String get recordFilesHeading => 'الملفات';
+
+  @override
+  String get recordDetailsHeading => 'البيانات';
+
+  @override
+  String get recordAddMore => 'إضافة ملفات';
+
+  @override
+  String get recordFromFiles => 'اختيار ملفات';
+
+  @override
+  String get recordFromCamera => 'الكاميرا';
+
+  @override
+  String get recordFromGallery => 'الصور';
+
+  @override
+  String get recordSave => 'حفظ في ملف المريض';
+
+  @override
+  String get recordSaved => 'تم الحفظ في ملف المريض';
+
+  @override
+  String get recordUpdated => 'تم حفظ بيانات الملف';
+
+  @override
+  String get recordPreparing => 'جارٍ تصغير الحجم…';
+
+  @override
+  String recordUploading(int percent) {
+    return 'جارٍ الرفع $percent%';
+  }
+
+  @override
+  String get recordUploaded => 'تم الرفع';
+
+  @override
+  String get recordUploadFailed => 'فشل الرفع';
+
+  @override
+  String get recordRemoveFile => 'إزالة';
+
+  @override
+  String recordTooLarge(int mb) {
+    return 'حجم الملف أكبر من المسموح ($mb ميجا)';
+  }
+
+  @override
+  String recordSavedSpace(String from, String to) {
+    return 'تم تقليل الحجم من $from إلى $to';
+  }
+
+  @override
+  String get recordWaitForUploads =>
+      'انتظر حتى تُرفع كل الملفات، أو أزل الملفات التي فشلت.';
+
+  @override
+  String get recordNeedFiles => 'أضف ملفاً واحداً على الأقل';
+
+  @override
+  String get recordUploadExpired => 'انتهت مهلة هذا الملف. ارفعه مرة أخرى.';
+
+  @override
+  String get recordErrorInvalidSession => 'اختر زيارة من زيارات هذا المريض';
+
+  @override
+  String get recordErrorInvalidDate =>
+      'تاريخ المستند لا يمكن أن يكون في المستقبل';
+
+  @override
+  String get recordErrorTooMany => 'الملف الواحد يحمل 20 مرفقاً على الأكثر';
+
+  @override
+  String get recordNoFilesYet => 'لم تُضف ملفات بعد';
+
+  @override
+  String get recordScanReviewTitle => 'راجع الصفحات';
+
+  @override
+  String get recordScanAddPages => 'مسح صفحات أخرى';
+
+  @override
+  String recordScanPage(int number) {
+    return 'صفحة $number';
+  }
+
+  @override
+  String get recordScanMoveEarlier => 'تقديم';
+
+  @override
+  String get recordScanMoveLater => 'تأخير';
+
+  @override
+  String get recordScanDeletePage => 'حذف الصفحة';
+
+  @override
+  String get recordScanMakePdf => 'تجميعها في ملف PDF';
+
+  @override
+  String get recordScanBuilding => 'جارٍ تجهيز ملف PDF…';
+
+  @override
+  String get recordScanUnavailable => 'الماسح الضوئي غير متاح على هذا الجهاز.';
+
+  @override
+  String get recordScanDenied =>
+      'اسمح باستخدام الكاميرا من الإعدادات للمسح الضوئي.';
+
+  @override
+  String get recordScanFailed => 'لم ينجح المسح. حاول مرة أخرى.';
+
+  @override
+  String get recordDetails => 'البيانات';
+
+  @override
+  String get recordOpenWith => 'فتح باستخدام…';
+
+  @override
+  String get recordDownload => 'تنزيل';
+
+  @override
+  String get recordShare => 'مشاركة';
+
+  @override
+  String get recordEdit => 'تعديل البيانات';
+
+  @override
+  String get recordDelete => 'حذف';
+
+  @override
+  String get recordDeleteTitle => 'حذف هذا الملف؟';
+
+  @override
+  String get recordDeleteBody => 'سيختفي من ملف المريض، عندك وعند المريض.';
+
+  @override
+  String get recordDeleted => 'تم حذف الملف';
+
+  @override
+  String get recordDownloaded => 'تم حفظ الملف';
+
+  @override
+  String get recordCantOpen =>
+      'لا يوجد تطبيق على هذا الجهاز يفتح هذا النوع من الملفات.';
+
+  @override
+  String get recordNoPreview => 'هذا النوع من الملفات يُفتح في تطبيق آخر.';
+
+  @override
+  String get recordPdfFailed => 'تعذّر عرض ملف PDF هنا. افتحه بتطبيق آخر.';
+
+  @override
+  String recordAttachmentOf(int index, int count) {
+    return '$index من $count';
+  }
+
+  @override
+  String recordAdded(String date) {
+    return 'أُضيف $date';
+  }
+
+  @override
+  String get recordSize => 'الحجم';
+
+  @override
+  String get recordSourceScan => 'مسح ضوئي';
+
+  @override
+  String get recordSourceUpload => 'مرفوع';
+
+  @override
+  String get recordSourceChat => 'من المحادثة';
+
+  @override
+  String get recordVisit => 'الزيارة';
+
+  @override
+  String get recordPrevious => 'الملف السابق';
+
+  @override
+  String get recordNext => 'الملف التالي';
+
+  @override
+  String get recordLoadingFile => 'جارٍ فتح الملف…';
+
+  @override
+  String get activityRecordCreated => 'أضاف ملفاً إلى ملف المريض';
+
+  @override
+  String get activityRecordUpdated => 'عدّل بيانات ملف';
+
+  @override
+  String get activityRecordDeleted => 'حذف ملفاً';
+
+  @override
+  String get activityActionRecordCreated => 'إضافة ملف';
+
+  @override
+  String get activityActionRecordUpdated => 'تعديل ملف';
+
+  @override
+  String get activityActionRecordDeleted => 'حذف ملف';
+
+  @override
   String get patientTabPrescriptions => 'الروشتات';
 
   @override

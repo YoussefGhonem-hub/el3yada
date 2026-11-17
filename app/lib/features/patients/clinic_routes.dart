@@ -2,6 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../home/presentation/clinic_home_screen.dart';
+import '../records/domain/record_models.dart';
+import '../records/presentation/edit_record_screen.dart';
+import '../records/presentation/record_viewer_screen.dart';
+import '../records/presentation/upload_record_screen.dart';
 import '../home/presentation/dashboard_screen.dart';
 import '../prescriptions/presentation/prescription_view.dart';
 import '../sessions/domain/session_models.dart';
@@ -57,6 +61,31 @@ final Map<String, List<RouteBase>> clinicDestinationRoutes = {
             path: 'sessions/:sessionId',
             builder: (context, state) =>
                 SessionDetailsPage(sessionId: state.pathParameters['sessionId']!, showPatientLink: false),
+          ),
+          // D10, D11: files dropped on the Files tab come as `extra`.
+          GoRoute(
+            path: 'files/upload',
+            builder: (context, state) => UploadRecordScreen(
+              patientId: state.pathParameters['patientId']!,
+              scan: state.uri.queryParameters['scan'] == '1',
+              initialFiles: state.extra is List<UploadSource> ? state.extra! as List<UploadSource> : const [],
+            ),
+          ),
+          GoRoute(
+            path: 'files/:recordId',
+            builder: (context, state) => RecordViewerScreen(
+              patientId: state.pathParameters['patientId']!,
+              recordId: state.pathParameters['recordId']!,
+            ),
+            routes: [
+              GoRoute(
+                path: 'edit',
+                builder: (context, state) => EditRecordScreen(
+                  patientId: state.pathParameters['patientId']!,
+                  recordId: state.pathParameters['recordId']!,
+                ),
+              ),
+            ],
           ),
           // D13–D15, AS7, AS8.
           GoRoute(

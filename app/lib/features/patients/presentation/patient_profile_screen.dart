@@ -17,6 +17,7 @@ import '../../../core/widgets/temporary_password_dialog.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../clinic/domain/clinic_context.dart';
 import '../../clinic/domain/clinic_permissions.dart';
+import '../../records/presentation/files_tab.dart';
 import '../../sessions/domain/session_models.dart';
 import '../application/patients_providers.dart';
 import '../clinic_paths.dart';
@@ -84,7 +85,7 @@ class PatientProfileView extends ConsumerWidget {
   }
 }
 
-enum _Tab { overview, sessions, prescriptions }
+enum _Tab { overview, sessions, files, prescriptions }
 
 class _ProfileContent extends ConsumerStatefulWidget {
   const _ProfileContent({super.key, required this.patient, required this.clinic, required this.showBack, this.onClose});
@@ -106,11 +107,13 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
   PatientView get _patient => widget.patient;
   ClinicContext get _clinic => widget.clinic;
 
-  /// AS4: the tabs by permission. Prescriptions with `clinicalView` or
-  /// `prescriptionsPrint` (AS8); Appointments come in Phase 6.
+  /// AS4: the tabs by permission. Files needs `filesManage` (AS6);
+  /// Prescriptions `clinicalView` or `prescriptionsPrint` (AS8).
+  /// Appointments come in Phase 6.
   List<_Tab> get _allowedTabs => [
         if (_clinic.can(ClinicPermission.clinicalView)) _Tab.overview,
         if (_clinic.can(ClinicPermission.sessionsCreate) || _clinic.can(ClinicPermission.clinicalView)) _Tab.sessions,
+        if (_clinic.can(ClinicPermission.filesManage)) _Tab.files,
         if (_clinic.canReadRx) _Tab.prescriptions,
       ];
 
@@ -460,6 +463,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                   text: switch (tab) {
                     _Tab.overview => l10n.patientTabOverview,
                     _Tab.sessions => l10n.patientTabSessions,
+                    _Tab.files => l10n.patientTabFiles,
                     _Tab.prescriptions => l10n.patientTabPrescriptions,
                   },
                 ),
@@ -481,6 +485,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                 child: switch (current) {
                   _Tab.overview => _Overview(patient: _patient, clinic: _clinic),
                   _Tab.sessions => _SessionsTimeline(patient: _patient, clinic: _clinic),
+                  _Tab.files => FilesTab(patientId: _patient.patientId, clinic: _clinic),
                   _Tab.prescriptions => PatientPrescriptionsTab(patientId: _patient.patientId, clinic: _clinic),
                 },
               ),

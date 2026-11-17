@@ -165,7 +165,7 @@ class RoleShell {
       NavDestinationSpec(path: '/admin/doctors', icon: Icons.medical_services_outlined, selectedIcon: Icons.medical_services, label: (l) => l.navDoctors, screenId: 'AD4', primary: true),
       NavDestinationSpec(path: '/admin/payments', icon: Icons.payments_outlined, selectedIcon: Icons.payments, label: (l) => l.navPayments, screenId: 'AD7', primary: true),
       NavDestinationSpec(path: '/admin/invoices', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navInvoices, screenId: 'AD9', primary: true),
-      NavDestinationSpec(path: '/admin/signups', icon: Icons.how_to_reg_outlined, selectedIcon: Icons.how_to_reg, label: (l) => l.navSignups, screenId: 'AD2'),
+      NavDestinationSpec(path: '/admin/signups', icon: Icons.medical_information_outlined, selectedIcon: Icons.medical_information, label: (l) => l.navSignups, screenId: 'AD2'),
       NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, selectedIcon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
       NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, selectedIcon: Icons.category, label: (l) => l.navSpecialties, screenId: 'AD19'),
       NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, selectedIcon: Icons.library_books, label: (l) => l.navCatalogs, screenId: 'AD20'),

@@ -17,12 +17,13 @@ import '../../data/admin_repository.dart';
 import '../../domain/admin_models.dart';
 import '../widgets/admin_widgets.dart';
 import 'license_viewer.dart';
+import 'trial_parts.dart';
 
 /// Called after a review succeeded, once the success check has shown.
 typedef OnReviewed = void Function(DoctorRegistration registration, ReviewDecision decision);
 
 /// AD3 as a page: phones (opened from AD2 with a container transform) and
-/// links (`/admin/signups/{doctorId}`, the sign-up notification).
+/// links (`/admin/signups/{doctorId}`, the «طبيب جديد» notification).
 class SignupReviewPage extends ConsumerWidget {
   const SignupReviewPage({super.key, required this.doctorId, this.onReviewed});
 
@@ -205,6 +206,7 @@ class _ReviewContentState extends ConsumerState<_ReviewContent> {
           previewHeight: twoColumns ? 320 : 220,
         );
         final details = <Widget>[
+          if (registration.isApproved) DoctorTrialSection(registration: registration),
           _AccountSection(registration: registration),
           _ProfessionalSection(registration: registration),
           if (registration.branch != null) _BranchSection(branch: registration.branch!),
@@ -406,7 +408,9 @@ class _ReviewHeader extends StatelessWidget {
                 if (showBack) const AdminBackButton(fallback: AdminRoutes.signups) else const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    l10n.adminReviewTitle,
+                    registration.isPending || registration.status == DoctorStatuses.rejected
+                        ? l10n.adminReviewTitle
+                        : l10n.adminDoctorTitle,
                     style: theme.textTheme.titleSmall?.copyWith(color: scheme.onPrimaryContainer),
                   ),
                 ),

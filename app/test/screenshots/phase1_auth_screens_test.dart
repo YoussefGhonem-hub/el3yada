@@ -112,6 +112,13 @@ void main() {
       await capture(tester, 'a10_disabled_ar_$theme');
     });
 
+    testWidgets('free trial ended ($theme)', skip: !screenshotsEnabled, (tester) async {
+      await pumpApp(tester);
+      await settle(tester);
+      await signIn(tester, 'trial-ended@el3yada.dev');
+      await capture(tester, 'a15_trial_ended_ar_$theme');
+    });
+
     testWidgets('maintenance ($theme)', skip: !screenshotsEnabled, (tester) async {
       await pumpApp(tester,
           settings: const PublicSettings(

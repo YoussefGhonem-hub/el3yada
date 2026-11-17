@@ -180,7 +180,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navInvoices => 'الفواتير';
 
   @override
-  String get navSignups => 'طلبات التسجيل';
+  String get navSignups => 'الأطباء';
 
   @override
   String get navAccounts => 'الحسابات';
@@ -481,7 +481,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get regBack => 'السابق';
 
   @override
-  String get regSubmit => 'إرسال للمراجعة';
+  String get regSubmit => 'إنشاء الحساب';
 
   @override
   String get regResubmit => 'إعادة الإرسال للمراجعة';
@@ -724,7 +724,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get regReviewIntro => 'راجع بياناتك، ثم أرسلها للمراجعة.';
+  String get regReviewIntro => 'راجع بياناتك، ثم أنشئ حسابك.';
 
   @override
   String get regReviewIntroResubmit =>
@@ -1096,21 +1096,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminFixErrors => 'صحّح الحقول المحددة ثم احفظ.';
 
   @override
-  String adminSignupsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count طلب منتظر',
-      many: '$count طلباً منتظراً',
-      few: '$count طلبات منتظرة',
-      two: 'طلبان منتظران',
-      one: 'طلب واحد منتظر',
-      zero: 'لا توجد طلبات منتظرة',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get adminSignupsSearchHint => 'ابحث بالاسم أو البريد أو الرقم';
 
   @override
@@ -1126,21 +1111,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminSortOldest => 'الأقدم أولاً (حسب الدور)';
 
   @override
-  String get adminSignupsEmptyTitle => 'لا توجد طلبات تسجيل منتظرة';
+  String get adminSignupsEmptyTitle => 'لا يوجد أطباء بعد';
 
   @override
-  String get adminSignupsEmptyBody =>
-      'تظهر طلبات الأطباء الجدد هنا فور تسجيلهم.';
+  String get adminSignupsEmptyBody => 'يظهر الأطباء هنا فور تسجيلهم.';
 
   @override
-  String get adminSignupsNoMatchTitle => 'لا توجد طلبات تطابق البحث';
+  String get adminSignupsNoMatchTitle => 'لا يوجد أطباء يطابقون البحث';
 
   @override
   String get adminSignupsNoMatchBody =>
       'راجع الكتابة، أو ابحث برقم الموبايل أو رقم النقابة.';
 
   @override
-  String get adminSelectRequest => 'اختر طلباً لمراجعته';
+  String get adminSelectRequest => 'اختر طبيباً لعرض حسابه';
 
   @override
   String adminSubmittedShort(String time) {
@@ -4440,4 +4424,237 @@ class AppLocalizationsAr extends AppLocalizations {
   String backToSection(String section) {
     return 'رجوع إلى $section';
   }
+
+  @override
+  String get trialEndedTitle => 'انتهت الفترة التجريبية المجانية';
+
+  @override
+  String get trialEndedBody =>
+      'تواصل معنا لتفعيل الخدمة ومواصلة استخدام «العيادة». بيانات مرضاك وسجلاتك محفوظة كما هي.';
+
+  @override
+  String get trialEndedTitleAssistant => 'انتهت الفترة التجريبية للعيادة';
+
+  @override
+  String get trialEndedBodyAssistant =>
+      'اطلب من الطبيب التواصل معنا لتفعيل الخدمة، وبعدها تتابع عملك كالمعتاد.';
+
+  @override
+  String get trialCheckAgain => 'تحقق مرة أخرى';
+
+  @override
+  String get trialStillEnded => 'لم تُفعَّل الخدمة بعد.';
+
+  @override
+  String trialBanner(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'تبقّى $days يوم على نهاية الفترة التجريبية المجانية',
+      many: 'تبقّى $days يوماً على نهاية الفترة التجريبية المجانية',
+      few: 'تبقّت $days أيام على نهاية الفترة التجريبية المجانية',
+      two: 'تبقّى يومان على نهاية الفترة التجريبية المجانية',
+      one: 'تبقّى يوم واحد على نهاية الفترة التجريبية المجانية',
+      zero: 'تنتهي الفترة التجريبية المجانية اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get trialContactUs => 'تواصل معنا';
+
+  @override
+  String get errorTrialEnded =>
+      'انتهت الفترة التجريبية المجانية. تواصل معنا لتفعيل الخدمة.';
+
+  @override
+  String get sessionFeeFreeTrial => 'مجاناً (فترة تجريبية)';
+
+  @override
+  String get sessionPlatformFeeFree => 'بدون رسوم منصة (فترة تجريبية)';
+
+  @override
+  String get sessionConfirmFeeFree =>
+      'بدون رسوم: العيادة في الفترة التجريبية المجانية.';
+
+  @override
+  String sessionSavedBodyFree(String type, String patient) {
+    return '$type للمريض $patient، بدون رسوم (فترة تجريبية).';
+  }
+
+  @override
+  String get adminErrorServiceAlreadyActive =>
+      'الخدمة مفعّلة بالفعل لهذا الطبيب، فلا توجد فترة تجريبية لمدّها.';
+
+  @override
+  String get adminErrorDoctorStatusNotChangeable =>
+      'لا يمكن تنفيذ هذا لطبيب قيد المراجعة أو مرفوض أو معطّل.';
+
+  @override
+  String get adminSettingTrialDays => 'الفترة التجريبية المجانية';
+
+  @override
+  String get adminAppliesToNewDoctors =>
+      'يُطبّق على الأطباء المعتمدين بعد التغيير';
+
+  @override
+  String get adminDoctorsFilterAll => 'كل الأطباء';
+
+  @override
+  String get adminSignupsFilterTrialRunning => 'في الفترة التجريبية';
+
+  @override
+  String get adminSignupsFilterTrialEnded => 'انتهت التجربة';
+
+  @override
+  String adminDoctorsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبيب',
+      many: '$count طبيباً',
+      few: '$count أطباء',
+      two: 'طبيبان',
+      one: 'طبيب واحد',
+      zero: 'لا يوجد أطباء',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminTrialListEmpty => 'لا يوجد أطباء هنا';
+
+  @override
+  String get adminTrialListEmptyBody =>
+      'يظهر هنا الأطباء حسب حالة فترتهم التجريبية.';
+
+  @override
+  String get adminServiceActive => 'الخدمة مفعّلة';
+
+  @override
+  String get adminTrialEnded => 'انتهت التجربة';
+
+  @override
+  String adminTrialDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'فترة تجريبية: باقي $days يوم',
+      many: 'فترة تجريبية: باقي $days يوماً',
+      few: 'فترة تجريبية: باقي $days أيام',
+      two: 'فترة تجريبية: باقي يومان',
+      one: 'فترة تجريبية: باقي يوم واحد',
+      zero: 'فترة تجريبية: تنتهي اليوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminSectionTrial => 'الفترة التجريبية';
+
+  @override
+  String get adminServiceActiveBody =>
+      'الخدمة مفعّلة، وتُحتسب رسوم المنصة على الجلسات.';
+
+  @override
+  String adminTrialRunningBody(String date) {
+    return 'تنتهي الفترة التجريبية المجانية يوم $date، والجلسات حتى ذلك الحين بدون رسوم.';
+  }
+
+  @override
+  String adminTrialEndedBody(String date) {
+    return 'انتهت الفترة التجريبية المجانية يوم $date. لا يستطيع الطبيب ومساعدوه استخدام العيادة حتى تفعّل الخدمة أو تمدّ الفترة التجريبية.';
+  }
+
+  @override
+  String get adminActivateService => 'تفعيل الخدمة';
+
+  @override
+  String adminActivateServiceTitle(String name) {
+    return 'تفعيل الخدمة لـ د. $name؟';
+  }
+
+  @override
+  String get adminActivateServiceBody =>
+      'تنتهي الفترة التجريبية الآن، وتُحتسب رسوم المنصة على كل جلسة من الآن فصاعداً.';
+
+  @override
+  String adminServiceActivatedMessage(String name) {
+    return 'تم تفعيل الخدمة لـ د. $name.';
+  }
+
+  @override
+  String get adminExtendTrial => 'مدّ الفترة التجريبية';
+
+  @override
+  String adminExtendTrialTitle(String name) {
+    return 'مدّ الفترة التجريبية لـ د. $name';
+  }
+
+  @override
+  String get adminExtendTrialBody =>
+      'تُضاف الأيام إلى نهاية الفترة التجريبية، أو إلى اليوم إن كانت قد انتهت.';
+
+  @override
+  String get adminExtendTrialDays => 'عدد الأيام';
+
+  @override
+  String adminTrialExtendedMessage(String name, String date) {
+    return 'الفترة التجريبية لـ د. $name تنتهي الآن يوم $date.';
+  }
+
+  @override
+  String get adminAuditServiceActivated => 'فعّل الخدمة لطبيب';
+
+  @override
+  String adminAuditTrialExtended(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'مدّ الفترة التجريبية لطبيب $days يوماً',
+      few: 'مدّ الفترة التجريبية لطبيب $days أيام',
+      two: 'مدّ الفترة التجريبية لطبيب يومين',
+      one: 'مدّ الفترة التجريبية لطبيب يوماً واحداً',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminActionServiceActivated => 'تفعيل الخدمة';
+
+  @override
+  String get adminActionTrialExtended => 'مدّ الفترة التجريبية';
+
+  @override
+  String get regWelcomeTitle => 'أهلاً بك في العيادة';
+
+  @override
+  String regWelcomeTrial(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'معك فترة تجريبية مجانية لمدة $days يوم.',
+      many: 'معك فترة تجريبية مجانية لمدة $days يوماً.',
+      few: 'معك فترة تجريبية مجانية لمدة $days أيام.',
+      two: 'معك فترة تجريبية مجانية لمدة يومين.',
+      one: 'معك فترة تجريبية مجانية لمدة يوم واحد.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get regWelcomeBody =>
+      'أضف مرضاك وسجّل جلساتك بدون رسوم منصة خلال الفترة التجريبية.';
+
+  @override
+  String get regWelcomeStart => 'ابدأ الآن';
+
+  @override
+  String get adminDoctorTitle => 'حساب طبيب';
+
+  @override
+  String get emailBannerDismiss => 'إخفاء الآن';
+
+  @override
+  String get settingsVerifyEmail => 'تأكيد البريد الإلكتروني';
 }

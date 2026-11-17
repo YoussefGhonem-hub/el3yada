@@ -176,7 +176,7 @@ The app builds against [backend/docs/api-phase-1.md](backend/docs/api-phase-1.md
 
 The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md) (who may call what, `GET /api/clinic/me`), [api-phase-2-patients.md](backend/docs/api-phase-2-patients.md) and [api-phase-2-clinic.md](backend/docs/api-phase-2-clinic.md).
 
-**API** (508 tests: 7 data and 501 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
+**API** (576 tests: 8 data and 568 API, run against a migrated LocalDB database. They cover the acceptance checks in "Done when".)
 - [x] `createPatient` (link an existing number with BR-P3, file number, temporary password shown once), `updatePatientPhone`, `resetPatientPassword`, archive [S].
   - Also `lookupPhone` for D5. Linking needs the phone alone. A clinic that linked an existing patient sees only the name, phone, gender and date of birth (`ownsDetails`); the optional details stay with the clinic that created the account. A doctor's password reset also lifts the 15-minute login block on the number.
 - [x] Medical profile read and update (allergies, chronic diseases, medications, surgeries, family history, notes).
@@ -196,6 +196,12 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
   - Booking and no-show filters come with appointments (Phase 6).
 - [x] **API authorization tests** for every role and every assistant permission. Phase 2 does not close without them.
   - Two matrices (`PatientsAuthorizationTests` and the clinic one) check, for every endpoint: no token, patient, admin, assistant with and without the permission, another doctor's record, a suspended doctor, and another branch.
+- [x] **Free trial** (product owner's change, 17 Nov; spec 6.16, contract [api-free-trial.md](backend/docs/api-free-trial.md)):
+  - No approval step: sign-up makes the doctor `active` with a trial of `trialDays` days (14 by default, set in AD13). Sessions in the trial carry no platform fee.
+  - When the trial ends, signing in still works, but every clinic endpoint except `clinic/me` answers `TRIAL_ENDED`.
+  - The admin can `activateDoctorService` or `extendDoctorTrial`. AD2 filters by trial state.
+  - Migration `DoctorFreeTrial`: **run `dotnet ef database update` after pulling.** Doctors approved before it have no trial.
+  - Not done: push reminders before the end (Phase 5).
 
 **App** (status 16 Nov: built and covered by widget tests and Arabic light/dark screenshots at phone and desktop sizes; not yet run on an Android device or a Windows build, so nothing below is ticked yet)
 - [ ] Current-branch picker in the top bar (BR-BR3).
@@ -214,6 +220,8 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
   - *Built:* all three. D26 applies the permission dependencies and turns the preset into Custom. D27 rows read as sentences and open their branch, assistant, patient or visit.
 - [ ] Assistant screens AS1 (home without the live board), AS2–AS5, AS12, AS19, with every item the assistant can't use hidden.
   - *Built:* all of them, from the same screens as the doctor's. Not done: AS17 (branch schedule) comes with appointments (Phase 6).
+- [ ] Free trial (spec 6.16): A15 when it ended, the last-3-days banner, «مجاناً» in D8, AD3 activate / extend, AD2 filter, `trialDays` in AD13.
+  - *Built:* all of them, with widget tests. Offline accounts `trial@el3yada.dev` (2 days left) and `trial-ended@el3yada.dev` (A15).
 
 **Dev accounts:** `config/dev-offline.json` has a full offline clinic: `doctor@el3yada.dev` (two branches, 15 patients, today's sessions), `suspended@el3yada.dev` (the banner), `+201000000001` (reception assistant, one branch) and `+201000000005` (office manager). Against the local API, register a doctor, approve them as the admin, then add assistants from D26.
 

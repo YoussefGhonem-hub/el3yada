@@ -20,6 +20,7 @@ The checks run in this order. The first one that fails answers:
 | The caller is a patient or an admin (AC-11, AC-12) | 403 `FORBIDDEN` |
 | The doctor is pending approval / rejected | 403 `DOCTOR_PENDING_APPROVAL` / `DOCTOR_REJECTED` |
 | The assistant is disabled or removed, or their clinic is not active (BR-AS9) | 403 `ACCOUNT_DISABLED` / `CLINIC_NOT_ACTIVE` (the app opens A10) |
+| The clinic's free trial has ended (BR-T4), on every endpoint but `clinic/me` | 403 `TRIAL_ENDED` (the app reloads the account and opens A15; [api-free-trial.md](api-free-trial.md)) |
 | A doctor-only endpoint called by an assistant (BR-AS5) | 403 `PERMISSION_DENIED`, `"permission": "doctorOnly"` |
 | The assistant lacks the endpoint's permission | 403 `PERMISSION_DENIED`, `"permission": "<key>"` |
 | The doctor is suspended and the action is blocked while suspended (BR-G5, BR-G8) | 403 `DOCTOR_SUSPENDED` |
@@ -68,7 +69,8 @@ Doctor or assistant, any permission, also while suspended. What the app needs to
 - `assistant` is `null` for the doctor. A doctor's `permissions` are all `true`.
 - `doctor.status`: `active` or `suspended` (the other statuses never get here).
 - `branches`: every branch of the doctor, default first, then oldest first; `status` is `active`, `temporarilyClosed` or `archived`. `assigned` is whether the caller works there (always `true` for the doctor). The current-branch picker lists assigned branches that are not archived, and shows only when there is more than one.
-- `fees` are the platform fees per session (BR-S5), not the clinic's visit prices (section 6.15).
+- `fees` are the platform fees per session (BR-S5), not the clinic's visit prices (section 6.15). Both are `0` while the free trial runs (BR-T3).
+- `trial`: the clinic's free trial, `{ endsAt, ended, daysLeft }` or `null` ([api-free-trial.md](api-free-trial.md)). `clinic/me` still answers after the trial ended.
 
 ## Cairo dates
 

@@ -137,6 +137,7 @@ Returned by `GET /api/auth/me` and `updatePreferences`. Every sign-in call retur
   "doctorId": "8c1f…",
   "accountStatus": "active",
   "doctorStatus": "pendingApproval", "doctorStatusReason": null,
+  "trial": null,
   "mustChangePassword": false, "mustAcceptTerms": false,
   "email": "ahmed@example.com", "emailVerified": false, "phone": "+201012345678",
   "locale": "ar", "themeMode": "system",
@@ -145,7 +146,7 @@ Returned by `GET /api/auth/me` and `updatePreferences`. Every sign-in call retur
 }
 ```
 
-`doctorId` is the doctor's own ID for a doctor and their doctor's ID for an assistant. `doctorStatusReason` is sent only to the doctor. `emailVerified` is `true` when the account has no email.
+`doctorId` is the doctor's own ID for a doctor and their doctor's ID for an assistant. `doctorStatusReason` is sent only to the doctor. `emailVerified` is `true` when the account has no email. `trial` is the clinic's free trial (`{ endsAt, ended, daysLeft }`, or `null` when there is none): see [api-free-trial.md](api-free-trial.md). `trial.ended` routes to A15.
 
 | Method and route | Auth | Request | Success | Errors |
 |---|---|---|---|---|
@@ -227,7 +228,7 @@ Notes:
 | `license` (file part) | required | `REQUIRED`, `FILE_TOO_LARGE`, `FILE_TYPE_NOT_ALLOWED`, `FILE_CONTENT_INVALID` |
 | `data` (part) | required, valid JSON | `REQUIRED`, `INVALID_REQUEST` |
 
-**201** returns a session (`doctorStatus: "pendingApproval"`), so the app goes straight to A6. The API also writes a `doctorRegistrationReceived` notification for every active admin and sends the verification email (A5). Other answers: 400, 409 `EMAIL_ALREADY_REGISTERED`, 413 `REQUEST_TOO_LARGE`, 415 `UNSUPPORTED_MEDIA_TYPE` (not multipart), 429.
+**201** returns a session with `doctorStatus: "active"` and a running free `trial`, so the app opens the doctor's home ([api-free-trial.md](api-free-trial.md)). Doctors who signed up before 17 Nov got `pendingApproval` and A6. The API also writes a `doctorRegistrationReceived` notification for every active admin and sends the verification email (A5). Other answers: 400, 409 `EMAIL_ALREADY_REGISTERED`, 413 `REQUEST_TOO_LARGE`, 415 `UNSUPPORTED_MEDIA_TYPE` (not multipart), 429.
 
 Working hours and booking settings are not part of the Phase 1 registration. The doctor sets them after approval (D29, Phase 2). One branch is created and it is the default.
 
@@ -295,6 +296,8 @@ Every admin route needs `role = admin`. AD14 routes need `adminRole = superAdmin
 
 ### Doctor status (AD5, BR-G4), any admin
 
+The free trial's admin actions (`activateDoctorService`, `extendDoctorTrial`), the AD2 `trial` filter and the `trial` field of the registration view are in [api-free-trial.md](api-free-trial.md). Sign-up no longer waits for approval: the doctor is `active` at once, with a free trial (api-free-trial.md). AD2 and AD3 remain for the trial and for doctors who signed up before the change.
+
 `setDoctorStatus` is listed in Phase 7 (AD5). Its API came early, in Phase 2, so a suspension can be tested end to end; the AD5 screen and the automatic suspension for unpaid invoices (BR-G1, BR-G3) are still Phase 7.
 
 | Method and route | Request | Success | Errors |
@@ -350,6 +353,7 @@ Password: `POST /api/auth/changePassword`. Language and appearance: `POST /api/a
 |---|---|
 | `examFeePiasters`, `consultationFeePiasters` | integer 0–1,000,000 (0–10,000 EGP) |
 | `gracePeriodDays` | integer 0–31 |
+| `trialDays` | integer 1–90, default 14: the free trial given at approval ([api-free-trial.md](api-free-trial.md)) |
 | `maxConsecutiveConsultations` | integer 1–5 |
 | `maxUploadMb` | integer 1–200 |
 | `maxAssistantsPerDoctor` | integer 0–50 |
@@ -436,6 +440,7 @@ Arabic texts in quotes are from the spec. The app owns the final wording in its 
 | `REGISTRATION_NOT_EDITABLE` | 409 | Only a rejected registration can be resubmitted |
 | `REGISTRATION_NOT_PENDING` | 409 | Already reviewed |
 | `DOCTOR_STATUS_NOT_CHANGEABLE` | 409 | `setDoctorStatus`: only an active doctor can be suspended, only a suspended one reactivated. The answer has `status`. |
+| `SERVICE_ALREADY_ACTIVE` | 409 | `extendDoctorTrial`: the doctor has no trial ([api-free-trial.md](api-free-trial.md)) |
 | `CANNOT_CHANGE_OWN_ROLE`, `CANNOT_DISABLE_SELF`, `LAST_SUPER_ADMIN` | 409 | AD14 guards |
 | `REQUEST_TOO_LARGE` | 413 | The upload is too large |
 | `UNSUPPORTED_MEDIA_TYPE` | 415 | Send `multipart/form-data` |

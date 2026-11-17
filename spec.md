@@ -58,7 +58,7 @@ These defaults were chosen where the brief was silent. Each one links to an open
 | D2 | After an examination, a patient can have **up to 2 consultations in a row** with the same doctor (admin setting `maxConsecutiveConsultations`). After that, an examination is required. An examination is always allowed, including right after another examination. The first session must be an examination. | Matches "no more than 2 consultations in a row". Blocking exam-after-exam would force doctors to record cheaper sessions, which works against the platform. (Q2, Q3) |
 | D3 | Session type and date cannot be changed after saving. A session can be deleted only if it is the patient's latest session and it was created the same day. Deletions are soft and visible to the admin. | Protects billing and keeps the exam/consultation chain valid. (Q14) |
 | D4 | Every prescription or lab/radiology request must belong to a session. | Stops prescriptions being issued without a billable session. (Q13) |
-| D5 | Doctors sign up themselves and wait for admin approval. Admins can also create doctors directly. | Lets the admin verify the medical license before a doctor can use the app. (Q4) |
+| D5 | Doctors sign up themselves and start at once on a 14-day free trial, with no admin approval (product owner's change, 17 Nov; section 6.16). They still upload their license, which the admin can look at any time. | Removes the wait before a doctor can use the app. The admin steps in only when the trial ends and the doctor contacts us. (Q4) |
 | D6 | One patient account (phone number) can be linked to several doctors. Each doctor sees only the records they created. The patient sees everything, grouped by doctor. | Patients often see more than one doctor. Avoids duplicate accounts. (Q5) |
 | D7 | A suspended doctor can still log in, see the dashboard, view records read-only and pay. They cannot add patients, sessions, files or prescriptions, or send chat messages. Their patients keep read access. | Unpaid fees should not cut a patient off from their own medical history. (Q6) |
 | D8 | A doctor with a payment waiting for admin review is not suspended when the grace period ends. | The doctor has done their part. (Q7) |
@@ -350,6 +350,7 @@ Rules:
 | Examination fee | 30 EGP |
 | Consultation fee | 15 EGP |
 | Grace period | 7 days |
+| Free trial for new doctors (section 6.16) | 14 days |
 | Maximum consultations in a row (BR-S3) | 2 |
 | Billing time zone | Africa/Cairo (fixed) |
 
@@ -995,6 +996,25 @@ These are the prices the clinic charges its patients: the doctor's own prices, s
 - **BR-PR5 [M]** Every change is logged: who, when, branch, old price, new price. The history is shown in D37.
 - **BR-PR6 [M]** When no price is set, the session requires the amount to be typed (BR-S10), and patients see «يُرجى الاستفسار من العيادة» (ask the clinic) instead of a price.
 
+### 6.16 Free trial (الفترة التجريبية المجانية)
+
+Product owner's change, 17 Nov. The API contract is [`backend/docs/api-free-trial.md`](backend/docs/api-free-trial.md).
+
+- **BR-T1 [M]** There is **no approval step**. When a doctor completes sign-up (A4), the account is `active` at once and the free trial starts. The admin does nothing. It lasts `trialDays` days: 14 by default, set by the admin from 1 to 90 (AD13). The doctor goes straight to their home and gets a welcome notification with the trial's length. The admins get an informational «طبيب جديد» notification.
+- **BR-T2 [M]** Changing `trialDays` applies only to doctors who sign up after the change. Running trials keep their end date.
+- **BR-T3 [M]** Sessions saved while the trial runs carry **no platform fee** (the fee snapshot is 0). They count in the day and month figures with a 0 amount, so a month spent entirely in the trial closes as `noCharge`. D8 shows the fee as «مجاناً (فترة تجريبية)».
+- **BR-T4 [M]** When the trial ends:
+  - The doctor and their assistants can still **log in**, but every clinic screen is closed. The app shows **A15**, and every clinic request is refused with `TRIAL_ENDED`.
+  - Patients of that doctor keep their access (as in BR-G6).
+  - Doctors approved before this change, and doctors whose service the admin activated, have no trial.
+  - A doctor who signed up before this change and is still `pendingApproval` or `rejected` keeps A6 / A7. Approving them in AD3 starts their trial.
+- **BR-T5 [M]** When the doctor contacts support, the admin opens the doctor in AD3 and either:
+  - **Activates the service** (`activateDoctorService`): the trial ends at once, the clinic opens, and sessions carry the platform fees (6.5) from then on.
+  - **Extends the trial** (`extendDoctorTrial`, 1–90 days): the days are counted from the later of the current end and today.
+
+  Both are audited and notify the doctor and their active assistants. AD2 can list doctors by trial state (running, ended).
+- **BR-T6 [M]** During the last 3 days of the trial, the doctor and assistants see a banner: «باقي يومين على نهاية الفترة التجريبية المجانية», with **Contact us** (support WhatsApp, phone or email). [S] Push reminders 3 days before and on the last day come with Phase 5.
+
 ---
 
 ## 7. Screens
@@ -1016,19 +1036,20 @@ Doctors and assistants with more than one branch see a **current branch** picker
 
 | ID | Screen | Contents and behaviour |
 |---|---|---|
-| A1 | Splash | Logo. Applies the saved language and theme first, so the wrong ones never flash on screen. Checks the minimum supported app version and sends the user to **Force update** if theirs is too old. Checks maintenance mode and shows its message. Then routes by session: not logged in → A3. Otherwise by role and status: `mustChangePassword` → A9; doctor `pendingApproval` → A6; doctor `rejected` → A7; account `disabled` → A10; assistant whose doctor is pending, rejected or disabled → A10 (BR-AS9); otherwise the role's home. |
+| A1 | Splash | Logo. Applies the saved language and theme first, so the wrong ones never flash on screen. Checks the minimum supported app version and sends the user to **Force update** if theirs is too old. Checks maintenance mode and shows its message. Then routes by session: not logged in → A3. Otherwise by role and status: `mustChangePassword` → A9; doctor `pendingApproval` → A6; doctor `rejected` → A7; account `disabled` → A10; assistant whose doctor is pending, rejected or disabled → A10 (BR-AS9); doctor or assistant whose clinic's free trial has ended → A15 (BR-T4); otherwise the role's home. |
 | A2 | Language choice (first launch) **[M]** | Shown once, before login: العربية or English, pre-selected from the device language (Arabic if the device uses neither). Appearance starts as **System**. Both can be changed later in Settings. |
 | A3 | Login | One form for every role. **Top bar:** language switch (ع / EN) and theme switch (sun / moon), so users can change both before signing in. **Fields:** "Mobile number or email", password (show/hide). **Links:** "Forgot password?", "Register as a doctor". If the identifier contains `@`, it is treated as an email; otherwise it must be an Egyptian mobile number (patients and assistants log in with their mobile number). **Same number, two accounts:** if a number has both a patient account and an assistant account, the server checks the password against both. If it matches both, the app asks «الدخول كـ: مريض / مساعد طبيب» (log in as patient / assistant). The question appears only after a correct password, so it never reveals which accounts exist. **Errors:** wrong credentials «رقم الهاتف/البريد أو كلمة المرور غير صحيحة»; too many attempts «محاولات كثيرة، حاول لاحقاً»; no internet. |
-| A4 | Doctor registration (4 steps, with a progress bar) | **Step 1, Account:** full name, email, mobile, password, confirm password. **Step 2, Professional:** title (أخصائي / استشاري / أستاذ …), primary specialty (required, from the list the admin manages; the hint says "Your specialty's medicines and tests will appear first when you search"), extra specialties (up to 2) [S], medical syndicate number, photo of the syndicate card or license. **Step 3, First branch:** branch name, governorate, city/area, detailed address («العنوان بالتفصيل»), landmark, Google Maps link (optional, with "Open in Google Maps"), phone(s), examination and consultation prices (optional; saved as the doctor's prices, section 6.15). Working hours and booking settings can be filled in now or after approval. More branches can be added later (D28). **Step 4, Review:** summary of all steps and a required checkbox to accept the Terms and Privacy Policy. Submit creates the account with status `pendingApproval`. |
+| A4 | Doctor registration (4 steps, with a progress bar) | **Step 1, Account:** full name, email, mobile, password, confirm password. **Step 2, Professional:** title (أخصائي / استشاري / أستاذ …), primary specialty (required, from the list the admin manages; the hint says "Your specialty's medicines and tests will appear first when you search"), extra specialties (up to 2) [S], medical syndicate number, photo of the syndicate card or license. **Step 3, First branch:** branch name, governorate, city/area, detailed address («العنوان بالتفصيل»), landmark, Google Maps link (optional, with "Open in Google Maps"), phone(s), examination and consultation prices (optional; saved as the doctor's prices, section 6.15). Working hours and booking settings can be filled in now or after approval. More branches can be added later (D28). **Step 4, Review:** summary of all steps and a required checkbox to accept the Terms and Privacy Policy. Submit creates the account as `active`, with the free trial running (BR-T1), and opens the doctor's home with a short welcome. |
 | A5 | Verify email **[S]** | "We sent a verification link to …". Resend button (60-second cooldown), "I've verified" refresh button, change email. |
-| A6 | Pending approval | "Your account is being reviewed. You'll get a notification once it's approved." Shows the submitted data (read-only), support contact (WhatsApp, phone), Refresh, Logout. |
-| A7 | Registration rejected | Shows the admin's reason. "Edit and resubmit" opens A4 pre-filled. Support contact. Logout. |
+| A6 | Pending approval (doctors who signed up before 17 Nov only) | "Your account is being reviewed. You'll get a notification once it's approved." Shows the submitted data (read-only), support contact (WhatsApp, phone), Refresh, Logout. |
+| A7 | Registration rejected (doctors who signed up before 17 Nov only) | Shows the admin's reason. "Edit and resubmit" opens A4 pre-filled. Support contact. Logout. |
 | A8 | Forgot password | **Email entered (doctor or admin):** the API sends a password-reset email (a link valid for 60 minutes, which also shows its code) and the app shows the same confirmation whether or not the email exists. "I have a code" lets the user type the code and a new password in the app, for desktop users whose link opens a browser. **Mobile number entered (patient or assistant):** the message «سيتم إرسال طلب لطبيبك لإعادة تعيين كلمة المرور». A request notification goes to every doctor linked to that number (and their assistants with `patientsResetPassword`). For an assistant account, it goes to their doctor. The response never reveals whether the number exists. Rate-limited. |
 | A9 | Set new password | Shown at a patient's or assistant's first login and after any reset. New password and confirm, with a live checklist (≥ 8 characters, a letter, a number). On a patient's first login, also a required checkbox to accept the Terms and Privacy Policy. |
 | A10 | Account disabled | "Your account has been disabled. Contact support." For an assistant whose doctor is not active: «حساب العيادة غير مفعّل، تواصل مع الطبيب» (the clinic account is not active; contact the doctor). Support contact, Logout. |
 | A11 | Force update | Store, download or installer link for the platform. Cannot be dismissed. |
 | A12 | Terms / Privacy Policy | Rendered content, set by the admin. |
 | A13 | Maintenance | Admin message. Retry button. |
+| A15 | Free trial ended | Shown instead of the clinic when the free trial has ended (BR-T4). Doctor: «انتهت الفترة التجريبية المجانية. تواصل معنا لتفعيل الخدمة ومواصلة استخدام العيادة.» Assistant: «انتهت الفترة التجريبية لعيادة د. …. اطلب من الطبيب التواصل معنا لتفعيل الخدمة.» Support contact (WhatsApp, phone, email: whichever the admin set), "Check again" (reloads the account), language, theme, Logout. |
 | A14 | Patient on desktop | A dialog on the login screen: «حساب المريض على تطبيق الموبايل فقط» and «تطبيق الكمبيوتر مخصص للأطباء والمساعدين والإدارة. حمّل تطبيق «العيادة» على موبايلك لمتابعة ملفك الطبي وحجوزاتك.» [S] Store links once the apps are published. The user stays signed out. |
 
 Session behaviour: users stay logged in until they log out. Changing the password signs the user out on other devices. Logout removes the device's push token.
@@ -1103,8 +1124,8 @@ Session behaviour: users stay logged in until they log out. Changing the passwor
 | ID | Screen | Contents and behaviour |
 |---|---|---|
 | AD1 | Dashboard | **KPI tiles:** doctors (active, pending, suspended), total patients, sessions today (examinations and consultations), sessions this month, bookings today, no-show rate (last 30 days), expected revenue this month (live), last month invoiced vs collected, outstanding amount, overdue doctors, payments waiting for review, sign-ups waiting for approval. **Charts:** sessions per day for the last 30 days (examinations and consultations stacked); invoiced vs collected per month for the last 12 months. **Action lists:** latest payments to review, latest sign-ups, invoices due in the next 3 days. |
-| AD2 | Sign-up requests | List of doctors in `pendingApproval`: name, specialty, governorate, submitted date. Search. |
-| AD3 | Sign-up review | All A4 data. License image viewer with zoom. **Actions:** **Approve** (doctor becomes `active` and is notified); **Reject** with a reason (doctor becomes `rejected`, is notified and sees A7). |
+| AD2 | Doctors (formerly sign-up requests) | Every doctor: name, specialty, governorate, sign-up date, trial state. Filters: all, in trial, trial ended (BR-T5). Search. |
+| AD3 | Doctor's sign-up details | All A4 data. License image viewer with zoom. **Free trial** section: state, **Activate service** and **Extend trial** (BR-T5). **Approve** / **Reject** with a reason remain only for doctors who signed up before 17 Nov and are still pending. |
 | AD4 | Doctors list | Search: name, phone, email, clinic. Filters: status (active, pending, suspended, disabled, rejected), specialty, governorate. Columns: name, phone, clinic, status, sessions this month, outstanding amount. Export CSV [S]. |
 | AD5 | Doctor details | **Profile tab:** edit info. **Activity tab:** sessions per month (examinations and consultations), a session list with date, time, type and fee, and patient names masked (for example «أ*** م***»); no clinical content. **Invoices tab.** **Payments tab.** **Audit tab:** deleted sessions with reasons, status changes. **Branches tab** (read-only): name, area, status, phones. **Appointments tab** (counts only, no names): bookings per month, no-show rate, cancellations, and "checked in without a session" (BR-AP11). **Assistants tab:** name, mobile, preset, status, last active, with Disable / Enable for support. **Actions:** Suspend (reason), Reactivate (reason), Disable account, Send password reset email, Add internal note. |
 | AD6 | Add doctor **[S]** | Admin creates a doctor directly with status `active`. The doctor gets a reset-password email to set their own password. |
@@ -1157,6 +1178,8 @@ The names below are **logical collections**. In the API they map to SQL Server t
 
 > **The real tables** are created by the EF Core migrations in [`backend/src/El3yada.Data`](backend/README.md) (55 tables from the original design, plus `PendingUploads` from Phase 3, plus starting data). Their original design, with comments, is [`database/schema.sql`](database/schema.sql). When this section and the migrations differ, the migrations win. It adds what this logical model leaves out: password and token tables, child tables for nested lists, and the `revenueView` and `pricesManage` assistant permissions from section 6.10.
 >
+> Free trial (17 Nov): `Doctors.TrialEndsAt` and `AppSettings.TrialDays` (migration `DoctorFreeTrial`, section 6.16).
+>
 > Medical profile items (Phase 2): an item removed from a patient's medical profile is kept with `PatientMedicalProfileItems.DeletedAt` and `DeletedBy` (migration `SoftDeleteMedicalProfileItems`, BR-P8) and hidden from every query. The Phase 2 contract is [`backend/docs/api-phase-2.md`](backend/docs/api-phase-2.md).
 >
 > Sign-in sessions (Phase 1): each signed-in device is one **refresh-token family** (`RefreshTokens.FamilyId`, migration `AddRefreshTokenFamily`). Every refresh replaces the token inside its family, and sending a used token again revokes the whole family. The contract the app uses is [`backend/docs/api-phase-1.md`](backend/docs/api-phase-1.md).
@@ -1192,6 +1215,7 @@ doctors/{doctorId = uid}
              preprinted: bool, marginTopMm?, marginBottomMm? }   // BR-RX5
   status: 'pendingApproval' | 'active' | 'rejected' | 'suspended' | 'disabled'   (fn)
   statusReason?, statusChangedAt, approvedAt?, approvedBy?                       (fn)
+  trialEndsAt?          // free trial end (6.16); null = no trial, the service is active   (fn)
   nextFileNumber: int                                                            (fn)
   createdAt
   drugHistory/{id}: name, form, strength, lastUsedAt, useCount
@@ -1311,6 +1335,7 @@ notifications/{id}                                  (fn)
 
 settings/public      // readable by any signed-in user
   examFeePiasters: 3000, consultationFeePiasters: 1500, gracePeriodDays: 7, maxConsecutiveConsultations: 2,
+  trialDays: 14,                       // 6.16; admin only, not public
   maxUploadMb: 50, maxAssistantsPerDoctor: 5, maxBranchesPerDoctor: 5,
   instapay{ address, accountName, instructionsAr, instructionsEn },
   catalog{ version, storagePath, sha256, sizeBytes, publishedAt, counts{ drugs, labs, radiology } },
@@ -1459,6 +1484,7 @@ Suggested stack on the server:
 | `reviewPayment` | admin | Approve: invoice `paid`, run the reactivation check (BR-G3). Reject: invoice `rejected`, or `overdue` plus suspension if past the due date (BR-G2). Notify the doctor. Audit log. |
 | `reviewDoctorRegistration` | admin | Approve or reject with a reason. Notify. Audit log. |
 | `setDoctorStatus` | admin | Suspend, reactivate or disable, with a reason. Audit log. |
+| `activateDoctorService`, `extendDoctorTrial` | admin | End the free trial and turn the service on, or add 1–90 trial days (BR-T5). Notify the doctor and assistants. Audit log. |
 | `adjustInvoice`, `waiveInvoice`, `markInvoicePaid`, `extendInvoiceDueDate` | admin | BR-PAY4. Audit log. |
 | `updateSettings` | admin | Validates ranges, writes `settings/public`, writes `settingsHistory`. |
 | `getDoctorActivity` | admin | Returns session metadata (date, type, fee, masked patient name) for AD5. Admins never read `sessions` directly. |
@@ -1675,6 +1701,7 @@ Every event is stored in `notifications` (the in-app notification centre) **and*
 | Payment | Screenshot required (images only, ≤ 10 MB each, max 3). Amount > 0. Transfer date not in the future. | «صورة التحويل مطلوبة» |
 | Fees (admin) | 0–10,000 EGP, up to 2 decimals. | «قيمة غير صحيحة» |
 | Grace period (admin) | Whole number, 0–31. | «من 0 إلى 31 يوم» |
+| Free trial length (admin), trial extension | Whole number, 1–90 days. | «من 1 إلى 90 يوم» |
 | Consultations in a row (admin) | Whole number, 1–5. | «من 1 إلى 5» |
 | Visit prices | Optional. 0–100,000 EGP, up to 2 decimals. | «قيمة غير صحيحة» |
 | Visit type at booking | Required for an existing patient. Always Examination for a new patient or guest. | «اختر نوع الزيارة» |
@@ -2029,6 +2056,14 @@ Error messages appear in the user's current language. The table shows the Arabic
   - The doctor sets examination 300 and consultation 150, and branch B sets its own examination price of 350. Sessions in branch A default to 300 and in branch B to 350. Patients see these prices in P3 and P15.
   - An office-manager assistant (`pricesManage`) changes the consultation price to 200. New sessions default to 200, earlier sessions keep 150, and the change appears in the price history.
   - A reception assistant cannot open D37.
+
+**AC-27 Free trial**
+
+- With `trialDays` at 14, Dr A signs up on 3 March at 10:00. With no approval step, the home opens straight away, and the trial runs to 17 March 10:00. Sessions recorded before then carry a 0 fee, and D8 shows «مجاناً (فترة تجريبية)».
+- On 15 March at 10:00, Dr A and the assistants see the banner with 2 days left.
+- After the end, Dr A and the assistants still log in, see A15, and every clinic request answers `TRIAL_ENDED`. Dr A's patients keep their access.
+- The admin finds Dr A in AD2 (trial ended) and activates the service: Dr A's next request works and the next session carries the platform fee. Extending by 7 days instead reopens the clinic until 7 days from now.
+- Changing `trialDays` to 30 doesn't change Dr A's end date. Only doctors who sign up later get 30 days.
 
 ---
 

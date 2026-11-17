@@ -3,6 +3,7 @@ using El3yada.Api.Auth;
 using El3yada.Api.Clinic;
 using El3yada.Api.ClinicAdmin;
 using El3yada.Api.Common;
+using El3yada.Api.Doctors;
 using El3yada.Api.Notifications;
 using El3yada.Api.Validation;
 using El3yada.Data;
@@ -32,6 +33,36 @@ public sealed class SetDoctorStatusRequestValidator : AbstractValidator<SetDocto
             .MaxChars(500);
     }
 }
+
+/// <summary><c>activateDoctorService</c> (spec 6.16 BR-T5): ends the free trial and turns the service on.</summary>
+public sealed record ActivateDoctorServiceRequest(Guid? DoctorId);
+
+public sealed class ActivateDoctorServiceRequestValidator : AbstractValidator<ActivateDoctorServiceRequest>
+{
+    public ActivateDoctorServiceRequestValidator()
+    {
+        RuleFor(x => x.DoctorId).Required();
+    }
+}
+
+/// <summary><c>extendDoctorTrial</c> (BR-T5): <c>days</c> from 1 to 90.</summary>
+public sealed record ExtendDoctorTrialRequest(Guid? DoctorId, int? Days);
+
+public sealed class ExtendDoctorTrialRequestValidator : AbstractValidator<ExtendDoctorTrialRequest>
+{
+    public ExtendDoctorTrialRequestValidator()
+    {
+        RuleFor(x => x.DoctorId).Required();
+        RuleFor(x => x.Days).Required();
+        RuleFor(x => x.Days)
+            .InclusiveBetween(Trial.MinDays, Trial.MaxDays)
+            .WithErrorCode(ErrorCodes.OutOfRange).WithMessage($"Must be from {Trial.MinDays} to {Trial.MaxDays}.")
+            .When(x => x.Days is not null);
+    }
+}
+
+/// <summary>A doctor's free trial after an admin's change; <c>trial</c> is null once the service is active.</summary>
+public sealed record DoctorTrialView(Guid DoctorId, string FullName, string Status, TrialView? Trial);
 
 /// <summary>The doctor's status after <c>setDoctorStatus</c>. <c>statusReason</c> is the suspension reason, null once active.</summary>
 public sealed record DoctorStatusView(Guid DoctorId, string FullName, string Status, string? StatusReason, DateTime? StatusChangedAt);
@@ -119,6 +150,96 @@ public sealed class AdminDoctorsController(
 
         return Ok(View(doctor));
     }
+
+    /// <summary>
+    /// BR-T5: the doctor contacted us after (or during) the free trial, and the service is turned on. TrialEndsAt
+    /// becomes null, so clinic endpoints work again and sessions carry the platform fee from now on. Notifies the
+    /// doctor and their active assistants and writes a <c>doctorServiceActivated</c> audit row. Already active:
+    /// nothing changes.
+    /// </summary>
+    [HttpPost("activateDoctorService")]
+    public async Task<IActionResult> ActivateDoctorService(ActivateDoctorServiceRequest request, CancellationToken cancellationToken) =>
+        await ChangeTrialAsync(request.DoctorId!.Value, days: null, cancellationToken);
+
+    /// <summary>
+    /// BR-T5: more trial days, counted from the later of the current end and now (an ended trial restarts today).
+    /// 409 <c>SERVICE_ALREADY_ACTIVE</c> when there is no trial. Notifies the doctor and their active assistants and
+    /// writes a <c>doctorTrialExtended</c> audit row.
+    /// </summary>
+    [HttpPost("extendDoctorTrial")]
+    public async Task<IActionResult> ExtendDoctorTrial(ExtendDoctorTrialRequest request, CancellationToken cancellationToken) =>
+        await ChangeTrialAsync(request.DoctorId!.Value, request.Days!.Value, cancellationToken);
+
+    /// <summary>Activates the service (<paramref name="days"/> null) or extends the trial.</summary>
+    private async Task<IActionResult> ChangeTrialAsync(Guid doctorId, int? days, CancellationToken cancellationToken)
+    {
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+        await ClinicLocks.LockDoctorAsync(db, doctorId, cancellationToken);
+        var doctor = await db.Doctors.SingleOrDefaultAsync(d => d.UserId == doctorId, cancellationToken);
+        if (doctor is null)
+        {
+            return this.NotFoundProblem();
+        }
+
+        var now = time.GetUtcNow().UtcDateTime;
+        if (doctor.Status is not (DoctorStatuses.Active or DoctorStatuses.Suspended))
+        {
+            return this.ConflictProblem(
+                    ErrorCodes.DoctorStatusNotChangeable, "Only an approved doctor's trial or service can be changed.")
+                .WithFields(("status", doctor.Status));
+        }
+
+        if (doctor.TrialEndsAt is not { } before)
+        {
+            return days is null
+                ? Ok(TrialViewOf(doctor, now))
+                : this.ConflictProblem(ErrorCodes.ServiceAlreadyActive, "The doctor's service is already active; there is no trial to extend.");
+        }
+
+        var after = days is { } extra ? Trial.Extend(before, now, extra) : (DateTime?)null;
+        doctor.TrialEndsAt = after;
+        doctor.UpdatedAt = now;
+
+        var assistants = await db.Assistants
+            .Where(a => a.DoctorId == doctorId && a.Status == AssistantStatuses.Active && a.User.Status == AccountStatuses.Active)
+            .Select(a => a.UserId)
+            .ToListAsync(cancellationToken);
+        var data = new { doctorId };
+        notifications.Add(
+            doctorId,
+            after is { } until ? NotificationTexts.TrialExtended(until) : NotificationTexts.ServiceActivated(),
+            "/home",
+            data);
+        foreach (var assistantId in assistants)
+        {
+            notifications.Add(
+                assistantId,
+                after is { } extendedTo ? NotificationTexts.TrialExtendedForAssistant(doctor.FullName, extendedTo) : NotificationTexts.ServiceActivatedForAssistant(doctor.FullName),
+                "/home",
+                data);
+        }
+
+        auditor.Add(
+            after is null ? AuditActions.DoctorServiceActivated : AuditActions.DoctorTrialExtended,
+            AuditTargets.Doctor,
+            doctorId,
+            after is null ? new { trialEndsAtBefore = before } : new { before, after, days },
+            doctorId: doctorId);
+        await db.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+
+        // The session's trial (auth/me, refresh) comes from the cached account state.
+        stateCache.Invalidate(doctorId);
+        foreach (var assistantId in assistants)
+        {
+            stateCache.Invalidate(assistantId);
+        }
+
+        return Ok(TrialViewOf(doctor, now));
+    }
+
+    private static DoctorTrialView TrialViewOf(Doctor doctor, DateTime now) =>
+        new(doctor.UserId, doctor.FullName, doctor.Status, TrialView.Of(doctor.TrialEndsAt, now));
 
     private static DoctorStatusView View(Doctor doctor) =>
         new(doctor.UserId, doctor.FullName, doctor.Status, doctor.StatusReason, doctor.StatusChangedAt);

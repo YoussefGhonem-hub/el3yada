@@ -20,9 +20,8 @@ void phase2LinkedPatient(ClinicDay day, {required String? skip}) {
   late PatientView first;
 
   test('another clinic finds the number elsewhere and links the patient', () async {
-    await signUpApprovedDoctor(
+    await signUpDoctor(
       doctor: other,
-      admin: day.admin,
       fullName: 'هالة يوسف',
       email: 'contract-doctor2-${day.run}@el3yada.dev',
       password: 'Doctor1234',

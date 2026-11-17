@@ -1,5 +1,6 @@
 using El3yada.Api.Auth;
 using El3yada.Api.Clinic;
+using El3yada.Api.Doctors;
 using El3yada.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,10 @@ public sealed record ClinicAssistantView(Guid UserId, string FullName, string Pr
 public sealed record ClinicBranchView(
     Guid Id, string NameAr, string? NameEn, bool IsDefault, string Status, string Governorate, string City, bool Assigned);
 
-/// <summary>Platform fees per session (BR-S5, shown on the D8 type cards and the BR-S6 confirmation) and the consultation limit (BR-S3).</summary>
+/// <summary>
+/// Platform fees per session (BR-S5, shown on the D8 type cards and the BR-S6 confirmation) and the consultation
+/// limit (BR-S3). Both fees are 0 while the free trial runs (BR-T3): what a session saved now is charged.
+/// </summary>
 public sealed record ClinicFeesView(int ExaminationFeePiasters, int ConsultationFeePiasters, int MaxConsecutiveConsultations);
 
 public sealed record ClinicLimitsView(int MaxAssistants, int MaxBranches, int MaxUploadMb);
@@ -39,17 +43,22 @@ public sealed record ClinicContextView(
     IReadOnlyList<ClinicBranchView> Branches,
     Guid? DefaultBranchId,
     ClinicFeesView Fees,
-    ClinicLimitsView Limits);
+    ClinicLimitsView Limits,
+    TrialView? Trial);
 
 [ApiController]
 [Route("api/clinic")]
 [Clinic]
-public sealed class ClinicController(AppDbContext db) : ControllerBase
+public sealed class ClinicController(AppDbContext db, TimeProvider time) : ControllerBase
 {
+    /// <summary>Also after the free trial ended (BR-T4): <c>trial.ended</c> is what A15 shows.</summary>
     [HttpGet("me")]
+    [AllowedAfterTrial]
     public async Task<IActionResult> Me(CancellationToken cancellationToken)
     {
         var caller = HttpContext.Clinic();
+        var now = time.GetUtcNow().UtcDateTime;
+        var free = caller.TrialRunning(now);
         var doctor = await db.Doctors.AsNoTracking()
             .Where(d => d.UserId == caller.DoctorId)
             .Select(d => new
@@ -88,7 +97,9 @@ public sealed class ClinicController(AppDbContext db) : ControllerBase
             branches.Select(b => new ClinicBranchView(
                 b.Id, b.NameAr, b.NameEn, b.IsDefault, b.Status, b.Governorate, b.City, caller.CanUseBranch(b.Id))).ToList(),
             doctor.DefaultBranchId,
-            new ClinicFeesView(settings.ExamFeePiasters, settings.ConsultationFeePiasters, settings.MaxConsecutiveConsultations),
-            new ClinicLimitsView(settings.MaxAssistantsPerDoctor, settings.MaxBranchesPerDoctor, settings.MaxUploadMb)));
+            new ClinicFeesView(
+                free ? 0 : settings.ExamFeePiasters, free ? 0 : settings.ConsultationFeePiasters, settings.MaxConsecutiveConsultations),
+            new ClinicLimitsView(settings.MaxAssistantsPerDoctor, settings.MaxBranchesPerDoctor, settings.MaxUploadMb),
+            TrialView.Of(caller.TrialEndsAt, now)));
     }
 }

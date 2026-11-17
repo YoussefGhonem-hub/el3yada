@@ -95,7 +95,7 @@ public sealed class AuthController(
     public async Task<IActionResult> Me(CancellationToken cancellationToken)
     {
         var account = await AccountState.LoadAsync(db, User.UserId(), cancellationToken);
-        return account is null ? this.NotFoundProblem() : Ok(SessionView.Of(account));
+        return account is null ? this.NotFoundProblem() : Ok(SessionView.Of(account, time.GetUtcNow().UtcDateTime));
     }
 
     /// <summary>Language and appearance, saved in Users.Locale and Users.ThemeMode (push language, spec 12).</summary>
@@ -109,7 +109,7 @@ public sealed class AuthController(
         user.UpdatedAt = Now;
         await db.SaveChangesAsync(cancellationToken);
         stateCache.Invalidate(user.Id);
-        return Ok(SessionView.Of((await AccountState.LoadAsync(db, user.Id, cancellationToken))!));
+        return Ok(SessionView.Of((await AccountState.LoadAsync(db, user.Id, cancellationToken))!, Now));
     }
 
     /// <summary>

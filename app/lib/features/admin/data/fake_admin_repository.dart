@@ -126,15 +126,20 @@ class FakeAdminRepository implements AdminRepository {
   Future<Paged<RegistrationSummary>> doctorRegistrations({
     String? search,
     String sort = 'newest',
+    TrialFilter? trial,
     int page = 1,
     int pageSize = 25,
   }) async {
     await _step('doctorRegistrations');
+    lastTrialFilter = trial;
     final query = Validators.normalizeDigits(search?.trim() ?? '').toLowerCase();
     final mobile = Validators.normalizeEgyptianMobile(query);
     final rows = _registrations.values.where((r) {
       final reg = r.registration;
-      if (!reg.isPending) return false;
+      if (trial != null) {
+        final state = _trialOf(r);
+        if (state == null || state.ended != (trial == TrialFilter.ended)) return false;
+      }
       if (query.isEmpty) return true;
       return reg.fullName.contains(query) ||
           (reg.fullNameEn?.toLowerCase().contains(query) ?? false) ||
@@ -159,6 +164,7 @@ class FakeAdminRepository implements AdminRepository {
             submittedAt: r.registration.submittedAt,
             createdAt: r.createdAt,
             emailVerified: r.registration.emailVerified,
+            trial: _trialOf(r),
           ),
       ],
       page,
@@ -170,7 +176,7 @@ class FakeAdminRepository implements AdminRepository {
   Future<RegistrationDetail> doctorRegistration(String doctorId) async {
     await _step('doctorRegistration');
     final r = _registrations[doctorId] ?? (throw _error(404, 'NOT_FOUND'));
-    return RegistrationDetail(registration: r.registration, reviews: List.of(r.reviews.reversed));
+    return RegistrationDetail(registration: r.registration.withTrial(_trialOf(r)), reviews: List.of(r.reviews.reversed));
   }
 
   @override
@@ -208,6 +214,8 @@ class FakeAdminRepository implements AdminRepository {
       approve ? DoctorStatuses.active : DoctorStatuses.rejected,
       statusReason: approve ? null : text,
     );
+    // BR-T1: approval starts the free trial.
+    if (approve) r.trialEndsAt = _now.add(Duration(days: _settings['trialDays']! as int));
     r.reviews.add(RegistrationReview(decision: decision, reason: approve ? null : text, reviewedByName: _me.displayName, at: _now));
     _addAudit(
       approve ? 'doctorRegistrationApproved' : 'doctorRegistrationRejected',
@@ -216,7 +224,75 @@ class FakeAdminRepository implements AdminRepository {
       doctorId: doctorId,
       details: approve ? null : {'reason': text},
     );
-    return r.registration;
+    return r.registration.withTrial(_trialOf(r));
+  }
+
+  // ---------------------------------------------------------------------------
+  // Free trial (backend/docs/api-free-trial.md)
+
+  /// The AD2 trial filter the last [doctorRegistrations] call used (for tests).
+  TrialFilter? lastTrialFilter;
+
+  /// The trial as the API reports it, from its end date and now.
+  TrialInfo? _trialOf(_FakeRegistration r) {
+    final endsAt = r.trialEndsAt;
+    if (endsAt == null || !r.registration.isApproved) return null;
+    final left = endsAt.difference(_now);
+    final ended = left <= Duration.zero;
+    return TrialInfo(
+      endsAt: endsAt,
+      ended: ended,
+      daysLeft: ended ? 0 : (left.inMinutes / Duration.minutesPerDay).ceil(),
+    );
+  }
+
+  _FakeRegistration _approved(String doctorId) {
+    final r = _registrations[doctorId] ?? (throw _error(404, 'NOT_FOUND'));
+    final status = r.registration.status;
+    if (!r.registration.isApproved) {
+      throw ApiException(
+        kind: ApiErrorKind.http,
+        status: 409,
+        code: ApiCodes.doctorStatusNotChangeable,
+        details: {'code': ApiCodes.doctorStatusNotChangeable, 'status': status},
+      );
+    }
+    return r;
+  }
+
+  DoctorTrialView _trialView(_FakeRegistration r) => DoctorTrialView(
+        doctorId: r.registration.doctorId,
+        fullName: r.registration.fullName,
+        status: r.registration.status,
+        trial: _trialOf(r),
+      );
+
+  @override
+  Future<DoctorTrialView> activateDoctorService(String doctorId) async {
+    await _step('activateDoctorService');
+    final r = _approved(doctorId);
+    if (r.trialEndsAt != null) {
+      _addAudit('doctorServiceActivated', 'doctor',
+          targetId: doctorId, doctorId: doctorId, details: {'trialEndsAtBefore': r.trialEndsAt!.toIso8601String()});
+      r.trialEndsAt = null;
+    }
+    return _trialView(r);
+  }
+
+  @override
+  Future<DoctorTrialView> extendDoctorTrial(String doctorId, {required int days}) async {
+    await _step('extendDoctorTrial');
+    if (days < 1 || days > 90) throw _invalid({'days': 'OUT_OF_RANGE'});
+    final r = _approved(doctorId);
+    final before = r.trialEndsAt ?? (throw _error(409, ApiCodes.serviceAlreadyActive));
+    final from = before.isAfter(_now) ? before : _now;
+    r.trialEndsAt = from.add(Duration(days: days));
+    _addAudit('doctorTrialExtended', 'doctor', targetId: doctorId, doctorId: doctorId, details: {
+      'before': before.toIso8601String(),
+      'after': r.trialEndsAt!.toIso8601String(),
+      'days': days,
+    });
+    return _trialView(r);
   }
 
   // ---------------------------------------------------------------------------
@@ -694,6 +770,30 @@ class FakeAdminRepository implements AdminRepository {
       licenseNumber: '40110',
       licenseContentType: 'image/png',
     ));
+    // Approved 9 days ago: 5 days of the 14-day trial left.
+    _registrations['doc-tarek']!.trialEndsAt = _ago(days: 9).add(const Duration(days: 14));
+    // Approved 20 days ago: the trial ended 6 days ago (A15 for her).
+    add(DoctorRegistration(
+      doctorId: 'doc-nadia',
+      status: DoctorStatuses.active,
+      submittedAt: _ago(days: 21),
+      approvedAt: _ago(days: 20),
+      fullName: 'نادية فتحي عبد الرحمن',
+      email: 'nadia.derma@example.com',
+      phone: '+201277665544',
+      title: 'أخصائي',
+      specialty: derma,
+      licenseNumber: '51207',
+      licenseContentType: 'image/png',
+      branch: const RegistrationBranch(
+        nameAr: 'عيادة سموحة',
+        governorate: 'الإسكندرية',
+        city: 'سموحة',
+        addressDetails: '22 شارع فوزي معاذ، الدور الثاني',
+        phones: [BranchPhone(number: '+201277665544', label: 'mobile', isWhatsapp: true)],
+      ),
+    ));
+    _registrations['doc-nadia']!.trialEndsAt = _ago(days: 6);
 
     final nour = AdminUser(
       userId: 'admin-nour',
@@ -741,6 +841,7 @@ class FakeAdminRepository implements AdminRepository {
       'consultationFeePiasters': 1500,
       'gracePeriodDays': 7,
       'maxConsecutiveConsultations': 2,
+      'trialDays': 14,
       'instapayAddress': 'el3yada@instapay',
       'instapayAccountName': 'El3yada Health Tech',
       'instapayInstructionsAr': 'حوّل قيمة الفاتورة على عنوان إنستاباي ثم ارفع صورة التحويل من شاشة الفواتير.',
@@ -847,4 +948,7 @@ class _FakeRegistration {
 
   /// The last suspension or reactivation.
   DateTime? statusChangedAt;
+
+  /// The free trial's end (Doctors.TrialEndsAt); null when none.
+  DateTime? trialEndsAt;
 }

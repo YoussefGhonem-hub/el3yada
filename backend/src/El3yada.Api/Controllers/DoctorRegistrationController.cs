@@ -79,6 +79,8 @@ public sealed class DoctorRegistrationController(
         }
 
         var now = Now;
+        // No approval step (spec 6.16 BR-T1): the clinic opens at once with a free trial.
+        var trialDays = await db.AppSettings.Select(s => s.TrialDays).SingleAsync(cancellationToken);
         var doctorId = Guid.NewGuid();
         var licensePath = StoragePath.DoctorLicense(doctorId, Guid.NewGuid(), input.LicenseType!);
         var saved = await SaveLicenseAsync(licensePath, input.License, cancellationToken);
@@ -107,8 +109,10 @@ public sealed class DoctorRegistrationController(
             UserId = doctorId,
             SpecialtyId = data.SpecialtyId!.Value,
             LicenseDocPath = licensePath.Value,
-            Status = DoctorStatuses.PendingApproval,
+            Status = DoctorStatuses.Active,
             StatusChangedAt = now,
+            ApprovedAt = now,
+            TrialEndsAt = Trial.EndsAt(now, trialDays),
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -133,9 +137,10 @@ public sealed class DoctorRegistrationController(
             doctor.DefaultBranchId = branch.Id;
 
             await NotifyAdminsAsync(NotificationTexts.RegistrationReceived(doctor.FullName, input.Specialty!.NameAr, input.Specialty.NameEn), doctorId, cancellationToken);
+            notifications.Add(doctorId, NotificationTexts.Welcome(trialDays), "/home", new { doctorId });
             auditor.Add(
                 AuditActions.DoctorRegistrationSubmitted, AuditTargets.Doctor, doctorId,
-                new { specialtyId = doctor.SpecialtyId, branchId = branch.Id },
+                new { specialtyId = doctor.SpecialtyId, branchId = branch.Id, trialEndsAt = doctor.TrialEndsAt },
                 doctorId: doctorId, actor: new AuditActor(doctorId, Roles.Doctor));
             verifyToken = await emailTokens.IssueAsync(
                 doctorId, UserTokenPurposes.EmailVerify, TimeSpan.FromHours(authOptions.Value.EmailVerificationTokenHours), cancellationToken);
@@ -153,7 +158,7 @@ public sealed class DoctorRegistrationController(
             throw;
         }
 
-        logger.LogInformation("Doctor {DoctorId} registered and waits for approval", doctorId);
+        logger.LogInformation("Doctor {DoctorId} registered; free trial until {TrialEndsAt}", doctorId, doctor.TrialEndsAt);
         emailQueue.Enqueue(emailTemplates.VerifyEmail(
             email, user.DisplayName, user.Locale, verifyToken, authOptions.Value.EmailVerificationTokenHours, doctorId));
 
@@ -292,7 +297,7 @@ public sealed class DoctorRegistrationController(
         }
 
         logger.LogInformation("Doctor {DoctorId} resubmitted the registration", doctorId);
-        return Ok(await DoctorRegistrationView.LoadAsync(db, doctorId, cancellationToken));
+        return Ok(await DoctorRegistrationView.LoadAsync(db, doctorId, time.GetUtcNow().UtcDateTime, cancellationToken));
     }
 
     /// <summary>The doctor's own registration (A6 read-only, A7 pre-fill), with the status and the rejection reason.</summary>
@@ -300,7 +305,7 @@ public sealed class DoctorRegistrationController(
     [Authorize(Policy = Policies.Doctor)]
     public async Task<IActionResult> GetMyRegistration(CancellationToken cancellationToken)
     {
-        var view = await DoctorRegistrationView.LoadAsync(db, User.UserId(), cancellationToken);
+        var view = await DoctorRegistrationView.LoadAsync(db, User.UserId(), time.GetUtcNow().UtcDateTime, cancellationToken);
         return view is null ? this.NotFoundProblem() : Ok(view);
     }
 

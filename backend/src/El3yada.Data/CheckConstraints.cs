@@ -25,6 +25,7 @@ internal static class CheckConstraints
         ("AppSettings", "CK_AppSettings_MaxConsults", @"([MaxConsecutiveConsultations]>=(1) AND [MaxConsecutiveConsultations]<=(5))"),
         ("AppSettings", "CK_AppSettings_MaxUpload", @"([MaxUploadMb]>=(1) AND [MaxUploadMb]<=(200))"),
         ("AppSettings", "CK_AppSettings_SingleRow", @"([Id]=(1))"),
+        ("AppSettings", "CK_AppSettings_TrialDays", @"([TrialDays]>=(1) AND [TrialDays]<=(90))"),
         ("Assistants", "CK_Assistants_Deps", @"(([ClinicalEditProfile]=(0) OR [ClinicalView]=(1)) AND ([PrescriptionsDraft]=(0) OR [ClinicalView]=(1)) AND ([BillingPay]=(0) OR [BillingView]=(1)) AND ([AppointmentsManage]=(0) OR [AppointmentsView]=(1)) AND ([ScheduleManage]=(0) OR [AppointmentsManage]=(1)))"),
         ("Assistants", "CK_Assistants_Preset", @"([Preset]='custom' OR [Preset]='officeManager' OR [Preset]='clinical' OR [Preset]='reception')"),
         ("Assistants", "CK_Assistants_Status", @"([Status]='removed' OR [Status]='disabled' OR [Status]='active')"),

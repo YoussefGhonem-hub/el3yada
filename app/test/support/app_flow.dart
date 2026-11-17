@@ -1,5 +1,6 @@
 import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
+import 'package:el3yada/features/clinic/data/clinic_repository.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,7 @@ Future<void> pumpApp(
   PublicSettings settings = const PublicSettings(),
   FakePublicSettingsRepository? publicSettings,
   String appVersion = '1.0.0',
+  ClinicRepository? clinic,
   List<Override> extra = const [],
 }) async {
   tester.view.physicalSize = size;
@@ -31,6 +33,7 @@ Future<void> pumpApp(
         settings: settings,
         publicSettings: publicSettings,
         appVersion: appVersion,
+        clinic: clinic,
         extra: extra,
       ),
       child: const El3yadaApp(),

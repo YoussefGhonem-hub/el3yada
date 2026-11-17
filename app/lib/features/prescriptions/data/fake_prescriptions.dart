@@ -376,6 +376,9 @@ class FakePrescriptions implements PrescriptionsRepository {
   // ---------------------------------------------------------------------------
   // Tests
 
+  /// The D22 settings as stored (tests).
+  RxSettings get storedSettings => _currentSettings();
+
   /// A prescription as stored (tests).
   Prescription? stored(String prescriptionId) => _items[prescriptionId] == null ? null : _view(_items[prescriptionId]!);
 

@@ -160,15 +160,15 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
     final form = _form == DrugForms.other && _formText.text.trim().isNotEmpty ? _formText.text.trim() : _form;
     Navigator.of(context).pop(MedicationItem(
       drugName: _name.text.trim(),
-      activeIngredient: _ingredient.text,
+      activeIngredient: _value(_ingredient),
       catalogId: _catalogId,
       form: form,
-      strength: _strength.text,
-      dose: _dose.text,
-      frequency: _frequency.text,
+      strength: _value(_strength),
+      dose: _value(_dose),
+      frequency: _value(_frequency),
       timing: _timing,
       duration: _duration(l10n),
-      instructions: _instructions.text,
+      instructions: _value(_instructions),
     ));
   }
 
@@ -420,7 +420,7 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
       setState(() => _nameError = AppLocalizations.of(context).errorRequired);
       return;
     }
-    Navigator.of(context).pop(InvestigationItem(category: _category, name: _name.text.trim(), loincCode: _code, notes: _notes.text));
+    Navigator.of(context).pop(InvestigationItem(category: _category, name: _name.text.trim(), loincCode: _code, notes: _value(_notes)));
   }
 
   @override
@@ -499,6 +499,12 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
       ],
     );
   }
+}
+
+/// A field's text, or null when it's blank.
+String? _value(TextEditingController controller) {
+  final text = controller.text.trim();
+  return text.isEmpty ? null : text;
 }
 
 class _SheetActions extends StatelessWidget {

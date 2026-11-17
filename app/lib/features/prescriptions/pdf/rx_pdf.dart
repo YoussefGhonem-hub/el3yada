@@ -303,7 +303,7 @@ class _RxLayout {
     return pw.Text(
       value,
       textDirection: _dirOf(value),
-      textAlign: align,
+      textAlign: align ?? (english ? pw.TextAlign.left : pw.TextAlign.right),
       maxLines: maxLines,
       style: pw.TextStyle(
         font: arabic ? (bold ? fonts.arabicBold : fonts.arabic) : (bold ? fonts.latinBold : fonts.latin),
@@ -315,6 +315,9 @@ class _RxLayout {
   }
 
   String _day(DateTime day) => DateFormat.yMMMMd(english ? 'en' : 'ar').format(day);
+
+  /// The visit date in the patient strip: «17 نوفمبر 2026», "Nov 17, 2026".
+  String _shortDay(DateTime day) => DateFormat.yMMMd(english ? 'en' : 'ar').format(day);
 
   // ---------------------------------------------------------------------------
   // Zones 1 and 2: on every page
@@ -338,19 +341,19 @@ class _RxLayout {
       mainAxisAlignment: pw.MainAxisAlignment.center,
       crossAxisAlignment: english ? pw.CrossAxisAlignment.end : pw.CrossAxisAlignment.start,
       children: [
-        text(doctor.nameAr, size: 14, bold: true, color: accent, maxLines: 1),
-        text([doctor.titleAr, ?doctor.specialtyAr].join(' — '), size: 9.5, color: ink, maxLines: 2),
-        if (doctor.degreesAr != null) text(doctor.degreesAr!, size: 9, color: muted, maxLines: 2),
+        text(doctor.nameAr, size: 14, bold: true, color: accent, maxLines: 1, align: pw.TextAlign.right),
+        text([doctor.titleAr, ?doctor.specialtyAr].join(' — '), size: 9.5, color: ink, maxLines: 2, align: pw.TextAlign.right),
+        if (doctor.degreesAr != null) text(doctor.degreesAr!, size: 9, color: muted, maxLines: 2, align: pw.TextAlign.right),
       ],
     );
     final englishBlock = pw.Column(
       mainAxisAlignment: pw.MainAxisAlignment.center,
       crossAxisAlignment: english ? pw.CrossAxisAlignment.start : pw.CrossAxisAlignment.end,
       children: [
-        if (doctor.nameEn != null) text(doctor.nameEn!, size: 12.5, bold: true, color: accent, maxLines: 1),
+        if (doctor.nameEn != null) text(doctor.nameEn!, size: 12.5, bold: true, color: accent, maxLines: 1, align: pw.TextAlign.left),
         if (doctor.titleEn != null || doctor.specialtyEn != null)
-          text([?doctor.titleEn, ?doctor.specialtyEn].join(' — '), size: 9, color: ink, maxLines: 2),
-        if (doctor.degreesEn != null) text(doctor.degreesEn!, size: 9, color: muted, maxLines: 2),
+          text([?doctor.titleEn, ?doctor.specialtyEn].join(' — '), size: 9, color: ink, maxLines: 2, align: pw.TextAlign.left),
+        if (doctor.degreesEn != null) text(doctor.degreesEn!, size: 9, color: muted, maxLines: 2, align: pw.TextAlign.left),
       ],
     );
     final logoSize = 22 * mm;
@@ -380,27 +383,29 @@ class _RxLayout {
 
   pw.Widget _patientStrip() {
     final patient = data.patient;
-    pw.Widget field(String label, String value, {int flex = 2}) => pw.Expanded(
-          flex: flex,
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            mainAxisSize: pw.MainAxisSize.min,
-            children: [
-              text(label, size: 9, color: muted),
-              text(value, size: 10.5, bold: true, maxLines: 1),
-            ],
-          ),
+    pw.Widget field(String label, String value) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          mainAxisSize: pw.MainAxisSize.min,
+          children: [
+            text(label, size: 9, color: muted, maxLines: 1),
+            text(value, size: 10.5, bold: true, maxLines: 1),
+          ],
         );
+    final gap = pw.SizedBox(width: 4 * mm);
     return pw.Container(
       padding: pw.EdgeInsets.symmetric(horizontal: 3 * mm, vertical: 1.2 * mm),
       decoration: pw.BoxDecoration(color: tint, borderRadius: pw.BorderRadius.circular(2 * mm)),
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          field(l10n.rxPdfPatient, patient.name, flex: 5),
-          field(l10n.rxPdfDate, _day(patient.visitDay), flex: 3),
+          pw.Expanded(child: field(l10n.rxPdfPatient, patient.name)),
+          gap,
+          field(l10n.rxPdfDate, _shortDay(patient.visitDay)),
+          gap,
           field(l10n.rxPdfAge, l10n.rxPdfAgeValue(patient.ageYears)),
+          gap,
           field(l10n.rxPdfFile, '${patient.fileNumber}'),
+          gap,
           field(l10n.rxPdfVisit, rxVisitType(l10n, patient.visitType)),
         ],
       ),
@@ -467,16 +472,13 @@ class _RxLayout {
 
   pw.Widget _branch(RxBranch branch) {
     final name = english ? (branch.nameEn ?? branch.nameAr) : branch.nameAr;
-    final phones = [
-      if (branch.phones.isNotEmpty) '${l10n.rxPdfTel}: ${branch.phones.join('  ')}',
-      if (branch.whatsapp.isNotEmpty) '${l10n.rxPdfWhatsapp}: ${branch.whatsapp.join('  ')}',
-    ].join('  ');
     return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
         text(name, size: 9.5, bold: true, color: accent, maxLines: 1),
         text([branch.address, ?branch.landmark].join(' — '), size: 9, maxLines: 1),
-        if (phones.isNotEmpty) text(phones, size: 9, maxLines: 1),
+        if (branch.phones.isNotEmpty) text('${l10n.rxPdfTel}: ${branch.phones.join('  ')}', size: 9, maxLines: 1),
+        if (branch.whatsapp.isNotEmpty) text('${l10n.rxPdfWhatsapp}: ${branch.whatsapp.join('  ')}', size: 9, maxLines: 1),
         if (branch.hours.isNotEmpty) text(branch.hours.first, size: 9, color: muted, maxLines: 1),
       ],
     );

@@ -44,7 +44,7 @@ String rxInstructionLine(AppLocalizations l10n, MedicationItem item) => [
       ?item.frequency,
       if (item.timing != MedicationTiming.unspecified) rxTimingName(l10n, item.timing),
       ?item.instructions,
-    ].join(l10n.rxListSeparator);
+    ].where((part) => part.trim().isNotEmpty).join(l10n.rxListSeparator);
 
 /// How long a medicine is taken: a number of days or weeks, or continuous.
 enum RxDurationUnit { days, weeks, continuous }

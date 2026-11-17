@@ -455,19 +455,27 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TabBar(
-            controller: tabs,
-            tabs: [
-              for (final tab in _visible)
-                Tab(
-                  text: switch (tab) {
-                    _Tab.overview => l10n.patientTabOverview,
-                    _Tab.sessions => l10n.patientTabSessions,
-                    _Tab.files => l10n.patientTabFiles,
-                    _Tab.prescriptions => l10n.patientTabPrescriptions,
-                  },
-                ),
-            ],
+          // Four tabs don't fit a phone's width: they scroll there instead of clipping.
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final scroll = constraints.maxWidth < 120.0 * _visible.length;
+              return TabBar(
+                controller: tabs,
+                isScrollable: scroll,
+                tabAlignment: scroll ? TabAlignment.start : null,
+                tabs: [
+                  for (final tab in _visible)
+                    Tab(
+                      text: switch (tab) {
+                        _Tab.overview => l10n.patientTabOverview,
+                        _Tab.sessions => l10n.patientTabSessions,
+                        _Tab.files => l10n.patientTabFiles,
+                        _Tab.prescriptions => l10n.patientTabPrescriptions,
+                      },
+                    ),
+                ],
+              );
+            },
           ),
           Padding(
             padding: const EdgeInsets.all(16),

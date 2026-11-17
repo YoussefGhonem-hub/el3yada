@@ -231,13 +231,26 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Goal:** doctors scan and upload medical files, write prescriptions and lab/radiology requests with specialty-based search, and print or send them.
 
-**API**
-- [ ] Authenticated upload and download for medical records (size limit `MaxUploadMb`, thumbnails, soft delete).
-- [ ] Prescription drafts (create, edit, reorder items), `submitDraftForReview` [S], `sendPrescription` (needs the uploaded PDF), `cancelPrescription`, "issue new copy".
-- [ ] `rxLink` (`GET /rx/{shortCode}`) for the QR code: App Links / Universal Links and store redirect; never shows content without sign-in.
-- [ ] Doctor item history ("used before") and templates [S].
-- [ ] Prescription header and print settings in the doctor profile (logo, signature, names, colour, paper, margins).
-- [ ] `publishCatalog`, catalog version download, `CatalogCustomItems` sync, `reportCatalogItem` [S], specialty profiles.
+**API** (606 tests: 8 data and 598 API, run against a migrated LocalDB database. Contracts: [api-phase-3-files.md](backend/docs/api-phase-3-files.md), [api-phase-3-prescriptions.md](backend/docs/api-phase-3-prescriptions.md), [api-phase-3-catalogs.md](backend/docs/api-phase-3-catalogs.md).)
+- [x] Authenticated upload and download for medical records (size limit `MaxUploadMb`, thumbnails, soft delete).
+  - Two steps: `uploadFile` then `createRecord`, so every file gets its own progress and retry.
+  - Every file is optimized for storage: images are cut to 2560 px, saved as JPEG quality 80 and stripped of GPS data, and other files are gzip-compressed when that helps.
+  - Migration `MedicalFileStorage`: **run `dotnet ef database update` after pulling.**
+- [x] Prescription drafts (create, edit, reorder items), `submitDraftForReview` [S], `sendPrescription` (needs the uploaded PDF), `cancelPrescription`, "issue new copy".
+  - The app builds the PDF (6.4.1) and uploads it with `sendPrescription`.
+  - Reads by permission: `clinicalView` sees every status; `prescriptionsPrint` sees sent documents only (AS8).
+  - Migration `PrescriptionsAndCatalogs` adds `Prescriptions.FollowUpDate`.
+- [x] `rxLink` (`GET /rx/{shortCode}`) for the QR code: App Links / Universal Links and store redirect; never shows content without sign-in.
+  - It never reads the database, so every code gets the same redirect. The files come from the `AppLinks` settings; production sets the real fingerprints and app IDs.
+  - Not done: the patient-side resolve endpoint (P7, Phase 4).
+- [x] Doctor item history ("used before") and templates [S].
+- [x] Prescription header and print settings in the doctor profile (logo, signature, names, colour, paper, margins).
+  - The logo and signature are stored as PNGs of at most 1000 px. The default clinic colour is the brand pine `#0F4C45`.
+- [x] `publishCatalog`, catalog version download, `CatalogCustomItems` sync, `reportCatalogItem` [S], specialty profiles.
+  - Downloads support ranges, so D0 can resume.
+  - The General profile is an inactive "General" specialty row.
+  - `dotnet run -- seed-specialty-profiles <csv>` loads the builder's `specialty-profiles.csv`.
+  - The expected `schema_version` is 1 (`CatalogSchema.ExpectedVersion`); align it with the builder.
 - [ ] Catalog builder (spec 9.5 and Appendix A), including `class-to-group.csv` and `aliases.csv`. This is the biggest manual task, so start it early in the phase.
 
 **App**

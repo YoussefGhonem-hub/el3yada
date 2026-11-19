@@ -239,6 +239,8 @@ These rules keep three people's code consistent. Change them only by agreement.
 
 **Tables:** Appointments, AppointmentHistory, Branches (booking columns), BranchPeriods, BranchDateOverrides, BranchDateOverridePeriods, BranchClosures, BranchDayStates, PublicHolidays [C], DoctorPatients (self-booking block), Sessions.
 
+**Status (branch `phase-6/appointments-live-board`):** API complete except the load test on real infrastructure (the API tests already race 12 requests for one slot and 10 for a 3-place period with no double booking). Screens built: D29/AS17 schedule (as a Schedule page until Phase 2's D29 tabs exist), D30, D31, D32 (existing patient via a small lookup endpoint, or quick guest), D33, D34/AS1/AS16 live board with side panel and offline banner, P15–P17. Waiting on others: Phase 2 `createSession` must call `BoardActionsService.CompleteWithSessionAsync` (BR-AP10) and the board's Finish button opens D8; "create patient now" in D32 uses D5. Still to do: Firestore listener in the app (needs Firebase; SignalR + 15-second refresh work now), drag and drop [S], doctor extras on the board (BR-LB6), D36 [C], public holidays [C].
+
 **Done when:** AC-21, AC-22, AC-25 and AC-26 pass, and the load test shows no double booking.
 
 ---

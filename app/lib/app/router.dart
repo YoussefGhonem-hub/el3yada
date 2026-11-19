@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/admin_support/presentation/admin_support_screens.dart';
+import '../features/appointments/presentation/appointments_routes.dart';
 import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/splash_screen.dart';
@@ -21,6 +22,7 @@ abstract final class AppRoutes {
 final Map<String, GoRouterWidgetBuilder> _shellPages = {
   ...PatientRoutes.shellPages,
   ...ChatRoutes.shellPages,
+  ...AppointmentsRoutes.shellPages,
   '/admin/accounts': (context, state) => const AccountsSupportScreen(),
   '/admin/deletion-requests': (context, state) => const DeletionRequestsScreen(),
 };
@@ -85,6 +87,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Detail screens, pushed full screen over the shell.
       ...PatientRoutes.detailRoutes,
       ...ChatRoutes.detailRoutes,
+      ...AppointmentsRoutes.detailRoutes,
     ],
   );
 });

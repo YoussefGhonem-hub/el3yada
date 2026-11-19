@@ -57,6 +57,7 @@ class RoleShell {
       NavDestinationSpec(path: '/doctor/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'D30'),
       NavDestinationSpec(path: '/doctor/revenue', icon: Icons.trending_up, label: (l) => l.navRevenue, screenId: 'D35'),
       NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, label: (l) => l.navBilling, screenId: 'D18'),
+      NavDestinationSpec(path: '/doctor/schedule', icon: Icons.schedule_outlined, label: (l) => l.navSchedule, screenId: 'D29'),
       NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, label: (l) => l.navBranches, screenId: 'D28'),
       NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, label: (l) => l.navAssistants, screenId: 'D25'),
       NavDestinationSpec(path: '/doctor/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'D24'),
@@ -74,6 +75,7 @@ class RoleShell {
       NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'AS13'),
       NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'AS18'),
       NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, label: (l) => l.navBilling, screenId: 'AS10'),
+      NavDestinationSpec(path: '/assistant/schedule', icon: Icons.schedule_outlined, label: (l) => l.navSchedule, screenId: 'AS17'),
       NavDestinationSpec(path: '/assistant/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'AS12'),
     ],
   );

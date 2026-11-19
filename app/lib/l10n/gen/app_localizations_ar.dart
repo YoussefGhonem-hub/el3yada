@@ -891,4 +891,561 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chooseCategory => 'اختر نوع الملف';
+
+  @override
+  String get navSchedule => 'مواعيد العمل';
+
+  @override
+  String get apStatusPending => 'في انتظار التأكيد';
+
+  @override
+  String get apStatusConfirmed => 'مؤكد';
+
+  @override
+  String get apStatusCheckedIn => 'وصل';
+
+  @override
+  String get apStatusWithDoctor => 'عند الطبيب';
+
+  @override
+  String get apStatusCompleted => 'تم';
+
+  @override
+  String get apStatusCancelled => 'ملغي';
+
+  @override
+  String get apStatusNoShow => 'لم يحضر';
+
+  @override
+  String get apStatusRejected => 'مرفوض';
+
+  @override
+  String get stageExpected => 'لم يصل بعد';
+
+  @override
+  String get stageWaiting => 'في الانتظار';
+
+  @override
+  String get stageWithDoctor => 'عند الطبيب';
+
+  @override
+  String get stageDone => 'انتهى';
+
+  @override
+  String get stageMissed => 'لم يحضر / ألغي';
+
+  @override
+  String queueNumber(int number) {
+    return 'رقم $number';
+  }
+
+  @override
+  String get errSlotTaken => 'تم حجز هذا الموعد للتو، اختر موعداً آخر';
+
+  @override
+  String get errPeriodFull => 'اكتمل الحجز في هذه الفترة';
+
+  @override
+  String get errOutsideHours => 'الموعد خارج مواعيد العمل';
+
+  @override
+  String get errBranchClosed => 'الفرع مغلق في هذا الموعد';
+
+  @override
+  String get errTooFarAhead => 'الحجز متاح للأيام التي تحددها العيادة فقط';
+
+  @override
+  String get errTooSoon => 'الموعد قريب جداً، اختر موعداً لاحقاً';
+
+  @override
+  String get errSameDayOff =>
+      'الحجز في نفس اليوم غير متاح، برجاء الاتصال بالعيادة';
+
+  @override
+  String get errUpcomingLimit => 'لديك حجز قادم بالفعل مع الطبيب';
+
+  @override
+  String get errSelfBookingBlocked => 'برجاء الاتصال بالعيادة للحجز';
+
+  @override
+  String get errConsultationRequiresExam =>
+      'لا يمكن حجز استشارة الآن، احجز كشفاً';
+
+  @override
+  String get errCancelWindowPassed =>
+      'لا يمكن الإلغاء الآن، برجاء الاتصال بالعيادة';
+
+  @override
+  String get errMaxReschedules => 'وصلت للحد الأقصى لتغيير الموعد';
+
+  @override
+  String get errBookingUnavailable =>
+      'الحجز أونلاين غير متاح حالياً، برجاء الاتصال بالعيادة';
+
+  @override
+  String get errAlreadyHandled =>
+      'تم تحديث هذا الحجز بالفعل بواسطة شخص آخر، وتم تحديث اللوحة';
+
+  @override
+  String get errGuestNeedsAccount => 'أنشئ حساب المريض أولاً ثم اربط الحجز';
+
+  @override
+  String get boardOffline => 'غير متصل — قد لا تكون البيانات محدثة';
+
+  @override
+  String get book => 'حجز';
+
+  @override
+  String get walkIn => 'حضور بدون حجز';
+
+  @override
+  String get more => 'المزيد';
+
+  @override
+  String get doctorDelayed => 'الطبيب متأخر';
+
+  @override
+  String minutesCount(int minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String patientsNotified(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم إبلاغ $count مريض',
+      few: 'تم إبلاغ $count مرضى',
+      two: 'تم إبلاغ مريضين',
+      one: 'تم إبلاغ مريض واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cancelRestOfDay => 'إلغاء باقي اليوم';
+
+  @override
+  String get cancelRestOfDayBody =>
+      'سيتم إلغاء كل الحجوزات التي لم تصل بعد في هذا الفرع اليوم، وسيتم إبلاغ المرضى بالحجز مرة أخرى.';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String bookingsCancelled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم إلغاء $count حجز',
+      few: 'تم إلغاء $count حجوزات',
+      two: 'تم إلغاء حجزين',
+      one: 'تم إلغاء حجز واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nowServing => 'الدور الحالي';
+
+  @override
+  String countBooked(int count) {
+    return 'محجوز: $count';
+  }
+
+  @override
+  String countArrived(int count) {
+    return 'وصل: $count';
+  }
+
+  @override
+  String delayedBy(int minutes) {
+    return 'تأخير $minutes دقيقة';
+  }
+
+  @override
+  String get boardEmptyStage => 'لا يوجد أحد';
+
+  @override
+  String get confirmBooking => 'تأكيد';
+
+  @override
+  String get checkIn => 'وصل';
+
+  @override
+  String get callIn => 'دخول للطبيب';
+
+  @override
+  String get undoNoShow => 'تراجع عن عدم الحضور';
+
+  @override
+  String get newPatient => 'مريض جديد';
+
+  @override
+  String lastVisitOn(String date, String type) {
+    return 'آخر زيارة: $date — $type';
+  }
+
+  @override
+  String get priority => 'أولوية';
+
+  @override
+  String get late => 'متأخر';
+
+  @override
+  String get consultationNotAllowed => 'الاستشارة غير متاحة';
+
+  @override
+  String get guest => 'زائر';
+
+  @override
+  String waitedMinutes(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
+  String get markNoShow => 'لم يحضر';
+
+  @override
+  String get leftWithoutSeen => 'غادر دون الكشف';
+
+  @override
+  String get sendBack => 'رجوع للانتظار';
+
+  @override
+  String get visitsCount => 'الزيارات';
+
+  @override
+  String get lastVisit => 'آخر زيارة';
+
+  @override
+  String get recentAmounts => 'آخر المبالغ المحصلة';
+
+  @override
+  String get upcomingAndNoShows => 'حجوزات قادمة · مرات عدم الحضور';
+
+  @override
+  String get bookingReason => 'سبب الحجز';
+
+  @override
+  String get staffNotes => 'ملاحظات العيادة';
+
+  @override
+  String get openBooking => 'فتح الحجز';
+
+  @override
+  String get searchPatient => 'الاسم أو رقم الموبايل أو رقم الملف';
+
+  @override
+  String get hasUpcoming => 'لديه حجز قادم';
+
+  @override
+  String get chooseVisitType => 'اختر نوع الزيارة';
+
+  @override
+  String get guestNameAndPhone => 'اكتب الاسم ورقم الموبايل';
+
+  @override
+  String get existingPatient => 'مريض مسجل';
+
+  @override
+  String get visitType => 'نوع الزيارة';
+
+  @override
+  String get firstVisitIsExam => 'أول زيارة تكون كشفاً دائماً.';
+
+  @override
+  String consultationCount(int count, int max) {
+    return 'استشارة $count من $max منذ آخر كشف';
+  }
+
+  @override
+  String get noOpenDays => 'لا توجد أيام متاحة في هذه الفترة.';
+
+  @override
+  String placesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مكان متبقٍ',
+      few: '$count أماكن متبقية',
+      two: 'مكانان متبقيان',
+      one: 'مكان واحد متبقٍ',
+      zero: 'مكتمل',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String estimatedTime(String time) {
+    return 'حوالي $time';
+  }
+
+  @override
+  String get tabUpcoming => 'القادمة';
+
+  @override
+  String get tabPast => 'السابقة';
+
+  @override
+  String get tabCancelled => 'الملغاة';
+
+  @override
+  String get noAppointments => 'لا توجد حجوزات هنا.';
+
+  @override
+  String get cancelBooking => 'إلغاء الحجز';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get bookingCancelled => 'تم إلغاء حجزك.';
+
+  @override
+  String get appointmentDetails => 'تفاصيل الحجز';
+
+  @override
+  String nowServingYourNumber(int now, int mine) {
+    return 'الدور الحالي: $now — دورك: $mine';
+  }
+
+  @override
+  String get waitingForClinic => 'في انتظار تأكيد العيادة';
+
+  @override
+  String get reschedule => 'تغيير الموعد';
+
+  @override
+  String get callClinic => 'اتصل بالعيادة';
+
+  @override
+  String get openVisit => 'فتح الزيارة';
+
+  @override
+  String get history => 'السجل';
+
+  @override
+  String get byYou => 'بواسطتك';
+
+  @override
+  String get bySystem => 'تلقائياً';
+
+  @override
+  String get byClinic => 'بواسطة العيادة';
+
+  @override
+  String get historyCreated => 'تم الحجز';
+
+  @override
+  String get historyRescheduled => 'تم تغيير الموعد';
+
+  @override
+  String get historyExpired => 'لم يتم التأكيد في الوقت';
+
+  @override
+  String get bookAppointment => 'حجز موعد';
+
+  @override
+  String get chooseDoctor => 'اختر الطبيب';
+
+  @override
+  String get chooseBranch => 'اختر الفرع';
+
+  @override
+  String get chooseDateAndTime => 'اختر اليوم والموعد';
+
+  @override
+  String get bookingReasonOptional => 'سبب الزيارة (اختياري)';
+
+  @override
+  String cancelPolicy(int hours) {
+    return 'يمكنك الإلغاء أو التغيير حتى $hours ساعة قبل الموعد';
+  }
+
+  @override
+  String get confirmBookingButton => 'تأكيد الحجز';
+
+  @override
+  String get bookingConfirmed => 'تم تأكيد الحجز';
+
+  @override
+  String get bookingMoved => 'تم تغيير موعدك';
+
+  @override
+  String get previousDay => 'اليوم السابق';
+
+  @override
+  String get nextDay => 'اليوم التالي';
+
+  @override
+  String get searchBookings => 'البحث في الحجوزات';
+
+  @override
+  String get reasonLabel => 'السبب';
+
+  @override
+  String get whenLabel => 'الموعد';
+
+  @override
+  String get bookedBy => 'حجز بواسطة';
+
+  @override
+  String get overbooked => 'حجز إضافي';
+
+  @override
+  String get checkedInNoSession => 'وصل ولم تُسجل زيارة';
+
+  @override
+  String get sourceApp => 'تطبيق المريض';
+
+  @override
+  String get sourceStaff => 'العيادة';
+
+  @override
+  String get quickGuest => 'زائر سريع';
+
+  @override
+  String get overbookTitle => 'المكان مكتمل';
+
+  @override
+  String get overbookBody =>
+      'الفترة أو الموعد مكتمل. هل تريد الحجز كحجز إضافي؟';
+
+  @override
+  String get upcomingWarningBody =>
+      'لدى هذا المريض حجز قادم بالفعل. يمكنك تغيير موعده بدلاً من ذلك أو حجز موعد آخر.';
+
+  @override
+  String get bookAnyway => 'احجز على أي حال';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get tomorrow => 'غداً';
+
+  @override
+  String get next7Days => 'الأيام السبعة القادمة';
+
+  @override
+  String get guestsOnly => 'الزوار فقط';
+
+  @override
+  String get scheduleConflictsLeft => 'بعض الحجوزات ما زالت تحتاج إلى قرار.';
+
+  @override
+  String get scheduleSaved => 'تم حفظ المواعيد';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get specialDates => 'أيام خاصة';
+
+  @override
+  String get bookingSettings => 'إعدادات الحجز';
+
+  @override
+  String get copySaturdayToAll => 'نسخ السبت لكل الأيام';
+
+  @override
+  String get addPeriod => 'إضافة فترة';
+
+  @override
+  String get closeADay => 'إغلاق يوم';
+
+  @override
+  String get remove => 'حذف';
+
+  @override
+  String get closures => 'الإغلاق والإجازات';
+
+  @override
+  String get addClosure => 'إضافة إغلاق';
+
+  @override
+  String get closureScope => 'إغلاق أي فروع؟';
+
+  @override
+  String get thisBranch => 'هذا الفرع';
+
+  @override
+  String get allBranches => 'كل الفروع';
+
+  @override
+  String get bookingMode => 'طريقة الحجز';
+
+  @override
+  String get modeQueue => 'بالدور';
+
+  @override
+  String get modeTimed => 'مواعيد محددة';
+
+  @override
+  String get slotMinutes => 'مدة الموعد (دقيقة)';
+
+  @override
+  String get defaultCapacity => 'عدد الأماكن في الفترة';
+
+  @override
+  String get avgVisitMinutes => 'متوسط مدة الكشف (دقيقة)';
+
+  @override
+  String get selfBooking => 'الحجز من تطبيق المريض';
+
+  @override
+  String get autoConfirm => 'تأكيد حجوزات التطبيق تلقائياً';
+
+  @override
+  String get sameDayBooking => 'الحجز في نفس اليوم';
+
+  @override
+  String get staffOverbooking => 'السماح للعيادة بالحجز الإضافي بعد التنبيه';
+
+  @override
+  String get windowDays => 'الحجز متاح حتى (يوم)';
+
+  @override
+  String get minNoticeMinutes => 'أقل مدة قبل الموعد (دقيقة)';
+
+  @override
+  String get freeCancelMinutes => 'الإلغاء مجاناً حتى (دقيقة قبل الموعد)';
+
+  @override
+  String get maxReschedules => 'مرات تغيير الحجز';
+
+  @override
+  String get maxUpcoming => 'الحجوزات القادمة لكل مريض';
+
+  @override
+  String get nextDayShort => '(+يوم)';
+
+  @override
+  String get capacity => 'الأماكن';
+
+  @override
+  String affectedBookings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حجز متأثر',
+      few: '$count حجوزات متأثرة',
+      two: 'حجزان متأثران',
+      one: 'حجز واحد متأثر',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get keepAll => 'إبقاء الكل';
+
+  @override
+  String get cancelAll => 'إلغاء الكل';
+
+  @override
+  String get keep => 'إبقاء';
+
+  @override
+  String get applyChanges => 'تطبيق التغييرات';
 }

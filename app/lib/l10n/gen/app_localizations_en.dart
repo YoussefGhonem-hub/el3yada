@@ -883,4 +883,558 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseCategory => 'Choose the category';
+
+  @override
+  String get navSchedule => 'Schedule';
+
+  @override
+  String get apStatusPending => 'Waiting to confirm';
+
+  @override
+  String get apStatusConfirmed => 'Confirmed';
+
+  @override
+  String get apStatusCheckedIn => 'Checked in';
+
+  @override
+  String get apStatusWithDoctor => 'With the doctor';
+
+  @override
+  String get apStatusCompleted => 'Completed';
+
+  @override
+  String get apStatusCancelled => 'Cancelled';
+
+  @override
+  String get apStatusNoShow => 'No-show';
+
+  @override
+  String get apStatusRejected => 'Rejected';
+
+  @override
+  String get stageExpected => 'Expected';
+
+  @override
+  String get stageWaiting => 'Waiting';
+
+  @override
+  String get stageWithDoctor => 'With the doctor';
+
+  @override
+  String get stageDone => 'Done';
+
+  @override
+  String get stageMissed => 'Missed';
+
+  @override
+  String queueNumber(int number) {
+    return 'No. $number';
+  }
+
+  @override
+  String get errSlotTaken => 'This time was just booked. Choose another one.';
+
+  @override
+  String get errPeriodFull => 'This period is fully booked.';
+
+  @override
+  String get errOutsideHours => 'This time is outside working hours.';
+
+  @override
+  String get errBranchClosed => 'The branch is closed at this time.';
+
+  @override
+  String get errTooFarAhead =>
+      'Booking is open only for the coming days set by the clinic.';
+
+  @override
+  String get errTooSoon => 'This time is too soon to book.';
+
+  @override
+  String get errSameDayOff =>
+      'Same-day booking isn\'t available. Please call the clinic.';
+
+  @override
+  String get errUpcomingLimit =>
+      'You already have an upcoming booking with this doctor.';
+
+  @override
+  String get errSelfBookingBlocked => 'Please call the clinic to book.';
+
+  @override
+  String get errConsultationRequiresExam =>
+      'A consultation isn\'t possible now. Book an examination.';
+
+  @override
+  String get errCancelWindowPassed =>
+      'It\'s too late to change this booking. Please call the clinic.';
+
+  @override
+  String get errMaxReschedules =>
+      'You\'ve reached the maximum number of changes for this booking.';
+
+  @override
+  String get errBookingUnavailable =>
+      'Online booking isn\'t available right now. Please call the clinic.';
+
+  @override
+  String get errAlreadyHandled =>
+      'Someone else already updated this booking. The board was refreshed.';
+
+  @override
+  String get errGuestNeedsAccount =>
+      'Create the patient\'s account first, then link the booking.';
+
+  @override
+  String get boardOffline => 'Offline: the data may be out of date';
+
+  @override
+  String get book => 'Book';
+
+  @override
+  String get walkIn => 'Walk-in';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get doctorDelayed => 'Doctor delayed';
+
+  @override
+  String minutesCount(int minutes) {
+    return '$minutes minutes';
+  }
+
+  @override
+  String patientsNotified(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count patients notified',
+      one: '1 patient notified',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cancelRestOfDay => 'Cancel the rest of today';
+
+  @override
+  String get cancelRestOfDayBody =>
+      'Every booking that hasn\'t arrived yet at this branch today will be cancelled, and patients will be told to book again.';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String bookingsCancelled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bookings cancelled',
+      one: '1 booking cancelled',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nowServing => 'Now serving';
+
+  @override
+  String countBooked(int count) {
+    return 'Booked: $count';
+  }
+
+  @override
+  String countArrived(int count) {
+    return 'Arrived: $count';
+  }
+
+  @override
+  String delayedBy(int minutes) {
+    return 'Delayed $minutes min';
+  }
+
+  @override
+  String get boardEmptyStage => 'Nobody here';
+
+  @override
+  String get confirmBooking => 'Confirm';
+
+  @override
+  String get checkIn => 'Check in';
+
+  @override
+  String get callIn => 'Call in';
+
+  @override
+  String get undoNoShow => 'Undo no-show';
+
+  @override
+  String get newPatient => 'New patient';
+
+  @override
+  String lastVisitOn(String date, String type) {
+    return 'Last visit: $date — $type';
+  }
+
+  @override
+  String get priority => 'Priority';
+
+  @override
+  String get late => 'Late';
+
+  @override
+  String get consultationNotAllowed => 'Consultation not allowed';
+
+  @override
+  String get guest => 'Guest';
+
+  @override
+  String waitedMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get markNoShow => 'Mark no-show';
+
+  @override
+  String get leftWithoutSeen => 'Left without being seen';
+
+  @override
+  String get sendBack => 'Back to waiting';
+
+  @override
+  String get visitsCount => 'Visits';
+
+  @override
+  String get lastVisit => 'Last visit';
+
+  @override
+  String get recentAmounts => 'Recent amounts';
+
+  @override
+  String get upcomingAndNoShows => 'Upcoming bookings · no-shows';
+
+  @override
+  String get bookingReason => 'Reason for booking';
+
+  @override
+  String get staffNotes => 'Staff notes';
+
+  @override
+  String get openBooking => 'Open booking';
+
+  @override
+  String get searchPatient => 'Name, phone or file number';
+
+  @override
+  String get hasUpcoming => 'Has an upcoming booking';
+
+  @override
+  String get chooseVisitType => 'Choose the visit type';
+
+  @override
+  String get guestNameAndPhone =>
+      'Enter the name (two words at least) and the mobile number';
+
+  @override
+  String get existingPatient => 'Existing patient';
+
+  @override
+  String get visitType => 'Visit type';
+
+  @override
+  String get firstVisitIsExam => 'The first visit is always an examination.';
+
+  @override
+  String consultationCount(int count, int max) {
+    return 'Consultation $count of $max since the last examination';
+  }
+
+  @override
+  String get noOpenDays => 'No open days in this range.';
+
+  @override
+  String placesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count places left',
+      one: '1 place left',
+      zero: 'Full',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String estimatedTime(String time) {
+    return 'About $time';
+  }
+
+  @override
+  String get tabUpcoming => 'Upcoming';
+
+  @override
+  String get tabPast => 'Past';
+
+  @override
+  String get tabCancelled => 'Cancelled';
+
+  @override
+  String get noAppointments => 'No bookings here.';
+
+  @override
+  String get cancelBooking => 'Cancel booking';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get bookingCancelled => 'Your booking was cancelled.';
+
+  @override
+  String get appointmentDetails => 'Booking details';
+
+  @override
+  String nowServingYourNumber(int now, int mine) {
+    return 'Now serving $now — your number $mine';
+  }
+
+  @override
+  String get waitingForClinic => 'Waiting for the clinic to confirm';
+
+  @override
+  String get reschedule => 'Change time';
+
+  @override
+  String get callClinic => 'Call the clinic';
+
+  @override
+  String get openVisit => 'Open the visit';
+
+  @override
+  String get history => 'History';
+
+  @override
+  String get byYou => 'by you';
+
+  @override
+  String get bySystem => 'automatically';
+
+  @override
+  String get byClinic => 'by the clinic';
+
+  @override
+  String get historyCreated => 'Booked';
+
+  @override
+  String get historyRescheduled => 'Rescheduled';
+
+  @override
+  String get historyExpired => 'Not confirmed in time';
+
+  @override
+  String get bookAppointment => 'Book an appointment';
+
+  @override
+  String get chooseDoctor => 'Choose the doctor';
+
+  @override
+  String get chooseBranch => 'Choose the branch';
+
+  @override
+  String get chooseDateAndTime => 'Choose the day and time';
+
+  @override
+  String get bookingReasonOptional => 'Reason (optional)';
+
+  @override
+  String cancelPolicy(int hours) {
+    return 'You can cancel or change up to $hours hours before the appointment.';
+  }
+
+  @override
+  String get confirmBookingButton => 'Confirm booking';
+
+  @override
+  String get bookingConfirmed => 'Booking confirmed';
+
+  @override
+  String get bookingMoved => 'Your booking was moved';
+
+  @override
+  String get previousDay => 'Previous day';
+
+  @override
+  String get nextDay => 'Next day';
+
+  @override
+  String get searchBookings => 'Search bookings';
+
+  @override
+  String get reasonLabel => 'Reason';
+
+  @override
+  String get whenLabel => 'When';
+
+  @override
+  String get bookedBy => 'Booked by';
+
+  @override
+  String get overbooked => 'Overbooked';
+
+  @override
+  String get checkedInNoSession => 'Checked in, but no session was recorded';
+
+  @override
+  String get sourceApp => 'patient app';
+
+  @override
+  String get sourceStaff => 'clinic';
+
+  @override
+  String get quickGuest => 'Quick guest';
+
+  @override
+  String get overbookTitle => 'This place is full';
+
+  @override
+  String get overbookBody =>
+      'The period or time is already full. Book anyway as an extra?';
+
+  @override
+  String get upcomingWarningBody =>
+      'This patient already has an upcoming booking. You can change that one instead, or book another.';
+
+  @override
+  String get bookAnyway => 'Book anyway';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String get next7Days => 'Next 7 days';
+
+  @override
+  String get guestsOnly => 'Guests only';
+
+  @override
+  String get scheduleConflictsLeft => 'Some bookings still need a decision.';
+
+  @override
+  String get scheduleSaved => 'Schedule saved';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get specialDates => 'Special dates';
+
+  @override
+  String get bookingSettings => 'Booking settings';
+
+  @override
+  String get copySaturdayToAll => 'Copy Saturday to all days';
+
+  @override
+  String get addPeriod => 'Add period';
+
+  @override
+  String get closeADay => 'Close a day';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get closures => 'Closures and vacations';
+
+  @override
+  String get addClosure => 'Add closure';
+
+  @override
+  String get closureScope => 'Close which branches?';
+
+  @override
+  String get thisBranch => 'This branch';
+
+  @override
+  String get allBranches => 'All branches';
+
+  @override
+  String get bookingMode => 'Booking mode';
+
+  @override
+  String get modeQueue => 'Queue numbers';
+
+  @override
+  String get modeTimed => 'Timed slots';
+
+  @override
+  String get slotMinutes => 'Slot length (minutes)';
+
+  @override
+  String get defaultCapacity => 'Places per period';
+
+  @override
+  String get avgVisitMinutes => 'Average visit (minutes)';
+
+  @override
+  String get selfBooking => 'Patients can book from the app';
+
+  @override
+  String get autoConfirm => 'Confirm app bookings automatically';
+
+  @override
+  String get sameDayBooking => 'Same-day booking';
+
+  @override
+  String get staffOverbooking => 'Staff can overbook after a warning';
+
+  @override
+  String get windowDays => 'Booking window (days)';
+
+  @override
+  String get minNoticeMinutes => 'Minimum notice (minutes)';
+
+  @override
+  String get freeCancelMinutes => 'Free cancel until (minutes before)';
+
+  @override
+  String get maxReschedules => 'Changes per booking';
+
+  @override
+  String get maxUpcoming => 'Upcoming bookings per patient';
+
+  @override
+  String get nextDayShort => '(+1 day)';
+
+  @override
+  String get capacity => 'Places';
+
+  @override
+  String affectedBookings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bookings are affected',
+      one: '1 booking is affected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get keepAll => 'Keep all';
+
+  @override
+  String get cancelAll => 'Cancel all';
+
+  @override
+  String get keep => 'Keep';
+
+  @override
+  String get applyChanges => 'Apply changes';
 }

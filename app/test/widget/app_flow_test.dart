@@ -48,7 +48,7 @@ void main() {
     await signIn(tester, 'doctor@el3yada.dev');
 
     expect(find.text('el3yada · Doctor'), findsOneWidget);
-    expect(find.text('Screen D34 in spec.md'), findsOneWidget);
+    expect(find.text('Now serving'), findsOneWidget); // D34 live board is the home screen
     expect(find.text('Branches'), findsOneWidget); // side menu shows every item
   });
 

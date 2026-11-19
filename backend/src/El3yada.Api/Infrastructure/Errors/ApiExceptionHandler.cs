@@ -22,16 +22,13 @@ public sealed class ApiExceptionHandler(IProblemDetailsService problemDetails, I
         if (status >= 500) logger.LogError(exception, "Unhandled exception on {Method} {Path}", httpContext.Request.Method, httpContext.Request.Path);
 
         httpContext.Response.StatusCode = status;
+        var problem = new ProblemDetails { Status = status, Title = code, Extensions = { ["code"] = code } };
+        if (exception is ApiException { Details: { } details }) problem.Extensions["details"] = details;
         return await problemDetails.TryWriteAsync(new ProblemDetailsContext
         {
             HttpContext = httpContext,
             Exception = exception,
-            ProblemDetails = new ProblemDetails
-            {
-                Status = status,
-                Title = code,
-                Extensions = { ["code"] = code },
-            },
+            ProblemDetails = problem,
         });
     }
 

@@ -1,5 +1,8 @@
 using El3yada.Api.Development;
 using El3yada.Api.Features.Admin;
+using El3yada.Api.Features.Chat;
+using El3yada.Api.Infrastructure.Firebase;
+using El3yada.Api.Infrastructure.Realtime;
 using El3yada.Api.Features.PatientPortal;
 using El3yada.Api.Infrastructure.Auditing;
 using El3yada.Api.Infrastructure.Auth;
@@ -16,8 +19,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // SQL Server. Development uses LocalDB (appsettings.Development.json);
 // production reads ConnectionStrings__Default from the environment.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddDbContext<AppDbContext>((services, options) => options
+    .UseSqlServer(builder.Configuration.GetConnectionString("Default"))
+    // Delivers notifications after their rows are committed (spec 9.2).
+    .AddInterceptors(services.GetRequiredService<NotificationDispatchInterceptor>()));
 
 builder.Services.AddSingleton(TimeProvider.System);
 
@@ -32,6 +37,16 @@ builder.Services.AddScoped<SessionRevoker>();
 // Shared services.
 builder.Services.AddScoped<IAuditLogger, AuditLogger>();
 builder.Services.AddScoped<INotificationWriter, NotificationWriter>();
+builder.Services.AddScoped<NotificationRecipients>();
+builder.Services.AddSingleton<NotificationQueue>();
+builder.Services.AddScoped<NotificationDispatchInterceptor>();
+builder.Services.AddSingleton<NotificationDispatcher>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<NotificationDispatcher>());
+
+// Real time: SignalR for chat, notifications and the live board; Firebase (FCM, Firestore) when configured.
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IRealtime, SignalRRealtime>();
+builder.Services.AddEl3yadaFirebase(builder.Configuration);
 builder.Services.AddOptions<FileStorageOptions>()
     .Bind(builder.Configuration.GetSection(FileStorageOptions.Section))
     .ValidateDataAnnotations();
@@ -45,6 +60,9 @@ builder.Services.AddScoped<PatientContext>();
 builder.Services.AddScoped<PatientPortalService>();
 builder.Services.AddScoped<PatientAccountService>();
 builder.Services.AddScoped<AdminSupportService>();
+
+// Phase 5: chat.
+builder.Services.AddScoped<ChatService>();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -72,6 +90,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<AppHub>(AppHub.Path);
 app.MapDevEndpoints();
 
 app.Run();

@@ -130,6 +130,12 @@ public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, TimePr
         db.DoctorPatients.AddRange(linkA, linkB, linkOther);
         await db.SaveChangesAsync(ct);
 
+        // BR-C1: doctor A's chat exists with one message from the patient; doctor B's is created on first use.
+        var chatA = new Chat { Id = NewId.Next(), LinkId = linkA.Id, DoctorId = doctorA.UserId, PatientId = patient.Id, CreatedAt = now, LastMessageAt = now.AddHours(-1), LastMessageType = "text", LastMessageText = "صباح الخير يا دكتور", LastMessageSenderId = patientUser.Id };
+        db.Chats.Add(chatA);
+        db.ChatMessages.Add(new ChatMessage { Id = NewId.Next(), ChatId = chatA.Id, SenderId = patientUser.Id, SenderRole = "patient", SenderName = patient.FullName, Type = "text", Text = "صباح الخير يا دكتور", CreatedAt = now.AddHours(-1) });
+        db.ChatReadStates.Add(new ChatReadState { ChatId = chatA.Id, UserId = doctorAUser.Id, UnreadCount = 1 });
+
         db.PatientMedicalProfileItems.AddRange(
             new PatientMedicalProfileItem { Id = NewId.Next(), LinkId = linkA.Id, Kind = "allergy", Text = "البنسلين", CreatedBy = doctorAUser.Id, CreatedAt = now },
             new PatientMedicalProfileItem { Id = NewId.Next(), LinkId = linkA.Id, Kind = "chronicDisease", Text = "ضغط الدم", SortOrder = 1, CreatedBy = doctorAUser.Id, CreatedAt = now },

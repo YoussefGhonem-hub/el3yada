@@ -31,12 +31,24 @@ public static class AuthSetup
                     RoleClaimType = AuthClaims.Role,
                     ClockSkew = TimeSpan.FromSeconds(30),
                 };
+                // Browsers and WebSockets can't send headers on the SignalR connect: the token comes in the query.
+                bearer.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+                            context.Token = token;
+                        return Task.CompletedTask;
+                    },
+                };
             });
 
         services.AddAuthorization(Policies.Configure);
         services.AddScoped<IAuthorizationHandler, ActiveAccountHandler>();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, HttpCurrentUser>();
+        services.AddScoped<StaffAccess>();
         services.AddSingleton<JwtTokenFactory>();
         return services;
     }

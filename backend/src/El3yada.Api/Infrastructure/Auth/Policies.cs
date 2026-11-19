@@ -17,6 +17,9 @@ public static class Policies
 
     public const string Patient = "patient";
 
+    /// <summary>The doctor or an assistant. Permissions and the doctor's status come from <see cref="StaffAccess"/>.</summary>
+    public const string Staff = "staff";
+
     /// <summary>Both admin sub-roles.</summary>
     public const string Admin = "admin";
 
@@ -25,6 +28,7 @@ public static class Policies
         var signedIn = Build(Roles.Admin, Roles.Doctor, Roles.Assistant, Roles.Patient);
         options.AddPolicy(SignedIn, signedIn);
         options.AddPolicy(Patient, Build(Roles.Patient));
+        options.AddPolicy(Staff, Build(Roles.Doctor, Roles.Assistant));
         options.AddPolicy(Admin, Build(Roles.Admin));
         options.FallbackPolicy = signedIn;
     }

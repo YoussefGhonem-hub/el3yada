@@ -7,6 +7,28 @@ The Web API and the SQL Server database for the el3yada app. The full product sp
 | `src/El3yada.Api` | ASP.NET Core Web API (.NET 10): controllers, `Program.cs`, settings |
 | `src/El3yada.Data` | EF Core: `AppDbContext`, one entity class per table (`Entities/`), migrations |
 | `tests/El3yada.Data.Tests` | xUnit tests that build a fresh database from the migrations and check it |
+| `tests/El3yada.Api.Tests` | API tests: the real API hosted with `WebApplicationFactory` on a throwaway database with demo data |
+
+### Inside `src/El3yada.Api`
+
+| Folder | What it holds |
+|---|---|
+| `Features/<Area>/` | One folder per area: controller, service, DTOs, validators. For example `Features/PatientPortal` (P1–P14) and `Features/Admin` (AD11, AD12). |
+| `Infrastructure/Auth` | JWT bearer setup, `JwtTokenFactory` (the Phase 1 login uses it), policies, `ICurrentUser`, `SessionRevoker`. |
+| `Infrastructure/Errors` | `ApiException` and `ErrorCodes`. Every error is ProblemDetails with a `code` field. |
+| `Infrastructure/Auditing` | `IAuditLogger`, the single way to write `AuditLogs`. |
+| `Infrastructure/Notifications` | `INotificationWriter` stores `Notifications` rows. Phase 5 adds push delivery behind it. |
+| `Infrastructure/Files` | `IFileStorage` (local folder now, object storage later). Files are never public URLs. |
+| `Infrastructure/Ids` | `NewId.Next()`: **set `Id` on every new row yourself.** The model doesn't generate GUID keys, so an unset key is `Guid.Empty`. |
+| `Development/` | Demo data and `POST /api/dev/token`, mapped only in Development. |
+
+### Rules for endpoints
+
+- **Deny by default.** The fallback policy requires an active account; public endpoints say `[AllowAnonymous]`. Use `[Authorize(Policy = Policies.Patient)]` and so on.
+- **Status from the database.** `ActiveAccountHandler` reads `Users.Status` and `SecurityStamp` on every request, so a disabled account or a password change takes effect at once. Call `SessionRevoker.RevokeAllAsync` to sign someone out everywhere.
+- **Validation:** add an `AbstractValidator<TRequest>` next to the request type. The global `FluentValidationFilter` runs it and answers 400 with `code = VALIDATION_FAILED` and the failing fields.
+- **Errors:** `throw ApiException.Conflict(ErrorCodes.X)`; add the code to `ErrorCodes` and to the app's ARB messages.
+- **Times:** inject `TimeProvider`, never `DateTime.UtcNow`, so tests can control time. Cairo days come from `CairoTime`. JSON writes every `DateTime` as UTC with a `Z`.
 
 ## Before the first run
 
@@ -32,6 +54,17 @@ dotnet run --project src/El3yada.Api --launch-profile https
 - OpenAPI document (Development only): `https://localhost:7001/openapi/v1.json`.
 
 The development connection string is in `src/El3yada.Api/appsettings.Development.json`. In production, set the `ConnectionStrings__Default` environment variable. Never commit production secrets.
+
+**Production settings** (environment variables): `ConnectionStrings__Default`, `Jwt__SigningKey` (at least 32 characters; the API refuses to start without it) and `FileStorage__RootPath`. The development signing key in `appsettings.Development.json` is not a secret and must never be used elsewhere.
+
+### Demo data and tokens (Development only)
+
+Until the Phase 1 login exists, use `src/El3yada.Api/El3yada.Api.http`:
+
+1. `POST /api/dev/seed` creates an admin, two doctors who share one patient, an assistant, and visits, prescriptions and files in every state (sent, cancelled, draft, deleted). It runs once; later calls return the same ids.
+2. `POST /api/dev/token` with `{ "identifier": "01000000002", "role": "patient" }` (or `admin@el3yada.dev`, `doctor@el3yada.dev`, `01000000001`) returns an access token.
+
+Both endpoints exist only when `ASPNETCORE_ENVIRONMENT=Development`.
 
 ## Test
 

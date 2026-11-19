@@ -4,6 +4,7 @@
     <Project Path="src/El3yada.Data/El3yada.Data.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/El3yada.Api.Tests/El3yada.Api.Tests.csproj" />
     <Project Path="tests/El3yada.Data.Tests/El3yada.Data.Tests.csproj" />
   </Folder>
 </Solution>

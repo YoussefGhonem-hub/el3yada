@@ -470,8 +470,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.WaitRedMinutes).HasDefaultValue(40);
             entity.Property(e => e.WindowDays).HasDefaultValue(30);
 
-            entity.HasOne(d => d.Doctor).WithOne(p => p.Branch)
-                .HasForeignKey<Branch>(d => d.DoctorId)
+            // One doctor, many branches. UQ_Branches_OneDefault is filtered (IsDefault = 1),
+            // so it limits the default branch only, not the relationship.
+            entity.HasOne(d => d.Doctor).WithMany(p => p.Branches)
+                .HasForeignKey(d => d.DoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Branches_DoctorId");
         });

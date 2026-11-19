@@ -77,7 +77,8 @@ public partial class Doctor
 
     public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
 
-    public virtual Branch? Branch { get; set; }
+    /// <summary>Every branch of the doctor (up to <c>MaxBranchesPerDoctor</c>, BR-BR1).</summary>
+    public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
     public virtual ICollection<BranchClosure> BranchClosures { get; set; } = new List<BranchClosure>();
 

@@ -53,6 +53,10 @@ public partial class AppDbContext
                 modelBuilder.Entity(entityType.Name).Property(property.Name).ValueGeneratedNever();
             }
         }
+
+        // The model treats keys as set by the app (GUID keys: see NewId in the API). The audit
+        // log key is the exception: SQL Server fills the IDENTITY, so EF must not send a value.
+        modelBuilder.Entity<AuditLog>().Property(e => e.Id).ValueGeneratedOnAdd();
     }
 
     private static Microsoft.EntityFrameworkCore.Metadata.IMutableEntityType EntityFor(ModelBuilder modelBuilder, string table) =>

@@ -3,4 +3,53 @@
 GET {{El3yada.Api_HostAddress}}/api/health
 Accept: application/json
 
+### Development only: create the demo data (idempotent)
+POST {{El3yada.Api_HostAddress}}/api/dev/seed
+
+### Development only: a token for a demo user (until Phase 1 login exists)
+# @name patientToken
+POST {{El3yada.Api_HostAddress}}/api/dev/token
+Content-Type: application/json
+
+{ "identifier": "01000000002", "role": "patient" }
+
 ###
+@patient = Bearer {{patientToken.response.body.$.accessToken}}
+
+GET {{El3yada.Api_HostAddress}}/api/patient/home
+Authorization: {{patient}}
+
+###
+GET {{El3yada.Api_HostAddress}}/api/patient/doctors
+Authorization: {{patient}}
+
+###
+GET {{El3yada.Api_HostAddress}}/api/patient/visits?page=1&pageSize=25
+Authorization: {{patient}}
+
+###
+GET {{El3yada.Api_HostAddress}}/api/patient/prescriptions?kind=medication
+Authorization: {{patient}}
+
+###
+GET {{El3yada.Api_HostAddress}}/api/patient/records?kind=lab
+Authorization: {{patient}}
+
+###
+GET {{El3yada.Api_HostAddress}}/api/patient/medical-profile
+Authorization: {{patient}}
+
+### Development only: admin token
+# @name adminToken
+POST {{El3yada.Api_HostAddress}}/api/dev/token
+Content-Type: application/json
+
+{ "identifier": "admin@el3yada.dev" }
+
+###
+GET {{El3yada.Api_HostAddress}}/api/admin/accounts?phone=01000000002
+Authorization: Bearer {{adminToken.response.body.$.accessToken}}
+
+###
+GET {{El3yada.Api_HostAddress}}/api/admin/deletion-requests?status=pending
+Authorization: Bearer {{adminToken.response.body.$.accessToken}}

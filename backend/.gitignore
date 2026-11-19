@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Local file storage of the API (medical files, PDFs). Never commit it.
+src/El3yada.Api/storage/

@@ -1,4 +1,5 @@
 using El3yada.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace El3yada.Api.Controllers;
 
 /// <summary>Checks that the API is up, can reach SQL Server, and has every migration applied.</summary>
 [ApiController]
+[AllowAnonymous]
 [Route("api/health")]
 public class HealthController(AppDbContext db) : ControllerBase
 {

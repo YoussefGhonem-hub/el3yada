@@ -811,4 +811,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginDisabled => 'Login disabled';
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get noNotifications => 'No notifications yet.';
+
+  @override
+  String get searchChats => 'Search by name or phone';
+
+  @override
+  String get noChats => 'No conversations yet.';
+
+  @override
+  String get chatImage => 'Photo';
+
+  @override
+  String get chatFile => 'File';
+
+  @override
+  String get chatNoMessages => 'No messages yet';
+
+  @override
+  String get chatDoctorUnavailable => 'The doctor isn\'t available right now.';
+
+  @override
+  String get chatSuspended =>
+      'Sending is paused while the service is suspended.';
+
+  @override
+  String get fileTooLarge => 'The file is larger than allowed.';
+
+  @override
+  String get chatCamera => 'Camera';
+
+  @override
+  String get chatGallery => 'Gallery';
+
+  @override
+  String get chatFileOption => 'File';
+
+  @override
+  String get saveToPatientFile => 'Save to patient file';
+
+  @override
+  String get savedToPatientFile => 'Saved to the patient\'s file';
+
+  @override
+  String get chatStart => 'Start the conversation.';
+
+  @override
+  String get chatAttach => 'Attach';
+
+  @override
+  String get chatTypeMessage => 'Type a message';
+
+  @override
+  String get chatSend => 'Send';
+
+  @override
+  String clinicAssistant(String name) {
+    return 'Clinic assistant — $name';
+  }
+
+  @override
+  String get chatRead => 'Read';
+
+  @override
+  String get chatDelivered => 'Delivered';
+
+  @override
+  String get chooseCategory => 'Choose the category';
 }

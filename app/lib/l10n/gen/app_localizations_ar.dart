@@ -820,4 +820,75 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loginDisabled => 'الدخول موقوف';
+
+  @override
+  String get markAllRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get noNotifications => 'لا توجد إشعارات بعد.';
+
+  @override
+  String get searchChats => 'ابحث بالاسم أو رقم الموبايل';
+
+  @override
+  String get noChats => 'لا توجد محادثات بعد.';
+
+  @override
+  String get chatImage => 'صورة';
+
+  @override
+  String get chatFile => 'ملف';
+
+  @override
+  String get chatNoMessages => 'لا توجد رسائل بعد';
+
+  @override
+  String get chatDoctorUnavailable => 'الطبيب غير متاح حالياً';
+
+  @override
+  String get chatSuspended => 'الإرسال متوقف أثناء إيقاف الخدمة.';
+
+  @override
+  String get fileTooLarge => 'حجم الملف أكبر من المسموح';
+
+  @override
+  String get chatCamera => 'الكاميرا';
+
+  @override
+  String get chatGallery => 'معرض الصور';
+
+  @override
+  String get chatFileOption => 'ملف';
+
+  @override
+  String get saveToPatientFile => 'حفظ في ملف المريض';
+
+  @override
+  String get savedToPatientFile => 'تم الحفظ في ملف المريض';
+
+  @override
+  String get chatStart => 'ابدأ المحادثة.';
+
+  @override
+  String get chatAttach => 'إرفاق';
+
+  @override
+  String get chatTypeMessage => 'اكتب رسالة';
+
+  @override
+  String get chatSend => 'إرسال';
+
+  @override
+  String clinicAssistant(String name) {
+    return 'مساعد العيادة — $name';
+  }
+
+  @override
+  String get chatRead => 'مقروءة';
+
+  @override
+  String get chatDelivered => 'تم التوصيل';
+
+  @override
+  String get chooseCategory => 'اختر نوع الملف';
 }

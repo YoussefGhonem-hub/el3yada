@@ -6,6 +6,7 @@ import '../features/admin_support/presentation/admin_support_screens.dart';
 import '../features/auth/application/auth_controller.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/splash_screen.dart';
+import '../features/chat/chat_routes.dart';
 import '../features/patient/presentation/patient_routes.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_scaffold.dart';
@@ -19,6 +20,7 @@ abstract final class AppRoutes {
 /// Built screens, by path. Menu items without an entry show their placeholder.
 final Map<String, GoRouterWidgetBuilder> _shellPages = {
   ...PatientRoutes.shellPages,
+  ...ChatRoutes.shellPages,
   '/admin/accounts': (context, state) => const AccountsSupportScreen(),
   '/admin/deletion-requests': (context, state) => const DeletionRequestsScreen(),
 };
@@ -82,6 +84,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       // Detail screens, pushed full screen over the shell.
       ...PatientRoutes.detailRoutes,
+      ...ChatRoutes.detailRoutes,
     ],
   );
 });

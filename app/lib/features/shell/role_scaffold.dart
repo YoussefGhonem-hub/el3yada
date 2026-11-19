@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/settings_actions.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
+import '../notifications/notifications_screen.dart';
 import 'role_shells.dart';
 
 /// Adaptive frame around every signed-in screen (spec section 4):
@@ -30,6 +31,7 @@ class RoleScaffold extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final displayName = ref.watch(authControllerProvider).value?.displayName ?? '';
     final actions = [
+      NotificationBell(path: '${shell.basePath}/notifications'),
       if (shell.accountPath != null)
         IconButton(
           tooltip: l10n.navAccount,

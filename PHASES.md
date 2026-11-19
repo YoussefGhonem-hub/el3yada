@@ -209,6 +209,8 @@ These rules keep three people's code consistent. Change them only by agreement.
 
 **Tables:** Chats, ChatMessages, ChatReadStates, Notifications, UserDevices, Users (Notify* columns), MedicalRecords (save from chat).
 
+**Status (branch `phase-5/chat-notifications`):** chat API and screens (D16, D17, AS9, P11, P12), notification service with delivery (SignalR to running apps and Windows toasts; FCM to Android and iOS), notification centres, devices, and templates for every 10.1 event. Still to do: (1) `flutterfire configure`, the API's Firebase service-account key, and a `firebase_messaging` `PushTokenSource` in the app; (2) Phases 1–3 call `NotificationTemplates.*` from their endpoints (sessions, files, prescriptions, sign-ups, password requests); (3) system tray [S] and AD16 broadcast [C]. Boxes stay unticked until AC-13 is checked on a real Android phone and on Windows.
+
 **Done when:** AC-13 passes. Push text arrives in the recipient's language, never contains diagnoses, and shows the message text only when the recipient turned previews on.
 
 ---

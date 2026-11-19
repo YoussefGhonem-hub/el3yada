@@ -1525,6 +1525,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login disabled'**
   String get loginDisabled;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet.'**
+  String get noNotifications;
+
+  /// No description provided for @searchChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or phone'**
+  String get searchChats;
+
+  /// No description provided for @noChats.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet.'**
+  String get noChats;
+
+  /// No description provided for @chatImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get chatImage;
+
+  /// No description provided for @chatFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get chatFile;
+
+  /// No description provided for @chatNoMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get chatNoMessages;
+
+  /// No description provided for @chatDoctorUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor isn\'t available right now.'**
+  String get chatDoctorUnavailable;
+
+  /// No description provided for @chatSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending is paused while the service is suspended.'**
+  String get chatSuspended;
+
+  /// No description provided for @fileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is larger than allowed.'**
+  String get fileTooLarge;
+
+  /// No description provided for @chatCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get chatCamera;
+
+  /// No description provided for @chatGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get chatGallery;
+
+  /// No description provided for @chatFileOption.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get chatFileOption;
+
+  /// No description provided for @saveToPatientFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to patient file'**
+  String get saveToPatientFile;
+
+  /// No description provided for @savedToPatientFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to the patient\'s file'**
+  String get savedToPatientFile;
+
+  /// No description provided for @chatStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the conversation.'**
+  String get chatStart;
+
+  /// No description provided for @chatAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach'**
+  String get chatAttach;
+
+  /// No description provided for @chatTypeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message'**
+  String get chatTypeMessage;
+
+  /// No description provided for @chatSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get chatSend;
+
+  /// No description provided for @clinicAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic assistant — {name}'**
+  String clinicAssistant(String name);
+
+  /// No description provided for @chatRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get chatRead;
+
+  /// No description provided for @chatDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get chatDelivered;
+
+  /// No description provided for @chooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the category'**
+  String get chooseCategory;
 }
 
 class _AppLocalizationsDelegate

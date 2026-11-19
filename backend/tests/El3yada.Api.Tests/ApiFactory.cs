@@ -33,6 +33,9 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <summary>Captures the pushes the API sends instead of calling FCM.</summary>
     public FakePushSender Push { get; } = new();
 
+    /// <summary>Captures the live-board snapshots instead of writing Firestore.</summary>
+    public FakeBoardMirror Mirror { get; } = new();
+
     /// <summary>Waits for a background effect (push delivery) instead of sleeping a fixed time.</summary>
     public static async Task<T> EventuallyAsync<T>(Func<T?> probe, int timeoutMs = 5000) where T : class
     {
@@ -51,10 +54,12 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting("ConnectionStrings:Default", _connectionString);
         builder.UseSetting("Jwt:SigningKey", "test-signing-key-0123456789-0123456789-abcdef");
         builder.UseSetting("FileStorage:RootPath", _storageRoot);
+        builder.UseSetting("Jobs:Enabled", "false");
         builder.ConfigureServices(services =>
         {
             services.AddScoped<DemoDataSeeder>();
             services.AddSingleton<IPushSender>(Push);
+            services.AddSingleton<ILiveBoardMirror>(Mirror);
         });
     }
 
@@ -108,5 +113,16 @@ public sealed class FakePushSender : IPushSender
     {
         Sent.Enqueue((tokens, message));
         return Task.FromResult<IReadOnlyList<string>>(tokens.Where(t => Invalid.Contains(t)).ToList());
+    }
+}
+
+public sealed class FakeBoardMirror : ILiveBoardMirror
+{
+    public ConcurrentQueue<BoardSnapshot> Published { get; } = new();
+
+    public Task PublishAsync(BoardSnapshot snapshot, CancellationToken ct)
+    {
+        Published.Enqueue(snapshot);
+        return Task.CompletedTask;
     }
 }

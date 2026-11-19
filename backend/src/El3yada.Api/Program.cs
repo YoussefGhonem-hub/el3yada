@@ -1,5 +1,6 @@
 using El3yada.Api.Development;
 using El3yada.Api.Features.Admin;
+using El3yada.Api.Features.Appointments;
 using El3yada.Api.Features.Chat;
 using El3yada.Api.Infrastructure.Firebase;
 using El3yada.Api.Infrastructure.Realtime;
@@ -63,6 +64,16 @@ builder.Services.AddScoped<AdminSupportService>();
 
 // Phase 5: chat.
 builder.Services.AddScoped<ChatService>();
+
+// Phase 6: appointments, live board, schedule and jobs.
+builder.Services.AddScoped<ScheduleLoader>();
+builder.Services.AddScoped<BoardPublisher>();
+builder.Services.AddScoped<AppointmentService>();
+builder.Services.AddScoped<BoardActionsService>();
+builder.Services.AddScoped<ScheduleService>();
+builder.Services.AddScoped<AppointmentSearchService>();
+builder.Services.AddScoped<AppointmentJobs>();
+builder.Services.AddHostedService<AppointmentJobsHost>();
 
 if (builder.Environment.IsDevelopment())
 {

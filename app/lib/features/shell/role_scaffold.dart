@@ -29,11 +29,20 @@ class RoleScaffold extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final width = MediaQuery.sizeOf(context).width;
     final displayName = ref.watch(authControllerProvider).value?.displayName ?? '';
+    final actions = [
+      if (shell.accountPath != null)
+        IconButton(
+          tooltip: l10n.navAccount,
+          icon: CircleAvatar(radius: 16, child: Icon(Icons.person_outline, size: 18, semanticLabel: l10n.navAccount)),
+          onPressed: () => context.go(shell.accountPath!),
+        ),
+      const SettingsActions(),
+    ];
     final title = '${l10n.appTitle} · ${shell.role.label(l10n)}';
 
     if (width >= Breakpoints.desktop) {
       return Scaffold(
-        appBar: AppBar(title: Text(title), actions: const [SettingsActions()]),
+        appBar: AppBar(title: Text(title), actions: actions),
         body: Row(
           children: [
             SizedBox(
@@ -56,7 +65,7 @@ class RoleScaffold extends ConsumerWidget {
 
     if (width < Breakpoints.tablet) {
       return Scaffold(
-        appBar: AppBar(title: Text(title), actions: const [SettingsActions()]),
+        appBar: AppBar(title: Text(title), actions: actions),
         body: child,
         bottomNavigationBar: NavigationBar(
           selectedIndex: index,
@@ -70,7 +79,7 @@ class RoleScaffold extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(title), actions: const [SettingsActions()]),
+      appBar: AppBar(title: Text(title), actions: actions),
       body: Row(
         children: [
           NavigationRail(

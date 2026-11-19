@@ -186,4 +186,629 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navAuditLog => 'Audit log';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get errorNotFound => 'This item is not available.';
+
+  @override
+  String get errorForbidden => 'You don\'t have access to this.';
+
+  @override
+  String get errorDeletionAlreadyRequested =>
+      'You already have a deletion request under review.';
+
+  @override
+  String get couldNotOpen => 'Couldn\'t open it on this device';
+
+  @override
+  String get newBadge => 'New';
+
+  @override
+  String get allDoctors => 'All';
+
+  @override
+  String homeGreeting(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
+  String homeNewItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new items in your file',
+      one: '1 new item in your file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLatestVisit => 'Latest visit';
+
+  @override
+  String get homeLatestPrescription => 'Latest prescription';
+
+  @override
+  String get homeNextFollowUp => 'Next follow-up';
+
+  @override
+  String followUpWith(String date, String doctor) {
+    return '$date with $doctor';
+  }
+
+  @override
+  String get homeRecentFiles => 'Recent files';
+
+  @override
+  String get homeEmpty =>
+      'Your medical file is empty for now. Visits, prescriptions and files your doctor adds will appear here.';
+
+  @override
+  String get myDoctorsTitle => 'My doctors';
+
+  @override
+  String get myDoctorTitle => 'My doctor';
+
+  @override
+  String get noDoctors => 'You are not linked to a doctor yet.';
+
+  @override
+  String get medicalProfileTitle => 'Medical profile';
+
+  @override
+  String fileNumber(int number) {
+    return 'File no. $number';
+  }
+
+  @override
+  String get thisDoctorsRecords => 'This doctor\'s records';
+
+  @override
+  String get branchesTitle => 'Branches';
+
+  @override
+  String get noBranches => 'No branch details yet. Contact the clinic.';
+
+  @override
+  String get mainBranch => 'Main';
+
+  @override
+  String get branchTemporarilyClosed => 'Temporarily closed';
+
+  @override
+  String reopensOn(String date) {
+    return 'Reopens on $date';
+  }
+
+  @override
+  String get openInMaps => 'Open in maps';
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get whatsApp => 'WhatsApp';
+
+  @override
+  String get phoneReception => 'Reception';
+
+  @override
+  String get phoneMobile => 'Mobile';
+
+  @override
+  String get phoneLandline => 'Landline';
+
+  @override
+  String get workingHours => 'Working hours';
+
+  @override
+  String get workingHoursNotSet => 'Ask the clinic for its hours.';
+
+  @override
+  String get closedDay => 'Closed';
+
+  @override
+  String timeRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get visitPrices => 'Visit prices';
+
+  @override
+  String get priceAskClinic => 'Ask the clinic';
+
+  @override
+  String moneyEgp(String amount) {
+    return '$amount EGP';
+  }
+
+  @override
+  String get paymentCash => 'Cash';
+
+  @override
+  String get paymentCard => 'Card';
+
+  @override
+  String get paymentInstapay => 'InstaPay';
+
+  @override
+  String get paymentWallet => 'Mobile wallet';
+
+  @override
+  String get amenityElevator => 'Elevator';
+
+  @override
+  String get amenityParking => 'Parking';
+
+  @override
+  String get amenityWheelchair => 'Wheelchair access';
+
+  @override
+  String get amenityKidsArea => 'Kids\' area';
+
+  @override
+  String get tabVisits => 'Visits';
+
+  @override
+  String get tabPrescriptions => 'Prescriptions';
+
+  @override
+  String get tabFiles => 'Files';
+
+  @override
+  String get noVisits => 'No visits yet.';
+
+  @override
+  String get noPrescriptions => 'No prescriptions yet.';
+
+  @override
+  String get noFiles => 'No files in this category.';
+
+  @override
+  String get visitTypeExamination => 'Examination';
+
+  @override
+  String get visitTypeConsultation => 'Consultation';
+
+  @override
+  String get visitDetailsTitle => 'Visit details';
+
+  @override
+  String get diagnosis => 'Diagnosis';
+
+  @override
+  String get chiefComplaint => 'Chief complaint';
+
+  @override
+  String get findings => 'Examination findings';
+
+  @override
+  String get vitals => 'Vitals';
+
+  @override
+  String get vitalBloodPressure => 'Blood pressure';
+
+  @override
+  String get vitalPulse => 'Pulse';
+
+  @override
+  String get vitalTemperature => 'Temperature';
+
+  @override
+  String get vitalWeight => 'Weight';
+
+  @override
+  String get vitalHeight => 'Height';
+
+  @override
+  String get vitalGlucose => 'Blood sugar';
+
+  @override
+  String get doctorNotesForYou => 'Your doctor\'s notes';
+
+  @override
+  String get followUpDate => 'Follow-up date';
+
+  @override
+  String get rxTabMedications => 'Medications';
+
+  @override
+  String get rxTabInvestigations => 'Lab & Radiology';
+
+  @override
+  String get rxKindMedication => 'Medication prescription';
+
+  @override
+  String get rxKindInvestigations => 'Lab & radiology request';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String itemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rxCancelledTitle => 'This prescription was cancelled';
+
+  @override
+  String reasonValue(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get rxOpenNewCopy => 'Open the new copy';
+
+  @override
+  String rxSentOn(String date) {
+    return 'Sent on $date';
+  }
+
+  @override
+  String get rxAdvice => 'Advice';
+
+  @override
+  String get viewPdf => 'View PDF';
+
+  @override
+  String get shareOrSave => 'Share or save';
+
+  @override
+  String doseAmountForm(String dose, String form) {
+    return '$dose $form';
+  }
+
+  @override
+  String get formTablet => 'tablet';
+
+  @override
+  String get formCapsule => 'capsule';
+
+  @override
+  String get formSyrup => 'syrup';
+
+  @override
+  String get formInjection => 'injection';
+
+  @override
+  String get formCream => 'cream / ointment';
+
+  @override
+  String get formDrops => 'drops';
+
+  @override
+  String get formInhaler => 'inhaler';
+
+  @override
+  String get formSuppository => 'suppository';
+
+  @override
+  String get formSachet => 'sachet';
+
+  @override
+  String get formOther => 'other';
+
+  @override
+  String get timingBeforeFood => 'Before food';
+
+  @override
+  String get timingAfterFood => 'After food';
+
+  @override
+  String get timingWithFood => 'With food';
+
+  @override
+  String durationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'for $count days',
+      one: 'for 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String durationWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'for $count weeks',
+      one: 'for 1 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get durationContinuous => 'Continuous';
+
+  @override
+  String get investigationLab => 'Lab test';
+
+  @override
+  String get investigationRadiology => 'Radiology';
+
+  @override
+  String get fileCategoryPrescription => 'Prescriptions';
+
+  @override
+  String get fileCategoryLab => 'Lab tests';
+
+  @override
+  String get fileCategoryRadiology => 'Radiology';
+
+  @override
+  String get fileCategoryOther => 'Other';
+
+  @override
+  String get otherTypeReport => 'Medical report';
+
+  @override
+  String get otherTypeReferral => 'Referral';
+
+  @override
+  String get otherTypeSickLeave => 'Sick leave';
+
+  @override
+  String get otherTypeEcg => 'ECG';
+
+  @override
+  String get otherTypeEegEmg => 'EEG / EMG';
+
+  @override
+  String get otherTypeEndoscopy => 'Endoscopy';
+
+  @override
+  String get otherTypeConsent => 'Consent form';
+
+  @override
+  String get fileDetails => 'File details';
+
+  @override
+  String get fileTitle => 'Title';
+
+  @override
+  String get fileCategory => 'Category';
+
+  @override
+  String get documentDate => 'Document date';
+
+  @override
+  String get doctor => 'Doctor';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get noAttachments => 'This file has no attachments.';
+
+  @override
+  String cannotPreview(String fileName) {
+    return '$fileName can\'t be previewed here. Use Share to open it with another app.';
+  }
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get personalInfo => 'Personal information';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get mobileNumber => 'Mobile number';
+
+  @override
+  String get gender => 'Gender';
+
+  @override
+  String get genderMale => 'Male';
+
+  @override
+  String get genderFemale => 'Female';
+
+  @override
+  String get age => 'Age';
+
+  @override
+  String ageYears(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years years',
+      one: '1 year',
+      zero: 'Under 1 year',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bloodType => 'Blood type';
+
+  @override
+  String get allergies => 'Allergies';
+
+  @override
+  String get chronicDiseases => 'Chronic diseases';
+
+  @override
+  String get currentMedications => 'Current medications';
+
+  @override
+  String get surgeries => 'Past surgeries';
+
+  @override
+  String get familyHistory => 'Family history';
+
+  @override
+  String get medicalProfileEmpty => 'Nothing recorded yet.';
+
+  @override
+  String get medicalProfileReadOnly =>
+      'To update this information, contact your doctor.';
+
+  @override
+  String get settingsGeneral => 'General';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notifyChat => 'Chat messages';
+
+  @override
+  String get notifyReminders => 'Appointment reminders';
+
+  @override
+  String get notifyShowPreview => 'Show message text in notifications';
+
+  @override
+  String get notifyShowPreviewHint =>
+      'Off keeps your messages private on the lock screen.';
+
+  @override
+  String get accountTitle => 'Account';
+
+  @override
+  String get requestAccountDeletion => 'Request account deletion';
+
+  @override
+  String get deletionConfirmBody =>
+      'We\'ll send your request to the el3yada team. Once it is approved you won\'t be able to sign in. Your doctors keep the medical records they are required to keep.';
+
+  @override
+  String get deletionReasonLabel => 'Reason (optional)';
+
+  @override
+  String get deletionConfirmButton => 'Send request';
+
+  @override
+  String get deletionRequestSent =>
+      'Your request was sent. We\'ll review it soon.';
+
+  @override
+  String get deletionPendingTitle => 'Deletion request under review';
+
+  @override
+  String deletionPendingBody(String date) {
+    return 'Sent on $date';
+  }
+
+  @override
+  String deletionRejected(String note) {
+    return 'Your last request was declined: $note';
+  }
+
+  @override
+  String get termsGateTitle => 'Before you start';
+
+  @override
+  String get termsGateBody =>
+      'el3yada keeps your medical file safe and shares it only with your doctors. Please read and accept the Terms of Use and Privacy Policy to continue.';
+
+  @override
+  String get termsGateCheckbox =>
+      'I have read and accept the Terms of Use and Privacy Policy';
+
+  @override
+  String get termsGateContinue => 'Continue';
+
+  @override
+  String get navDeletionRequests => 'Deletion requests';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get noDeletionRequests => 'No requests here.';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get approveDeletionTitle => 'Approve deletion?';
+
+  @override
+  String get approveDeletionBody =>
+      'The patient will be signed out everywhere and can\'t sign in again. Medical records stay with their doctors.';
+
+  @override
+  String get rejectDeletionTitle => 'Reject the request';
+
+  @override
+  String get reasonRequiredLabel => 'Reason (the patient sees it)';
+
+  @override
+  String get errorInvalidPhone => 'Invalid mobile number';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get accountsSupportHint =>
+      'Search by mobile number only. Patient and assistant accounts are shown, never medical data.';
+
+  @override
+  String get noAccountsFound => 'No account uses this number.';
+
+  @override
+  String get accountDeleted => 'Account deleted at the patient\'s request';
+
+  @override
+  String linkedDoctors(String names) {
+    return 'Doctors: $names';
+  }
+
+  @override
+  String createdOn(String date) {
+    return 'Created on $date';
+  }
+
+  @override
+  String assistantOf(String doctor) {
+    return 'Assistant of $doctor';
+  }
+
+  @override
+  String lastActive(String time) {
+    return 'Last active $time';
+  }
+
+  @override
+  String get loginEnabled => 'Login enabled';
+
+  @override
+  String get loginDisabled => 'Login disabled';
 }

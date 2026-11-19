@@ -65,6 +65,7 @@ void main() {
     await signIn(tester, '01000000002');
 
     expect(find.byType(NavigationBar), findsOneWidget);
-    expect(find.text('Screen P1 in spec.md'), findsOneWidget);
+    // P1 is built: first login starts with the terms acceptance (A9).
+    expect(find.text('Before you start'), findsOneWidget);
   });
 }

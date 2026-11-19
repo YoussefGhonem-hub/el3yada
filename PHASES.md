@@ -183,6 +183,8 @@ These rules keep three people's code consistent. Change them only by agreement.
 
 **Tables:** Patients, DoctorPatients, PatientMedicalProfileItems, Sessions, MedicalRecords, MedicalRecordAttachments, Prescriptions (+ items), Branches, BranchPhones, BranchPeriods, DeletionRequests.
 
+**Status (branch `phase-4/patient-app`):** every item above is built, with API tests (visibility, AC-11, AC-12, deletion and support flows) and app tests (fake data, Arabic/English, light/dark, phone/tablet). Boxes stay unticked until checked on a real Android device and on Windows (A14). Not yet in the screens: P4 branch filter, P8 date-range filter, P3 Book and Chat buttons (Phases 5–6), P14 change password / terms text / support contact (Phase 1 public settings).
+
 **Done when:** a patient linked to two doctors sees both files separately and together, never sees private notes or drafts, and gets the A14 refusal on Windows. AC-11 holds from the patient side.
 
 ---

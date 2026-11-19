@@ -1,0 +1,111 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/config/env.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_error.dart';
+import '../../patient/domain/patient_models.dart' show Json, Paged;
+import '../domain/admin_support_models.dart';
+
+/// AD11 accounts support and AD12 deletion requests (`/api/admin`). No medical data.
+abstract interface class AdminSupportRepository {
+  /// [status]: pending, approved, rejected or all.
+  Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1});
+
+  /// `reviewDeletionRequest`. Rejecting needs a [note].
+  Future<void> reviewDeletionRequest(String id, {required bool approve, String? note});
+
+  /// [phone] is already normalized (E.164).
+  Future<AccountSearchResult> searchAccounts(String phone);
+
+  Future<void> setLoginStatus(String userId, {required bool active, String? reason});
+}
+
+class ApiAdminSupportRepository implements AdminSupportRepository {
+  ApiAdminSupportRepository(this._dio);
+
+  final Dio _dio;
+
+  Future<Object?> _call(String method, String path, {Object? body, Map<String, dynamic>? query}) async {
+    try {
+      final response = await _dio.request<Object?>(path, data: body, queryParameters: query, options: Options(method: method));
+      return response.data;
+    } on DioException catch (error) {
+      throw ApiError.from(error);
+    }
+  }
+
+  @override
+  Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1}) async => Paged.fromJson(
+        await _call('GET', '/api/admin/deletion-requests', query: {'status': status, 'page': page, 'pageSize': 25}) as Json,
+        AdminDeletionRequest.fromJson,
+      );
+
+  @override
+  Future<void> reviewDeletionRequest(String id, {required bool approve, String? note}) =>
+      _call('POST', '/api/admin/deletion-requests/$id/review', body: {'decision': approve ? 'approve' : 'reject', 'note': note});
+
+  @override
+  Future<AccountSearchResult> searchAccounts(String phone) async =>
+      AccountSearchResult.fromJson(await _call('GET', '/api/admin/accounts', query: {'phone': phone}) as Json);
+
+  @override
+  Future<void> setLoginStatus(String userId, {required bool active, String? reason}) =>
+      _call('POST', '/api/admin/accounts/$userId/status', body: {'status': active ? 'active' : 'disabled', 'reason': reason});
+}
+
+/// Offline data for dev builds with the test accounts.
+class FakeAdminSupportRepository implements AdminSupportRepository {
+  FakeAdminSupportRepository({DateTime? now}) : _now = now ?? DateTime.now();
+
+  final DateTime _now;
+  late final List<AdminDeletionRequest> _requests = [
+    AdminDeletionRequest(
+      id: 'del-1', patientId: 'pat-2', patientName: 'خالد يوسف', patientPhone: '+201000000003',
+      reason: 'لم أعد أحتاج التطبيق', status: 'pending', createdAt: _now.subtract(const Duration(days: 1)),
+    ),
+  ];
+  final Map<String, String> _status = {'u-pat': 'active', 'u-as': 'active'};
+
+  @override
+  Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1}) async {
+    final items = _requests.where((r) => status == 'all' || r.status == status).toList();
+    return Paged(items: items, page: 1, pageSize: 25, totalCount: items.length);
+  }
+
+  @override
+  Future<void> reviewDeletionRequest(String id, {required bool approve, String? note}) async {
+    final i = _requests.indexWhere((r) => r.id == id);
+    if (i < 0) throw const ApiError(ApiError.notFound, status: 404);
+    _requests[i] = _requests[i].reviewed(approve ? 'approved' : 'rejected', note, _now);
+  }
+
+  @override
+  Future<AccountSearchResult> searchAccounts(String phone) async => AccountSearchResult(
+        phone: phone,
+        patients: [
+          if (phone == '+201000000002')
+            SupportPatient(
+              userId: 'u-pat', patientId: 'pat-1', fullName: 'محمد إبراهيم', phone: phone, loginStatus: _status['u-pat']!,
+              patientStatus: 'active', createdAt: _now.subtract(const Duration(days: 90)),
+              doctors: const [LinkedDoctor(doctorId: 'doc-a', fullName: 'د. أحمد سامي'), LinkedDoctor(doctorId: 'doc-b', fullName: 'د. منى حسن')],
+            ),
+        ],
+        assistants: [
+          if (phone == '+201000000001')
+            SupportAssistant(
+              userId: 'u-as', fullName: 'سارة علي', phone: phone, loginStatus: _status['u-as']!, assistantStatus: 'active',
+              doctorId: 'doc-a', doctorName: 'د. أحمد سامي', preset: 'reception', lastActiveAt: _now,
+            ),
+        ],
+      );
+
+  @override
+  Future<void> setLoginStatus(String userId, {required bool active, String? reason}) async =>
+      _status[userId] = active ? 'active' : 'disabled';
+}
+
+final adminSupportRepositoryProvider = Provider<AdminSupportRepository>((ref) {
+  if (Env.useFakeAuth) return FakeAdminSupportRepository();
+  return ApiAdminSupportRepository(ref.watch(dioProvider));
+});

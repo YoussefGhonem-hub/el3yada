@@ -18,10 +18,14 @@ import '../../core/widgets/pressable.dart';
 import '../../core/widgets/settings_actions.dart';
 import '../../l10n/gen/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
+<<<<<<< HEAD
 import '../auth/domain/user_role.dart';
 import '../clinic/application/clinic_providers.dart';
 import '../admin/presentation/widgets/admin_widgets.dart' show InitialAvatar;
 import '../clinic/presentation/clinic_shell_parts.dart';
+=======
+import '../notifications/notifications_screen.dart';
+>>>>>>> phase-6/appointments-live-board
 import 'role_shells.dart';
 import 'shell_navigator_watch.dart';
 
@@ -154,6 +158,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
     final shell = widget.shell;
     final location = widget.location;
     final width = MediaQuery.sizeOf(context).width;
+<<<<<<< HEAD
     final session = ref.watch(authControllerProvider).value;
     final clinic = _isClinic ? ref.watch(clinicContextProvider).value : null;
     final displayName = session?.displayName ?? '';
@@ -296,6 +301,33 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
               ),
             ],
           ),
+=======
+    final displayName = ref.watch(authControllerProvider).value?.displayName ?? '';
+    final actions = [
+      NotificationBell(path: '${shell.basePath}/notifications'),
+      if (shell.accountPath != null)
+        IconButton(
+          tooltip: l10n.navAccount,
+          icon: CircleAvatar(radius: 16, child: Icon(Icons.person_outline, size: 18, semanticLabel: l10n.navAccount)),
+          onPressed: () => context.go(shell.accountPath!),
+        ),
+      const SettingsActions(),
+    ];
+    final title = '${l10n.appTitle} · ${shell.role.label(l10n)}';
+
+    if (width >= Breakpoints.desktop) {
+      return Scaffold(
+        appBar: AppBar(title: Text(title), actions: actions),
+        body: Row(
+          children: [
+            SizedBox(
+              width: 256,
+              child: _SideMenu(shell: shell, location: location, displayName: displayName),
+            ),
+            const VerticalDivider(width: 1),
+            Expanded(child: child),
+          ],
+>>>>>>> phase-6/appointments-live-board
         ),
       );
     }
@@ -329,6 +361,7 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
       var sideIndex = sides.indexWhere((d) => d.covers(location));
       if (sideIndex < 0 && !centerSelected && hasMore) sideIndex = sides.length;
       return Scaffold(
+<<<<<<< HEAD
         appBar: appBar,
         // Content scrolls behind the bar's rounded corners; lists get its
         // height as bottom padding from MediaQuery.
@@ -353,12 +386,27 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
             ),
             hidden: hidden,
           ),
+=======
+        appBar: AppBar(title: Text(title), actions: actions),
+        body: child,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: index,
+          onDestinationSelected: onSelected,
+          destinations: [
+            for (final d in items) NavigationDestination(icon: Icon(d.icon), label: d.label(l10n)),
+            if (hasMore) NavigationDestination(icon: const Icon(Icons.more_horiz), label: l10n.navMore),
+          ],
+>>>>>>> phase-6/appointments-live-board
         ),
       );
     }
 
     return Scaffold(
+<<<<<<< HEAD
       appBar: appBar,
+=======
+      appBar: AppBar(title: Text(title), actions: actions),
+>>>>>>> phase-6/appointments-live-board
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

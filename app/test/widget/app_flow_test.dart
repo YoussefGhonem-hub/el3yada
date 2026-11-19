@@ -18,12 +18,17 @@ void main() {
     await pumpApp(tester, platform: AppPlatform.desktop);
     await signIn(tester, 'doctor@el3yada.dev');
 
+<<<<<<< HEAD
     // The side menu holds the brand and the account; there is no top bar.
     expect(find.byType(AppBar), findsNothing);
     expect(find.descendant(of: find.byType(SideMenuBrand), matching: find.text('el3yada')), findsOneWidget);
     expect(find.descendant(of: find.byType(SideMenuAccount), matching: find.text('Doctor')), findsOneWidget);
     // The home until the live board (D34) arrives in Phase 6.
     expect(find.text('Search patient'), findsOneWidget);
+=======
+    expect(find.text('el3yada · Doctor'), findsOneWidget);
+    expect(find.text('Now serving'), findsOneWidget); // D34 live board is the home screen
+>>>>>>> phase-6/appointments-live-board
     expect(find.text('Branches'), findsOneWidget); // side menu shows every item
   });
 
@@ -39,8 +44,14 @@ void main() {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, '01000000002');
 
+<<<<<<< HEAD
     expect(find.byType(AppBottomBar), findsOneWidget);
     expect(find.text('Screen P1 in spec.md'), findsOneWidget);
+=======
+    expect(find.byType(NavigationBar), findsOneWidget);
+    // P1 is built: first login starts with the terms acceptance (A9).
+    expect(find.text('Before you start'), findsOneWidget);
+>>>>>>> phase-6/appointments-live-board
   });
 
   testWidgets('wrong credentials show the error and keep the form', (tester) async {

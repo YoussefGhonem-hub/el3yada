@@ -464,6 +464,7 @@ abstract class AppLocalizations {
   /// **'Audit log'**
   String get navAuditLog;
 
+<<<<<<< HEAD
   /// No description provided for @done.
   ///
   /// In en, this message translates to:
@@ -9579,6 +9580,439 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prescriptions'**
   String get patientTabPrescriptions;
+=======
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @errorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This item is not available.'**
+  String get errorNotFound;
+
+  /// No description provided for @errorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have access to this.'**
+  String get errorForbidden;
+
+  /// No description provided for @errorDeletionAlreadyRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a deletion request under review.'**
+  String get errorDeletionAlreadyRequested;
+
+  /// No description provided for @couldNotOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open it on this device'**
+  String get couldNotOpen;
+
+  /// No description provided for @newBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get newBadge;
+
+  /// No description provided for @allDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allDoctors;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, {name}'**
+  String homeGreeting(String name);
+
+  /// No description provided for @homeNewItems.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new item in your file} other{{count} new items in your file}}'**
+  String homeNewItems(int count);
+
+  /// No description provided for @homeLatestVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest visit'**
+  String get homeLatestVisit;
+
+  /// No description provided for @homeLatestPrescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest prescription'**
+  String get homeLatestPrescription;
+
+  /// No description provided for @homeNextFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Next follow-up'**
+  String get homeNextFollowUp;
+
+  /// No description provided for @followUpWith.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} with {doctor}'**
+  String followUpWith(String date, String doctor);
+
+  /// No description provided for @homeRecentFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent files'**
+  String get homeRecentFiles;
+
+  /// No description provided for @homeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your medical file is empty for now. Visits, prescriptions and files your doctor adds will appear here.'**
+  String get homeEmpty;
+
+  /// No description provided for @myDoctorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My doctors'**
+  String get myDoctorsTitle;
+
+  /// No description provided for @myDoctorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My doctor'**
+  String get myDoctorTitle;
+
+  /// No description provided for @noDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not linked to a doctor yet.'**
+  String get noDoctors;
+
+  /// No description provided for @medicalProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical profile'**
+  String get medicalProfileTitle;
+
+  /// No description provided for @fileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'File no. {number}'**
+  String fileNumber(int number);
+
+  /// No description provided for @thisDoctorsRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'This doctor\'s records'**
+  String get thisDoctorsRecords;
+
+  /// No description provided for @branchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get branchesTitle;
+
+  /// No description provided for @noBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'No branch details yet. Contact the clinic.'**
+  String get noBranches;
+
+  /// No description provided for @mainBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Main'**
+  String get mainBranch;
+
+  /// No description provided for @branchTemporarilyClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily closed'**
+  String get branchTemporarilyClosed;
+
+  /// No description provided for @reopensOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reopens on {date}'**
+  String reopensOn(String date);
+
+  /// No description provided for @openInMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in maps'**
+  String get openInMaps;
+
+  /// No description provided for @call.
+  ///
+  /// In en, this message translates to:
+  /// **'Call'**
+  String get call;
+
+  /// No description provided for @whatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get whatsApp;
+
+  /// No description provided for @phoneReception.
+  ///
+  /// In en, this message translates to:
+  /// **'Reception'**
+  String get phoneReception;
+
+  /// No description provided for @phoneMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get phoneMobile;
+
+  /// No description provided for @phoneLandline.
+  ///
+  /// In en, this message translates to:
+  /// **'Landline'**
+  String get phoneLandline;
+
+  /// No description provided for @workingHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Working hours'**
+  String get workingHours;
+
+  /// No description provided for @workingHoursNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the clinic for its hours.'**
+  String get workingHoursNotSet;
+
+  /// No description provided for @closedDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get closedDay;
+
+  /// No description provided for @timeRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} – {end}'**
+  String timeRange(String start, String end);
+
+  /// No description provided for @visitPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit prices'**
+  String get visitPrices;
+
+  /// No description provided for @priceAskClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the clinic'**
+  String get priceAskClinic;
+
+  /// No description provided for @moneyEgp.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} EGP'**
+  String moneyEgp(String amount);
+
+  /// No description provided for @paymentCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get paymentCash;
+
+  /// No description provided for @paymentCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get paymentCard;
+
+  /// No description provided for @paymentInstapay.
+  ///
+  /// In en, this message translates to:
+  /// **'InstaPay'**
+  String get paymentInstapay;
+
+  /// No description provided for @paymentWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile wallet'**
+  String get paymentWallet;
+
+  /// No description provided for @amenityElevator.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevator'**
+  String get amenityElevator;
+
+  /// No description provided for @amenityParking.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking'**
+  String get amenityParking;
+
+  /// No description provided for @amenityWheelchair.
+  ///
+  /// In en, this message translates to:
+  /// **'Wheelchair access'**
+  String get amenityWheelchair;
+
+  /// No description provided for @amenityKidsArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Kids\' area'**
+  String get amenityKidsArea;
+
+  /// No description provided for @tabVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get tabVisits;
+
+  /// No description provided for @tabPrescriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescriptions'**
+  String get tabPrescriptions;
+
+  /// No description provided for @tabFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Files'**
+  String get tabFiles;
+
+  /// No description provided for @noVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'No visits yet.'**
+  String get noVisits;
+
+  /// No description provided for @noPrescriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'No prescriptions yet.'**
+  String get noPrescriptions;
+
+  /// No description provided for @noFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No files in this category.'**
+  String get noFiles;
+
+  /// No description provided for @visitTypeExamination.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination'**
+  String get visitTypeExamination;
+
+  /// No description provided for @visitTypeConsultation.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation'**
+  String get visitTypeConsultation;
+
+  /// No description provided for @visitDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit details'**
+  String get visitDetailsTitle;
+
+  /// No description provided for @diagnosis.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnosis'**
+  String get diagnosis;
+
+  /// No description provided for @chiefComplaint.
+  ///
+  /// In en, this message translates to:
+  /// **'Chief complaint'**
+  String get chiefComplaint;
+
+  /// No description provided for @findings.
+  ///
+  /// In en, this message translates to:
+  /// **'Examination findings'**
+  String get findings;
+
+  /// No description provided for @vitals.
+  ///
+  /// In en, this message translates to:
+  /// **'Vitals'**
+  String get vitals;
+
+  /// No description provided for @vitalBloodPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood pressure'**
+  String get vitalBloodPressure;
+
+  /// No description provided for @vitalPulse.
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse'**
+  String get vitalPulse;
+
+  /// No description provided for @vitalTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get vitalTemperature;
+
+  /// No description provided for @vitalWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get vitalWeight;
+
+  /// No description provided for @vitalHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get vitalHeight;
+
+  /// No description provided for @vitalGlucose.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood sugar'**
+  String get vitalGlucose;
+
+  /// No description provided for @doctorNotesForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Your doctor\'s notes'**
+  String get doctorNotesForYou;
+
+  /// No description provided for @followUpDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up date'**
+  String get followUpDate;
+
+  /// No description provided for @rxTabMedications.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get rxTabMedications;
+
+  /// No description provided for @rxTabInvestigations.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab & Radiology'**
+  String get rxTabInvestigations;
+>>>>>>> phase-6/appointments-live-board
 
   /// No description provided for @rxKindMedication.
   ///
@@ -9589,6 +10023,7 @@ abstract class AppLocalizations {
   /// No description provided for @rxKindInvestigations.
   ///
   /// In en, this message translates to:
+<<<<<<< HEAD
   /// **'Investigations request'**
   String get rxKindInvestigations;
 
@@ -9771,10 +10206,51 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get rxAddToPrescription;
+=======
+  /// **'Lab & radiology request'**
+  String get rxKindInvestigations;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @itemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String itemCount(int count);
+
+  /// No description provided for @rxCancelledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This prescription was cancelled'**
+  String get rxCancelledTitle;
+
+  /// No description provided for @reasonValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String reasonValue(String reason);
+
+  /// No description provided for @rxOpenNewCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the new copy'**
+  String get rxOpenNewCopy;
+
+  /// No description provided for @rxSentOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String rxSentOn(String date);
+>>>>>>> phase-6/appointments-live-board
 
   /// No description provided for @rxAdvice.
   ///
   /// In en, this message translates to:
+<<<<<<< HEAD
   /// **'General advice'**
   String get rxAdvice;
 
@@ -10959,6 +11435,1714 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logo or signature'**
   String get activityActionRxBrandingUpdated;
+=======
+  /// **'Advice'**
+  String get rxAdvice;
+
+  /// No description provided for @viewPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'View PDF'**
+  String get viewPdf;
+
+  /// No description provided for @shareOrSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Share or save'**
+  String get shareOrSave;
+
+  /// A dose and the medicine form, for example "1 tablet".
+  ///
+  /// In en, this message translates to:
+  /// **'{dose} {form}'**
+  String doseAmountForm(String dose, String form);
+
+  /// No description provided for @formTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'tablet'**
+  String get formTablet;
+
+  /// No description provided for @formCapsule.
+  ///
+  /// In en, this message translates to:
+  /// **'capsule'**
+  String get formCapsule;
+
+  /// No description provided for @formSyrup.
+  ///
+  /// In en, this message translates to:
+  /// **'syrup'**
+  String get formSyrup;
+
+  /// No description provided for @formInjection.
+  ///
+  /// In en, this message translates to:
+  /// **'injection'**
+  String get formInjection;
+
+  /// No description provided for @formCream.
+  ///
+  /// In en, this message translates to:
+  /// **'cream / ointment'**
+  String get formCream;
+
+  /// No description provided for @formDrops.
+  ///
+  /// In en, this message translates to:
+  /// **'drops'**
+  String get formDrops;
+
+  /// No description provided for @formInhaler.
+  ///
+  /// In en, this message translates to:
+  /// **'inhaler'**
+  String get formInhaler;
+
+  /// No description provided for @formSuppository.
+  ///
+  /// In en, this message translates to:
+  /// **'suppository'**
+  String get formSuppository;
+
+  /// No description provided for @formSachet.
+  ///
+  /// In en, this message translates to:
+  /// **'sachet'**
+  String get formSachet;
+
+  /// No description provided for @formOther.
+  ///
+  /// In en, this message translates to:
+  /// **'other'**
+  String get formOther;
+
+  /// No description provided for @timingBeforeFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Before food'**
+  String get timingBeforeFood;
+
+  /// No description provided for @timingAfterFood.
+  ///
+  /// In en, this message translates to:
+  /// **'After food'**
+  String get timingAfterFood;
+
+  /// No description provided for @timingWithFood.
+  ///
+  /// In en, this message translates to:
+  /// **'With food'**
+  String get timingWithFood;
+
+  /// No description provided for @durationDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{for 1 day} other{for {count} days}}'**
+  String durationDays(int count);
+
+  /// No description provided for @durationWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{for 1 week} other{for {count} weeks}}'**
+  String durationWeeks(int count);
+
+  /// No description provided for @durationContinuous.
+  ///
+  /// In en, this message translates to:
+  /// **'Continuous'**
+  String get durationContinuous;
+
+  /// No description provided for @investigationLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab test'**
+  String get investigationLab;
+
+  /// No description provided for @investigationRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get investigationRadiology;
+
+  /// No description provided for @fileCategoryPrescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescriptions'**
+  String get fileCategoryPrescription;
+
+  /// No description provided for @fileCategoryLab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab tests'**
+  String get fileCategoryLab;
+
+  /// No description provided for @fileCategoryRadiology.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiology'**
+  String get fileCategoryRadiology;
+
+  /// No description provided for @fileCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get fileCategoryOther;
+
+  /// No description provided for @otherTypeReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical report'**
+  String get otherTypeReport;
+
+  /// No description provided for @otherTypeReferral.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral'**
+  String get otherTypeReferral;
+
+  /// No description provided for @otherTypeSickLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Sick leave'**
+  String get otherTypeSickLeave;
+
+  /// No description provided for @otherTypeEcg.
+  ///
+  /// In en, this message translates to:
+  /// **'ECG'**
+  String get otherTypeEcg;
+
+  /// No description provided for @otherTypeEegEmg.
+  ///
+  /// In en, this message translates to:
+  /// **'EEG / EMG'**
+  String get otherTypeEegEmg;
+
+  /// No description provided for @otherTypeEndoscopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Endoscopy'**
+  String get otherTypeEndoscopy;
+
+  /// No description provided for @otherTypeConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Consent form'**
+  String get otherTypeConsent;
+
+  /// No description provided for @fileDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'File details'**
+  String get fileDetails;
+
+  /// No description provided for @fileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get fileTitle;
+
+  /// No description provided for @fileCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get fileCategory;
+
+  /// No description provided for @documentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Document date'**
+  String get documentDate;
+
+  /// No description provided for @doctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor'**
+  String get doctor;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @noAttachments.
+  ///
+  /// In en, this message translates to:
+  /// **'This file has no attachments.'**
+  String get noAttachments;
+
+  /// No description provided for @cannotPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'{fileName} can\'t be previewed here. Use Share to open it with another app.'**
+  String cannotPreview(String fileName);
+
+  /// No description provided for @pageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String pageOf(int current, int total);
+
+  /// No description provided for @personalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal information'**
+  String get personalInfo;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @mobileNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number'**
+  String get mobileNumber;
+
+  /// No description provided for @gender.
+  ///
+  /// In en, this message translates to:
+  /// **'Gender'**
+  String get gender;
+
+  /// No description provided for @genderMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get genderMale;
+
+  /// No description provided for @genderFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get genderFemale;
+
+  /// No description provided for @age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get age;
+
+  /// No description provided for @ageYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{years, plural, =0{Under 1 year} =1{1 year} other{{years} years}}'**
+  String ageYears(int years);
+
+  /// No description provided for @bloodType.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood type'**
+  String get bloodType;
+
+  /// No description provided for @allergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get allergies;
+
+  /// No description provided for @chronicDiseases.
+  ///
+  /// In en, this message translates to:
+  /// **'Chronic diseases'**
+  String get chronicDiseases;
+
+  /// No description provided for @currentMedications.
+  ///
+  /// In en, this message translates to:
+  /// **'Current medications'**
+  String get currentMedications;
+
+  /// No description provided for @surgeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Past surgeries'**
+  String get surgeries;
+
+  /// No description provided for @familyHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Family history'**
+  String get familyHistory;
+
+  /// No description provided for @medicalProfileEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet.'**
+  String get medicalProfileEmpty;
+
+  /// No description provided for @medicalProfileReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'To update this information, contact your doctor.'**
+  String get medicalProfileReadOnly;
+
+  /// No description provided for @settingsGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsGeneral;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsTitle;
+
+  /// No description provided for @notifyChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat messages'**
+  String get notifyChat;
+
+  /// No description provided for @notifyReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment reminders'**
+  String get notifyReminders;
+
+  /// No description provided for @notifyShowPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Show message text in notifications'**
+  String get notifyShowPreview;
+
+  /// No description provided for @notifyShowPreviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off keeps your messages private on the lock screen.'**
+  String get notifyShowPreviewHint;
+
+  /// No description provided for @accountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountTitle;
+
+  /// No description provided for @requestAccountDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Request account deletion'**
+  String get requestAccountDeletion;
+
+  /// No description provided for @deletionConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll send your request to the el3yada team. Once it is approved you won\'t be able to sign in. Your doctors keep the medical records they are required to keep.'**
+  String get deletionConfirmBody;
+
+  /// No description provided for @deletionReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get deletionReasonLabel;
+
+  /// No description provided for @deletionConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get deletionConfirmButton;
+
+  /// No description provided for @deletionRequestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request was sent. We\'ll review it soon.'**
+  String get deletionRequestSent;
+
+  /// No description provided for @deletionPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion request under review'**
+  String get deletionPendingTitle;
+
+  /// No description provided for @deletionPendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent on {date}'**
+  String deletionPendingBody(String date);
+
+  /// No description provided for @deletionRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Your last request was declined: {note}'**
+  String deletionRejected(String note);
+
+  /// No description provided for @termsGateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Before you start'**
+  String get termsGateTitle;
+
+  /// No description provided for @termsGateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'el3yada keeps your medical file safe and shares it only with your doctors. Please read and accept the Terms of Use and Privacy Policy to continue.'**
+  String get termsGateBody;
+
+  /// No description provided for @termsGateCheckbox.
+  ///
+  /// In en, this message translates to:
+  /// **'I have read and accept the Terms of Use and Privacy Policy'**
+  String get termsGateCheckbox;
+
+  /// No description provided for @termsGateContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get termsGateContinue;
+
+  /// No description provided for @navDeletionRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion requests'**
+  String get navDeletionRequests;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get statusPending;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get statusApproved;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get statusRejected;
+
+  /// No description provided for @noDeletionRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests here.'**
+  String get noDeletionRequests;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @approveDeletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve deletion?'**
+  String get approveDeletionTitle;
+
+  /// No description provided for @approveDeletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient will be signed out everywhere and can\'t sign in again. Medical records stay with their doctors.'**
+  String get approveDeletionBody;
+
+  /// No description provided for @rejectDeletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject the request'**
+  String get rejectDeletionTitle;
+
+  /// No description provided for @reasonRequiredLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (the patient sees it)'**
+  String get reasonRequiredLabel;
+
+  /// No description provided for @errorInvalidPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid mobile number'**
+  String get errorInvalidPhone;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @accountsSupportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by mobile number only. Patient and assistant accounts are shown, never medical data.'**
+  String get accountsSupportHint;
+
+  /// No description provided for @noAccountsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No account uses this number.'**
+  String get noAccountsFound;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted at the patient\'s request'**
+  String get accountDeleted;
+
+  /// No description provided for @linkedDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctors: {names}'**
+  String linkedDoctors(String names);
+
+  /// No description provided for @createdOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Created on {date}'**
+  String createdOn(String date);
+
+  /// No description provided for @assistantOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant of {doctor}'**
+  String assistantOf(String doctor);
+
+  /// No description provided for @lastActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Last active {time}'**
+  String lastActive(String time);
+
+  /// No description provided for @loginEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Login enabled'**
+  String get loginEnabled;
+
+  /// No description provided for @loginDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Login disabled'**
+  String get loginDisabled;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet.'**
+  String get noNotifications;
+
+  /// No description provided for @searchChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or phone'**
+  String get searchChats;
+
+  /// No description provided for @noChats.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet.'**
+  String get noChats;
+
+  /// No description provided for @chatImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get chatImage;
+
+  /// No description provided for @chatFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get chatFile;
+
+  /// No description provided for @chatNoMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get chatNoMessages;
+
+  /// No description provided for @chatDoctorUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor isn\'t available right now.'**
+  String get chatDoctorUnavailable;
+
+  /// No description provided for @chatSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending is paused while the service is suspended.'**
+  String get chatSuspended;
+
+  /// No description provided for @fileTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is larger than allowed.'**
+  String get fileTooLarge;
+
+  /// No description provided for @chatCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get chatCamera;
+
+  /// No description provided for @chatGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get chatGallery;
+
+  /// No description provided for @chatFileOption.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get chatFileOption;
+
+  /// No description provided for @saveToPatientFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to patient file'**
+  String get saveToPatientFile;
+
+  /// No description provided for @savedToPatientFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to the patient\'s file'**
+  String get savedToPatientFile;
+
+  /// No description provided for @chatStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the conversation.'**
+  String get chatStart;
+
+  /// No description provided for @chatAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach'**
+  String get chatAttach;
+
+  /// No description provided for @chatTypeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message'**
+  String get chatTypeMessage;
+
+  /// No description provided for @chatSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get chatSend;
+
+  /// No description provided for @clinicAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic assistant — {name}'**
+  String clinicAssistant(String name);
+
+  /// No description provided for @chatRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get chatRead;
+
+  /// No description provided for @chatDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get chatDelivered;
+
+  /// No description provided for @chooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the category'**
+  String get chooseCategory;
+
+  /// No description provided for @navSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get navSchedule;
+
+  /// No description provided for @apStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting to confirm'**
+  String get apStatusPending;
+
+  /// No description provided for @apStatusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get apStatusConfirmed;
+
+  /// No description provided for @apStatusCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get apStatusCheckedIn;
+
+  /// No description provided for @apStatusWithDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'With the doctor'**
+  String get apStatusWithDoctor;
+
+  /// No description provided for @apStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get apStatusCompleted;
+
+  /// No description provided for @apStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get apStatusCancelled;
+
+  /// No description provided for @apStatusNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No-show'**
+  String get apStatusNoShow;
+
+  /// No description provided for @apStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get apStatusRejected;
+
+  /// No description provided for @stageExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected'**
+  String get stageExpected;
+
+  /// No description provided for @stageWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get stageWaiting;
+
+  /// No description provided for @stageWithDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'With the doctor'**
+  String get stageWithDoctor;
+
+  /// No description provided for @stageDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get stageDone;
+
+  /// No description provided for @stageMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get stageMissed;
+
+  /// No description provided for @queueNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'No. {number}'**
+  String queueNumber(int number);
+
+  /// No description provided for @errSlotTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This time was just booked. Choose another one.'**
+  String get errSlotTaken;
+
+  /// No description provided for @errPeriodFull.
+  ///
+  /// In en, this message translates to:
+  /// **'This period is fully booked.'**
+  String get errPeriodFull;
+
+  /// No description provided for @errOutsideHours.
+  ///
+  /// In en, this message translates to:
+  /// **'This time is outside working hours.'**
+  String get errOutsideHours;
+
+  /// No description provided for @errBranchClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'The branch is closed at this time.'**
+  String get errBranchClosed;
+
+  /// No description provided for @errTooFarAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking is open only for the coming days set by the clinic.'**
+  String get errTooFarAhead;
+
+  /// No description provided for @errTooSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'This time is too soon to book.'**
+  String get errTooSoon;
+
+  /// No description provided for @errSameDayOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Same-day booking isn\'t available. Please call the clinic.'**
+  String get errSameDayOff;
+
+  /// No description provided for @errUpcomingLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have an upcoming booking with this doctor.'**
+  String get errUpcomingLimit;
+
+  /// No description provided for @errSelfBookingBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Please call the clinic to book.'**
+  String get errSelfBookingBlocked;
+
+  /// No description provided for @errConsultationRequiresExam.
+  ///
+  /// In en, this message translates to:
+  /// **'A consultation isn\'t possible now. Book an examination.'**
+  String get errConsultationRequiresExam;
+
+  /// No description provided for @errCancelWindowPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s too late to change this booking. Please call the clinic.'**
+  String get errCancelWindowPassed;
+
+  /// No description provided for @errMaxReschedules.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached the maximum number of changes for this booking.'**
+  String get errMaxReschedules;
+
+  /// No description provided for @errBookingUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Online booking isn\'t available right now. Please call the clinic.'**
+  String get errBookingUnavailable;
+
+  /// No description provided for @errAlreadyHandled.
+  ///
+  /// In en, this message translates to:
+  /// **'Someone else already updated this booking. The board was refreshed.'**
+  String get errAlreadyHandled;
+
+  /// No description provided for @errGuestNeedsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the patient\'s account first, then link the booking.'**
+  String get errGuestNeedsAccount;
+
+  /// No description provided for @boardOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline: the data may be out of date'**
+  String get boardOffline;
+
+  /// No description provided for @book.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get book;
+
+  /// No description provided for @walkIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk-in'**
+  String get walkIn;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
+
+  /// No description provided for @doctorDelayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor delayed'**
+  String get doctorDelayed;
+
+  /// No description provided for @minutesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes'**
+  String minutesCount(int minutes);
+
+  /// No description provided for @patientsNotified.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 patient notified} other{{count} patients notified}}'**
+  String patientsNotified(int count);
+
+  /// No description provided for @cancelRestOfDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel the rest of today'**
+  String get cancelRestOfDay;
+
+  /// No description provided for @cancelRestOfDayBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every booking that hasn\'t arrived yet at this branch today will be cancelled, and patients will be told to book again.'**
+  String get cancelRestOfDayBody;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @bookingsCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 booking cancelled} other{{count} bookings cancelled}}'**
+  String bookingsCancelled(int count);
+
+  /// No description provided for @nowServing.
+  ///
+  /// In en, this message translates to:
+  /// **'Now serving'**
+  String get nowServing;
+
+  /// No description provided for @countBooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked: {count}'**
+  String countBooked(int count);
+
+  /// No description provided for @countArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived: {count}'**
+  String countArrived(int count);
+
+  /// No description provided for @delayedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Delayed {minutes} min'**
+  String delayedBy(int minutes);
+
+  /// No description provided for @boardEmptyStage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody here'**
+  String get boardEmptyStage;
+
+  /// No description provided for @confirmBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmBooking;
+
+  /// No description provided for @checkIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in'**
+  String get checkIn;
+
+  /// No description provided for @callIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Call in'**
+  String get callIn;
+
+  /// No description provided for @undoNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo no-show'**
+  String get undoNoShow;
+
+  /// No description provided for @newPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'New patient'**
+  String get newPatient;
+
+  /// No description provided for @lastVisitOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit: {date} — {type}'**
+  String lastVisitOn(String date, String type);
+
+  /// No description provided for @priority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get priority;
+
+  /// No description provided for @late.
+  ///
+  /// In en, this message translates to:
+  /// **'Late'**
+  String get late;
+
+  /// No description provided for @consultationNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation not allowed'**
+  String get consultationNotAllowed;
+
+  /// No description provided for @guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get guest;
+
+  /// No description provided for @waitedMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String waitedMinutes(int minutes);
+
+  /// No description provided for @markNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark no-show'**
+  String get markNoShow;
+
+  /// No description provided for @leftWithoutSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Left without being seen'**
+  String get leftWithoutSeen;
+
+  /// No description provided for @sendBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to waiting'**
+  String get sendBack;
+
+  /// No description provided for @visitsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get visitsCount;
+
+  /// No description provided for @lastVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit'**
+  String get lastVisit;
+
+  /// No description provided for @recentAmounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent amounts'**
+  String get recentAmounts;
+
+  /// No description provided for @upcomingAndNoShows.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming bookings · no-shows'**
+  String get upcomingAndNoShows;
+
+  /// No description provided for @bookingReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for booking'**
+  String get bookingReason;
+
+  /// No description provided for @staffNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff notes'**
+  String get staffNotes;
+
+  /// No description provided for @openBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Open booking'**
+  String get openBooking;
+
+  /// No description provided for @searchPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, phone or file number'**
+  String get searchPatient;
+
+  /// No description provided for @hasUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Has an upcoming booking'**
+  String get hasUpcoming;
+
+  /// No description provided for @chooseVisitType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the visit type'**
+  String get chooseVisitType;
+
+  /// No description provided for @guestNameAndPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the name (two words at least) and the mobile number'**
+  String get guestNameAndPhone;
+
+  /// No description provided for @existingPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing patient'**
+  String get existingPatient;
+
+  /// No description provided for @visitType.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit type'**
+  String get visitType;
+
+  /// No description provided for @firstVisitIsExam.
+  ///
+  /// In en, this message translates to:
+  /// **'The first visit is always an examination.'**
+  String get firstVisitIsExam;
+
+  /// No description provided for @consultationCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Consultation {count} of {max} since the last examination'**
+  String consultationCount(int count, int max);
+
+  /// No description provided for @noOpenDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No open days in this range.'**
+  String get noOpenDays;
+
+  /// No description provided for @placesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Full} =1{1 place left} other{{count} places left}}'**
+  String placesLeft(int count);
+
+  /// No description provided for @estimatedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'About {time}'**
+  String estimatedTime(String time);
+
+  /// No description provided for @tabUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get tabUpcoming;
+
+  /// No description provided for @tabPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Past'**
+  String get tabPast;
+
+  /// No description provided for @tabCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get tabCancelled;
+
+  /// No description provided for @noAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookings here.'**
+  String get noAppointments;
+
+  /// No description provided for @cancelBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel booking'**
+  String get cancelBooking;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @bookingCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Your booking was cancelled.'**
+  String get bookingCancelled;
+
+  /// No description provided for @appointmentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking details'**
+  String get appointmentDetails;
+
+  /// No description provided for @nowServingYourNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Now serving {now} — your number {mine}'**
+  String nowServingYourNumber(int now, int mine);
+
+  /// No description provided for @waitingForClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the clinic to confirm'**
+  String get waitingForClinic;
+
+  /// No description provided for @reschedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Change time'**
+  String get reschedule;
+
+  /// No description provided for @callClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Call the clinic'**
+  String get callClinic;
+
+  /// No description provided for @openVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the visit'**
+  String get openVisit;
+
+  /// No description provided for @history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get history;
+
+  /// No description provided for @byYou.
+  ///
+  /// In en, this message translates to:
+  /// **'by you'**
+  String get byYou;
+
+  /// No description provided for @bySystem.
+  ///
+  /// In en, this message translates to:
+  /// **'automatically'**
+  String get bySystem;
+
+  /// No description provided for @byClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'by the clinic'**
+  String get byClinic;
+
+  /// No description provided for @historyCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked'**
+  String get historyCreated;
+
+  /// No description provided for @historyRescheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescheduled'**
+  String get historyRescheduled;
+
+  /// No description provided for @historyExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed in time'**
+  String get historyExpired;
+
+  /// No description provided for @bookAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Book an appointment'**
+  String get bookAppointment;
+
+  /// No description provided for @chooseDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the doctor'**
+  String get chooseDoctor;
+
+  /// No description provided for @chooseBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the branch'**
+  String get chooseBranch;
+
+  /// No description provided for @chooseDateAndTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the day and time'**
+  String get chooseDateAndTime;
+
+  /// No description provided for @bookingReasonOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get bookingReasonOptional;
+
+  /// No description provided for @cancelPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'You can cancel or change up to {hours} hours before the appointment.'**
+  String cancelPolicy(int hours);
+
+  /// No description provided for @confirmBookingButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm booking'**
+  String get confirmBookingButton;
+
+  /// No description provided for @bookingConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking confirmed'**
+  String get bookingConfirmed;
+
+  /// No description provided for @bookingMoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Your booking was moved'**
+  String get bookingMoved;
+
+  /// No description provided for @previousDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get previousDay;
+
+  /// No description provided for @nextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get nextDay;
+
+  /// No description provided for @searchBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'Search bookings'**
+  String get searchBookings;
+
+  /// No description provided for @reasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason'**
+  String get reasonLabel;
+
+  /// No description provided for @whenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get whenLabel;
+
+  /// No description provided for @bookedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked by'**
+  String get bookedBy;
+
+  /// No description provided for @overbooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Overbooked'**
+  String get overbooked;
+
+  /// No description provided for @checkedInNoSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in, but no session was recorded'**
+  String get checkedInNoSession;
+
+  /// No description provided for @sourceApp.
+  ///
+  /// In en, this message translates to:
+  /// **'patient app'**
+  String get sourceApp;
+
+  /// No description provided for @sourceStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'clinic'**
+  String get sourceStaff;
+
+  /// No description provided for @quickGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick guest'**
+  String get quickGuest;
+
+  /// No description provided for @overbookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This place is full'**
+  String get overbookTitle;
+
+  /// No description provided for @overbookBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The period or time is already full. Book anyway as an extra?'**
+  String get overbookBody;
+
+  /// No description provided for @upcomingWarningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This patient already has an upcoming booking. You can change that one instead, or book another.'**
+  String get upcomingWarningBody;
+
+  /// No description provided for @bookAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Book anyway'**
+  String get bookAnyway;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @next7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Next 7 days'**
+  String get next7Days;
+
+  /// No description provided for @guestsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Guests only'**
+  String get guestsOnly;
+
+  /// No description provided for @scheduleConflictsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Some bookings still need a decision.'**
+  String get scheduleConflictsLeft;
+
+  /// No description provided for @scheduleSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule saved'**
+  String get scheduleSaved;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @specialDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Special dates'**
+  String get specialDates;
+
+  /// No description provided for @bookingSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking settings'**
+  String get bookingSettings;
+
+  /// No description provided for @copySaturdayToAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Saturday to all days'**
+  String get copySaturdayToAll;
+
+  /// No description provided for @addPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Add period'**
+  String get addPeriod;
+
+  /// No description provided for @closeADay.
+  ///
+  /// In en, this message translates to:
+  /// **'Close a day'**
+  String get closeADay;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// No description provided for @closures.
+  ///
+  /// In en, this message translates to:
+  /// **'Closures and vacations'**
+  String get closures;
+
+  /// No description provided for @addClosure.
+  ///
+  /// In en, this message translates to:
+  /// **'Add closure'**
+  String get addClosure;
+
+  /// No description provided for @closureScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Close which branches?'**
+  String get closureScope;
+
+  /// No description provided for @thisBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'This branch'**
+  String get thisBranch;
+
+  /// No description provided for @allBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'All branches'**
+  String get allBranches;
+
+  /// No description provided for @bookingMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking mode'**
+  String get bookingMode;
+
+  /// No description provided for @modeQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue numbers'**
+  String get modeQueue;
+
+  /// No description provided for @modeTimed.
+  ///
+  /// In en, this message translates to:
+  /// **'Timed slots'**
+  String get modeTimed;
+
+  /// No description provided for @slotMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Slot length (minutes)'**
+  String get slotMinutes;
+
+  /// No description provided for @defaultCapacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Places per period'**
+  String get defaultCapacity;
+
+  /// No description provided for @avgVisitMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Average visit (minutes)'**
+  String get avgVisitMinutes;
+
+  /// No description provided for @selfBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients can book from the app'**
+  String get selfBooking;
+
+  /// No description provided for @autoConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm app bookings automatically'**
+  String get autoConfirm;
+
+  /// No description provided for @sameDayBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Same-day booking'**
+  String get sameDayBooking;
+
+  /// No description provided for @staffOverbooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff can overbook after a warning'**
+  String get staffOverbooking;
+
+  /// No description provided for @windowDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking window (days)'**
+  String get windowDays;
+
+  /// No description provided for @minNoticeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum notice (minutes)'**
+  String get minNoticeMinutes;
+
+  /// No description provided for @freeCancelMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Free cancel until (minutes before)'**
+  String get freeCancelMinutes;
+
+  /// No description provided for @maxReschedules.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes per booking'**
+  String get maxReschedules;
+
+  /// No description provided for @maxUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming bookings per patient'**
+  String get maxUpcoming;
+
+  /// No description provided for @nextDayShort.
+  ///
+  /// In en, this message translates to:
+  /// **'(+1 day)'**
+  String get nextDayShort;
+
+  /// No description provided for @capacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Places'**
+  String get capacity;
+
+  /// No description provided for @affectedBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 booking is affected} other{{count} bookings are affected}}'**
+  String affectedBookings(int count);
+
+  /// No description provided for @keepAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep all'**
+  String get keepAll;
+
+  /// No description provided for @cancelAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel all'**
+  String get cancelAll;
+
+  /// No description provided for @keep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get keep;
+
+  /// No description provided for @applyChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply changes'**
+  String get applyChanges;
+>>>>>>> phase-6/appointments-live-board
 }
 
 class _AppLocalizationsDelegate

@@ -317,6 +317,8 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 
 **Tables:** Patients, DoctorPatients, PatientMedicalProfileItems, Sessions, MedicalRecords, MedicalRecordAttachments, Prescriptions (+ items), Branches, BranchPhones, BranchPeriods, DeletionRequests.
 
+**Status (branch `phase-4/patient-app`):** every item above is built, with API tests (visibility, AC-11, AC-12, deletion and support flows) and app tests (fake data, Arabic/English, light/dark, phone/tablet). Boxes stay unticked until checked on a real Android device and on Windows (A14). Not yet in the screens: P4 branch filter, P8 date-range filter, P3 Book and Chat buttons (Phases 5–6), P14 change password / terms text / support contact (Phase 1 public settings).
+
 **Done when:** a patient linked to two doctors sees both files separately and together, never sees private notes or drafts, and gets the A14 refusal on Windows. AC-11 holds from the patient side.
 
 ---
@@ -340,6 +342,8 @@ The app builds against [backend/docs/api-phase-2.md](backend/docs/api-phase-2.md
 - [ ] AD16 broadcast [C].
 
 **Tables:** Chats, ChatMessages, ChatReadStates, Notifications, UserDevices, Users (Notify* columns), MedicalRecords (save from chat).
+
+**Status (branch `phase-5/chat-notifications`):** chat API and screens (D16, D17, AS9, P11, P12), notification service with delivery (SignalR to running apps and Windows toasts; FCM to Android and iOS), notification centres, devices, and templates for every 10.1 event. Still to do: (1) `flutterfire configure`, the API's Firebase service-account key, and a `firebase_messaging` `PushTokenSource` in the app; (2) Phases 1–3 call `NotificationTemplates.*` from their endpoints (sessions, files, prescriptions, sign-ups, password requests); (3) system tray [S] and AD16 broadcast [C]. Boxes stay unticked until AC-13 is checked on a real Android phone and on Windows.
 
 **Done when:** AC-13 passes. Push text arrives in the recipient's language, never contains diagnoses, and shows the message text only when the recipient turned previews on.
 
@@ -385,7 +389,13 @@ Timed mode (exact times) keeps its order by time.
 
 **Tables:** Appointments, AppointmentHistory, Branches (booking columns), BranchPeriods, BranchDateOverrides, BranchDateOverridePeriods, BranchClosures, BranchDayStates, PublicHolidays [C], DoctorPatients (self-booking block), Sessions.
 
+<<<<<<< HEAD
 **Done when:** AC-21 (including the queue-order check: A books before B, B arrives first and goes in first), AC-22, AC-25 and AC-26 pass. The load test shows no double booking and no repeated queue number.
+=======
+**Status (branch `phase-6/appointments-live-board`):** API complete except the load test on real infrastructure (the API tests already race 12 requests for one slot and 10 for a 3-place period with no double booking). Screens built: D29/AS17 schedule (as a Schedule page until Phase 2's D29 tabs exist), D30, D31, D32 (existing patient via a small lookup endpoint, or quick guest), D33, D34/AS1/AS16 live board with side panel and offline banner, P15–P17. Waiting on others: Phase 2 `createSession` must call `BoardActionsService.CompleteWithSessionAsync` (BR-AP10) and the board's Finish button opens D8; "create patient now" in D32 uses D5. Still to do: Firestore listener in the app (needs Firebase; SignalR + 15-second refresh work now), drag and drop [S], doctor extras on the board (BR-LB6), D36 [C], public holidays [C].
+
+**Done when:** AC-21, AC-22, AC-25 and AC-26 pass, and the load test shows no double booking.
+>>>>>>> phase-6/appointments-live-board
 
 ---
 

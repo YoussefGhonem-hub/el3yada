@@ -76,6 +76,8 @@ lib/
     widgets/                    shared widgets (language and theme switches)
   features/
     auth/                       sign-in (domain, data, application, presentation)
+    patient/                    patient app P1–P10, P14 (Phase 4)
+    admin_support/              AD11 accounts support, AD12 deletion requests (Phase 4)
     shell/                      per-role navigation and adaptive layout
   l10n/
     app_en.arb, app_ar.arb      every user-facing string
@@ -86,6 +88,13 @@ test/                           unit and widget tests (`flutter test`)
 ```
 
 Each feature follows the same layers: `domain/` (models), `data/` (API), `application/` (Riverpod controllers), `presentation/` (screens).
+
+## Talking to the API
+
+- Each feature has a repository interface in `data/` with two implementations: `Api…Repository` (dio, `/api/...` routes) and `Fake…Repository` (offline data). Dev builds with `USE_FAKE_AUTH` use the fakes, because their tokens aren't real; prod always uses the API.
+- API failures become `ApiError` with the server's `code` (`core/network/api_error.dart`); `l10n.apiErrorMessage(error)` gives the message. Add new codes there.
+- Stored files (attachments, prescription PDFs) are fetched with the user's token and kept in memory for a few minutes (`fileBytesProvider`). Never build public file URLs.
+- `test/fixtures/patient/*.json` are real responses of the API's demo data. `patient_models_test.dart` parses them, so a change on either side that breaks the contract fails a test. Refresh them after changing an endpoint (backend/README.md, "Demo data and tokens").
 
 ## Conventions
 

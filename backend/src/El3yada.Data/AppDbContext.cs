@@ -467,8 +467,13 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.WaitRedMinutes).HasDefaultValue(40);
             entity.Property(e => e.WindowDays).HasDefaultValue(30);
 
+<<<<<<< HEAD
             // One doctor has many branches (BR-BR1). The scaffolder read the filtered unique index
             // UQ_Branches_OneDefault as a one-to-one, which would stop a second branch being added.
+=======
+            // One doctor, many branches. UQ_Branches_OneDefault is filtered (IsDefault = 1),
+            // so it limits the default branch only, not the relationship.
+>>>>>>> phase-6/appointments-live-board
             entity.HasOne(d => d.Doctor).WithMany(p => p.Branches)
                 .HasForeignKey(d => d.DoctorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

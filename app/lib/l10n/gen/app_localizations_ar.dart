@@ -198,6 +198,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navAuditLog => 'سجل العمليات';
 
   @override
+<<<<<<< HEAD
   String get done => 'تم';
 
   @override
@@ -720,10 +721,156 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String regPriceValue(String amount) {
+=======
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get errorNotFound => 'هذا العنصر غير متاح.';
+
+  @override
+  String get errorForbidden => 'ليس لديك صلاحية للوصول إلى هذا.';
+
+  @override
+  String get errorDeletionAlreadyRequested =>
+      'لديك طلب حذف قيد المراجعة بالفعل.';
+
+  @override
+  String get couldNotOpen => 'تعذّر الفتح على هذا الجهاز';
+
+  @override
+  String get newBadge => 'جديد';
+
+  @override
+  String get allDoctors => 'الكل';
+
+  @override
+  String homeGreeting(String name) {
+    return 'أهلاً، $name';
+  }
+
+  @override
+  String homeNewItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عنصر جديد في ملفك',
+      few: '$count عناصر جديدة في ملفك',
+      two: 'عنصران جديدان في ملفك',
+      one: 'عنصر جديد في ملفك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeLatestVisit => 'آخر زيارة';
+
+  @override
+  String get homeLatestPrescription => 'آخر روشتة';
+
+  @override
+  String get homeNextFollowUp => 'موعد المتابعة القادم';
+
+  @override
+  String followUpWith(String date, String doctor) {
+    return '$date مع $doctor';
+  }
+
+  @override
+  String get homeRecentFiles => 'أحدث الملفات';
+
+  @override
+  String get homeEmpty =>
+      'ملفك الطبي فارغ حالياً. ستظهر هنا الزيارات والروشتات والملفات التي يضيفها طبيبك.';
+
+  @override
+  String get myDoctorsTitle => 'أطبائي';
+
+  @override
+  String get myDoctorTitle => 'طبيبي';
+
+  @override
+  String get noDoctors => 'لم يتم ربطك بأي طبيب بعد.';
+
+  @override
+  String get medicalProfileTitle => 'الملف الصحي';
+
+  @override
+  String fileNumber(int number) {
+    return 'ملف رقم $number';
+  }
+
+  @override
+  String get thisDoctorsRecords => 'سجلاتي عند هذا الطبيب';
+
+  @override
+  String get branchesTitle => 'الفروع';
+
+  @override
+  String get noBranches => 'لا توجد بيانات للفروع بعد. تواصل مع العيادة.';
+
+  @override
+  String get mainBranch => 'الرئيسي';
+
+  @override
+  String get branchTemporarilyClosed => 'مغلق مؤقتاً';
+
+  @override
+  String reopensOn(String date) {
+    return 'يعاود العمل يوم $date';
+  }
+
+  @override
+  String get openInMaps => 'افتح في الخرائط';
+
+  @override
+  String get call => 'اتصال';
+
+  @override
+  String get whatsApp => 'واتساب';
+
+  @override
+  String get phoneReception => 'الاستقبال';
+
+  @override
+  String get phoneMobile => 'موبايل';
+
+  @override
+  String get phoneLandline => 'تليفون أرضي';
+
+  @override
+  String get workingHours => 'مواعيد العمل';
+
+  @override
+  String get workingHoursNotSet => 'استفسر من العيادة عن المواعيد.';
+
+  @override
+  String get closedDay => 'مغلق';
+
+  @override
+  String timeRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get visitPrices => 'أسعار الكشف والاستشارة';
+
+  @override
+  String get priceAskClinic => 'يُرجى الاستفسار من العيادة';
+
+  @override
+  String moneyEgp(String amount) {
+>>>>>>> phase-6/appointments-live-board
     return '$amount ج.م';
   }
 
   @override
+<<<<<<< HEAD
   String get regReviewIntro => 'راجع بياناتك، ثم أنشئ حسابك.';
 
   @override
@@ -947,11 +1094,124 @@ class AppLocalizationsAr extends AppLocalizations {
       few: 'منذ $count دقائق',
       two: 'منذ دقيقتين',
       one: 'منذ دقيقة',
+=======
+  String get paymentCash => 'نقداً';
+
+  @override
+  String get paymentCard => 'بطاقة';
+
+  @override
+  String get paymentInstapay => 'إنستاباي';
+
+  @override
+  String get paymentWallet => 'محفظة إلكترونية';
+
+  @override
+  String get amenityElevator => 'مصعد';
+
+  @override
+  String get amenityParking => 'موقف سيارات';
+
+  @override
+  String get amenityWheelchair => 'مناسب للكراسي المتحركة';
+
+  @override
+  String get amenityKidsArea => 'ركن للأطفال';
+
+  @override
+  String get tabVisits => 'الزيارات';
+
+  @override
+  String get tabPrescriptions => 'الروشتات';
+
+  @override
+  String get tabFiles => 'الملفات';
+
+  @override
+  String get noVisits => 'لا توجد زيارات بعد.';
+
+  @override
+  String get noPrescriptions => 'لا توجد روشتات بعد.';
+
+  @override
+  String get noFiles => 'لا توجد ملفات في هذا القسم.';
+
+  @override
+  String get visitTypeExamination => 'كشف';
+
+  @override
+  String get visitTypeConsultation => 'استشارة';
+
+  @override
+  String get visitDetailsTitle => 'تفاصيل الزيارة';
+
+  @override
+  String get diagnosis => 'التشخيص';
+
+  @override
+  String get chiefComplaint => 'الشكوى';
+
+  @override
+  String get findings => 'نتيجة الفحص';
+
+  @override
+  String get vitals => 'العلامات الحيوية';
+
+  @override
+  String get vitalBloodPressure => 'ضغط الدم';
+
+  @override
+  String get vitalPulse => 'النبض';
+
+  @override
+  String get vitalTemperature => 'الحرارة';
+
+  @override
+  String get vitalWeight => 'الوزن';
+
+  @override
+  String get vitalHeight => 'الطول';
+
+  @override
+  String get vitalGlucose => 'السكر';
+
+  @override
+  String get doctorNotesForYou => 'ملاحظات الطبيب لك';
+
+  @override
+  String get followUpDate => 'موعد المتابعة';
+
+  @override
+  String get rxTabMedications => 'العلاج';
+
+  @override
+  String get rxTabInvestigations => 'التحاليل والأشعة';
+
+  @override
+  String get rxKindMedication => 'روشتة علاج';
+
+  @override
+  String get rxKindInvestigations => 'روشتة تحاليل وأشعة';
+
+  @override
+  String get statusCancelled => 'ملغاة';
+
+  @override
+  String itemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عنصر',
+      few: '$count عناصر',
+      two: 'عنصران',
+      one: 'عنصر واحد',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String adminHoursAgo(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -3310,10 +3570,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String activityReason(String reason) {
+=======
+  String get rxCancelledTitle => 'تم إلغاء هذه الروشتة';
+
+  @override
+  String reasonValue(String reason) {
+>>>>>>> phase-6/appointments-live-board
     return 'السبب: $reason';
   }
 
   @override
+<<<<<<< HEAD
   String get activityActionPatientCreated => 'إضافة مريض';
 
   @override
@@ -3368,11 +3635,83 @@ class AppLocalizationsAr extends AppLocalizations {
       few: 'منذ $count أيام',
       two: 'منذ يومين',
       one: 'منذ يوم',
+=======
+  String get rxOpenNewCopy => 'افتح النسخة الجديدة';
+
+  @override
+  String rxSentOn(String date) {
+    return 'أُرسلت يوم $date';
+  }
+
+  @override
+  String get rxAdvice => 'نصائح الطبيب';
+
+  @override
+  String get viewPdf => 'عرض PDF';
+
+  @override
+  String get shareOrSave => 'مشاركة أو حفظ';
+
+  @override
+  String doseAmountForm(String dose, String form) {
+    return '$dose $form';
+  }
+
+  @override
+  String get formTablet => 'قرص';
+
+  @override
+  String get formCapsule => 'كبسولة';
+
+  @override
+  String get formSyrup => 'شراب';
+
+  @override
+  String get formInjection => 'حقنة';
+
+  @override
+  String get formCream => 'كريم / مرهم';
+
+  @override
+  String get formDrops => 'نقط';
+
+  @override
+  String get formInhaler => 'بخاخ';
+
+  @override
+  String get formSuppository => 'لبوس';
+
+  @override
+  String get formSachet => 'كيس';
+
+  @override
+  String get formOther => 'أخرى';
+
+  @override
+  String get timingBeforeFood => 'قبل الأكل';
+
+  @override
+  String get timingAfterFood => 'بعد الأكل';
+
+  @override
+  String get timingWithFood => 'مع الأكل';
+
+  @override
+  String durationDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لمدة $count يوم',
+      few: 'لمدة $count أيام',
+      two: 'لمدة يومين',
+      one: 'لمدة يوم',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String get sessionTypeExamination => 'كشف';
 
   @override
@@ -3433,11 +3772,22 @@ class AppLocalizationsAr extends AppLocalizations {
       two: 'مريضان',
       one: 'مريض واحد',
       zero: 'لا يوجد مرضى',
+=======
+  String durationWeeks(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'لمدة $count أسبوع',
+      few: 'لمدة $count أسابيع',
+      two: 'لمدة أسبوعين',
+      one: 'لمدة أسبوع',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String get patientSearchHint => 'ابحث بالاسم أو رقم الموبايل أو رقم الملف';
 
   @override
@@ -3552,11 +3902,111 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String patientAgeYears(int years) {
+=======
+  String get durationContinuous => 'مستمر';
+
+  @override
+  String get investigationLab => 'تحليل';
+
+  @override
+  String get investigationRadiology => 'أشعة';
+
+  @override
+  String get fileCategoryPrescription => 'روشتات';
+
+  @override
+  String get fileCategoryLab => 'تحاليل';
+
+  @override
+  String get fileCategoryRadiology => 'أشعة';
+
+  @override
+  String get fileCategoryOther => 'أخرى';
+
+  @override
+  String get otherTypeReport => 'تقرير طبي';
+
+  @override
+  String get otherTypeReferral => 'تحويل';
+
+  @override
+  String get otherTypeSickLeave => 'إجازة مرضية';
+
+  @override
+  String get otherTypeEcg => 'رسم قلب';
+
+  @override
+  String get otherTypeEegEmg => 'رسم مخ / عضلات';
+
+  @override
+  String get otherTypeEndoscopy => 'منظار';
+
+  @override
+  String get otherTypeConsent => 'إقرار';
+
+  @override
+  String get fileDetails => 'بيانات الملف';
+
+  @override
+  String get fileTitle => 'العنوان';
+
+  @override
+  String get fileCategory => 'النوع';
+
+  @override
+  String get documentDate => 'تاريخ المستند';
+
+  @override
+  String get doctor => 'الطبيب';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get noAttachments => 'لا توجد مرفقات في هذا الملف.';
+
+  @override
+  String cannotPreview(String fileName) {
+    return 'لا يمكن عرض $fileName هنا. استخدم المشاركة لفتحه بتطبيق آخر.';
+  }
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current من $total';
+  }
+
+  @override
+  String get personalInfo => 'البيانات الشخصية';
+
+  @override
+  String get fullName => 'الاسم بالكامل';
+
+  @override
+  String get mobileNumber => 'رقم الموبايل';
+
+  @override
+  String get gender => 'النوع';
+
+  @override
+  String get genderMale => 'ذكر';
+
+  @override
+  String get genderFemale => 'أنثى';
+
+  @override
+  String get age => 'السن';
+
+  @override
+  String ageYears(int years) {
+>>>>>>> phase-6/appointments-live-board
     String _temp0 = intl.Intl.pluralLogic(
       years,
       locale: localeName,
       other: '$years سنة',
+<<<<<<< HEAD
       many: '$years سنة',
+=======
+>>>>>>> phase-6/appointments-live-board
       few: '$years سنوات',
       two: 'سنتان',
       one: 'سنة واحدة',
@@ -3566,6 +4016,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+<<<<<<< HEAD
   String patientAgeGender(String age, String gender) {
     return '$age، $gender';
   }
@@ -3581,11 +4032,378 @@ class AppLocalizationsAr extends AppLocalizations {
       two: 'زيارتان',
       one: 'زيارة واحدة',
       zero: 'لا زيارات',
+=======
+  String get bloodType => 'فصيلة الدم';
+
+  @override
+  String get allergies => 'الحساسية';
+
+  @override
+  String get chronicDiseases => 'الأمراض المزمنة';
+
+  @override
+  String get currentMedications => 'الأدوية الحالية';
+
+  @override
+  String get surgeries => 'العمليات السابقة';
+
+  @override
+  String get familyHistory => 'التاريخ المرضي للعائلة';
+
+  @override
+  String get medicalProfileEmpty => 'لم يُسجَّل شيء بعد.';
+
+  @override
+  String get medicalProfileReadOnly => 'لتحديث هذه البيانات، تواصل مع طبيبك.';
+
+  @override
+  String get settingsGeneral => 'عام';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notifyChat => 'رسائل المحادثة';
+
+  @override
+  String get notifyReminders => 'تذكير بالمواعيد';
+
+  @override
+  String get notifyShowPreview => 'إظهار نص الرسالة في الإشعارات';
+
+  @override
+  String get notifyShowPreviewHint =>
+      'إيقافه يحافظ على خصوصية رسائلك على شاشة القفل.';
+
+  @override
+  String get accountTitle => 'الحساب';
+
+  @override
+  String get requestAccountDeletion => 'طلب حذف الحساب';
+
+  @override
+  String get deletionConfirmBody =>
+      'سيتم إرسال طلبك لفريق «العيادة». بعد الموافقة لن تتمكن من تسجيل الدخول. يحتفظ أطباؤك بالسجلات الطبية الملزمين بحفظها.';
+
+  @override
+  String get deletionReasonLabel => 'السبب (اختياري)';
+
+  @override
+  String get deletionConfirmButton => 'إرسال الطلب';
+
+  @override
+  String get deletionRequestSent => 'تم إرسال طلبك وسنراجعه قريباً.';
+
+  @override
+  String get deletionPendingTitle => 'طلب الحذف قيد المراجعة';
+
+  @override
+  String deletionPendingBody(String date) {
+    return 'أُرسل يوم $date';
+  }
+
+  @override
+  String deletionRejected(String note) {
+    return 'تم رفض طلبك السابق: $note';
+  }
+
+  @override
+  String get termsGateTitle => 'قبل أن تبدأ';
+
+  @override
+  String get termsGateBody =>
+      'يحافظ تطبيق «العيادة» على ملفك الطبي ولا يشاركه إلا مع أطبائك. برجاء قراءة شروط الاستخدام وسياسة الخصوصية والموافقة عليها للمتابعة.';
+
+  @override
+  String get termsGateCheckbox =>
+      'قرأت شروط الاستخدام وسياسة الخصوصية وأوافق عليها';
+
+  @override
+  String get termsGateContinue => 'متابعة';
+
+  @override
+  String get navDeletionRequests => 'طلبات حذف الحسابات';
+
+  @override
+  String get statusPending => 'قيد المراجعة';
+
+  @override
+  String get statusApproved => 'مقبولة';
+
+  @override
+  String get statusRejected => 'مرفوضة';
+
+  @override
+  String get noDeletionRequests => 'لا توجد طلبات هنا.';
+
+  @override
+  String get approve => 'موافقة';
+
+  @override
+  String get reject => 'رفض';
+
+  @override
+  String get approveDeletionTitle => 'الموافقة على الحذف؟';
+
+  @override
+  String get approveDeletionBody =>
+      'سيتم تسجيل خروج المريض من كل الأجهزة ولن يتمكن من الدخول مرة أخرى. تبقى السجلات الطبية لدى أطبائه.';
+
+  @override
+  String get rejectDeletionTitle => 'رفض الطلب';
+
+  @override
+  String get reasonRequiredLabel => 'السبب (يظهر للمريض)';
+
+  @override
+  String get errorInvalidPhone => 'رقم الموبايل غير صحيح';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get accountsSupportHint =>
+      'البحث برقم الموبايل فقط. تظهر حسابات المرضى والمساعدين بدون أي بيانات طبية.';
+
+  @override
+  String get noAccountsFound => 'لا يوجد حساب بهذا الرقم.';
+
+  @override
+  String get accountDeleted => 'تم حذف الحساب بناءً على طلب المريض';
+
+  @override
+  String linkedDoctors(String names) {
+    return 'الأطباء: $names';
+  }
+
+  @override
+  String createdOn(String date) {
+    return 'أُنشئ يوم $date';
+  }
+
+  @override
+  String assistantOf(String doctor) {
+    return 'مساعد $doctor';
+  }
+
+  @override
+  String lastActive(String time) {
+    return 'آخر نشاط $time';
+  }
+
+  @override
+  String get loginEnabled => 'الدخول مفعّل';
+
+  @override
+  String get loginDisabled => 'الدخول موقوف';
+
+  @override
+  String get markAllRead => 'تحديد الكل كمقروء';
+
+  @override
+  String get noNotifications => 'لا توجد إشعارات بعد.';
+
+  @override
+  String get searchChats => 'ابحث بالاسم أو رقم الموبايل';
+
+  @override
+  String get noChats => 'لا توجد محادثات بعد.';
+
+  @override
+  String get chatImage => 'صورة';
+
+  @override
+  String get chatFile => 'ملف';
+
+  @override
+  String get chatNoMessages => 'لا توجد رسائل بعد';
+
+  @override
+  String get chatDoctorUnavailable => 'الطبيب غير متاح حالياً';
+
+  @override
+  String get chatSuspended => 'الإرسال متوقف أثناء إيقاف الخدمة.';
+
+  @override
+  String get fileTooLarge => 'حجم الملف أكبر من المسموح';
+
+  @override
+  String get chatCamera => 'الكاميرا';
+
+  @override
+  String get chatGallery => 'معرض الصور';
+
+  @override
+  String get chatFileOption => 'ملف';
+
+  @override
+  String get saveToPatientFile => 'حفظ في ملف المريض';
+
+  @override
+  String get savedToPatientFile => 'تم الحفظ في ملف المريض';
+
+  @override
+  String get chatStart => 'ابدأ المحادثة.';
+
+  @override
+  String get chatAttach => 'إرفاق';
+
+  @override
+  String get chatTypeMessage => 'اكتب رسالة';
+
+  @override
+  String get chatSend => 'إرسال';
+
+  @override
+  String clinicAssistant(String name) {
+    return 'مساعد العيادة — $name';
+  }
+
+  @override
+  String get chatRead => 'مقروءة';
+
+  @override
+  String get chatDelivered => 'تم التوصيل';
+
+  @override
+  String get chooseCategory => 'اختر نوع الملف';
+
+  @override
+  String get navSchedule => 'مواعيد العمل';
+
+  @override
+  String get apStatusPending => 'في انتظار التأكيد';
+
+  @override
+  String get apStatusConfirmed => 'مؤكد';
+
+  @override
+  String get apStatusCheckedIn => 'وصل';
+
+  @override
+  String get apStatusWithDoctor => 'عند الطبيب';
+
+  @override
+  String get apStatusCompleted => 'تم';
+
+  @override
+  String get apStatusCancelled => 'ملغي';
+
+  @override
+  String get apStatusNoShow => 'لم يحضر';
+
+  @override
+  String get apStatusRejected => 'مرفوض';
+
+  @override
+  String get stageExpected => 'لم يصل بعد';
+
+  @override
+  String get stageWaiting => 'في الانتظار';
+
+  @override
+  String get stageWithDoctor => 'عند الطبيب';
+
+  @override
+  String get stageDone => 'انتهى';
+
+  @override
+  String get stageMissed => 'لم يحضر / ألغي';
+
+  @override
+  String queueNumber(int number) {
+    return 'رقم $number';
+  }
+
+  @override
+  String get errSlotTaken => 'تم حجز هذا الموعد للتو، اختر موعداً آخر';
+
+  @override
+  String get errPeriodFull => 'اكتمل الحجز في هذه الفترة';
+
+  @override
+  String get errOutsideHours => 'الموعد خارج مواعيد العمل';
+
+  @override
+  String get errBranchClosed => 'الفرع مغلق في هذا الموعد';
+
+  @override
+  String get errTooFarAhead => 'الحجز متاح للأيام التي تحددها العيادة فقط';
+
+  @override
+  String get errTooSoon => 'الموعد قريب جداً، اختر موعداً لاحقاً';
+
+  @override
+  String get errSameDayOff =>
+      'الحجز في نفس اليوم غير متاح، برجاء الاتصال بالعيادة';
+
+  @override
+  String get errUpcomingLimit => 'لديك حجز قادم بالفعل مع الطبيب';
+
+  @override
+  String get errSelfBookingBlocked => 'برجاء الاتصال بالعيادة للحجز';
+
+  @override
+  String get errConsultationRequiresExam =>
+      'لا يمكن حجز استشارة الآن، احجز كشفاً';
+
+  @override
+  String get errCancelWindowPassed =>
+      'لا يمكن الإلغاء الآن، برجاء الاتصال بالعيادة';
+
+  @override
+  String get errMaxReschedules => 'وصلت للحد الأقصى لتغيير الموعد';
+
+  @override
+  String get errBookingUnavailable =>
+      'الحجز أونلاين غير متاح حالياً، برجاء الاتصال بالعيادة';
+
+  @override
+  String get errAlreadyHandled =>
+      'تم تحديث هذا الحجز بالفعل بواسطة شخص آخر، وتم تحديث اللوحة';
+
+  @override
+  String get errGuestNeedsAccount => 'أنشئ حساب المريض أولاً ثم اربط الحجز';
+
+  @override
+  String get boardOffline => 'غير متصل — قد لا تكون البيانات محدثة';
+
+  @override
+  String get book => 'حجز';
+
+  @override
+  String get walkIn => 'حضور بدون حجز';
+
+  @override
+  String get more => 'المزيد';
+
+  @override
+  String get doctorDelayed => 'الطبيب متأخر';
+
+  @override
+  String minutesCount(int minutes) {
+    return '$minutes دقيقة';
+  }
+
+  @override
+  String patientsNotified(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم إبلاغ $count مريض',
+      few: 'تم إبلاغ $count مرضى',
+      two: 'تم إبلاغ مريضين',
+      one: 'تم إبلاغ مريض واحد',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String patientVisitsSummary(
     String visits,
     String examinations,
@@ -3718,11 +4536,32 @@ class AppLocalizationsAr extends AppLocalizations {
       locale: localeName,
       other: 'استشارة $count من $max منذ آخر كشف',
       zero: 'لا استشارات منذ آخر كشف (الحد $max)',
+=======
+  String get cancelRestOfDay => 'إلغاء باقي اليوم';
+
+  @override
+  String get cancelRestOfDayBody =>
+      'سيتم إلغاء كل الحجوزات التي لم تصل بعد في هذا الفرع اليوم، وسيتم إبلاغ المرضى بالحجز مرة أخرى.';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String bookingsCancelled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم إلغاء $count حجز',
+      few: 'تم إلغاء $count حجوزات',
+      two: 'تم إلغاء حجزين',
+      one: 'تم إلغاء حجز واحد',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String get patientProfileEmptyTitle => 'لا يوجد ملف طبي بعد';
 
   @override
@@ -3949,11 +4788,140 @@ class AppLocalizationsAr extends AppLocalizations {
       two: 'عنصران',
       one: 'عنصر واحد',
       zero: 'لا يوجد',
+=======
+  String get nowServing => 'الدور الحالي';
+
+  @override
+  String countBooked(int count) {
+    return 'محجوز: $count';
+  }
+
+  @override
+  String countArrived(int count) {
+    return 'وصل: $count';
+  }
+
+  @override
+  String delayedBy(int minutes) {
+    return 'تأخير $minutes دقيقة';
+  }
+
+  @override
+  String get boardEmptyStage => 'لا يوجد أحد';
+
+  @override
+  String get confirmBooking => 'تأكيد';
+
+  @override
+  String get checkIn => 'وصل';
+
+  @override
+  String get callIn => 'دخول للطبيب';
+
+  @override
+  String get undoNoShow => 'تراجع عن عدم الحضور';
+
+  @override
+  String get newPatient => 'مريض جديد';
+
+  @override
+  String lastVisitOn(String date, String type) {
+    return 'آخر زيارة: $date — $type';
+  }
+
+  @override
+  String get priority => 'أولوية';
+
+  @override
+  String get late => 'متأخر';
+
+  @override
+  String get consultationNotAllowed => 'الاستشارة غير متاحة';
+
+  @override
+  String get guest => 'زائر';
+
+  @override
+  String waitedMinutes(int minutes) {
+    return '$minutes د';
+  }
+
+  @override
+  String get markNoShow => 'لم يحضر';
+
+  @override
+  String get leftWithoutSeen => 'غادر دون الكشف';
+
+  @override
+  String get sendBack => 'رجوع للانتظار';
+
+  @override
+  String get visitsCount => 'الزيارات';
+
+  @override
+  String get lastVisit => 'آخر زيارة';
+
+  @override
+  String get recentAmounts => 'آخر المبالغ المحصلة';
+
+  @override
+  String get upcomingAndNoShows => 'حجوزات قادمة · مرات عدم الحضور';
+
+  @override
+  String get bookingReason => 'سبب الحجز';
+
+  @override
+  String get staffNotes => 'ملاحظات العيادة';
+
+  @override
+  String get openBooking => 'فتح الحجز';
+
+  @override
+  String get searchPatient => 'الاسم أو رقم الموبايل أو رقم الملف';
+
+  @override
+  String get hasUpcoming => 'لديه حجز قادم';
+
+  @override
+  String get chooseVisitType => 'اختر نوع الزيارة';
+
+  @override
+  String get guestNameAndPhone => 'اكتب الاسم ورقم الموبايل';
+
+  @override
+  String get existingPatient => 'مريض مسجل';
+
+  @override
+  String get visitType => 'نوع الزيارة';
+
+  @override
+  String get firstVisitIsExam => 'أول زيارة تكون كشفاً دائماً.';
+
+  @override
+  String consultationCount(int count, int max) {
+    return 'استشارة $count من $max منذ آخر كشف';
+  }
+
+  @override
+  String get noOpenDays => 'لا توجد أيام متاحة في هذه الفترة.';
+
+  @override
+  String placesLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مكان متبقٍ',
+      few: '$count أماكن متبقية',
+      two: 'مكانان متبقيان',
+      one: 'مكان واحد متبقٍ',
+      zero: 'مكتمل',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String get patientListFull => 'القائمة تتسع لـ 50 عنصراً كحد أقصى.';
 
   @override
@@ -4517,11 +5485,270 @@ class AppLocalizationsAr extends AppLocalizations {
       two: 'طبيبان',
       one: 'طبيب واحد',
       zero: 'لا يوجد أطباء',
+=======
+  String estimatedTime(String time) {
+    return 'حوالي $time';
+  }
+
+  @override
+  String get tabUpcoming => 'القادمة';
+
+  @override
+  String get tabPast => 'السابقة';
+
+  @override
+  String get tabCancelled => 'الملغاة';
+
+  @override
+  String get noAppointments => 'لا توجد حجوزات هنا.';
+
+  @override
+  String get cancelBooking => 'إلغاء الحجز';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get bookingCancelled => 'تم إلغاء حجزك.';
+
+  @override
+  String get appointmentDetails => 'تفاصيل الحجز';
+
+  @override
+  String nowServingYourNumber(int now, int mine) {
+    return 'الدور الحالي: $now — دورك: $mine';
+  }
+
+  @override
+  String get waitingForClinic => 'في انتظار تأكيد العيادة';
+
+  @override
+  String get reschedule => 'تغيير الموعد';
+
+  @override
+  String get callClinic => 'اتصل بالعيادة';
+
+  @override
+  String get openVisit => 'فتح الزيارة';
+
+  @override
+  String get history => 'السجل';
+
+  @override
+  String get byYou => 'بواسطتك';
+
+  @override
+  String get bySystem => 'تلقائياً';
+
+  @override
+  String get byClinic => 'بواسطة العيادة';
+
+  @override
+  String get historyCreated => 'تم الحجز';
+
+  @override
+  String get historyRescheduled => 'تم تغيير الموعد';
+
+  @override
+  String get historyExpired => 'لم يتم التأكيد في الوقت';
+
+  @override
+  String get bookAppointment => 'حجز موعد';
+
+  @override
+  String get chooseDoctor => 'اختر الطبيب';
+
+  @override
+  String get chooseBranch => 'اختر الفرع';
+
+  @override
+  String get chooseDateAndTime => 'اختر اليوم والموعد';
+
+  @override
+  String get bookingReasonOptional => 'سبب الزيارة (اختياري)';
+
+  @override
+  String cancelPolicy(int hours) {
+    return 'يمكنك الإلغاء أو التغيير حتى $hours ساعة قبل الموعد';
+  }
+
+  @override
+  String get confirmBookingButton => 'تأكيد الحجز';
+
+  @override
+  String get bookingConfirmed => 'تم تأكيد الحجز';
+
+  @override
+  String get bookingMoved => 'تم تغيير موعدك';
+
+  @override
+  String get previousDay => 'اليوم السابق';
+
+  @override
+  String get nextDay => 'اليوم التالي';
+
+  @override
+  String get searchBookings => 'البحث في الحجوزات';
+
+  @override
+  String get reasonLabel => 'السبب';
+
+  @override
+  String get whenLabel => 'الموعد';
+
+  @override
+  String get bookedBy => 'حجز بواسطة';
+
+  @override
+  String get overbooked => 'حجز إضافي';
+
+  @override
+  String get checkedInNoSession => 'وصل ولم تُسجل زيارة';
+
+  @override
+  String get sourceApp => 'تطبيق المريض';
+
+  @override
+  String get sourceStaff => 'العيادة';
+
+  @override
+  String get quickGuest => 'زائر سريع';
+
+  @override
+  String get overbookTitle => 'المكان مكتمل';
+
+  @override
+  String get overbookBody =>
+      'الفترة أو الموعد مكتمل. هل تريد الحجز كحجز إضافي؟';
+
+  @override
+  String get upcomingWarningBody =>
+      'لدى هذا المريض حجز قادم بالفعل. يمكنك تغيير موعده بدلاً من ذلك أو حجز موعد آخر.';
+
+  @override
+  String get bookAnyway => 'احجز على أي حال';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get tomorrow => 'غداً';
+
+  @override
+  String get next7Days => 'الأيام السبعة القادمة';
+
+  @override
+  String get guestsOnly => 'الزوار فقط';
+
+  @override
+  String get scheduleConflictsLeft => 'بعض الحجوزات ما زالت تحتاج إلى قرار.';
+
+  @override
+  String get scheduleSaved => 'تم حفظ المواعيد';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get specialDates => 'أيام خاصة';
+
+  @override
+  String get bookingSettings => 'إعدادات الحجز';
+
+  @override
+  String get copySaturdayToAll => 'نسخ السبت لكل الأيام';
+
+  @override
+  String get addPeriod => 'إضافة فترة';
+
+  @override
+  String get closeADay => 'إغلاق يوم';
+
+  @override
+  String get remove => 'حذف';
+
+  @override
+  String get closures => 'الإغلاق والإجازات';
+
+  @override
+  String get addClosure => 'إضافة إغلاق';
+
+  @override
+  String get closureScope => 'إغلاق أي فروع؟';
+
+  @override
+  String get thisBranch => 'هذا الفرع';
+
+  @override
+  String get allBranches => 'كل الفروع';
+
+  @override
+  String get bookingMode => 'طريقة الحجز';
+
+  @override
+  String get modeQueue => 'بالدور';
+
+  @override
+  String get modeTimed => 'مواعيد محددة';
+
+  @override
+  String get slotMinutes => 'مدة الموعد (دقيقة)';
+
+  @override
+  String get defaultCapacity => 'عدد الأماكن في الفترة';
+
+  @override
+  String get avgVisitMinutes => 'متوسط مدة الكشف (دقيقة)';
+
+  @override
+  String get selfBooking => 'الحجز من تطبيق المريض';
+
+  @override
+  String get autoConfirm => 'تأكيد حجوزات التطبيق تلقائياً';
+
+  @override
+  String get sameDayBooking => 'الحجز في نفس اليوم';
+
+  @override
+  String get staffOverbooking => 'السماح للعيادة بالحجز الإضافي بعد التنبيه';
+
+  @override
+  String get windowDays => 'الحجز متاح حتى (يوم)';
+
+  @override
+  String get minNoticeMinutes => 'أقل مدة قبل الموعد (دقيقة)';
+
+  @override
+  String get freeCancelMinutes => 'الإلغاء مجاناً حتى (دقيقة قبل الموعد)';
+
+  @override
+  String get maxReschedules => 'مرات تغيير الحجز';
+
+  @override
+  String get maxUpcoming => 'الحجوزات القادمة لكل مريض';
+
+  @override
+  String get nextDayShort => '(+يوم)';
+
+  @override
+  String get capacity => 'الأماكن';
+
+  @override
+  String affectedBookings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حجز متأثر',
+      few: '$count حجوزات متأثرة',
+      two: 'حجزان متأثران',
+      one: 'حجز واحد متأثر',
+>>>>>>> phase-6/appointments-live-board
     );
     return '$_temp0';
   }
 
   @override
+<<<<<<< HEAD
   String get adminTrialListEmpty => 'لا يوجد أطباء هنا';
 
   @override
@@ -6452,4 +7679,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activityActionRxBrandingUpdated => 'الشعار أو التوقيع';
+=======
+  String get keepAll => 'إبقاء الكل';
+
+  @override
+  String get cancelAll => 'إلغاء الكل';
+
+  @override
+  String get keep => 'إبقاء';
+
+  @override
+  String get applyChanges => 'تطبيق التغييرات';
+>>>>>>> phase-6/appointments-live-board
 }

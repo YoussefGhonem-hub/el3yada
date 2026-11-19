@@ -84,7 +84,11 @@ public partial class Doctor
 
     public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
 
+<<<<<<< HEAD
     /// <summary>Every branch of the doctor (BR-BR1). One of them is <see cref="DefaultBranch"/>.</summary>
+=======
+    /// <summary>Every branch of the doctor (up to <c>MaxBranchesPerDoctor</c>, BR-BR1).</summary>
+>>>>>>> phase-6/appointments-live-board
     public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
     public virtual ICollection<BranchClosure> BranchClosures { get; set; } = new List<BranchClosure>();

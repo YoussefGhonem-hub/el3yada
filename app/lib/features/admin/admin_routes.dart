@@ -7,6 +7,15 @@ abstract final class AdminRoutes {
   /// AD3, also the route of the `doctorRegistrationReceived` notification.
   static String signup(String doctorId) => '$signups/$doctorId';
 
+  /// AD6 "Add doctor", opened from AD2 (then AD3 shows the new doctor)…
+  static const signupsAddDoctor = '$signups/new';
+
+  /// …and from AD4 (then AD5 shows them).
+  static const doctorsAddDoctor = '$doctors/new';
+
+  /// AD16 broadcast.
+  static const broadcast = '/admin/broadcast';
+
   /// AD1.
   static const dashboard = '/admin/dashboard';
 

@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show immutable;
+
 import '../../auth/domain/auth_session.dart' show TrialInfo;
 
 export '../../../core/data/paged.dart';
@@ -361,6 +363,39 @@ class DoctorTrialView {
 /// AD2's trial filter: `running` or `ended` (`status=all`).
 enum TrialFilter { running, ended }
 
+/// AD2's other filters: the primary specialty, the first branch's
+/// governorate (its Arabic name, as stored) and the sign-up dates: [from]
+/// inclusive and [to] exclusive, both the UTC start of a Cairo day.
+@immutable
+class DoctorListFilter {
+  const DoctorListFilter({this.specialty, this.governorate, this.from, this.to});
+
+  final SpecialtyRef? specialty;
+  final String? governorate;
+  final DateTime? from;
+  final DateTime? to;
+
+  bool get isEmpty => specialty == null && governorate == null && from == null && to == null;
+
+  DoctorListFilter withSpecialty(SpecialtyRef? value) => DoctorListFilter(specialty: value, governorate: governorate, from: from, to: to);
+
+  DoctorListFilter withGovernorate(String? value) => DoctorListFilter(specialty: specialty, governorate: value, from: from, to: to);
+
+  DoctorListFilter withDates(DateTime? from, DateTime? to) =>
+      DoctorListFilter(specialty: specialty, governorate: governorate, from: from, to: to);
+
+  @override
+  bool operator ==(Object other) =>
+      other is DoctorListFilter &&
+      other.specialty?.id == specialty?.id &&
+      other.governorate == governorate &&
+      other.from == from &&
+      other.to == to;
+
+  @override
+  int get hashCode => Object.hash(specialty?.id, governorate, from, to);
+}
+
 /// The license file, streamed through the API (never a public URL).
 class LicenseFile {
   const LicenseFile({required this.bytes, required this.contentType});
@@ -514,6 +549,7 @@ abstract final class AuditActions {
     'doctorLicenseViewed',
     'doctorServiceActivated',
     'doctorTrialExtended',
+    'doctorCreated',
     'adminSeeded',
     'adminCreated',
     'adminRoleChanged',

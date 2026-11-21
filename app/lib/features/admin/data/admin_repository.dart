@@ -8,6 +8,8 @@ import '../../../core/config/env.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
 import '../../auth/application/auth_controller.dart';
+import '../../doctor_registration/domain/doctor_registration.dart' as reg show RegistrationData;
+import '../../doctor_registration/domain/license_file.dart' as reg show LicenseFile;
 import '../domain/admin_models.dart';
 import 'fake_admin_repository.dart';
 
@@ -17,14 +19,33 @@ abstract interface class AdminRepository {
   /// AD2, the doctors: every doctor (`status=all`), or with [trial] those
   /// whose free trial is running or has ended. New doctors are active at
   /// once (backend/docs/api-free-trial.md); only legacy sign-ups are still
-  /// pending or rejected. [sort] is `newest` or `oldest`.
+  /// pending or rejected. [sort] is `newest` or `oldest`. [specialtyId],
+  /// [governorate] (the first branch's, in Arabic) and the sign-up dates
+  /// ([from] inclusive, [to] exclusive, UTC) narrow the list. [status] is a
+  /// doctor status, or `all`.
   Future<Paged<RegistrationSummary>> doctorRegistrations({
     String? search,
     String sort = 'newest',
     TrialFilter? trial,
+    String? specialtyId,
+    String? governorate,
+    DateTime? from,
+    DateTime? to,
+    String status = 'all',
     int page = 1,
     int pageSize = 25,
   });
+
+  /// The AD2 badge: legacy sign-ups still waiting for review
+  /// (`pendingApproval`), the only doctors the admin must act on since the
+  /// free trial (spec 6.16 BR-T1, AD3).
+  Future<int> pendingSignupsCount();
+
+  /// AD6 "Add doctor": the A4 form without the password and the Terms, and
+  /// the license. The doctor is active with the service on (no trial) and
+  /// gets an email to choose a password. Throws 409
+  /// `EMAIL_ALREADY_REGISTERED`, and the A4 field errors.
+  Future<DoctorRegistration> createDoctor(reg.RegistrationData data, reg.LicenseFile license);
 
   /// AD3: the registration and its earlier reviews.
   Future<RegistrationDetail> doctorRegistration(String doctorId);
@@ -110,20 +131,54 @@ class ApiAdminRepository implements AdminRepository {
     String? search,
     String sort = 'newest',
     TrialFilter? trial,
+    String? specialtyId,
+    String? governorate,
+    DateTime? from,
+    DateTime? to,
+    String status = 'all',
     int page = 1,
     int pageSize = 25,
   }) =>
       _call(() async => Paged.fromJson(
             await _get('/admin/doctorRegistrations', {
-              'status': 'all',
+              'status': status,
               'trial': ?trial?.name,
               if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+              'specialtyId': ?specialtyId,
+              'governorate': ?governorate,
+              'from': ?from?.toUtc().toIso8601String(),
+              'to': ?to?.toUtc().toIso8601String(),
               'sort': sort,
               'page': page,
               'pageSize': pageSize,
             }),
             RegistrationSummary.fromJson,
           ));
+
+  @override
+  Future<int> pendingSignupsCount() async =>
+      (await doctorRegistrations(status: DoctorStatuses.pendingApproval, pageSize: 1)).totalCount;
+
+  @override
+  Future<DoctorRegistration> createDoctor(reg.RegistrationData data, reg.LicenseFile license) => _call(() async {
+        // The password, the Terms and the device are A4's; this form has none.
+        final json = data.toJson()
+          ..remove('password')
+          ..remove('acceptTerms')
+          ..remove('device');
+        final response = await _dio.post<Map<String, dynamic>>(
+          '/admin/createDoctor',
+          data: FormData.fromMap({
+            'data': jsonEncode(json),
+            'license': MultipartFile.fromBytes(
+              license.bytes,
+              filename: license.name,
+              contentType: DioMediaType.parse(license.contentType),
+            ),
+          }),
+        );
+        return DoctorRegistration.fromJson(response.data ?? const {});
+      });
 
   @override
   Future<RegistrationDetail> doctorRegistration(String doctorId) =>

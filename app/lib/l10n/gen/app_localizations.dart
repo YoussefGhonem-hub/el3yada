@@ -15441,6 +15441,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No-shows'**
   String get patientColumnNoShows;
+
+  /// No description provided for @adminAddDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add doctor'**
+  String get adminAddDoctor;
+
+  /// No description provided for @adminAddDoctorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The account is active at once, with no free trial. The doctor gets an email to choose a password.'**
+  String get adminAddDoctorSubtitle;
+
+  /// No description provided for @adminAddDoctorAccountIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor signs in with this email. We\'ll send a link to it for choosing a password.'**
+  String get adminAddDoctorAccountIntro;
+
+  /// No description provided for @adminAddDoctorLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language of the doctor\'s emails and notifications'**
+  String get adminAddDoctorLanguage;
+
+  /// No description provided for @adminAddDoctorReviewIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the details, then add the doctor. Their clinic opens right away.'**
+  String get adminAddDoctorReviewIntro;
+
+  /// No description provided for @adminAddDoctorDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name} is added'**
+  String adminAddDoctorDoneTitle(String name);
+
+  /// No description provided for @adminAddDoctorDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We emailed {email} a link to choose a password. It works for 3 days; if it runs out, send a new one from the doctor\'s page.'**
+  String adminAddDoctorDoneBody(String email);
+
+  /// No description provided for @adminAddDoctorOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the doctor\'s page'**
+  String get adminAddDoctorOpen;
+
+  /// No description provided for @adminBadgeWaitingReview.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 waiting for review} other{{count} waiting for review}}'**
+  String adminBadgeWaitingReview(int count);
+
+  /// No description provided for @adminFilterSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get adminFilterSpecialty;
+
+  /// No description provided for @adminFilterGovernorate.
+  ///
+  /// In en, this message translates to:
+  /// **'Governorate'**
+  String get adminFilterGovernorate;
+
+  /// No description provided for @adminFilterSignupDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up date'**
+  String get adminFilterSignupDate;
+
+  /// No description provided for @adminFilterSignedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed up {dates}'**
+  String adminFilterSignedUp(String dates);
+
+  /// No description provided for @adminDoctorFiltersNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctor matches these filters. Clear one to see more.'**
+  String get adminDoctorFiltersNoMatchBody;
+
+  /// No description provided for @adminAuditDoctorCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'added a doctor (active, no free trial)'**
+  String get adminAuditDoctorCreated;
+
+  /// No description provided for @adminActionDoctorCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor added'**
+  String get adminActionDoctorCreated;
+
+  /// No description provided for @adminFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get adminFilters;
+
+  /// No description provided for @adminFiltersSet.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Filters, 1 set} other{Filters, {count} set}}'**
+  String adminFiltersSet(int count);
+
+  /// No description provided for @adminFilterAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get adminFilterAny;
+
+  /// No description provided for @adminFiltersDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get adminFiltersDone;
 }
 
 class _AppLocalizationsDelegate

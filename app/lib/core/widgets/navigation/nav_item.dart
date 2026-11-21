@@ -23,8 +23,9 @@ class NavItem {
 sealed class NavBadge {
   const NavBadge();
 
-  /// A count; 0 or less shows nothing, more than 99 shows "99+".
-  const factory NavBadge.count(int count) = NavCountBadge;
+  /// A count; 0 or less shows nothing, more than 99 shows "99+". [label] is
+  /// what screen readers hear ("3 unread" when null).
+  const factory NavBadge.count(int count, {NavCountLabel? label}) = NavCountBadge;
 
   /// A dot without a number.
   const factory NavBadge.dot() = NavDotBadge;
@@ -33,21 +34,26 @@ sealed class NavBadge {
   String? describe(AppLocalizations l10n);
 }
 
+/// What a count badge means, for screen readers ("3 waiting for review").
+typedef NavCountLabel = String Function(AppLocalizations l10n, int count);
+
 final class NavCountBadge extends NavBadge {
-  const NavCountBadge(this.count);
+  const NavCountBadge(this.count, {this.label});
 
   final int count;
+  final NavCountLabel? label;
 
   String get text => count > 99 ? '99+' : '$count';
 
   @override
-  String? describe(AppLocalizations l10n) => count > 0 ? l10n.navBadgeUnread(count) : null;
+  String? describe(AppLocalizations l10n) =>
+      count > 0 ? (label?.call(l10n, count) ?? l10n.navBadgeUnread(count)) : null;
 
   @override
-  bool operator ==(Object other) => other is NavCountBadge && other.count == count;
+  bool operator ==(Object other) => other is NavCountBadge && other.count == count && other.label == label;
 
   @override
-  int get hashCode => count.hashCode;
+  int get hashCode => Object.hash(count, label);
 }
 
 final class NavDotBadge extends NavBadge {

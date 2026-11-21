@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -8971,4 +8970,95 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get patientColumnNoShows => 'غياب';
+
+  @override
+  String get adminAddDoctor => 'إضافة طبيب';
+
+  @override
+  String get adminAddDoctorSubtitle =>
+      'الحساب يتفعّل فوراً من غير فترة تجريبية، ويوصل للطبيب إيميل يختار منه كلمة المرور.';
+
+  @override
+  String get adminAddDoctorAccountIntro =>
+      'الطبيب هيسجّل دخول بالإيميل ده، وهنبعت عليه لينك يختار منه كلمة المرور.';
+
+  @override
+  String get adminAddDoctorLanguage => 'لغة الإيميلات والإشعارات للطبيب';
+
+  @override
+  String get adminAddDoctorReviewIntro =>
+      'راجع البيانات، وبعدين أضف الطبيب. عيادته هتشتغل على طول.';
+
+  @override
+  String adminAddDoctorDoneTitle(String name) {
+    return 'تمت إضافة د. $name';
+  }
+
+  @override
+  String adminAddDoctorDoneBody(String email) {
+    return 'بعتنا لينك اختيار كلمة المرور على $email. اللينك شغال 3 أيام، ولو انتهى ابعت واحد جديد من صفحة الطبيب.';
+  }
+
+  @override
+  String get adminAddDoctorOpen => 'افتح صفحة الطبيب';
+
+  @override
+  String adminBadgeWaitingReview(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلباً في انتظار المراجعة',
+      few: '$count طلبات في انتظار المراجعة',
+      two: 'طلبان في انتظار المراجعة',
+      one: 'طلب واحد في انتظار المراجعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminFilterSpecialty => 'التخصص';
+
+  @override
+  String get adminFilterGovernorate => 'المحافظة';
+
+  @override
+  String get adminFilterSignupDate => 'تاريخ التسجيل';
+
+  @override
+  String adminFilterSignedUp(String dates) {
+    return 'سجّل $dates';
+  }
+
+  @override
+  String get adminDoctorFiltersNoMatchBody =>
+      'مفيش طبيب مطابق للفلاتر دي. امسح واحد منها عشان تشوف أكتر.';
+
+  @override
+  String get adminAuditDoctorCreated =>
+      'أضاف طبيباً (مفعّل من غير فترة تجريبية)';
+
+  @override
+  String get adminActionDoctorCreated => 'إضافة طبيب';
+
+  @override
+  String get adminFilters => 'الفلاتر';
+
+  @override
+  String adminFiltersSet(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'الفلاتر، $count فلتر مفعّل',
+      few: 'الفلاتر، $count فلاتر مفعّلة',
+      two: 'الفلاتر، فلتران مفعّلان',
+      one: 'الفلاتر، فلتر واحد مفعّل',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminFilterAny => 'الكل';
+
+  @override
+  String get adminFiltersDone => 'تم';
 }

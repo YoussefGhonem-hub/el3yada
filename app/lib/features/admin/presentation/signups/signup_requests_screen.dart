@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/format/app_format.dart';
 import '../../../../core/theme/motion.dart';
@@ -12,10 +13,12 @@ import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../core/widgets/state_switcher.dart';
 import '../../../../l10n/gen/app_localizations.dart';
+import '../../admin_routes.dart';
 import '../../application/admin_controllers.dart';
 import '../../../../core/data/paged_controller.dart';
 import '../../domain/admin_models.dart';
 import '../widgets/admin_widgets.dart';
+import 'doctor_filter_bar.dart';
 import 'signup_review.dart';
 import 'trial_parts.dart';
 
@@ -72,6 +75,15 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
   void _onTrial(TrialFilter? trial) {
     if (trial == _controller.trial) return;
     _controller.setTrial(trial);
+    setState(() {
+      _generation++;
+      _selected = null;
+    });
+  }
+
+  void _onFilter(DoctorListFilter filter) {
+    if (filter == _controller.filter) return;
+    _controller.setFilter(filter);
     setState(() {
       _generation++;
       _selected = null;
@@ -158,6 +170,14 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
           child: AdminHeader(
             title: l10n.navSignups,
             subtitle: state.loading ? l10n.loading : l10n.adminDoctorsCount(state.totalCount),
+            actions: [
+              // AD6.
+              IconButton.filledTonal(
+                tooltip: l10n.adminAddDoctor,
+                onPressed: () => context.go(AdminRoutes.signupsAddDoctor),
+                icon: const Icon(Icons.person_add_alt_1_outlined),
+              ),
+            ],
           ),
         ),
         Padding(
@@ -189,7 +209,9 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
+              // Specialty, governorate and sign-up dates.
+              DoctorFiltersButton(filter: _controller.filter, onChanged: _onFilter),
               PopupMenuButton<SignupSort>(
                 tooltip: l10n.adminSort,
                 initialValue: sort,
@@ -231,6 +253,16 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
             ],
           ),
         ),
+        // The specialty, governorate and date filters while one is set
+        // (the Filters button by the search sets them).
+        AdminAnimatedSize(
+          child: _controller.filter.isEmpty
+              ? const SizedBox(width: double.infinity)
+              : Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: DoctorFilterBar(filter: _controller.filter, gutter: gutter, onChanged: _onFilter),
+                ),
+        ),
         const SizedBox(height: 10),
         Expanded(
           child: StateSwitcher(
@@ -244,23 +276,31 @@ class _SignupRequestsScreenState extends ConsumerState<SignupRequestsScreen> {
                   child: SizedBox(
                     height: constraints.maxHeight,
                     child: EmptyState(
-                      title: _controller.search.isNotEmpty
+                      title: _controller.search.isNotEmpty || !_controller.filter.isEmpty
                           ? l10n.adminSignupsNoMatchTitle
                           : trial != null
                               ? l10n.adminTrialListEmpty
                               : l10n.adminSignupsEmptyTitle,
                       message: _controller.search.isNotEmpty
                           ? l10n.adminSignupsNoMatchBody
-                          : trial != null
-                              ? l10n.adminTrialListEmptyBody
-                              : l10n.adminSignupsEmptyBody,
-                      actionLabel: _controller.search.isEmpty ? l10n.adminRefresh : l10n.adminClearSearch,
-                      onAction: _controller.search.isEmpty
-                          ? _refresh
-                          : () {
+                          : !_controller.filter.isEmpty
+                              ? l10n.adminDoctorFiltersNoMatchBody
+                              : trial != null
+                                  ? l10n.adminTrialListEmptyBody
+                                  : l10n.adminSignupsEmptyBody,
+                      actionLabel: _controller.search.isNotEmpty
+                          ? l10n.adminClearSearch
+                          : !_controller.filter.isEmpty
+                              ? l10n.adminClearFilters
+                              : l10n.adminRefresh,
+                      onAction: _controller.search.isNotEmpty
+                          ? () {
                               _search.clear();
                               _onSearch('');
-                            },
+                            }
+                          : !_controller.filter.isEmpty
+                              ? () => _onFilter(const DoctorListFilter())
+                              : _refresh,
                     ),
                   ),
                 ),

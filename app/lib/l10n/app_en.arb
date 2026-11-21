@@ -5234,5 +5234,60 @@
   "patientFilterUpcoming": "Has a booking",
   "patientFilterNoShows": "Has no-shows",
   "patientColumnNextBooking": "Next booking",
-  "patientColumnNoShows": "No-shows"
+  "patientColumnNoShows": "No-shows",
+  "adminAddDoctor": "Add doctor",
+  "adminAddDoctorSubtitle": "The account is active at once, with no free trial. The doctor gets an email to choose a password.",
+  "adminAddDoctorAccountIntro": "The doctor signs in with this email. We'll send a link to it for choosing a password.",
+  "adminAddDoctorLanguage": "Language of the doctor's emails and notifications",
+  "adminAddDoctorReviewIntro": "Check the details, then add the doctor. Their clinic opens right away.",
+  "adminAddDoctorDoneTitle": "Dr. {name} is added",
+  "@adminAddDoctorDoneTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminAddDoctorDoneBody": "We emailed {email} a link to choose a password. It works for 3 days; if it runs out, send a new one from the doctor's page.",
+  "@adminAddDoctorDoneBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "adminAddDoctorOpen": "Open the doctor's page",
+  "adminBadgeWaitingReview": "{count, plural, =1{1 waiting for review} other{{count} waiting for review}}",
+  "@adminBadgeWaitingReview": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminFilterSpecialty": "Specialty",
+  "adminFilterGovernorate": "Governorate",
+  "adminFilterSignupDate": "Sign-up date",
+  "adminFilterSignedUp": "Signed up {dates}",
+  "@adminFilterSignedUp": {
+    "placeholders": {
+      "dates": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDoctorFiltersNoMatchBody": "No doctor matches these filters. Clear one to see more.",
+  "adminAuditDoctorCreated": "added a doctor (active, no free trial)",
+  "adminActionDoctorCreated": "Doctor added",
+  "adminFilters": "Filters",
+  "adminFiltersSet": "{count, plural, =1{Filters, 1 set} other{Filters, {count} set}}",
+  "@adminFiltersSet": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminFilterAny": "Any",
+  "adminFiltersDone": "Done"
 }

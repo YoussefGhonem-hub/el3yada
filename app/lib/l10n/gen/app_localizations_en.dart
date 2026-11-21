@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4002,7 +4001,8 @@ class AppLocalizationsEn extends AppLocalizations {
       locale: localeName,
       other:
           'This patient has had $max consultations in a row. Record an examination first.',
-      one: 'This patient has had 1 consultation in a row. Record an examination first.',
+      one:
+          'This patient has had 1 consultation in a row. Record an examination first.',
     );
     return '$_temp0';
   }
@@ -8949,4 +8949,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get patientColumnNoShows => 'No-shows';
+
+  @override
+  String get adminAddDoctor => 'Add doctor';
+
+  @override
+  String get adminAddDoctorSubtitle =>
+      'The account is active at once, with no free trial. The doctor gets an email to choose a password.';
+
+  @override
+  String get adminAddDoctorAccountIntro =>
+      'The doctor signs in with this email. We\'ll send a link to it for choosing a password.';
+
+  @override
+  String get adminAddDoctorLanguage =>
+      'Language of the doctor\'s emails and notifications';
+
+  @override
+  String get adminAddDoctorReviewIntro =>
+      'Check the details, then add the doctor. Their clinic opens right away.';
+
+  @override
+  String adminAddDoctorDoneTitle(String name) {
+    return 'Dr. $name is added';
+  }
+
+  @override
+  String adminAddDoctorDoneBody(String email) {
+    return 'We emailed $email a link to choose a password. It works for 3 days; if it runs out, send a new one from the doctor\'s page.';
+  }
+
+  @override
+  String get adminAddDoctorOpen => 'Open the doctor\'s page';
+
+  @override
+  String adminBadgeWaitingReview(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count waiting for review',
+      one: '1 waiting for review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminFilterSpecialty => 'Specialty';
+
+  @override
+  String get adminFilterGovernorate => 'Governorate';
+
+  @override
+  String get adminFilterSignupDate => 'Sign-up date';
+
+  @override
+  String adminFilterSignedUp(String dates) {
+    return 'Signed up $dates';
+  }
+
+  @override
+  String get adminDoctorFiltersNoMatchBody =>
+      'No doctor matches these filters. Clear one to see more.';
+
+  @override
+  String get adminAuditDoctorCreated =>
+      'added a doctor (active, no free trial)';
+
+  @override
+  String get adminActionDoctorCreated => 'Doctor added';
+
+  @override
+  String get adminFilters => 'Filters';
+
+  @override
+  String adminFiltersSet(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Filters, $count set',
+      one: 'Filters, 1 set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminFilterAny => 'Any';
+
+  @override
+  String get adminFiltersDone => 'Done';
 }

@@ -20,16 +20,17 @@ import '../../l10n/gen/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
 import '../auth/domain/user_role.dart';
 import '../clinic/application/clinic_providers.dart';
+import '../admin/application/admin_controllers.dart' show adminNavBadge;
 import '../admin/presentation/widgets/admin_widgets.dart' show InitialAvatar;
 import '../clinic/presentation/clinic_shell_parts.dart';
 import '../notifications/notifications_screen.dart';
 import 'role_shells.dart';
 import 'shell_navigator_watch.dart';
 
-/// Badge on a destination, by its path (null for none). Nothing sets one yet;
-/// the chats phase overrides it with the unread count, for example
-/// `'/doctor/chats' => NavBadge.count(unread)`.
-final navBadgeProvider = Provider.family<NavBadge?, String>((ref, path) => null);
+/// Badge on a destination, by its path (null for none): AD2's sign-ups
+/// waiting for review. The chats phase can add the unread count, for
+/// example `'/doctor/chats' => NavBadge.count(unread)`.
+final navBadgeProvider = Provider.family<NavBadge?, String>((ref, path) => adminNavBadge(ref, path));
 
 /// Adaptive frame around every signed-in screen (spec section 4):
 /// - phone (< 600): a full-width bottom bar of icons around the app logo,

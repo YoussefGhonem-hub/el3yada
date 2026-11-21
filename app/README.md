@@ -141,12 +141,23 @@ Each feature follows the same layers: `domain/` (models), `data/` (API), `applic
 
 ## iOS: TestFlight
 
-No Mac is needed. The `iOS TestFlight` workflow (`.github/workflows/ios-testflight.yml`) builds the app on a GitHub Mac, signs it and uploads it to App Store Connect. It runs only when started by hand: Actions tab > iOS TestFlight > Run workflow, or `gh workflow run "iOS TestFlight" --ref dev -f config=demo`.
+No Mac is needed. The `iOS TestFlight` workflow (`.github/workflows/ios-testflight.yml`) builds the app on a GitHub Mac, signs it and uploads it to App Store Connect.
 
+**Deploy = push to `uat`.** Every push to the `uat` branch that changes `app/`, `packages/` or the workflow deploys a new TestFlight build. The app's analyze and tests run first on Linux, and the Mac build starts only if they pass. Work still happens on `dev`; when a version is ready for testing:
+
+```bash
+git checkout uat
+git merge --no-ff dev
+git push origin uat
+```
+
+It can also be started by hand: Actions tab > iOS TestFlight > Run workflow, or `gh workflow run "iOS TestFlight" --ref dev -f config=demo`. GitHub shows that button only once the workflow file is on `main`.
+
+- A push to `uat` builds the demo (`config/dev-offline.json`) until the API is hosted. Then change `'demo'` to `'prod'` in the workflow's `CONFIG_CHOICE`.
 - `config=demo` builds with `config/dev-offline.json`: the offline test accounts, no server needed. Use it until the API is hosted.
 - `config=prod` builds with `config/prod.json`. It refuses while that file still points at `api.example.com`.
 - The build number is the workflow's run number, so every run uploads a new build. The version comes from `pubspec.yaml`.
-- A run takes about 20 to 30 minutes. GitHub counts Mac minutes at 10 times the Linux rate on the free plan, so run it only when there is something to test.
+- A run takes about 20 to 30 minutes. GitHub counts Mac minutes at 10 times the Linux rate on the free plan, so push to `uat` only when there is something to test, not after every commit.
 
 ### One-time setup
 

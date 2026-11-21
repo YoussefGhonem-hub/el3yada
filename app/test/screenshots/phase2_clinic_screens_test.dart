@@ -31,18 +31,26 @@ void main() {
   for (final dark in [false, true]) {
     final theme = dark ? 'dark' : 'light';
 
-    Future<void> signedIn(WidgetTester tester, Size size, String account) async {
+    Future<void> signedIn(
+      WidgetTester tester,
+      Size size,
+      String account,
+    ) async {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
-      await tester.pumpWidget(ProviderScope(
-        overrides: await appOverrides(
-          prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
-          platform: size.width > 900 ? AppPlatform.desktop : AppPlatform.mobile,
-          extra: [fakeClinicAdminOverride()],
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: await appOverrides(
+            prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
+            platform: size.width > 900
+                ? AppPlatform.desktop
+                : AppPlatform.mobile,
+            extra: [fakeClinicAdminOverride()],
+          ),
+          child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
         ),
-        child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
-      ));
+      );
       await settle(tester);
       await tester.enterText(find.byType(TextFormField).at(0), account);
       await tester.enterText(find.byType(TextFormField).at(1), 'dev');
@@ -51,129 +59,179 @@ void main() {
     }
 
     for (final (width, size) in [('phone', phone), ('desktop', desktop)]) {
-      testWidgets('D24 settings ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D24 settings ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/settings');
         await settle(tester);
         await capture(tester, 'd24_settings_${width}_ar_$theme');
         if (width == 'phone') {
-          await tester.drag(find.byType(SingleChildScrollView).last, const Offset(0, -900));
+          await tester.drag(
+            find.byType(SingleChildScrollView).last,
+            const Offset(0, -900),
+          );
           await settle(tester);
           await capture(tester, 'd24_settings_end_${width}_ar_$theme');
         }
       });
 
-      testWidgets('AS12 settings ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('AS12 settings ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, '01000000005');
         goTo(tester, '/assistant/settings');
         await settle(tester);
         await capture(tester, 'as12_settings_${width}_ar_$theme');
       });
 
-      testWidgets('D22 profile ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D22 profile ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/settings/profile');
         await settle(tester);
         await capture(tester, 'd22_profile_${width}_ar_$theme');
       });
 
-      testWidgets('D37 prices ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D37 prices ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/settings/prices');
         await settle(tester);
         await capture(tester, 'd37_prices_${width}_ar_$theme');
-        await tester.drag(find.byType(SingleChildScrollView).last, const Offset(0, -900));
+        await tester.drag(
+          find.byType(SingleChildScrollView).last,
+          const Offset(0, -900),
+        );
         await settle(tester);
         await capture(tester, 'd37_prices_end_${width}_ar_$theme');
       });
 
-      testWidgets('D28 branches ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D28 branches ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/branches');
         await settle(tester);
         await capture(tester, 'd28_branches_${width}_ar_$theme');
       });
 
-      testWidgets('D29 branch editor ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, 'doctor@el3yada.dev');
-        goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}');
-        await settle(tester);
-        await capture(tester, 'd29_info_${width}_ar_$theme');
-        for (final tab in ['address', 'contact', 'hours', 'clinic']) {
-          goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}?tab=$tab');
+      testWidgets(
+        'D29 branch editor ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, 'doctor@el3yada.dev');
+          goTo(
+            tester,
+            '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}',
+          );
           await settle(tester);
-          await capture(tester, 'd29_${tab}_${width}_ar_$theme');
-          if (tab == 'address') {
-            // The Google Maps link and its button, under the fold on a phone.
-            await tester.ensureVisible(find.text('لينك جوجل ماب (اختياري)'));
+          await capture(tester, 'd29_info_${width}_ar_$theme');
+          for (final tab in ['address', 'contact', 'hours', 'clinic']) {
+            goTo(
+              tester,
+              '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}?tab=$tab',
+            );
             await settle(tester);
-            await capture(tester, 'd29_address_map_link_${width}_ar_$theme');
+            await capture(tester, 'd29_${tab}_${width}_ar_$theme');
+            if (tab == 'address') {
+              // The Google Maps link and its button, under the fold on a phone.
+              await tester.ensureVisible(find.text('لينك جوجل ماب (اختياري)'));
+              await settle(tester);
+              await capture(tester, 'd29_address_map_link_${width}_ar_$theme');
+            }
           }
-        }
-        // The BR-BR9 refusal: Nasr City has bookings.
-        goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}');
-        await settle(tester);
-        await tester.ensureVisible(find.text('أرشفة').first);
-        await tester.tap(find.text('أرشفة').first);
-        await settle(tester);
-        await tester.tap(find.widgetWithText(FilledButton, 'أرشفة'));
-        await settle(tester);
-        await capture(tester, 'd29_bookings_refusal_${width}_ar_$theme');
-      });
+          // The BR-BR9 refusal: Nasr City has bookings.
+          goTo(
+            tester,
+            '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}',
+          );
+          await settle(tester);
+          await tester.ensureVisible(find.text('أرشفة').first);
+          await tester.tap(find.text('أرشفة').first);
+          await settle(tester);
+          await tester.tap(find.widgetWithText(FilledButton, 'أرشفة'));
+          await settle(tester);
+          await capture(tester, 'd29_bookings_refusal_${width}_ar_$theme');
+        },
+      );
 
-      testWidgets('D25 and D26 assistants ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, 'doctor@el3yada.dev');
-        goTo(tester, '/doctor/assistants');
-        await settle(tester);
-        await capture(tester, 'd25_assistants_${width}_ar_$theme');
+      testWidgets(
+        'D25 and D26 assistants ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, 'doctor@el3yada.dev');
+          goTo(tester, '/doctor/assistants');
+          await settle(tester);
+          await capture(tester, 'd25_assistants_${width}_ar_$theme');
 
-        goTo(tester, '/doctor/assistants/${FakeClinicAdminRepository.disabledAssistantId}');
-        await settle(tester);
-        await capture(tester, 'd26_edit_${width}_ar_$theme');
+          goTo(
+            tester,
+            '/doctor/assistants/${FakeClinicAdminRepository.disabledAssistantId}',
+          );
+          await settle(tester);
+          await capture(tester, 'd26_edit_${width}_ar_$theme');
 
-        goTo(tester, '/doctor/assistants/new');
-        await settle(tester);
-        await tester.enterText(find.byType(TextField).at(0), 'سارة محمود');
-        await tester.enterText(find.byType(TextField).at(1), '01112223334');
-        await tester.pumpAndSettle();
-        await capture(tester, 'd26_new_${width}_ar_$theme');
-        // A box with a dependency, to show the note under it.
-        final edit = find.text('تعديل التاريخ المرضي');
-        await tester.ensureVisible(edit);
-        await tester.pumpAndSettle();
-        await tester.tap(edit);
-        await settle(tester);
-        await capture(tester, 'd26_permissions_${width}_ar_$theme');
+          goTo(tester, '/doctor/assistants/new');
+          await settle(tester);
+          await tester.enterText(find.byType(TextField).at(0), 'سارة محمود');
+          await tester.enterText(find.byType(TextField).at(1), '01112223334');
+          await tester.pumpAndSettle();
+          await capture(tester, 'd26_new_${width}_ar_$theme');
+          // A box with a dependency, to show the note under it.
+          final edit = find.text('تعديل التاريخ المرضي');
+          await tester.ensureVisible(edit);
+          await tester.pumpAndSettle();
+          await tester.tap(edit);
+          await settle(tester);
+          await capture(tester, 'd26_permissions_${width}_ar_$theme');
 
-        await tester.ensureVisible(find.text('كل الفروع').first);
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('كل الفروع').first);
-        await settle(tester);
-        await tester.tap(find.widgetWithText(FilledButton, 'إضافة مساعد').last);
-        await settle(tester);
-        await capture(tester, 'd26_temporary_password_${width}_ar_$theme');
-      });
+          await tester.ensureVisible(find.text('كل الفروع').first);
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('كل الفروع').first);
+          await settle(tester);
+          await tester.tap(
+            find.widgetWithText(FilledButton, 'إضافة مساعد').last,
+          );
+          await settle(tester);
+          await capture(tester, 'd26_temporary_password_${width}_ar_$theme');
+        },
+      );
 
-      testWidgets('D27 activity log ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, 'doctor@el3yada.dev');
-        goTo(tester, '/doctor/activity');
-        await settle(tester);
-        await capture(tester, 'd27_activity_${width}_ar_$theme');
-      });
+      testWidgets(
+        'D27 activity log ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, 'doctor@el3yada.dev');
+          goTo(tester, '/doctor/activity');
+          await settle(tester);
+          await capture(tester, 'd27_activity_${width}_ar_$theme');
+        },
+      );
 
-      testWidgets('AS19 prices for an office manager ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, '01000000005');
-        goTo(tester, '/assistant/settings/prices');
-        await settle(tester);
-        await capture(tester, 'as19_prices_${width}_ar_$theme');
-      });
+      testWidgets(
+        'AS19 prices for an office manager ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, '01000000005');
+          goTo(tester, '/assistant/settings/prices');
+          await settle(tester);
+          await capture(tester, 'as19_prices_${width}_ar_$theme');
+        },
+      );
 
-      testWidgets('D29 new branch ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, 'doctor@el3yada.dev');
-        goTo(tester, '/doctor/branches/new');
-        await settle(tester);
-        await capture(tester, 'd29_new_${width}_ar_$theme');
-      });
+      testWidgets(
+        'D29 new branch ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, 'doctor@el3yada.dev');
+          goTo(tester, '/doctor/branches/new');
+          await settle(tester);
+          await capture(tester, 'd29_new_${width}_ar_$theme');
+        },
+      );
     }
   }
 }

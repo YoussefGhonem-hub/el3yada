@@ -9,11 +9,20 @@ import '../features/admin/presentation/profile/admin_profile_screen.dart';
 import '../features/admin/presentation/settings/admin_settings_screen.dart';
 import '../features/admin/presentation/signups/signup_requests_screen.dart';
 import '../features/admin/presentation/signups/signup_review.dart';
+import '../features/admin_billing/presentation/admin_dashboard_screen.dart';
+import '../features/admin_billing/presentation/doctor_screens.dart';
+import '../features/admin_billing/presentation/invoice_screens.dart';
+import '../features/admin_billing/presentation/payment_screens.dart';
+import '../features/analytics/presentation/revenue_screens.dart';
+import '../features/billing/presentation/billing_screen.dart';
+import '../features/billing/presentation/invoice_details_screen.dart';
+import '../features/billing/presentation/submit_payment_screen.dart';
 import '../features/catalog/presentation/admin/catalogs_screen.dart';
 import '../features/catalog/presentation/admin/specialties_screen.dart';
 import '../features/catalog/presentation/admin/specialty_editor_screen.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/clinic/domain/clinic_permissions.dart';
+import '../features/patients/clinic_paths.dart';
 import '../features/clinic_admin/clinic_admin_routes.dart';
 import '../features/clinic_admin/presentation/activity/activity_log_screen.dart';
 import '../features/clinic_admin/presentation/assistants/assistants_screen.dart';
@@ -25,6 +34,7 @@ import '../features/clinic_admin/presentation/settings/clinic_settings_screen.da
 import '../features/patients/clinic_routes.dart';
 import '../features/prescriptions/presentation/rx_settings_screen.dart';
 import '../features/prescriptions/presentation/templates_screen.dart';
+import '../features/sessions/domain/session_models.dart' show parseDay;
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_shells.dart';
 
@@ -38,6 +48,16 @@ import '../features/shell/role_shells.dart';
 /// '/admin/signups': (_) => const SignupRequestsScreen(),
 /// ```
 final Map<String, WidgetBuilder> _destinationScreens = {
+  // Phase 7: billing and analytics. AD1, AD4, AD7, AD9.
+  AdminRoutes.dashboard: (_) => const AdminDashboardScreen(),
+  AdminRoutes.doctors: (_) => const AdminDoctorsScreen(),
+  AdminRoutes.payments: (_) => const PaymentQueueScreen(),
+  AdminRoutes.invoices: (_) => const AdminInvoicesScreen(),
+  // D18 / AS10 billing, D35 revenue.
+  for (final paths in ClinicPaths.all) ...{
+    paths.billing: (_) => const BillingScreen(),
+    paths.revenue: (_) => const RevenueScreen(),
+  },
   AdminRoutes.signups: (_) => const SignupRequestsScreen(),
   AdminRoutes.settings: (_) => const AdminSettingsScreen(),
   AdminRoutes.admins: (_) => const AdminUsersScreen(),
@@ -58,6 +78,35 @@ final Map<String, WidgetBuilder> _destinationScreens = {
 /// Detail routes under a destination, relative to it, for example
 /// `GoRoute(path: ':doctorId', builder: ...)` under `/admin/signups`.
 final Map<String, List<RouteBase>> _destinationRoutes = {
+  // AD5 one doctor, AD8 one payment, AD10 one invoice.
+  AdminRoutes.doctors: [
+    GoRoute(path: ':doctorId', builder: (context, state) => AdminDoctorScreen(doctorId: state.pathParameters['doctorId']!)),
+  ],
+  AdminRoutes.payments: [
+    GoRoute(path: ':paymentId', builder: (context, state) => PaymentReviewScreen(paymentId: state.pathParameters['paymentId']!)),
+  ],
+  AdminRoutes.invoices: [
+    GoRoute(path: ':invoiceId', builder: (context, state) => AdminInvoiceScreen(invoiceId: state.pathParameters['invoiceId']!)),
+  ],
+  // D19 one invoice, D20 its payment, D35 the days of a month and the sessions of a day.
+  for (final paths in ClinicPaths.all) ...{
+    paths.billing: [
+      GoRoute(
+        path: ':invoiceId',
+        builder: (context, state) => InvoiceDetailsScreen(invoiceId: state.pathParameters['invoiceId']!),
+        routes: [
+          GoRoute(path: 'pay', builder: (context, state) => SubmitPaymentScreen(invoiceId: state.pathParameters['invoiceId']!)),
+        ],
+      ),
+    ],
+    paths.revenue: [
+      GoRoute(path: 'month/:month', builder: (context, state) => RevenueMonthScreen(month: state.pathParameters['month']!)),
+      GoRoute(
+        path: 'day/:day',
+        builder: (context, state) => RevenueDayScreen(day: parseDay(state.pathParameters['day']!)),
+      ),
+    ],
+  },
   // AD3 by link (the sign-up notification); AD2 opens it in place.
   AdminRoutes.signups: [
     GoRoute(

@@ -35,11 +35,20 @@ Future<List<Override>> appOverrides({
     sharedPreferencesProvider.overrideWithValue(preferences),
     appPlatformProvider.overrideWithValue(platform),
     tokenStoreProvider.overrideWithValue(store ?? MemoryTokenStore()),
-    authRepositoryProvider.overrideWithValue(auth ?? FakeAuthRepository(delay: Duration.zero)),
-    clinicRepositoryProvider.overrideWith(
-      (ref) => clinic ?? FakeClinicRepository(ref.watch(authControllerProvider).value, delay: Duration.zero),
+    authRepositoryProvider.overrideWithValue(
+      auth ?? FakeAuthRepository(delay: Duration.zero),
     ),
-    publicSettingsRepositoryProvider.overrideWithValue(publicSettings ?? FakePublicSettingsRepository(settings)),
+    clinicRepositoryProvider.overrideWith(
+      (ref) =>
+          clinic ??
+          FakeClinicRepository(
+            ref.watch(authControllerProvider).value,
+            delay: Duration.zero,
+          ),
+    ),
+    publicSettingsRepositoryProvider.overrideWithValue(
+      publicSettings ?? FakePublicSettingsRepository(settings),
+    ),
     deviceIdentityProvider.overrideWith(
       (ref) async => DeviceIdentity(
         deviceId: 'test-device',

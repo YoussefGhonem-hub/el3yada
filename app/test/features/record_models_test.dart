@@ -6,15 +6,33 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('a record view reads the contract sample', () {
     final record = MedicalRecordView.fromJson({
-      'recordId': 'r1', 'patientId': 'p1', 'category': 'other', 'otherType': 'sickLeave', 'otherTypeText': null,
-      'title': 'إجازة مرضية', 'documentDate': '2026-11-17', 'notes': null,
-      'session': {'sessionId': 's1', 'type': 'examination', 'createdAt': '2026-11-17T09:00:00.000Z'},
-      'source': 'scan', 'createdAt': '2026-11-17T09:10:00.000Z', 'updatedAt': '2026-11-17T09:10:00.000Z',
+      'recordId': 'r1',
+      'patientId': 'p1',
+      'category': 'other',
+      'otherType': 'sickLeave',
+      'otherTypeText': null,
+      'title': 'إجازة مرضية',
+      'documentDate': '2026-11-17',
+      'notes': null,
+      'session': {
+        'sessionId': 's1',
+        'type': 'examination',
+        'createdAt': '2026-11-17T09:00:00.000Z',
+      },
+      'source': 'scan',
+      'createdAt': '2026-11-17T09:10:00.000Z',
+      'updatedAt': '2026-11-17T09:10:00.000Z',
       'createdBy': {'userId': 'u1', 'role': 'assistant', 'name': 'سارة محمود'},
       'attachments': [
         {
-          'attachmentId': 'a1', 'fileName': 'scan.pdf', 'mimeType': 'application/pdf', 'sizeBytes': 812300,
-          'storedSizeBytes': 812300, 'pageCount': 3, 'hasThumbnail': true, 'previewable': true,
+          'attachmentId': 'a1',
+          'fileName': 'scan.pdf',
+          'mimeType': 'application/pdf',
+          'sizeBytes': 812300,
+          'storedSizeBytes': 812300,
+          'pageCount': 3,
+          'hasThumbnail': true,
+          'previewable': true,
         },
       ],
       'totalSizeBytes': 812300,
@@ -47,9 +65,16 @@ void main() {
 
   test('an upload answer keeps the three sizes', () {
     final upload = UploadedFile.fromJson({
-      'uploadId': 'u1', 'fileName': 'scan-1.jpg', 'mimeType': 'image/jpeg', 'sizeBytes': 612034,
-      'storedSizeBytes': 612034, 'originalSizeBytes': 4380112, 'pageCount': null, 'hasThumbnail': true,
-      'optimized': true, 'expiresAt': '2026-11-18T09:00:00.000Z',
+      'uploadId': 'u1',
+      'fileName': 'scan-1.jpg',
+      'mimeType': 'image/jpeg',
+      'sizeBytes': 612034,
+      'storedSizeBytes': 612034,
+      'originalSizeBytes': 4380112,
+      'pageCount': null,
+      'hasThumbnail': true,
+      'optimized': true,
+      'expiresAt': '2026-11-18T09:00:00.000Z',
     });
     expect(upload.originalSizeBytes, greaterThan(upload.sizeBytes));
     expect(upload.optimized, isTrue);

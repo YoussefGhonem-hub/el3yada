@@ -481,10 +481,7 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-<<<<<<< HEAD
 # el3yada: local stored files (Storage:RootPath in Development). Logs are covered by [Ll]ogs/ above.
 App_Data/
-=======
 # Local file storage of the API (medical files, PDFs). Never commit it.
 src/El3yada.Api/storage/
->>>>>>> phase-6/appointments-live-board

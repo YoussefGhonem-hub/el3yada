@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 namespace El3yada.Api.Tests;
 
 /// <summary>AC-13 on Windows: a running app receives the notification and the message over SignalR.</summary>
-public sealed class RealtimeTests(ApiFactory api) : IClassFixture<ApiFactory>
+public sealed class RealtimeTests(FeaturesApiFactory api) : IClassFixture<FeaturesApiFactory>
 {
     private async Task<HubConnection> ConnectAsync(Guid userId)
     {

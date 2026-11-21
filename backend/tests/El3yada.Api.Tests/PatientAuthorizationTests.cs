@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 namespace El3yada.Api.Tests;
 
 /// <summary>Only the patient role reaches /api/patient, and only admins reach /api/admin (spec 9.4, AC-11, AC-12).</summary>
-public sealed class PatientAuthorizationTests(ApiFactory api) : IClassFixture<ApiFactory>
+public sealed class PatientAuthorizationTests(FeaturesApiFactory api) : IClassFixture<FeaturesApiFactory>
 {
     public static TheoryData<string> PatientRoutes => new()
     {

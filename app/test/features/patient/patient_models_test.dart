@@ -6,7 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Contract tests: the fixtures are real responses of the API (`/api/patient/...` on the
 /// demo data, see backend/README.md). If the API changes a field, these fail.
-Object? fixture(String name) => jsonDecode(File('test/fixtures/patient/$name.json').readAsStringSync());
+Object? fixture(String name) =>
+    jsonDecode(File('test/fixtures/patient/$name.json').readAsStringSync());
 
 void main() {
   test('home', () {
@@ -19,7 +20,9 @@ void main() {
   });
 
   test('my doctors', () {
-    final doctors = [for (final d in fixture('doctors') as List) MyDoctor.fromJson(d as Json)];
+    final doctors = [
+      for (final d in fixture('doctors') as List) MyDoctor.fromJson(d as Json),
+    ];
     expect(doctors, hasLength(2));
     expect(doctors.every((d) => d.fileNumber > 0), isTrue);
   });
@@ -37,7 +40,10 @@ void main() {
   });
 
   test('visits page and visit details', () {
-    final page = Paged.fromJson(fixture('visits') as Json, VisitListItem.fromJson);
+    final page = Paged.fromJson(
+      fixture('visits') as Json,
+      VisitListItem.fromJson,
+    );
     expect(page.totalCount, 2);
     expect(page.hasMore, isFalse);
 
@@ -49,8 +55,14 @@ void main() {
   });
 
   test('prescriptions', () {
-    final page = Paged.fromJson(fixture('prescriptions') as Json, PrescriptionListItem.fromJson);
-    expect(page.items.map((p) => p.status), containsAll([PrescriptionStatus.sent, PrescriptionStatus.cancelled]));
+    final page = Paged.fromJson(
+      fixture('prescriptions') as Json,
+      PrescriptionListItem.fromJson,
+    );
+    expect(
+      page.items.map((p) => p.status),
+      containsAll([PrescriptionStatus.sent, PrescriptionStatus.cancelled]),
+    );
 
     final rx = PrescriptionDetail.fromJson(fixture('prescription') as Json);
     expect(rx.kind, PrescriptionKind.medication);
@@ -60,7 +72,10 @@ void main() {
   });
 
   test('records, counts and record details', () {
-    final page = Paged.fromJson(fixture('records') as Json, RecordListItem.fromJson);
+    final page = Paged.fromJson(
+      fixture('records') as Json,
+      RecordListItem.fromJson,
+    );
     expect(page.items, hasLength(2));
     final counts = RecordCounts.fromJson(fixture('record_counts') as Json);
     expect(counts.of(RecordCategory.lab), 1);
@@ -80,7 +95,13 @@ void main() {
   });
 
   test('age is computed from the date of birth', () {
-    final person = PersonalInfo(patientId: 'p', fullName: 'a b', phone: '+201', gender: 'male', dateOfBirth: DateTime(1985, 3, 14));
+    final person = PersonalInfo(
+      patientId: 'p',
+      fullName: 'a b',
+      phone: '+201',
+      gender: 'male',
+      dateOfBirth: DateTime(1985, 3, 14),
+    );
     expect(person.ageOn(DateTime(2026, 3, 13)), 40);
     expect(person.ageOn(DateTime(2026, 3, 14)), 41);
   });

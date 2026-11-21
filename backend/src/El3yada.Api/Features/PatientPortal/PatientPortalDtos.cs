@@ -35,8 +35,7 @@ public sealed record DoctorInfoDto(
     IReadOnlyList<BranchInfoDto> Branches);
 
 public sealed record AddressDto(
-    string Governorate, string City, string? Area, string Street, string? Building,
-    string? Floor, string? Apartment, string? Landmark, decimal? Lat, decimal? Lng);
+    string Governorate, string City, string? Area, string Details, string? Landmark, string? MapUrl);
 
 public sealed record BranchPhoneDto(string Number, string Label, bool IsWhatsapp);
 

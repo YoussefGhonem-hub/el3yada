@@ -128,7 +128,7 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
             .Select(b => new
             {
                 b.Id, b.NameAr, b.NameEn, b.Description, b.IsDefault, b.Status, b.ClosedMessage, b.ReopenDate,
-                Address = new AddressDto(b.Governorate, b.City, b.Area, b.Street, b.Building, b.Floor, b.Apartment, b.Landmark, b.Lat, b.Lng),
+                Address = new AddressDto(b.Governorate, b.City, b.Area, b.AddressDetails, b.Landmark, b.MapUrl),
                 b.Email,
                 Phones = b.BranchPhones.OrderBy(p => p.SortOrder).Select(p => new BranchPhoneDto(p.Number, p.Label, p.IsWhatsapp)).ToList(),
                 Hours = b.BranchPeriods.OrderBy(p => p.Weekday).ThenBy(p => p.StartLocal)
@@ -219,8 +219,7 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
                 Doctor = new DoctorRef(s.Doctor.UserId, s.Doctor.FullName, s.Doctor.FullNameEn, s.Doctor.Title, s.Doctor.TitleEn),
                 Branch = new VisitBranchDto(
                     s.Branch.Id, s.Branch.NameAr, s.Branch.NameEn,
-                    new AddressDto(s.Branch.Governorate, s.Branch.City, s.Branch.Area, s.Branch.Street, s.Branch.Building,
-                        s.Branch.Floor, s.Branch.Apartment, s.Branch.Landmark, s.Branch.Lat, s.Branch.Lng),
+                    new AddressDto(s.Branch.Governorate, s.Branch.City, s.Branch.Area, s.Branch.AddressDetails, s.Branch.Landmark, s.Branch.MapUrl),
                     s.Branch.BranchPhones.OrderBy(p => p.SortOrder).Select(p => new BranchPhoneDto(p.Number, p.Label, p.IsWhatsapp)).ToList()),
                 s.Type, s.CreatedAt, s.DayKey, s.ChiefComplaint, s.Findings,
                 Vitals = new VitalsDto(s.BpSys, s.BpDia, s.Pulse, s.TempC, s.WeightKg, s.HeightCm, s.Glucose),

@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-<<<<<<< HEAD
 import '../core/settings/app_settings.dart';
 import '../core/theme/motion.dart';
-=======
 import '../features/admin_support/presentation/admin_support_screens.dart';
 import '../features/appointments/presentation/appointments_routes.dart';
->>>>>>> phase-6/appointments-live-board
 import '../features/auth/application/auth_controller.dart';
 import '../features/auth/domain/auth_session.dart';
 import '../features/auth/domain/user_role.dart';
@@ -16,19 +13,17 @@ import '../features/auth/presentation/blocked_screen.dart';
 import '../features/auth/presentation/forgot_password_screen.dart';
 import '../features/auth/presentation/language_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
-<<<<<<< HEAD
 import '../features/auth/presentation/set_password_screen.dart';
 import '../features/auth/presentation/trial_ended_screen.dart';
 import '../features/catalog/presentation/catalog_setup_screen.dart';
 import '../features/catalog/presentation/catalog_sources_screen.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/doctor_registration/presentation/registration_status_screens.dart';
-import '../features/shell/fade_through_branches.dart';
-=======
-import '../features/auth/presentation/splash_screen.dart';
 import '../features/chat/chat_routes.dart';
 import '../features/patient/presentation/patient_routes.dart';
->>>>>>> phase-6/appointments-live-board
+import '../features/patients/domain/patient_models.dart' show LastVisitFilter;
+import '../features/patients/presentation/patients_register_screen.dart';
+import '../features/shell/fade_through_branches.dart';
 import '../features/shell/placeholder_pages.dart';
 import '../features/shell/role_scaffold.dart';
 import '../features/shell/role_shells.dart';
@@ -42,7 +37,24 @@ import 'routes.dart';
 
 export 'routes.dart';
 
-<<<<<<< HEAD
+/// Screens built in Phases 4–6, by menu path. They take precedence over [destinationPage], so
+/// the live board replaces the interim home of Phase 2. Menu items without an entry in either
+/// show their placeholder.
+final Map<String, GoRouterWidgetBuilder> _shellPages = {
+  // D4 / AS2, optionally with a last-visit filter (`?lastVisit=notSeen6m`, the dashboard's C11 bars).
+  for (final base in ['/doctor', '/assistant'])
+    '$base/patients': (context, state) =>
+        PatientsRegisterScreen(initialLastVisit: LastVisitFilter.values.asNameMap()[state.uri.queryParameters['lastVisit']]),
+  ...PatientRoutes.shellPages,
+  ...ChatRoutes.shellPages,
+  ...AppointmentsRoutes.shellPages,
+  '/admin/accounts': (context, state) => const AccountsSupportScreen(),
+  '/admin/deletion-requests': (context, state) => const DeletionRequestsScreen(),
+};
+
+Widget _destinationScreen(BuildContext context, GoRouterState state, NavDestinationSpec destination) =>
+    _shellPages[destination.path]?.call(context, state) ?? destinationPage(context, destination);
+
 /// Routes by start-up checks, session, role and status (spec A1). Each role
 /// only reaches its own area. The order of the checks is in [appRedirect].
 ///
@@ -58,18 +70,6 @@ export 'routes.dart';
 ///   `NoTransitionPage`, because the branch container animates them.
 /// - Detail screens go under their tab (destination_pages.dart) with
 ///   `builder:`; list → detail can also use `ContainerTransform`.
-=======
-/// Built screens, by path. Menu items without an entry show their placeholder.
-final Map<String, GoRouterWidgetBuilder> _shellPages = {
-  ...PatientRoutes.shellPages,
-  ...ChatRoutes.shellPages,
-  ...AppointmentsRoutes.shellPages,
-  '/admin/accounts': (context, state) => const AccountsSupportScreen(),
-  '/admin/deletion-requests': (context, state) => const DeletionRequestsScreen(),
-};
-
-/// Routes by session and role (spec A1). Each role only reaches its own area.
->>>>>>> phase-6/appointments-live-board
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = _RouterRefresh(ref);
   ref.onDispose(refresh.dispose);
@@ -126,7 +126,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             branchIndex: navigationShell.currentIndex,
             child: navigationShell,
           ),
-<<<<<<< HEAD
           navigatorContainerBuilder: (context, navigationShell, children) => FadeThroughBranches(
             currentIndex: navigationShell.currentIndex,
             children: children,
@@ -140,7 +139,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: destination.path,
                     pageBuilder: (context, state) => NoTransitionPage(
                       key: state.pageKey,
-                      child: destinationPage(context, destination),
+                      child: _destinationScreen(context, state, destination),
                     ),
                     routes: destinationRoutes(destination),
                   ),
@@ -159,27 +158,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                 ],
               ),
-=======
-          routes: [
-            for (final destination in shell.destinations)
-              GoRoute(
-                path: destination.path,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  child: _shellPages[destination.path]?.call(context, state) ?? PlaceholderPage(destination: destination),
-                ),
-              ),
-            // Shell pages that aren't menu items, such as the patient's account (avatar).
-            for (final entry in _shellPages.entries)
-              if (entry.key.startsWith('${shell.basePath}/') && !shell.destinations.any((d) => d.path == entry.key))
-                GoRoute(
-                  path: entry.key,
-                  pageBuilder: (context, state) => NoTransitionPage(child: entry.value(context, state)),
-                ),
-            GoRoute(
-              path: shell.morePath,
-              pageBuilder: (context, state) => NoTransitionPage(child: MorePage(shell: shell)),
-            ),
->>>>>>> phase-6/appointments-live-board
           ],
         ),
       // Detail screens, pushed full screen over the shell.

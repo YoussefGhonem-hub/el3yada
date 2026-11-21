@@ -22,19 +22,36 @@ void main() {
     if (screenshotsEnabled) await loadRealFonts();
   });
 
-  const support = PublicSettings(supportPhone: '01000000000', supportWhatsapp: '01000000000', supportEmail: 'help@el3yada.app');
+  const support = PublicSettings(
+    supportPhone: '01000000000',
+    supportWhatsapp: '01000000000',
+    supportEmail: 'help@el3yada.app',
+  );
   const phone = Size(390, 844);
   const desktop = Size(1280, 800);
 
   /// A photo of a syndicate card, drawn here so the thumbnail shows something.
-  Future<Uint8List> cardPhoto(WidgetTester tester) async => (await tester.runAsync(() async {
+  Future<Uint8List> cardPhoto(WidgetTester tester) async =>
+      (await tester.runAsync(() async {
         final recorder = ui.PictureRecorder();
         final canvas = Canvas(recorder);
-        canvas.drawRect(const Rect.fromLTWH(0, 0, 320, 200), Paint()..color = const Color(0xFFE9EEF4));
-        canvas.drawRect(const Rect.fromLTWH(0, 0, 320, 44), Paint()..color = const Color(0xFF1F5F8B));
-        canvas.drawRect(const Rect.fromLTWH(20, 64, 90, 112), Paint()..color = const Color(0xFFB8C4D0));
+        canvas.drawRect(
+          const Rect.fromLTWH(0, 0, 320, 200),
+          Paint()..color = const Color(0xFFE9EEF4),
+        );
+        canvas.drawRect(
+          const Rect.fromLTWH(0, 0, 320, 44),
+          Paint()..color = const Color(0xFF1F5F8B),
+        );
+        canvas.drawRect(
+          const Rect.fromLTWH(20, 64, 90, 112),
+          Paint()..color = const Color(0xFFB8C4D0),
+        );
         for (var i = 0; i < 4; i++) {
-          canvas.drawRect(Rect.fromLTWH(130, 72 + i * 26.0, 160 - i * 20.0, 10), Paint()..color = const Color(0xFF8A99A8));
+          canvas.drawRect(
+            Rect.fromLTWH(130, 72 + i * 26.0, 160 - i * 20.0, 10),
+            Paint()..color = const Color(0xFF8A99A8),
+          );
         }
         final image = await recorder.endRecording().toImage(320, 200);
         final data = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -45,30 +62,42 @@ void main() {
   for (final dark in [false, true]) {
     final theme = dark ? 'dark' : 'light';
 
-    Future<FakeAuthRepository> pumpApp(WidgetTester tester, {Size size = phone, Uint8List? photo}) async {
+    Future<FakeAuthRepository> pumpApp(
+      WidgetTester tester, {
+      Size size = phone,
+      Uint8List? photo,
+    }) async {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       final auth = FakeAuthRepository(delay: Duration.zero);
       final bytes = photo ?? Uint8List(0);
-      await tester.pumpWidget(ProviderScope(
-        overrides: await appOverrides(
-          prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
-          settings: support,
-          auth: auth,
-          platform: size.width > 900 ? AppPlatform.desktop : AppPlatform.mobile,
-          extra: [
-            licensePickerProvider.overrideWithValue(_Picker(bytes)),
-            registrationRepositoryProvider.overrideWithValue(FakeRegistrationRepository(auth: auth, delay: Duration.zero)),
-          ],
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: await appOverrides(
+            prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
+            settings: support,
+            auth: auth,
+            platform: size.width > 900
+                ? AppPlatform.desktop
+                : AppPlatform.mobile,
+            extra: [
+              licensePickerProvider.overrideWithValue(_Picker(bytes)),
+              registrationRepositoryProvider.overrideWithValue(
+                FakeRegistrationRepository(auth: auth, delay: Duration.zero),
+              ),
+            ],
+          ),
+          child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
         ),
-        child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
-      ));
+      );
       await settle(tester);
       return auth;
     }
 
-    testWidgets('A4 steps on a phone ($theme)', skip: !screenshotsEnabled, (tester) async {
+    testWidgets('A4 steps on a phone ($theme)', skip: !screenshotsEnabled, (
+      tester,
+    ) async {
       final photo = await cardPhoto(tester);
       await pumpApp(tester, photo: photo);
       await tapText(tester, 'تسجيل كطبيب');
@@ -114,7 +143,9 @@ void main() {
       await capture(tester, 'a4_4_review_terms_ar_$theme');
     });
 
-    testWidgets('A4 on desktop ($theme)', skip: !screenshotsEnabled, (tester) async {
+    testWidgets('A4 on desktop ($theme)', skip: !screenshotsEnabled, (
+      tester,
+    ) async {
       final photo = await cardPhoto(tester);
       await pumpApp(tester, size: desktop, photo: photo);
       await tapText(tester, 'تسجيل كطبيب');
@@ -139,7 +170,9 @@ void main() {
       await capture(tester, 'a4_4_review_desktop_ar_$theme');
     });
 
-    testWidgets('A6 pending ($theme)', skip: !screenshotsEnabled, (tester) async {
+    testWidgets('A6 pending ($theme)', skip: !screenshotsEnabled, (
+      tester,
+    ) async {
       await pumpApp(tester);
       await signIn(tester, 'pending@el3yada.dev');
       await capture(tester, 'a6_pending_ar_$theme');
@@ -148,13 +181,17 @@ void main() {
       await capture(tester, 'a6_pending_data_ar_$theme');
     });
 
-    testWidgets('A6 pending on desktop ($theme)', skip: !screenshotsEnabled, (tester) async {
+    testWidgets('A6 pending on desktop ($theme)', skip: !screenshotsEnabled, (
+      tester,
+    ) async {
       await pumpApp(tester, size: desktop);
       await signIn(tester, 'pending@el3yada.dev');
       await capture(tester, 'a6_pending_desktop_ar_$theme');
     });
 
-    testWidgets('A5 verify email ($theme)', skip: !screenshotsEnabled, (tester) async {
+    testWidgets('A5 verify email ($theme)', skip: !screenshotsEnabled, (
+      tester,
+    ) async {
       await pumpApp(tester);
       await signIn(tester, 'pending@el3yada.dev');
       await tapText(tester, 'أكّد بريدك الإلكتروني');
@@ -171,40 +208,56 @@ void main() {
       await capture(tester, 'a5_verified_ar_$theme');
     });
 
-    testWidgets('A7 rejected and resubmit ($theme)', skip: !screenshotsEnabled, (tester) async {
-      await pumpApp(tester);
-      await signIn(tester, 'rejected@el3yada.dev');
-      await capture(tester, 'a7_rejected_ar_$theme');
-      await tapText(tester, 'تعديل وإعادة الإرسال');
-      await capture(tester, 'a7_edit_account_ar_$theme');
-      await tapText(tester, 'التالي');
-      await capture(tester, 'a7_edit_professional_ar_$theme');
-    });
+    testWidgets(
+      'A7 rejected and resubmit ($theme)',
+      skip: !screenshotsEnabled,
+      (tester) async {
+        await pumpApp(tester);
+        await signIn(tester, 'rejected@el3yada.dev');
+        await capture(tester, 'a7_rejected_ar_$theme');
+        await tapText(tester, 'تعديل وإعادة الإرسال');
+        await capture(tester, 'a7_edit_account_ar_$theme');
+        await tapText(tester, 'التالي');
+        await capture(tester, 'a7_edit_professional_ar_$theme');
+      },
+    );
 
-    testWidgets('A4 on a 360 × 640 phone ($theme)', skip: !screenshotsEnabled || dark, (tester) async {
-      final photo = await cardPhoto(tester);
-      await pumpApp(tester, size: const Size(360, 640), photo: photo);
-      await tapText(tester, 'تسجيل كطبيب');
-      await fillAccount(tester);
-      await tapText(tester, 'التالي');
-      await openPicker(tester, 'التخصص الأساسي');
-      await tester.enterText(find.descendant(of: find.byType(BottomSheet), matching: find.byType(TextField)), 'قلب');
-      await settle(tester);
-      await capture(tester, 'a4_2_specialty_search_360_ar_$theme');
-      await tapText(tester, 'قلب وأوعية دموية');
-      await fillProfessional(tester);
-      await decodeImages(tester);
-      await capture(tester, 'a4_2_professional_360_ar_$theme');
-      await tapText(tester, 'التالي');
-      await fillBranch(tester);
-      await tester.ensureVisible(find.text('إضافة رقم'));
-      await settle(tester);
-      await capture(tester, 'a4_3_branch_360_ar_$theme');
-      await tapText(tester, 'التالي');
-      await capture(tester, 'a4_4_review_360_ar_$theme');
-    });
+    testWidgets(
+      'A4 on a 360 × 640 phone ($theme)',
+      skip: !screenshotsEnabled || dark,
+      (tester) async {
+        final photo = await cardPhoto(tester);
+        await pumpApp(tester, size: const Size(360, 640), photo: photo);
+        await tapText(tester, 'تسجيل كطبيب');
+        await fillAccount(tester);
+        await tapText(tester, 'التالي');
+        await openPicker(tester, 'التخصص الأساسي');
+        await tester.enterText(
+          find.descendant(
+            of: find.byType(BottomSheet),
+            matching: find.byType(TextField),
+          ),
+          'قلب',
+        );
+        await settle(tester);
+        await capture(tester, 'a4_2_specialty_search_360_ar_$theme');
+        await tapText(tester, 'قلب وأوعية دموية');
+        await fillProfessional(tester);
+        await decodeImages(tester);
+        await capture(tester, 'a4_2_professional_360_ar_$theme');
+        await tapText(tester, 'التالي');
+        await fillBranch(tester);
+        await tester.ensureVisible(find.text('إضافة رقم'));
+        await settle(tester);
+        await capture(tester, 'a4_3_branch_360_ar_$theme');
+        await tapText(tester, 'التالي');
+        await capture(tester, 'a4_4_review_360_ar_$theme');
+      },
+    );
 
-    testWidgets('A7 rejected on desktop ($theme)', skip: !screenshotsEnabled, (tester) async {
+    testWidgets('A7 rejected on desktop ($theme)', skip: !screenshotsEnabled, (
+      tester,
+    ) async {
       await pumpApp(tester, size: desktop);
       await signIn(tester, 'rejected@el3yada.dev');
       await capture(tester, 'a7_rejected_desktop_ar_$theme');
@@ -218,8 +271,11 @@ class _Picker implements LicensePicker {
   final Uint8List bytes;
 
   @override
-  Future<PickedLicense?> pick(LicenseSource source) async =>
-      PickedLicense(name: 'syndicate-card.png', size: bytes.length, read: () async => bytes);
+  Future<PickedLicense?> pick(LicenseSource source) async => PickedLicense(
+    name: 'syndicate-card.png',
+    size: bytes.length,
+    read: () async => bytes,
+  );
 }
 
 Future<void> settle(WidgetTester tester) async {
@@ -288,10 +344,18 @@ Future<void> fillBranch(WidgetTester tester) async {
   await openPicker(tester, 'المحافظة');
   await tapText(tester, 'القاهرة');
   await enter(tester, 'المدينة أو الحي', 'المعادي');
-  await enter(tester, 'العنوان بالتفصيل', '12 شارع 9، عمارة النور، الدور التالت، شقة 5');
+  await enter(
+    tester,
+    'العنوان بالتفصيل',
+    '12 شارع 9، عمارة النور، الدور التالت، شقة 5',
+  );
   await enter(tester, 'علامة مميزة (اختياري)', 'بجوار محطة المترو');
   // The share sheet's text: only the link is kept.
-  await enter(tester, 'لينك جوجل ماب (اختياري)', 'عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234XyZ');
+  await enter(
+    tester,
+    'لينك جوجل ماب (اختياري)',
+    'عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234XyZ',
+  );
   await enter(tester, 'الرقم 1', '02 2358 1234');
   await tapText(tester, 'إضافة رقم');
   await enter(tester, 'الرقم 2', '01012345678');

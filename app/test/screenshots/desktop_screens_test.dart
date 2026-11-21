@@ -33,18 +33,29 @@ void main() {
     for (final dark in [false, true]) {
       final tag = '${language}_${dark ? 'dark' : 'light'}';
 
-      Future<void> pumpApp(WidgetTester tester, {List<Override> extra = const []}) async {
+      Future<void> pumpApp(
+        WidgetTester tester, {
+        List<Override> extra = const [],
+      }) async {
         tester.view.physicalSize = window;
         tester.view.devicePixelRatio = 1;
         addTearDown(tester.view.reset);
-        await tester.pumpWidget(ProviderScope(
-          overrides: await appOverrides(
-            prefs: {'settings.locale': language, 'settings.themeMode': dark ? 'dark' : 'light'},
-            platform: AppPlatform.desktop,
-            extra: extra,
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: await appOverrides(
+              prefs: {
+                'settings.locale': language,
+                'settings.themeMode': dark ? 'dark' : 'light',
+              },
+              platform: AppPlatform.desktop,
+              extra: extra,
+            ),
+            child: RepaintBoundary(
+              key: screenshotKey,
+              child: const El3yadaApp(),
+            ),
           ),
-          child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
-        ));
+        );
       }
 
       Future<void> signIn(WidgetTester tester, String account) async {
@@ -61,11 +72,19 @@ void main() {
           await tester.pump(const Duration(milliseconds: 350));
           await capture(tester, 'desk_login_1_drawing_$tag');
           // The login starts once the mark has drawn and start-up is done.
-          for (var i = 0; i < 80 && find.byType(TextFormField).evaluate().isEmpty; i++) {
+          for (
+            var i = 0;
+            i < 80 && find.byType(TextFormField).evaluate().isEmpty;
+            i++
+          ) {
             await tester.pump(const Duration(milliseconds: 50));
           }
           var elapsed = 0;
-          for (final (ms, name) in [(140, '2_gathering'), (380, '3_sliding'), (640, '4_stitching')]) {
+          for (final (ms, name) in [
+            (140, '2_gathering'),
+            (380, '3_sliding'),
+            (640, '4_stitching'),
+          ]) {
             await tester.pump(Duration(milliseconds: ms - elapsed));
             elapsed = ms;
             await capture(tester, 'desk_login_${name}_$tag');
@@ -76,7 +95,10 @@ void main() {
       });
 
       testWidgets('doctor ($tag)', skip: !screenshotsEnabled, (tester) async {
-        await pumpApp(tester, extra: [fakeRecordsOverride(), fakeClinicAdminOverride()]);
+        await pumpApp(
+          tester,
+          extra: [fakeRecordsOverride(), fakeClinicAdminOverride()],
+        );
         await settle(tester);
         await signIn(tester, 'doctor@el3yada.dev');
         await capture(tester, 'desk_home_doctor_$tag');
@@ -85,7 +107,10 @@ void main() {
         await settle(tester);
         await capture(tester, 'desk_patients_$tag');
 
-        goTo(tester, '/doctor/patients/${recordsOf(tester).patientIdByName(SeedPatients.mona)}');
+        goTo(
+          tester,
+          '/doctor/patients/${recordsOf(tester).patientIdByName(SeedPatients.mona)}',
+        );
         await settle(tester);
         await capture(tester, 'desk_profile_$tag');
 
@@ -93,7 +118,10 @@ void main() {
         await settle(tester);
         await capture(tester, 'desk_branches_$tag');
 
-        goTo(tester, '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}');
+        goTo(
+          tester,
+          '/doctor/branches/${FakeClinicAdminRepository.nasrCityBranchId}',
+        );
         await settle(tester);
         await capture(tester, 'desk_branch_editor_$tag');
 

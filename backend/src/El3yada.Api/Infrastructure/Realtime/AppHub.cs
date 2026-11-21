@@ -1,3 +1,4 @@
+using El3yada.Api.Auth;
 using El3yada.Api.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -29,7 +30,7 @@ public sealed class AppHub(StaffAccess staff) : Hub
     public async Task JoinBoard(Guid branchId)
     {
         var userId = HttpCurrentUser.TryGetUserId(Context.User) ?? throw new HubException("FORBIDDEN");
-        var role = Context.User?.FindFirst(AuthClaims.Role)?.Value ?? throw new HubException("FORBIDDEN");
+        var role = Context.User?.FindFirst(ClaimNames.Role)?.Value ?? throw new HubException("FORBIDDEN");
         StaffContext context;
         try
         {

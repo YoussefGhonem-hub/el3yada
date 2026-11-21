@@ -9,16 +9,18 @@ import 'admin_support.dart';
 /// The offline clinic (branches, prices, profile, assistants, activity) with
 /// no delay, aware of who is signed in, like the app's own provider in dev
 /// builds. [configure] changes the sample data before the test starts.
-Override fakeClinicAdminOverride({void Function(FakeClinicAdminRepository fake)? configure}) =>
-    clinicAdminRepositoryProvider.overrideWith((ref) {
-      final fake = FakeClinicAdminRepository(
-        delay: Duration.zero,
-        currentSession: () => ref.read(authControllerProvider).value,
-      );
-      configure?.call(fake);
-      return fake;
-    });
+Override fakeClinicAdminOverride({
+  void Function(FakeClinicAdminRepository fake)? configure,
+}) => clinicAdminRepositoryProvider.overrideWith((ref) {
+  final fake = FakeClinicAdminRepository(
+    delay: Duration.zero,
+    currentSession: () => ref.read(authControllerProvider).value,
+  );
+  configure?.call(fake);
+  return fake;
+});
 
 /// The fake behind the running app.
 FakeClinicAdminRepository clinicAdminFake(WidgetTester tester) =>
-    appContainer(tester).read(clinicAdminRepositoryProvider) as FakeClinicAdminRepository;
+    appContainer(tester).read(clinicAdminRepositoryProvider)
+        as FakeClinicAdminRepository;

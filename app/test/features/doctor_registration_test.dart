@@ -14,7 +14,20 @@ import 'package:el3yada/features/doctor_registration/domain/registration_rules.d
 import 'package:el3yada/features/doctor_registration/domain/specialty.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-final pngBytes = Uint8List.fromList([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0]);
+final pngBytes = Uint8List.fromList([
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0,
+  0,
+  0,
+  0,
+]);
 final pdfBytes = Uint8List.fromList('%PDF-1.7\n'.codeUnits);
 
 /// A form with every step filled in validly.
@@ -29,7 +42,13 @@ RegistrationForm filledForm({bool resubmit = false}) {
   form.setSpecialty(FakeRegistrationRepository.specialtyList[7]);
   form.addExtraSpecialty(FakeRegistrationRepository.specialtyList[0]);
   form.licenseNumber.text = '٤٥ ٦٧٨';
-  form.setLicense(LicenseFile(bytes: pngBytes, name: 'card.png', contentType: LicenseFile.png));
+  form.setLicense(
+    LicenseFile(
+      bytes: pngBytes,
+      name: 'card.png',
+      contentType: LicenseFile.png,
+    ),
+  );
   form.branchName.text = 'فرع المعادي';
   form.setGovernorate('القاهرة');
   form.city.text = 'المعادي';
@@ -52,12 +71,15 @@ void main() {
       expect(RegistrationRules.isFullName('${'a' * 40} ${'b' * 30}'), isFalse);
     });
 
-    test('syndicate number: 3–20 letters, digits, - or /, Arabic digits and spaces normalized', () {
-      expect(RegistrationRules.normalizeLicenseNumber('٤٥ ٦٧٨'), '45678');
-      expect(RegistrationRules.normalizeLicenseNumber('AB-12/3'), 'AB-12/3');
-      expect(RegistrationRules.normalizeLicenseNumber('12'), isNull);
-      expect(RegistrationRules.normalizeLicenseNumber('12#4'), isNull);
-    });
+    test(
+      'syndicate number: 3–20 letters, digits, - or /, Arabic digits and spaces normalized',
+      () {
+        expect(RegistrationRules.normalizeLicenseNumber('٤٥ ٦٧٨'), '45678');
+        expect(RegistrationRules.normalizeLicenseNumber('AB-12/3'), 'AB-12/3');
+        expect(RegistrationRules.normalizeLicenseNumber('12'), isNull);
+        expect(RegistrationRules.normalizeLicenseNumber('12#4'), isNull);
+      },
+    );
 
     test('visit prices: EGP with up to 2 decimals → piasters, 0–100,000', () {
       expect(RegistrationRules.parsePrice(''), isNull);
@@ -65,53 +87,102 @@ void main() {
       expect(RegistrationRules.parsePrice('150.5'), 15050);
       expect(RegistrationRules.parsePrice('٣٠٠٫٢٥'), 30025);
       expect(RegistrationRules.parsePrice('100000'), 10000000);
-      expect(() => RegistrationRules.parsePrice('100000.01'), throwsFormatException);
-      expect(() => RegistrationRules.parsePrice('1.234'), throwsFormatException);
+      expect(
+        () => RegistrationRules.parsePrice('100000.01'),
+        throwsFormatException,
+      );
+      expect(
+        () => RegistrationRules.parsePrice('1.234'),
+        throwsFormatException,
+      );
       expect(() => RegistrationRules.parsePrice('abc'), throwsFormatException);
       expect(RegistrationRules.formatPriceInput(30000), '300');
       expect(RegistrationRules.formatPriceInput(15050), '150.50');
     });
   });
 
-  test('EgyptianPhone accepts mobiles, landlines and hotlines like the API', () {
-    expect(EgyptianPhone.normalize('010 1234 5678'), '+201012345678');
-    expect(EgyptianPhone.normalize('02 2358 1234'), '+20223581234');
-    expect(EgyptianPhone.normalize('+20 3 4851234'), '+2034851234');
-    expect(EgyptianPhone.normalize('19123'), '19123');
-    expect(EgyptianPhone.normalize('١٩١٢٣'), '19123');
-    expect(EgyptianPhone.normalize('0123'), isNull);
-    expect(EgyptianPhone.display('+20223581234'), '0223581234');
-  });
+  test(
+    'EgyptianPhone accepts mobiles, landlines and hotlines like the API',
+    () {
+      expect(EgyptianPhone.normalize('010 1234 5678'), '+201012345678');
+      expect(EgyptianPhone.normalize('02 2358 1234'), '+20223581234');
+      expect(EgyptianPhone.normalize('+20 3 4851234'), '+2034851234');
+      expect(EgyptianPhone.normalize('19123'), '19123');
+      expect(EgyptianPhone.normalize('١٩١٢٣'), '19123');
+      expect(EgyptianPhone.normalize('0123'), isNull);
+      expect(EgyptianPhone.display('+20223581234'), '0223581234');
+    },
+  );
 
   test('LicenseFile reads the type from the first bytes, as the API does', () {
     expect(LicenseFile.detectType(pngBytes), LicenseFile.png);
     expect(LicenseFile.detectType(pdfBytes), LicenseFile.pdf);
-    expect(LicenseFile.detectType(Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0])), LicenseFile.jpeg);
-    expect(LicenseFile.detectType(Uint8List.fromList('RIFF\x00\x00\x00\x00WEBP'.codeUnits)), LicenseFile.webp);
-    expect(LicenseFile.detectType(Uint8List.fromList('GIF89a'.codeUnits)), isNull);
+    expect(
+      LicenseFile.detectType(Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0])),
+      LicenseFile.jpeg,
+    );
+    expect(
+      LicenseFile.detectType(
+        Uint8List.fromList('RIFF\x00\x00\x00\x00WEBP'.codeUnits),
+      ),
+      LicenseFile.webp,
+    );
+    expect(
+      LicenseFile.detectType(Uint8List.fromList('GIF89a'.codeUnits)),
+      isNull,
+    );
   });
 
   group('loadLicense', () {
     test('refuses a file over 10 MB before reading it', () async {
       var read = false;
-      final picked = PickedLicense(name: 'big.pdf', size: LicenseFile.maxBytes + 1, read: () async {
-        read = true;
-        return pdfBytes;
-      });
-      await expectLater(loadLicense(picked), throwsA(isA<LicenseFileException>().having((e) => e.code, 'code', 'FILE_TOO_LARGE')));
+      final picked = PickedLicense(
+        name: 'big.pdf',
+        size: LicenseFile.maxBytes + 1,
+        read: () async {
+          read = true;
+          return pdfBytes;
+        },
+      );
+      await expectLater(
+        loadLicense(picked),
+        throwsA(
+          isA<LicenseFileException>().having(
+            (e) => e.code,
+            'code',
+            'FILE_TOO_LARGE',
+          ),
+        ),
+      );
       expect(read, isFalse);
     });
 
     test('refuses a type the API does not take', () async {
-      final picked = PickedLicense(name: 'a.gif', size: 6, read: () async => Uint8List.fromList('GIF89a'.codeUnits));
+      final picked = PickedLicense(
+        name: 'a.gif',
+        size: 6,
+        read: () async => Uint8List.fromList('GIF89a'.codeUnits),
+      );
       await expectLater(
         loadLicense(picked),
-        throwsA(isA<LicenseFileException>().having((e) => e.code, 'code', 'FILE_TYPE_NOT_ALLOWED')),
+        throwsA(
+          isA<LicenseFileException>().having(
+            (e) => e.code,
+            'code',
+            'FILE_TYPE_NOT_ALLOWED',
+          ),
+        ),
       );
     });
 
     test('accepts a PDF', () async {
-      final file = await loadLicense(PickedLicense(name: 'card.pdf', size: pdfBytes.length, read: () async => pdfBytes));
+      final file = await loadLicense(
+        PickedLicense(
+          name: 'card.pdf',
+          size: pdfBytes.length,
+          read: () async => pdfBytes,
+        ),
+      );
       expect(file.contentType, LicenseFile.pdf);
       expect(file.isPdf, isTrue);
     });
@@ -157,7 +228,8 @@ void main() {
     });
 
     test('a resubmission needs no password, Terms or new license', () {
-      final form = RegistrationForm(resubmit: true)..keptLicenseType = LicenseFile.jpeg;
+      final form = RegistrationForm(resubmit: true)
+        ..keptLicenseType = LicenseFile.jpeg;
       expect(form.validateStep(0).keys, isNot(contains('password')));
       expect(form.validateStep(1).keys, isNot(contains('license')));
       expect(form.validateStep(3), isEmpty);
@@ -187,19 +259,29 @@ void main() {
       });
     });
 
-    test('typing in a field clears its error and the first step with an error is found', () {
-      final form = filledForm();
-      form.setErrors({'branch.addressDetails': 'TOO_LONG', 'email': 'EMAIL_ALREADY_REGISTERED'});
-      expect(form.firstStepWithError(), 0);
-      form.email.text = 'other@example.com';
-      expect(form.errorOf('email'), isNull);
-      expect(form.firstStepWithError(), 2);
-    });
+    test(
+      'typing in a field clears its error and the first step with an error is found',
+      () {
+        final form = filledForm();
+        form.setErrors({
+          'branch.addressDetails': 'TOO_LONG',
+          'email': 'EMAIL_ALREADY_REGISTERED',
+        });
+        expect(form.firstStepWithError(), 0);
+        form.email.text = 'other@example.com';
+        expect(form.errorOf('email'), isNull);
+        expect(form.firstStepWithError(), 2);
+      },
+    );
 
     test('builds the API body: normalized, piasters, nulls left out', () {
       final form = filledForm();
       expect(form.validateAll(), isEmpty);
-      final json = jsonDecode(jsonEncode(form.toData(locale: 'ar', device: {'deviceId': 'd1'}).toJson()));
+      final json = jsonDecode(
+        jsonEncode(
+          form.toData(locale: 'ar', device: {'deviceId': 'd1'}).toJson(),
+        ),
+      );
       expect(json, {
         'fullName': 'سامي عبد الله',
         'email': 'sami@example.com',
@@ -220,7 +302,11 @@ void main() {
           'addressDetails': '12 شارع 9، الدور التالت، شقة 5',
           'mapUrl': 'https://maps.app.goo.gl/AbCd1234',
           'phones': [
-            {'number': '+20223581234', 'label': 'reception', 'isWhatsapp': false},
+            {
+              'number': '+20223581234',
+              'label': 'reception',
+              'isWhatsapp': false,
+            },
           ],
         },
         'acceptTerms': true,
@@ -234,122 +320,178 @@ void main() {
       expect(form.extraSpecialties, isEmpty);
     });
 
-    test('A7 pre-fill keeps the fields the form does not show, and leaves out password and Terms', () {
-      const view = DoctorRegistration(
-        status: DoctorStatus.rejected,
-        fullName: 'سامي عبد الله',
-        email: 'sami@example.com',
-        phone: '+201012345678',
-        title: 'جراح أطفال',
-        titleEn: 'Pediatric Surgeon',
-        fullNameEn: 'Sami Abdallah',
-        specialty: Specialty(id: 'sp-pediatrics', nameAr: 'أطفال', nameEn: 'Pediatrics'),
-        licenseNumber: '45678',
-        licenseContentType: LicenseFile.pdf,
-        examinationPricePiasters: 25050,
-        branch: RegistrationBranch(
-          nameAr: 'فرع المعادي',
-          nameEn: 'Maadi',
-          governorate: 'Cairo',
-          city: 'المعادي',
-          area: 'دجلة',
-          addressDetails: 'شارع 9، عمارة 12',
-          mapUrl: 'https://www.google.com/maps/search/?api=1&query=29.960000,31.250000',
-          phones: [BranchPhone(number: '+20223581234', label: 'landline', isWhatsapp: true)],
-        ),
-      );
-      final form = RegistrationForm(resubmit: true)..prefill(view);
-      expect(form.otherTitle, isTrue);
-      expect(form.titleText.text, 'جراح أطفال');
-      expect(form.governorate, 'القاهرة');
-      expect(form.phone.text, '01012345678');
-      expect(form.phones.single.number.text, '0223581234');
-      expect(form.examinationPrice.text, '250.50');
-      expect(form.keptLicenseType, LicenseFile.pdf);
-      expect(form.validateAll(), isEmpty);
+    test(
+      'A7 pre-fill keeps the fields the form does not show, and leaves out password and Terms',
+      () {
+        const view = DoctorRegistration(
+          status: DoctorStatus.rejected,
+          fullName: 'سامي عبد الله',
+          email: 'sami@example.com',
+          phone: '+201012345678',
+          title: 'جراح أطفال',
+          titleEn: 'Pediatric Surgeon',
+          fullNameEn: 'Sami Abdallah',
+          specialty: Specialty(
+            id: 'sp-pediatrics',
+            nameAr: 'أطفال',
+            nameEn: 'Pediatrics',
+          ),
+          licenseNumber: '45678',
+          licenseContentType: LicenseFile.pdf,
+          examinationPricePiasters: 25050,
+          branch: RegistrationBranch(
+            nameAr: 'فرع المعادي',
+            nameEn: 'Maadi',
+            governorate: 'Cairo',
+            city: 'المعادي',
+            area: 'دجلة',
+            addressDetails: 'شارع 9، عمارة 12',
+            mapUrl:
+                'https://www.google.com/maps/search/?api=1&query=29.960000,31.250000',
+            phones: [
+              BranchPhone(
+                number: '+20223581234',
+                label: 'landline',
+                isWhatsapp: true,
+              ),
+            ],
+          ),
+        );
+        final form = RegistrationForm(resubmit: true)..prefill(view);
+        expect(form.otherTitle, isTrue);
+        expect(form.titleText.text, 'جراح أطفال');
+        expect(form.governorate, 'القاهرة');
+        expect(form.phone.text, '01012345678');
+        expect(form.phones.single.number.text, '0223581234');
+        expect(form.examinationPrice.text, '250.50');
+        expect(form.keptLicenseType, LicenseFile.pdf);
+        expect(form.validateAll(), isEmpty);
 
-      final json = form.toData(locale: 'en').toJson();
-      expect(json.containsKey('password'), isFalse);
-      expect(json.containsKey('acceptTerms'), isFalse);
-      expect(json['titleEn'], 'Pediatric Surgeon');
-      expect(json['fullNameEn'], 'Sami Abdallah');
-      final branch = (json['branch'] as Map).cast<String, dynamic>();
-      expect(branch['nameEn'], 'Maadi');
-      expect(branch['area'], 'دجلة');
-      expect(branch['addressDetails'], 'شارع 9، عمارة 12');
-      expect(branch['mapUrl'], 'https://www.google.com/maps/search/?api=1&query=29.960000,31.250000');
-      expect(branch.containsKey('id'), isFalse);
-    });
+        final json = form.toData(locale: 'en').toJson();
+        expect(json.containsKey('password'), isFalse);
+        expect(json.containsKey('acceptTerms'), isFalse);
+        expect(json['titleEn'], 'Pediatric Surgeon');
+        expect(json['fullNameEn'], 'Sami Abdallah');
+        final branch = (json['branch'] as Map).cast<String, dynamic>();
+        expect(branch['nameEn'], 'Maadi');
+        expect(branch['area'], 'دجلة');
+        expect(branch['addressDetails'], 'شارع 9، عمارة 12');
+        expect(
+          branch['mapUrl'],
+          'https://www.google.com/maps/search/?api=1&query=29.960000,31.250000',
+        );
+        expect(branch.containsKey('id'), isFalse);
+      },
+    );
 
-    test('a branch in the old shape (street, building, lat, lng) still reads; the old fields are dropped', () {
-      final branch = RegistrationBranch.fromJson({
-        'id': 'b1',
-        'nameAr': 'فرع المعادي',
-        'governorate': 'القاهرة',
-        'city': 'المعادي',
-        'street': 'شارع 9',
-        'building': '12',
-        'floor': '3',
-        'apartment': '5',
-        'lat': 29.96,
-        'lng': 31.25,
-        'phones': [
-          {'number': '+20223581234'},
-        ],
-      });
-      expect(branch.nameAr, 'فرع المعادي');
-      expect(branch.addressDetails, '');
-      expect(branch.mapUrl, isNull);
+    test(
+      'a branch in the old shape (street, building, lat, lng) still reads; the old fields are dropped',
+      () {
+        final branch = RegistrationBranch.fromJson({
+          'id': 'b1',
+          'nameAr': 'فرع المعادي',
+          'governorate': 'القاهرة',
+          'city': 'المعادي',
+          'street': 'شارع 9',
+          'building': '12',
+          'floor': '3',
+          'apartment': '5',
+          'lat': 29.96,
+          'lng': 31.25,
+          'phones': [
+            {'number': '+20223581234'},
+          ],
+        });
+        expect(branch.nameAr, 'فرع المعادي');
+        expect(branch.addressDetails, '');
+        expect(branch.mapUrl, isNull);
 
-      // A7 then asks for the detailed address again instead of failing.
-      final form = RegistrationForm(resubmit: true)
-        ..prefill(DoctorRegistration(specialty: const Specialty(id: 'sp-gp'), branch: branch));
-      expect(form.validateStep(2), {'branch.addressDetails': 'REQUIRED'});
-      expect(form.toData(locale: 'ar').toJson()['branch'], isNot(contains('street')));
-    });
+        // A7 then asks for the detailed address again instead of failing.
+        final form = RegistrationForm(resubmit: true)
+          ..prefill(
+            DoctorRegistration(
+              specialty: const Specialty(id: 'sp-gp'),
+              branch: branch,
+            ),
+          );
+        expect(form.validateStep(2), {'branch.addressDetails': 'REQUIRED'});
+        expect(
+          form.toData(locale: 'ar').toJson()['branch'],
+          isNot(contains('street')),
+        );
+      },
+    );
 
     test('a pasted share text sends only the link', () {
-      final form = filledForm()..mapUrl.text = 'عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234';
+      final form = filledForm()
+        ..mapUrl.text = 'عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234';
       expect(form.validateStep(2), isEmpty);
-      expect(form.toData(locale: 'ar').branch.mapUrl, 'https://maps.app.goo.gl/AbCd1234');
+      expect(
+        form.toData(locale: 'ar').branch.mapUrl,
+        'https://maps.app.goo.gl/AbCd1234',
+      );
       form.mapUrl.text = '  ';
       expect(form.toData(locale: 'ar').branch.mapUrl, isNull);
     });
   });
 
   group('FakeRegistrationRepository', () {
-    test('registers an active doctor in a free trial, then answers myRegistration and the license', () async {
-      final auth = FakeAuthRepository(delay: Duration.zero);
-      final repository = FakeRegistrationRepository(auth: auth, delay: Duration.zero);
-      final form = filledForm();
-      final session = await repository.register(form.toData(locale: 'ar'), form.license!);
+    test(
+      'registers an active doctor in a free trial, then answers myRegistration and the license',
+      () async {
+        final auth = FakeAuthRepository(delay: Duration.zero);
+        final repository = FakeRegistrationRepository(
+          auth: auth,
+          delay: Duration.zero,
+        );
+        final form = filledForm();
+        final session = await repository.register(
+          form.toData(locale: 'ar'),
+          form.license!,
+        );
 
-      // No approval step (backend/docs/api-free-trial.md).
-      expect(session.doctorStatus, DoctorStatus.active);
-      expect(session.trial?.ended, isFalse);
-      expect(session.trial?.daysLeft, FakeRegistrationRepository.trialDays);
-      expect(session.trial!.endsAt.isAfter(DateTime.now().toUtc().add(const Duration(days: 13))), isTrue);
-      expect(auth.current, session);
-      final view = await repository.myRegistration();
-      expect(view.status, DoctorStatus.active);
-      expect(view.specialty.nameEn, 'Cardiology');
-      expect(view.branch?.phones.single.number, '+20223581234');
-      expect((await repository.myLicense())?.contentType, LicenseFile.png);
-    });
+        // No approval step (backend/docs/api-free-trial.md).
+        expect(session.doctorStatus, DoctorStatus.active);
+        expect(session.trial?.ended, isFalse);
+        expect(session.trial?.daysLeft, FakeRegistrationRepository.trialDays);
+        expect(
+          session.trial!.endsAt.isAfter(
+            DateTime.now().toUtc().add(const Duration(days: 13)),
+          ),
+          isTrue,
+        );
+        expect(auth.current, session);
+        final view = await repository.myRegistration();
+        expect(view.status, DoctorStatus.active);
+        expect(view.specialty.nameEn, 'Cardiology');
+        expect(view.branch?.phones.single.number, '+20223581234');
+        expect((await repository.myLicense())?.contentType, LicenseFile.png);
+      },
+    );
 
     test('taken@el3yada.dev is already registered', () async {
       final repository = FakeRegistrationRepository(delay: Duration.zero);
-      final form = filledForm()..email.text = FakeRegistrationRepository.takenEmail;
+      final form = filledForm()
+        ..email.text = FakeRegistrationRepository.takenEmail;
       await expectLater(
         repository.register(form.toData(locale: 'ar'), form.license!),
-        throwsA(isA<Object>().having((e) => '$e', 'error', contains('EMAIL_ALREADY_REGISTERED'))),
+        throwsA(
+          isA<Object>().having(
+            (e) => '$e',
+            'error',
+            contains('EMAIL_ALREADY_REGISTERED'),
+          ),
+        ),
       );
     });
 
     test('a rejected doctor resubmits and becomes pending again', () async {
       final auth = FakeAuthRepository(delay: Duration.zero);
       await auth.login(identifier: 'rejected@el3yada.dev', password: 'dev');
-      final repository = FakeRegistrationRepository(auth: auth, delay: Duration.zero);
+      final repository = FakeRegistrationRepository(
+        auth: auth,
+        delay: Duration.zero,
+      );
       final before = await repository.myRegistration();
       expect(before.status, DoctorStatus.rejected);
 

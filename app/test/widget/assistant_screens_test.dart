@@ -16,8 +16,16 @@ void main() {
   const phone = Size(420, 900);
   const desktop = Size(1400, 900);
 
-  Future<void> doctor(WidgetTester tester, {Size size = phone, void Function(FakeClinicAdminRepository fake)? configure}) async {
-    await pumpApp(tester, size: size, extra: [fakeClinicAdminOverride(configure: configure)]);
+  Future<void> doctor(
+    WidgetTester tester, {
+    Size size = phone,
+    void Function(FakeClinicAdminRepository fake)? configure,
+  }) async {
+    await pumpApp(
+      tester,
+      size: size,
+      extra: [fakeClinicAdminOverride(configure: configure)],
+    );
     await signIn(tester, 'doctor@el3yada.dev');
   }
 
@@ -27,7 +35,10 @@ void main() {
   }
 
   bool checked(WidgetTester tester, String key) =>
-      tester.widget<CheckboxListTile>(find.byKey(ValueKey('permission.$key'))).value ?? false;
+      tester
+          .widget<CheckboxListTile>(find.byKey(ValueKey('permission.$key')))
+          .value ??
+      false;
 
   Future<void> tick(WidgetTester tester, String key) async {
     await tester.ensureVisible(find.byKey(ValueKey('permission.$key')));
@@ -36,38 +47,54 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  Finder presetSelected(String name) =>
-      find.byWidgetPredicate((w) => w is Pressable && w.selected == true && (w.semanticLabel ?? '').startsWith('$name.'));
+  Finder presetSelected(String name) => find.byWidgetPredicate(
+    (w) =>
+        w is Pressable &&
+        w.selected == true &&
+        (w.semanticLabel ?? '').startsWith('$name.'),
+  );
 
   group('D25 assistants', () {
-    testWidgets('lists each assistant with preset, status and branches, and the count', (tester) async {
-      await doctor(tester);
-      await open(tester, '/doctor/assistants');
+    testWidgets(
+      'lists each assistant with preset, status and branches, and the count',
+      (tester) async {
+        await doctor(tester);
+        await open(tester, '/doctor/assistants');
 
-      expect(find.text('3 of 5 assistants'), findsOneWidget);
-      expect(find.text('مساعد تجريبي'), findsOneWidget);
-      expect(find.text('مدير العيادة'), findsWidgets);
-      expect(find.text('منى سمير'), findsOneWidget);
-      // Removed assistants aren't listed.
-      expect(find.text('هبة علي'), findsNothing);
-      expect(find.text('Reception'), findsOneWidget);
-      expect(find.text('Office manager'), findsOneWidget);
-      expect(find.text('Custom'), findsOneWidget);
-      expect(find.text('Disabled'), findsOneWidget);
-      expect(find.text('All branches'), findsOneWidget);
-    });
+        expect(find.text('3 of 5 assistants'), findsOneWidget);
+        expect(find.text('مساعد تجريبي'), findsOneWidget);
+        expect(find.text('مدير العيادة'), findsWidgets);
+        expect(find.text('منى سمير'), findsOneWidget);
+        // Removed assistants aren't listed.
+        expect(find.text('هبة علي'), findsNothing);
+        expect(find.text('Reception'), findsOneWidget);
+        expect(find.text('Office manager'), findsOneWidget);
+        expect(find.text('Custom'), findsOneWidget);
+        expect(find.text('Disabled'), findsOneWidget);
+        expect(find.text('All branches'), findsOneWidget);
+      },
+    );
 
-    testWidgets('the limit disables Add assistant with the reason', (tester) async {
+    testWidgets('the limit disables Add assistant with the reason', (
+      tester,
+    ) async {
       await doctor(tester, configure: (fake) => fake.assistantLimit = 3);
       await open(tester, '/doctor/assistants');
 
-      final add = tester.widget<ButtonStyleButton>(find.widgetWithText(FilledButton, 'Add assistant'));
+      final add = tester.widget<ButtonStyleButton>(
+        find.widgetWithText(FilledButton, 'Add assistant'),
+      );
       expect(add.onPressed, isNull);
-      expect(find.text("You've reached the most assistants you can have."), findsOneWidget);
+      expect(
+        find.text("You've reached the most assistants you can have."),
+        findsOneWidget,
+      );
       expect(find.text('3 of 3 assistants'), findsOneWidget);
     });
 
-    testWidgets('wide screens show the assistant next to the list', (tester) async {
+    testWidgets('wide screens show the assistant next to the list', (
+      tester,
+    ) async {
       await doctor(tester, size: desktop);
       await open(tester, '/doctor/assistants');
 
@@ -81,15 +108,35 @@ void main() {
   });
 
   group('D26 add and edit', () {
-    testWidgets('creating an assistant shows the temporary password once', (tester) async {
+    testWidgets('creating an assistant shows the temporary password once', (
+      tester,
+    ) async {
       await doctor(tester);
       await open(tester, '/doctor/assistants/new');
 
-      await tester.enterText(find.byKey(const ValueKey('assistant.fullName')), 'سارة محمود');
-      await tester.enterText(find.byKey(const ValueKey('assistant.phone')), '01112223334');
-      await tester.ensureVisible(find.byKey(const ValueKey('assistant.branch.${FakeClinicAdminRepository.maadiBranchId}')));
+      await tester.enterText(
+        find.byKey(const ValueKey('assistant.fullName')),
+        'سارة محمود',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('assistant.phone')),
+        '01112223334',
+      );
+      await tester.ensureVisible(
+        find.byKey(
+          const ValueKey(
+            'assistant.branch.${FakeClinicAdminRepository.maadiBranchId}',
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('assistant.branch.${FakeClinicAdminRepository.maadiBranchId}')));
+      await tester.tap(
+        find.byKey(
+          const ValueKey(
+            'assistant.branch.${FakeClinicAdminRepository.maadiBranchId}',
+          ),
+        ),
+      );
       await settle(tester);
       await tester.tap(find.widgetWithText(FilledButton, 'Add assistant').last);
       await settle(tester);
@@ -108,18 +155,31 @@ void main() {
       expect(fake.calls['createAssistant'], 1);
     });
 
-    testWidgets('a taken number shows next to the mobile field', (tester) async {
+    testWidgets('a taken number shows next to the mobile field', (
+      tester,
+    ) async {
       await doctor(tester);
       await open(tester, '/doctor/assistants/new');
 
-      await tester.enterText(find.byKey(const ValueKey('assistant.fullName')), 'سارة محمود');
-      await tester.enterText(find.byKey(const ValueKey('assistant.phone')), '01000000005');
+      await tester.enterText(
+        find.byKey(const ValueKey('assistant.fullName')),
+        'سارة محمود',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('assistant.phone')),
+        '01000000005',
+      );
       await tester.tap(find.text('All branches'));
       await settle(tester);
       await tester.tap(find.widgetWithText(FilledButton, 'Add assistant').last);
       await settle(tester);
 
-      expect(find.text('This number is already an assistant, in this clinic or another.'), findsOneWidget);
+      expect(
+        find.text(
+          'This number is already an assistant, in this clinic or another.',
+        ),
+        findsOneWidget,
+      );
       expect(find.byType(TemporaryPasswordDialog), findsNothing);
     });
 
@@ -149,14 +209,22 @@ void main() {
       await tick(tester, ClinicPermission.clinicalEditProfile);
       expect(checked(tester, ClinicPermission.clinicalEditProfile), isTrue);
       expect(checked(tester, ClinicPermission.clinicalView), isTrue);
-      expect(find.text('Also turned on: View the medical file'), findsOneWidget);
+      expect(
+        find.text('Also turned on: View the medical file'),
+        findsOneWidget,
+      );
 
       await tick(tester, ClinicPermission.prescriptionsDraft);
       await tick(tester, ClinicPermission.clinicalView);
       expect(checked(tester, ClinicPermission.clinicalView), isFalse);
       expect(checked(tester, ClinicPermission.clinicalEditProfile), isFalse);
       expect(checked(tester, ClinicPermission.prescriptionsDraft), isFalse);
-      expect(find.text('Also turned off: Edit the medical profile, Prepare prescription drafts'), findsOneWidget);
+      expect(
+        find.text(
+          'Also turned off: Edit the medical profile, Prepare prescription drafts',
+        ),
+        findsOneWidget,
+      );
 
       // scheduleManage pulls appointmentsManage and appointmentsView along.
       await tick(tester, ClinicPermission.appointmentsView);
@@ -168,7 +236,10 @@ void main() {
 
     testWidgets('changing permissions saves the whole set', (tester) async {
       await doctor(tester);
-      await open(tester, '/doctor/assistants/${FakeClinicAdminRepository.receptionUserId}');
+      await open(
+        tester,
+        '/doctor/assistants/${FakeClinicAdminRepository.receptionUserId}',
+      );
 
       await tick(tester, ClinicPermission.chat);
       expect(find.text('1 change not saved'), findsOneWidget);
@@ -182,7 +253,10 @@ void main() {
 
     testWidgets('reset password shows the new password', (tester) async {
       await doctor(tester);
-      await open(tester, '/doctor/assistants/${FakeClinicAdminRepository.receptionUserId}');
+      await open(
+        tester,
+        '/doctor/assistants/${FakeClinicAdminRepository.receptionUserId}',
+      );
 
       await tester.ensureVisible(find.text('Reset password'));
       await tester.tap(find.text('Reset password'));
@@ -191,10 +265,15 @@ void main() {
       await settle(tester);
 
       expect(find.text('New temporary password'), findsOneWidget);
-      expect(find.text(clinicAdminFake(tester).lastTemporaryPassword!), findsOneWidget);
+      expect(
+        find.text(clinicAdminFake(tester).lastTemporaryPassword!),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('disable, then remove after a confirm; history stays', (tester) async {
+    testWidgets('disable, then remove after a confirm; history stays', (
+      tester,
+    ) async {
       await doctor(tester);
       await open(tester, '/doctor/assistants');
       await tester.tap(find.text('مساعد تجريبي'));
@@ -210,7 +289,10 @@ void main() {
       await tester.ensureVisible(find.text('Remove'));
       await tester.tap(find.text('Remove'));
       await settle(tester);
-      expect(find.textContaining('can be added again as a new assistant'), findsOneWidget);
+      expect(
+        find.textContaining('can be added again as a new assistant'),
+        findsOneWidget,
+      );
       await tester.tap(find.widgetWithText(FilledButton, 'Remove'));
       await settle(tester);
 
@@ -225,7 +307,10 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Add assistant'));
       await settle(tester);
 
-      await tester.enterText(find.byKey(const ValueKey('assistant.fullName')), 'سارة');
+      await tester.enterText(
+        find.byKey(const ValueKey('assistant.fullName')),
+        'سارة',
+      );
       await tester.pump();
       await tester.tap(find.byType(AppBackButton));
       await settle(tester);

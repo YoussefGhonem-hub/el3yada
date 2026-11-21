@@ -155,6 +155,27 @@ class PatientView {
       emergencyContactPhone != null;
 }
 
+/// A patient's next booking with the doctor: the nearest pending or confirmed one (D4, D6).
+class NextBooking {
+  const NextBooking({required this.appointmentId, required this.date, required this.visitType, required this.status, required this.branchId});
+
+  factory NextBooking.fromJson(Map<String, dynamic> json) => NextBooking(
+    appointmentId: json['appointmentId'] as String,
+    date: parseDay(json['date']),
+    visitType: SessionType.fromWire(json['visitType']),
+    status: json['status'] as String,
+    branchId: json['branchId'] as String,
+  );
+
+  final String appointmentId;
+  final DateTime date;
+  final SessionType visitType;
+
+  /// `pending` or `confirmed`.
+  final String status;
+  final String branchId;
+}
+
 /// One D4 row (`GET /api/patients/register`).
 class PatientRegisterRow {
   const PatientRegisterRow({
@@ -172,6 +193,8 @@ class PatientRegisterRow {
     this.hasAllergies,
     this.chronicDiseases,
     this.archived = false,
+    this.nextBooking,
+    this.noShowCount = 0,
   });
 
   factory PatientRegisterRow.fromJson(Map<String, dynamic> json) => PatientRegisterRow(
@@ -190,6 +213,8 @@ class PatientRegisterRow {
         ? null
         : [for (final d in json['chronicDiseases'] as List) d as String],
     archived: json['archived'] as bool? ?? false,
+    nextBooking: json['nextBooking'] == null ? null : NextBooking.fromJson(_map(json['nextBooking'])),
+    noShowCount: json['noShowCount'] as int? ?? 0,
     linkedAt: _time(json['linkedAt']),
   );
 
@@ -206,6 +231,10 @@ class PatientRegisterRow {
   final bool? hasAllergies;
   final List<String>? chronicDiseases;
   final bool archived;
+
+  /// The nearest pending or confirmed booking from today on.
+  final NextBooking? nextBooking;
+  final int noShowCount;
   final DateTime linkedAt;
 }
 
@@ -454,6 +483,8 @@ class RegisterQuery {
     this.newThisMonth = false,
     this.archived = false,
     this.hasChronicDisease = false,
+    this.hasUpcomingBooking = false,
+    this.hasNoShows = false,
     this.sort = RegisterSort.lastVisit,
     this.descending,
   });
@@ -470,6 +501,12 @@ class RegisterQuery {
 
   /// `clinicalView` only.
   final bool hasChronicDisease;
+
+  /// A pending or confirmed booking from today on.
+  final bool hasUpcomingBooking;
+
+  /// At least one no-show.
+  final bool hasNoShows;
   final RegisterSort sort;
 
   /// Null: the sort's own default.
@@ -485,6 +522,8 @@ class RegisterQuery {
     newThisMonth,
     archived,
     hasChronicDisease,
+    hasUpcomingBooking,
+    hasNoShows,
   ].where((on) => on).length;
 
   bool get isFiltered => search.trim().isNotEmpty || filterCount > 0;
@@ -498,6 +537,8 @@ class RegisterQuery {
     bool? newThisMonth,
     bool? archived,
     bool? hasChronicDisease,
+    bool? hasUpcomingBooking,
+    bool? hasNoShows,
     RegisterSort? sort,
     bool? Function()? descending,
   }) => RegisterQuery(
@@ -509,6 +550,8 @@ class RegisterQuery {
     newThisMonth: newThisMonth ?? this.newThisMonth,
     archived: archived ?? this.archived,
     hasChronicDisease: hasChronicDisease ?? this.hasChronicDisease,
+    hasUpcomingBooking: hasUpcomingBooking ?? this.hasUpcomingBooking,
+    hasNoShows: hasNoShows ?? this.hasNoShows,
     sort: sort ?? this.sort,
     descending: descending == null ? this.descending : descending(),
   );
@@ -526,6 +569,8 @@ class RegisterQuery {
     if (newThisMonth) 'newThisMonth': 'true',
     if (archived) 'archived': 'true',
     if (hasChronicDisease) 'hasChronicDisease': 'true',
+    if (hasUpcomingBooking) 'hasUpcomingBooking': 'true',
+    if (hasNoShows) 'hasNoShows': 'true',
     if (sort != RegisterSort.lastVisit) 'sort': sort.name,
     if (descending != null && descending != sort.descending) 'direction': descending! ? 'desc' : 'asc',
   };

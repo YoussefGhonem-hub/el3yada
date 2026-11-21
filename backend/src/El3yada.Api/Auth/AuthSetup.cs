@@ -52,6 +52,17 @@ public static class AuthSetup
                 options.TokenValidationParameters = TokenService.AccessTokenParameters(jwt.Value);
                 options.Events = new JwtBearerEvents
                 {
+                    // SignalR's WebSocket connect can't send headers: the token comes in the query (/hubs only).
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+                        {
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    },
                     OnTokenValidated = CheckAccountAsync,
                     OnAuthenticationFailed = context =>
                     {
@@ -73,7 +84,10 @@ public static class AuthSetup
             .AddPolicy(Policies.SuperAdmin, policy => policy
                 .RequireClaim(ClaimNames.Role, Roles.Admin)
                 .RequireClaim(ClaimNames.AdminRole, AdminRoles.SuperAdmin))
-            .AddPolicy(Policies.Doctor, policy => policy.RequireClaim(ClaimNames.Role, Roles.Doctor));
+            .AddPolicy(Policies.Doctor, policy => policy.RequireClaim(ClaimNames.Role, Roles.Doctor))
+            .AddPolicy(Policies.SignedIn, policy => policy.RequireAuthenticatedUser())
+            .AddPolicy(Policies.Patient, policy => policy.RequireClaim(ClaimNames.Role, Roles.Patient))
+            .AddPolicy(Policies.Staff, policy => policy.RequireClaim(ClaimNames.Role, Roles.Doctor, Roles.Assistant));
 
         return services;
     }

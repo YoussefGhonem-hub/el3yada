@@ -50,21 +50,42 @@ void main() {
   });
 
   test('extract keeps only the link from a share text', () {
-    expect(MapLinks.extract('عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234'), 'https://maps.app.goo.gl/AbCd1234');
-    expect(MapLinks.extract('Dr Sami Clinic https://maps.app.goo.gl/AbCd1234?g_st=ic'), 'https://maps.app.goo.gl/AbCd1234?g_st=ic');
+    expect(
+      MapLinks.extract('عيادة د. سامي\nhttps://maps.app.goo.gl/AbCd1234'),
+      'https://maps.app.goo.gl/AbCd1234',
+    );
+    expect(
+      MapLinks.extract(
+        'Dr Sami Clinic https://maps.app.goo.gl/AbCd1234?g_st=ic',
+      ),
+      'https://maps.app.goo.gl/AbCd1234?g_st=ic',
+    );
     // Punctuation and invisible direction marks after the link are not part of it.
-    expect(MapLinks.extract('المكان هنا: https://maps.app.goo.gl/AbCd1234.'), 'https://maps.app.goo.gl/AbCd1234');
-    expect(MapLinks.extract('«https://maps.app.goo.gl/AbCd1234»'), 'https://maps.app.goo.gl/AbCd1234');
+    expect(
+      MapLinks.extract('المكان هنا: https://maps.app.goo.gl/AbCd1234.'),
+      'https://maps.app.goo.gl/AbCd1234',
+    );
+    expect(
+      MapLinks.extract('«https://maps.app.goo.gl/AbCd1234»'),
+      'https://maps.app.goo.gl/AbCd1234',
+    );
     final rlm = String.fromCharCode(0x200F);
-    expect(MapLinks.extract('https://maps.app.goo.gl/AbCd1234$rlm عيادة'), 'https://maps.app.goo.gl/AbCd1234');
+    expect(
+      MapLinks.extract('https://maps.app.goo.gl/AbCd1234$rlm عيادة'),
+      'https://maps.app.goo.gl/AbCd1234',
+    );
     // A ")" stays when the link opened one.
     expect(
-      MapLinks.extract('(see https://www.google.com/maps/place/Clinic+(Dr+Sami))'),
+      MapLinks.extract(
+        '(see https://www.google.com/maps/place/Clinic+(Dr+Sami))',
+      ),
       'https://www.google.com/maps/place/Clinic+(Dr+Sami)',
     );
     // A Google Maps link is preferred over another link in the same text.
     expect(
-      MapLinks.extract('https://example.com/menu and https://maps.app.goo.gl/AbCd1234'),
+      MapLinks.extract(
+        'https://example.com/menu and https://maps.app.goo.gl/AbCd1234',
+      ),
       'https://maps.app.goo.gl/AbCd1234',
     );
     // No link: the text comes back trimmed, and the field shows the error.

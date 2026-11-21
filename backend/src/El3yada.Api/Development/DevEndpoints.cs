@@ -23,6 +23,7 @@ public static class DevEndpoints
         var dev = app.MapGroup("/api/dev").AllowAnonymous().ExcludeFromDescription();
 
         dev.MapPost("/seed", (DemoDataSeeder seeder, CancellationToken ct) => seeder.SeedAsync(ct));
+        dev.MapPost("/seed-demo", (DemoBillingSeeder seeder, CancellationToken ct) => seeder.SeedAsync(ct));
 
         dev.MapPost("/token", async (DevTokenRequest request, AppDbContext db, JwtTokenFactory tokens, CancellationToken ct) =>
         {

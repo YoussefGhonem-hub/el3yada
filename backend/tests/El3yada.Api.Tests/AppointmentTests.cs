@@ -15,7 +15,7 @@ namespace El3yada.Api.Tests;
 /// </summary>
 public sealed class BookingFixture : IAsyncLifetime
 {
-    public ApiFactory Api { get; } = new();
+    public FeaturesApiFactory Api { get; } = new();
     public Guid QueueBranch { get; private set; }
     public Guid TimedBranch { get; private set; }
 
@@ -62,7 +62,7 @@ public sealed class BookingFixture : IAsyncLifetime
 
 public sealed class AppointmentTests(BookingFixture fx) : IClassFixture<BookingFixture>
 {
-    private ApiFactory Api => fx.Api;
+    private FeaturesApiFactory Api => fx.Api;
 
     private static object Guest(string name, string phone) => new { name, phone };
 
@@ -89,7 +89,8 @@ public sealed class AppointmentTests(BookingFixture fx) : IClassFixture<BookingF
         Assert.True(options.ConsultationAllowed);
 
         var slots = await patient.GetFromJsonAsync<AvailabilityDto>($"/api/patient/availability?branchId={fx.TimedBranch}&visitType=consultation&from={BookingFixture.Tomorrow:yyyy-MM-dd}");
-        var free = slots!.Days[0].Slots.First(s => s.Available);
+        // Not the midnight slot: it is inside the 2-hour free-cancel window whenever the test runs after 22:00 Cairo.
+        var free = slots!.Days[0].Slots.First(s => s.Available && s.Start.Hour >= 10);
 
         var created = await patient.PostAsJsonAsync("/api/patient/appointments", new
         {

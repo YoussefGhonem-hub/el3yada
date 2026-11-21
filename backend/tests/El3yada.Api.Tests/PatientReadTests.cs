@@ -9,7 +9,7 @@ namespace El3yada.Api.Tests;
 /// Phase 4 "done when": a patient linked to two doctors sees both files separately and together,
 /// and never sees private notes, drafts or deleted rows (AC-11). These tests only read.
 /// </summary>
-public sealed class PatientReadTests(ApiFactory api) : IClassFixture<ApiFactory>
+public sealed class PatientReadTests(FeaturesApiFactory api) : IClassFixture<FeaturesApiFactory>
 {
     private Task<HttpClient> Patient() => api.ClientForAsync(api.Demo.PatientUserId);
 

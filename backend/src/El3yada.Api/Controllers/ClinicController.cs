@@ -7,9 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace El3yada.Api.Controllers;
 
+/// <summary><c>suspendedForMonth</c>: the unpaid invoice's month (<c>2026-10</c>) while the doctor is suspended for billing (BR-G5), so the banner can name it.</summary>
 public sealed record ClinicDoctorView(
     Guid Id, string FullName, string? FullNameEn, string Title, string? TitleEn, Guid SpecialtyId,
-    string SpecialtyNameAr, string SpecialtyNameEn, string Status);
+    string SpecialtyNameAr, string SpecialtyNameEn, string Status, string? SuspendedForMonth);
 
 public sealed record ClinicAssistantView(Guid UserId, string FullName, string Preset, bool AllBranches, IReadOnlyList<Guid> BranchIds);
 
@@ -65,7 +66,10 @@ public sealed class ClinicController(AppDbContext db, TimeProvider time) : Contr
             {
                 View = new ClinicDoctorView(
                     d.UserId, d.FullName, d.FullNameEn, d.Title, d.TitleEn, d.SpecialtyId,
-                    d.Specialty.NameAr, d.Specialty.NameEn, d.Status),
+                    d.Specialty.NameAr, d.Specialty.NameEn, d.Status,
+                    d.Status == "suspended" && d.StatusReason != null && d.StatusReason.StartsWith(Billing.BillingSuspension.Prefix)
+                        ? d.StatusReason.Substring(Billing.BillingSuspension.Prefix.Length)
+                        : null),
                 d.DefaultBranchId,
             })
             .SingleAsync(cancellationToken);

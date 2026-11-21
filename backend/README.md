@@ -1,6 +1,6 @@
 # el3yada API (ASP.NET Core)
 
-The Web API and the SQL Server database for the el3yada app. The full product spec is [`../spec.md`](../spec.md) and the work plan is [`../PHASES.md`](../PHASES.md). The endpoint contract for the app is in [`docs/`](docs/). Phase 1 (sign-in and admin basics) is [`docs/api-phase-1.md`](docs/api-phase-1.md).
+The Web API and the SQL Server database for the el3yada app. The full product spec is [`../spec.md`](../spec.md) and the work plan is [`../PHASES.md`](../PHASES.md). The endpoint contract for the app is in [`docs/`](docs/). Phase 1 (sign-in and admin basics) is [`docs/api-phase-1.md`](docs/api-phase-1.md); Phase 7 (billing, payments, analytics, the admin's doctor screens and the scheduled jobs) is [`docs/api-phase-7.md`](docs/api-phase-7.md).
 
 | Project | What it holds |
 |---|---|

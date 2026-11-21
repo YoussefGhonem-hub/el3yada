@@ -34,7 +34,10 @@ void main() {
       tester,
       size: size,
       platform: platform,
-      extra: [fakeRecordsOverride(), ...recordsOverrides(sources: sources, actions: actions, delay: delay)],
+      extra: [
+        fakeRecordsOverride(),
+        ...recordsOverrides(sources: sources, actions: actions, delay: delay),
+      ],
     );
     await signIn(tester, account);
   }
@@ -44,15 +47,23 @@ void main() {
     await settle(tester);
   }
 
-  String mona(WidgetTester tester) => recordsOf(tester).patientIdByName(SeedPatients.mona);
+  String mona(WidgetTester tester) =>
+      recordsOf(tester).patientIdByName(SeedPatients.mona);
 
   /// The seeded records of a patient (they're made on the first read).
-  Future<List<MedicalRecordView>> seeded(WidgetTester tester, String patientId) async {
+  Future<List<MedicalRecordView>> seeded(
+    WidgetTester tester,
+    String patientId,
+  ) async {
     await tester.runAsync(() => recordsRepoOf(tester).records(patientId));
     return recordsRepoOf(tester).recordsOf(patientId);
   }
 
-  Future<void> openFilesTab(WidgetTester tester, String base, String patientId) async {
+  Future<void> openFilesTab(
+    WidgetTester tester,
+    String base,
+    String patientId,
+  ) async {
     await open(tester, '$base/patients/$patientId');
     await tester.tap(find.widgetWithText(Tab, 'Files'));
     await settle(tester);
@@ -67,18 +78,26 @@ void main() {
     await settle(tester);
   }
 
-  UploadSource file(String name, {int size = 2048}) =>
-      UploadSource(name: name, bytes: Uint8List(size)..fillRange(0, size, 7), sizeBytes: size);
+  UploadSource file(String name, {int size = 2048}) => UploadSource(
+    name: name,
+    bytes: Uint8List(size)..fillRange(0, size, 7),
+    sizeBytes: size,
+  );
 
   group('D6 Files tab', () {
-    testWidgets('category chips with counts, and a chip filters the cards', (tester) async {
+    testWidgets('category chips with counts, and a chip filters the cards', (
+      tester,
+    ) async {
       await start(tester, doctor);
       await openFilesTab(tester, '/doctor', mona(tester));
 
       expect(find.widgetWithText(ChoiceChip, 'All 3'), findsOneWidget);
       expect(find.widgetWithText(ChoiceChip, 'Lab tests 1'), findsOneWidget);
       expect(find.widgetWithText(ChoiceChip, 'Radiology 1'), findsOneWidget);
-      expect(find.widgetWithText(ChoiceChip, 'Prescriptions 0'), findsOneWidget);
+      expect(
+        find.widgetWithText(ChoiceChip, 'Prescriptions 0'),
+        findsOneWidget,
+      );
       expect(find.widgetWithText(ChoiceChip, 'Other 1'), findsOneWidget);
       expect(find.byType(RecordCard), findsNWidgets(3));
       expect(find.text('صورة دم كاملة'), findsOneWidget);
@@ -93,14 +112,19 @@ void main() {
       expect(find.text('No files in this category'), findsOneWidget);
     });
 
-    testWidgets('an assistant without filesManage has no Files tab (AS6)', (tester) async {
+    testWidgets('an assistant without filesManage has no Files tab (AS6)', (
+      tester,
+    ) async {
       tester.view.physicalSize = desktop;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await tester.pumpWidget(
         ProviderScope(
           overrides: await appOverrides(
-            clinic: LimitedClinicRepository('+201000000001', remove: {'filesManage'}),
+            clinic: LimitedClinicRepository(
+              '+201000000001',
+              remove: {'filesManage'},
+            ),
             extra: [fakeRecordsOverride(), ...recordsOverrides()],
           ),
           child: const El3yadaApp(),
@@ -114,64 +138,94 @@ void main() {
       expect(find.widgetWithText(Tab, 'Files'), findsNothing);
     });
 
-    testWidgets('a suspended doctor still sees the files, without Upload or Scan', (tester) async {
-      await start(tester, 'suspended@el3yada.dev');
-      final patient = mona(tester);
-      await openFilesTab(tester, '/doctor', patient);
+    testWidgets(
+      'a suspended doctor still sees the files, without Upload or Scan',
+      (tester) async {
+        await start(tester, 'suspended@el3yada.dev');
+        final patient = mona(tester);
+        await openFilesTab(tester, '/doctor', patient);
 
-      expect(find.byType(RecordCard), findsWidgets);
-      expect(find.text('Upload files'), findsNothing);
-      expect(find.text('Scan'), findsNothing);
-    });
+        expect(find.byType(RecordCard), findsWidgets);
+        expect(find.text('Upload files'), findsNothing);
+        expect(find.text('Scan'), findsNothing);
+      },
+    );
   });
 
   group('D11 upload', () {
-    testWidgets('three files get three progress bars, a failed one retries, then Save (AC-14)', (tester) async {
-      final sources = FakeFileSources()..files = [file('cbc.pdf'), file('xray.jpg'), file('report.docx')];
-      await start(tester, doctor, sources: sources, delay: const Duration(milliseconds: 80));
-      final patient = mona(tester);
-      await seeded(tester, patient);
-      recordsRepoOf(tester).failNextUploads = 1;
-      await open(tester, '/doctor/patients/$patient/files/upload');
+    testWidgets(
+      'three files get three progress bars, a failed one retries, then Save (AC-14)',
+      (tester) async {
+        final sources = FakeFileSources()
+          ..files = [file('cbc.pdf'), file('xray.jpg'), file('report.docx')];
+        await start(
+          tester,
+          doctor,
+          sources: sources,
+          delay: const Duration(milliseconds: 80),
+        );
+        final patient = mona(tester);
+        await seeded(tester, patient);
+        recordsRepoOf(tester).failNextUploads = 1;
+        await open(tester, '/doctor/patients/$patient/files/upload');
 
-      await tester.tap(find.text('Choose files'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 30));
-      expect(find.byType(UploadItemRow), findsNWidgets(3));
-      expect(find.byType(LinearProgressIndicator), findsNWidgets(3));
+        await tester.tap(find.text('Choose files'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 30));
+        expect(find.byType(UploadItemRow), findsNWidgets(3));
+        expect(find.byType(LinearProgressIndicator), findsNWidgets(3));
 
-      await settle(tester);
-      expect(find.text('Upload failed'), findsNothing, reason: 'the network error shows as no internet');
-      expect(find.byTooltip('Try again'), findsOneWidget);
-      expect(find.text('Uploaded'), findsNWidgets(2));
+        await settle(tester);
+        expect(
+          find.text('Upload failed'),
+          findsNothing,
+          reason: 'the network error shows as no internet',
+        );
+        expect(find.byTooltip('Try again'), findsOneWidget);
+        expect(find.text('Uploaded'), findsNWidgets(2));
 
-      await tester.tap(find.byTooltip('Try again'));
-      await settle(tester);
-      expect(find.text('Uploaded'), findsNWidgets(3));
+        await tester.tap(find.byTooltip('Try again'));
+        await settle(tester);
+        expect(find.text('Uploaded'), findsNWidgets(3));
 
-      // Save needs a category first.
-      await tester.tap(find.text("Save to the patient's file"));
-      await settle(tester);
-      expect(find.text('Choose a category'), findsOneWidget);
+        // Save needs a category first.
+        await tester.tap(find.text("Save to the patient's file"));
+        await settle(tester);
+        expect(find.text('Choose a category'), findsOneWidget);
 
-      await tester.tap(find.widgetWithText(ChoiceChip, 'Lab tests'));
-      await tester.enterText(find.widgetWithText(TextFormField, 'Notes (optional)'), 'صائم');
-      await tester.tap(find.text("Save to the patient's file"));
-      await settle(tester);
+        await tester.tap(find.widgetWithText(ChoiceChip, 'Lab tests'));
+        await tester.enterText(
+          find.widgetWithText(TextFormField, 'Notes (optional)'),
+          'صائم',
+        );
+        await tester.tap(find.text("Save to the patient's file"));
+        await settle(tester);
 
-      final records = recordsRepoOf(tester).recordsOf(patient);
-      expect(records, hasLength(4));
-      final added = records.last;
-      expect(added.category, RecordCategory.lab);
-      expect(added.source, RecordSource.upload);
-      expect(added.notes, 'صائم');
-      expect([for (final a in added.attachments) a.fileName], ['cbc.pdf', 'xray.jpg', 'report.docx']);
-      expect(find.text("Saved to the patient's file"), findsOneWidget);
-    });
+        final records = recordsRepoOf(tester).recordsOf(patient);
+        expect(records, hasLength(4));
+        final added = records.last;
+        expect(added.category, RecordCategory.lab);
+        expect(added.source, RecordSource.upload);
+        expect(added.notes, 'صائم');
+        expect(
+          [for (final a in added.attachments) a.fileName],
+          ['cbc.pdf', 'xray.jpg', 'report.docx'],
+        );
+        expect(find.text("Saved to the patient's file"), findsOneWidget);
+      },
+    );
 
-    testWidgets('a file over the admin limit is never sent, and Save waits', (tester) async {
+    testWidgets('a file over the admin limit is never sent, and Save waits', (
+      tester,
+    ) async {
       final sources = FakeFileSources()
-        ..files = [UploadSource(name: 'ct-series.dcm', bytes: Uint8List(4), sizeBytes: 60 * 1024 * 1024)];
+        ..files = [
+          UploadSource(
+            name: 'ct-series.dcm',
+            bytes: Uint8List(4),
+            sizeBytes: 60 * 1024 * 1024,
+          ),
+        ];
       await start(tester, doctor, sources: sources);
       final patient = mona(tester);
       await open(tester, '/doctor/patients/$patient/files/upload');
@@ -185,7 +239,12 @@ void main() {
       await tester.tap(find.widgetWithText(ChoiceChip, 'Radiology'));
       await tester.tap(find.text("Save to the patient's file"));
       await settle(tester);
-      expect(find.text('Wait for every file to upload, or remove the ones that failed.'), findsOneWidget);
+      expect(
+        find.text(
+          'Wait for every file to upload, or remove the ones that failed.',
+        ),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byTooltip('Remove'));
       await settle(tester);
@@ -193,11 +252,24 @@ void main() {
     });
 
     testWidgets('the server\'s saving is shown under the file', (tester) async {
-      final sources = FakeFileSources()..files = [UploadSource(name: 'photo.jpg', bytes: tinyPng(size: 64), sizeBytes: tinyPng(size: 64).length)];
+      final sources = FakeFileSources()
+        ..files = [
+          UploadSource(
+            name: 'photo.jpg',
+            bytes: tinyPng(size: 64),
+            sizeBytes: tinyPng(size: 64).length,
+          ),
+        ];
       await pumpApp(
         tester,
         size: desktop,
-        extra: [fakeRecordsOverride(), ...recordsOverrides(sources: sources, configure: (r) => r.imageShrink = 0.25)],
+        extra: [
+          fakeRecordsOverride(),
+          ...recordsOverrides(
+            sources: sources,
+            configure: (r) => r.imageShrink = 0.25,
+          ),
+        ],
       );
       await signIn(tester, doctor);
       await open(tester, '/doctor/patients/${mona(tester)}/files/upload');
@@ -208,8 +280,13 @@ void main() {
       expect(find.textContaining('Reduced from'), findsOneWidget);
     });
 
-    testWidgets('D10: scanned pages are reviewed, then go up as one PDF', (tester) async {
-      final sources = FakeFileSources()..scans = [[tinyPng(), tinyPng(), tinyPng()]];
+    testWidgets('D10: scanned pages are reviewed, then go up as one PDF', (
+      tester,
+    ) async {
+      final sources = FakeFileSources()
+        ..scans = [
+          [tinyPng(), tinyPng(), tinyPng()],
+        ];
       await start(tester, doctor, sources: sources);
       final patient = mona(tester);
       await seeded(tester, patient);
@@ -250,11 +327,20 @@ void main() {
     testWidgets('edit details replaces them', (tester) async {
       await start(tester, doctor);
       final patient = mona(tester);
-      final lab = (await seeded(tester, patient)).firstWhere((r) => r.category == RecordCategory.lab);
-      await open(tester, '/doctor/patients/$patient/files/${lab.recordId}/edit');
+      final lab = (await seeded(
+        tester,
+        patient,
+      )).firstWhere((r) => r.category == RecordCategory.lab);
+      await open(
+        tester,
+        '/doctor/patients/$patient/files/${lab.recordId}/edit',
+      );
 
       await tester.tap(find.widgetWithText(ChoiceChip, 'Radiology'));
-      await tester.enterText(find.widgetWithText(TextFormField, 'Title (optional)'), 'أشعة صدر');
+      await tester.enterText(
+        find.widgetWithText(TextFormField, 'Title (optional)'),
+        'أشعة صدر',
+      );
       await tester.tap(find.widgetWithText(FilledButton, 'Save'));
       await settle(tester);
 
@@ -264,12 +350,16 @@ void main() {
       expect(updated.notes, isNull);
     });
 
-    testWidgets('the doctor deletes; an assistant can edit but never delete', (tester) async {
+    testWidgets('the doctor deletes; an assistant can edit but never delete', (
+      tester,
+    ) async {
       final actions = RecordingFileActions();
       await start(tester, doctor, actions: actions);
       final patient = mona(tester);
       final records = await seeded(tester, patient);
-      final xray = records.firstWhere((r) => r.category == RecordCategory.radiology);
+      final xray = records.firstWhere(
+        (r) => r.category == RecordCategory.radiology,
+      );
       await open(tester, '/doctor/patients/$patient/files/${xray.recordId}');
 
       expect(find.text('1 of 2'), findsOneWidget);
@@ -290,7 +380,10 @@ void main() {
     testWidgets('an assistant with filesManage has no Delete', (tester) async {
       await start(tester, reception);
       final patient = mona(tester);
-      final lab = (await seeded(tester, patient)).firstWhere((r) => r.category == RecordCategory.lab);
+      final lab = (await seeded(
+        tester,
+        patient,
+      )).firstWhere((r) => r.category == RecordCategory.lab);
       await open(tester, '/assistant/patients/$patient/files/${lab.recordId}');
 
       await tester.tap(find.byTooltip('More actions'));
@@ -299,7 +392,9 @@ void main() {
       expect(find.text('Delete'), findsNothing);
     });
 
-    testWidgets('other file types offer Open with and Download (BR-F4)', (tester) async {
+    testWidgets('other file types offer Open with and Download (BR-F4)', (
+      tester,
+    ) async {
       final actions = RecordingFileActions();
       final sources = FakeFileSources()..files = [file('ecg.dcm')];
       await start(tester, doctor, sources: sources, actions: actions);
@@ -310,10 +405,15 @@ void main() {
       await tester.tap(find.widgetWithText(ChoiceChip, 'Other'));
       await tester.tap(find.text("Save to the patient's file"));
       await settle(tester);
-      final record = recordsRepoOf(tester).recordsOf(patient).firstWhere((r) => r.attachments.first.fileName == 'ecg.dcm');
+      final record = recordsRepoOf(tester)
+          .recordsOf(patient)
+          .firstWhere((r) => r.attachments.first.fileName == 'ecg.dcm');
 
       await open(tester, '/doctor/patients/$patient/files/${record.recordId}');
-      expect(find.text('This type of file opens in another app.'), findsOneWidget);
+      expect(
+        find.text('This type of file opens in another app.'),
+        findsOneWidget,
+      );
       await tester.tap(find.widgetWithText(FilledButton, 'Open with…'));
       await settle(tester);
       await tester.tap(find.widgetWithText(OutlinedButton, 'Download'));

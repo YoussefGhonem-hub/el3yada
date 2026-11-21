@@ -28,6 +28,13 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.trialEnded => errorTrialEnded,
       ApiCodes.serviceAlreadyActive => adminErrorServiceAlreadyActive,
       ApiCodes.doctorStatusNotChangeable => adminErrorDoctorStatusNotChangeable,
+      // Billing (backend/docs/api-phase-7.md).
+      'INVOICE_NOT_PAYABLE' => billErrorNotPayable,
+      'INVOICE_STATUS_INVALID' => abErrorInvoiceStatus,
+      'PAYMENT_ALREADY_REVIEWED' => abErrorAlreadyReviewed,
+      'ADJUSTMENT_INVALID' => abErrorAdjustment,
+      'DUE_DATE_INVALID' => abErrorDueDate,
+      'TOO_MANY_SCREENSHOTS' => billErrorTooManyScreenshots,
       // Branches, assistants (backend/docs/api-phase-2-clinic.md).
       'BRANCH_LIMIT_REACHED' => branchErrorLimitReached,
       'CANNOT_ARCHIVE_DEFAULT_BRANCH' => branchErrorArchiveDefault,

@@ -84,4 +84,13 @@ public static class Policies
 
     /// <summary>Doctor accounts, whatever their status. Status checks are per endpoint.</summary>
     public const string Doctor = "doctor";
+
+    /// <summary>Any signed-in account.</summary>
+    public const string SignedIn = "signedIn";
+
+    /// <summary>Patient accounts (the patient app).</summary>
+    public const string Patient = "patient";
+
+    /// <summary>A doctor or one of their assistants. Permissions and the clinic status come from StaffAccess.</summary>
+    public const string Staff = "staff";
 }

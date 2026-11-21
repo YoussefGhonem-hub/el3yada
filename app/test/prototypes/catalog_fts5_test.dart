@@ -49,15 +49,19 @@ void main() {
   Future<List<int>> search(String typed) async {
     final query = ftsPrefixQuery(typed);
     if (query == null) return const [];
-    final rows = await db.customSelect(
-      'SELECT rowid FROM fts_drugs WHERE fts_drugs MATCH ? ORDER BY bm25(fts_drugs)',
-      variables: [Variable.withString(query)],
-    ).get();
+    final rows = await db
+        .customSelect(
+          'SELECT rowid FROM fts_drugs WHERE fts_drugs MATCH ? ORDER BY bm25(fts_drugs)',
+          variables: [Variable.withString(query)],
+        )
+        .get();
     return rows.map((row) => row.read<int>('rowid')).toList();
   }
 
   test('SQLite on this platform has FTS5', () async {
-    final rows = await db.customSelect("SELECT sqlite_compileoption_used('ENABLE_FTS5') AS fts5").get();
+    final rows = await db
+        .customSelect("SELECT sqlite_compileoption_used('ENABLE_FTS5') AS fts5")
+        .get();
     expect(rows.single.read<int>('fts5'), 1);
   });
 
@@ -78,9 +82,12 @@ void main() {
     expect(await search('كالسيوم'), [7]);
   });
 
-  test('Arabic-Indic digits find Latin digits, and 250/5 stays one number', () async {
-    expect(await search('٢٥٠/٥'), [5]);
-  });
+  test(
+    'Arabic-Indic digits find Latin digits, and 250/5 stays one number',
+    () async {
+      expect(await search('٢٥٠/٥'), [5]);
+    },
+  );
 
   test('English is case-insensitive', () async {
     expect(await search('AUGM'), [2]);
@@ -91,8 +98,11 @@ void main() {
     expect(ftsPrefixQuery(' - ،'), isNull);
   });
 
-  test('a name spelt with or without long vowels matches (Arabic skeletons)', () async {
-    expect(await search('بانادول'), [3]);
-    expect(await search('بنادول'), [3]);
-  });
+  test(
+    'a name spelt with or without long vowels matches (Arabic skeletons)',
+    () async {
+      expect(await search('بانادول'), [3]);
+      expect(await search('بنادول'), [3]);
+    },
+  );
 }

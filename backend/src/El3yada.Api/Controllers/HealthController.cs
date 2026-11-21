@@ -9,7 +9,6 @@ namespace El3yada.Api.Controllers;
 [ApiController]
 [AllowAnonymous]
 [Route("api/health")]
-[Microsoft.AspNetCore.Authorization.AllowAnonymous]
 public class HealthController(AppDbContext db) : ControllerBase
 {
     [HttpGet]

@@ -11,7 +11,9 @@ import '../support/harness.dart';
 /// The clinic shell (Phase 2 foundation): menus by permission (spec 7.6),
 /// the current-branch picker (BR-BR3), the suspension banner (BR-G5).
 void main() {
-  testWidgets('a reception assistant sees only what their permissions allow', (tester) async {
+  testWidgets('a reception assistant sees only what their permissions allow', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester, '01000000001');
 
@@ -22,22 +24,34 @@ void main() {
     expect(find.text('Billing'), findsNothing);
     // One branch: no picker.
     expect(find.byType(BranchPicker), findsOneWidget);
-    expect(find.descendant(of: find.byType(BranchPicker), matching: find.text('Maadi')), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(BranchPicker),
+        matching: find.text('Maadi'),
+      ),
+      findsNothing,
+    );
   });
 
-  testWidgets("an assistant can't open a hidden item by its address", (tester) async {
+  testWidgets("an assistant can't open a hidden item by its address", (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester, '01000000001');
 
-    GoRouter.of(tester.element(find.byType(Scaffold).first)).go('/assistant/billing');
+    GoRouter.of(
+      tester.element(find.byType(Scaffold).first),
+    ).go('/assistant/billing');
     await settle(tester);
 
     expect(find.textContaining('AS10'), findsNothing);
     // Back on AS1, the home.
-    expect(find.text('Search patient'), findsOneWidget);
+    expect(find.text('Walk-in'), findsOneWidget);
   });
 
-  testWidgets('an office manager sees billing, the dashboard and chats', (tester) async {
+  testWidgets('an office manager sees billing, the dashboard and chats', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester, '01000000005');
 
@@ -46,11 +60,16 @@ void main() {
     expect(find.text('Chats'), findsOneWidget);
   });
 
-  testWidgets('the doctor picks the current branch, and it is remembered', (tester) async {
+  testWidgets('the doctor picks the current branch, and it is remembered', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester, 'doctor@el3yada.dev');
 
-    Finder inPicker(String name) => find.descendant(of: find.byType(BranchPicker), matching: find.text(name));
+    Finder inPicker(String name) => find.descendant(
+      of: find.byType(BranchPicker),
+      matching: find.text(name),
+    );
     expect(inPicker('Maadi'), findsOneWidget);
     await tester.tap(inPicker('Maadi'));
     await tester.pumpAndSettle();
@@ -59,14 +78,24 @@ void main() {
 
     expect(inPicker('Nasr City'), findsOneWidget);
     final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getKeys().where((k) => k.startsWith('clinic.currentBranch.')), isNotEmpty);
+    expect(
+      prefs.getKeys().where((k) => k.startsWith('clinic.currentBranch.')),
+      isNotEmpty,
+    );
   });
 
-  testWidgets('a suspended doctor sees the banner with Pay now', (tester) async {
+  testWidgets('a suspended doctor sees the banner with Pay now', (
+    tester,
+  ) async {
     await pumpApp(tester);
     await signIn(tester, 'suspended@el3yada.dev');
 
-    expect(find.text('Service is suspended because an invoice is unpaid. Pay it to reactivate.'), findsOneWidget);
+    expect(
+      find.text(
+        'Service is suspended because an invoice is unpaid. Pay it to reactivate.',
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Pay now'), findsOneWidget);
   });
 
@@ -77,12 +106,19 @@ void main() {
     expect(find.text('Pay now'), findsNothing);
   });
 
-  testWidgets('the temporary password shows once, with copy and share', (tester) async {
+  testWidgets('the temporary password shows once, with copy and share', (
+    tester,
+  ) async {
     await pumpHarness(
       tester,
       Builder(
         builder: (context) => TextButton(
-          onPressed: () => showTemporaryPasswordDialog(context, name: 'منى حسن', phone: '+201012345678', password: 'Ab3dE7gH'),
+          onPressed: () => showTemporaryPasswordDialog(
+            context,
+            name: 'منى حسن',
+            phone: '+201012345678',
+            password: 'Ab3dE7gH',
+          ),
           child: const Text('open'),
         ),
       ),
@@ -106,4 +142,3 @@ void main() {
     expect(find.text('Ab3dE7gH'), findsNothing);
   });
 }
-

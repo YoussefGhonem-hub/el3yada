@@ -29,18 +29,26 @@ void main() {
   for (final dark in [false, true]) {
     final theme = dark ? 'dark' : 'light';
 
-    Future<void> signedIn(WidgetTester tester, Size size, String account) async {
+    Future<void> signedIn(
+      WidgetTester tester,
+      Size size,
+      String account,
+    ) async {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
-      await tester.pumpWidget(ProviderScope(
-        overrides: await appOverrides(
-          prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
-          platform: size.width > 900 ? AppPlatform.desktop : AppPlatform.mobile,
-          extra: [fakeRecordsOverride()],
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: await appOverrides(
+            prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
+            platform: size.width > 900
+                ? AppPlatform.desktop
+                : AppPlatform.mobile,
+            extra: [fakeRecordsOverride()],
+          ),
+          child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
         ),
-        child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
-      ));
+      );
       await settle(tester);
       await tester.enterText(find.byType(TextFormField).at(0), account);
       await tester.enterText(find.byType(TextFormField).at(1), 'dev');
@@ -48,24 +56,31 @@ void main() {
       await settle(tester);
     }
 
-    String id(WidgetTester tester, String name) => recordsOf(tester).patientIdByName(name);
+    String id(WidgetTester tester, String name) =>
+        recordsOf(tester).patientIdByName(name);
 
     for (final (width, size) in [('phone', phone), ('desktop', desktop)]) {
-      testWidgets('home, D1, D2, D3 ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, 'doctor@el3yada.dev');
-        await capture(tester, 'home_doctor_${width}_ar_$theme');
-        goTo(tester, '/doctor/dashboard');
-        await settle(tester);
-        await capture(tester, 'd1_dashboard_${width}_ar_$theme');
-        goTo(tester, '/doctor/dashboard/today');
-        await settle(tester);
-        await capture(tester, 'd2_today_${width}_ar_$theme');
-        goTo(tester, '/doctor/dashboard/month');
-        await settle(tester);
-        await capture(tester, 'd3_month_${width}_ar_$theme');
-      });
+      testWidgets(
+        'home, D1, D2, D3 ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, 'doctor@el3yada.dev');
+          await capture(tester, 'home_doctor_${width}_ar_$theme');
+          goTo(tester, '/doctor/dashboard');
+          await settle(tester);
+          await capture(tester, 'd1_dashboard_${width}_ar_$theme');
+          goTo(tester, '/doctor/dashboard/today');
+          await settle(tester);
+          await capture(tester, 'd2_today_${width}_ar_$theme');
+          goTo(tester, '/doctor/dashboard/month');
+          await settle(tester);
+          await capture(tester, 'd3_month_${width}_ar_$theme');
+        },
+      );
 
-      testWidgets('D4, D6 ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D4, D6 ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/patients');
         await settle(tester);
@@ -81,7 +96,12 @@ void main() {
         await tester.scrollUntilVisible(
           find.byType(TabBar),
           300,
-          scrollable: find.descendant(of: find.byType(PatientProfileView), matching: find.byType(Scrollable)).first,
+          scrollable: find
+              .descendant(
+                of: find.byType(PatientProfileView),
+                matching: find.byType(Scrollable),
+              )
+              .first,
         );
         await settle(tester);
         await tester.tap(find.widgetWithText(Tab, 'الزيارات'));
@@ -92,7 +112,9 @@ void main() {
         await capture(tester, 'd6_profile_linked_${width}_ar_$theme');
       });
 
-      testWidgets('D5, D7 ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D5, D7 ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
         goTo(tester, '/doctor/patients/new');
         await settle(tester);
@@ -113,17 +135,28 @@ void main() {
         await capture(tester, 'd7_medical_${width}_ar_$theme');
       });
 
-      testWidgets('D8, D9 ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('D8, D9 ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'doctor@el3yada.dev');
-        goTo(tester, '/doctor/patients/${id(tester, SeedPatients.mona)}/sessions/new');
+        goTo(
+          tester,
+          '/doctor/patients/${id(tester, SeedPatients.mona)}/sessions/new',
+        );
         await settle(tester);
         await capture(tester, 'd8_blocked_${width}_ar_$theme');
 
-        goTo(tester, '/doctor/patients/${id(tester, SeedPatients.sara)}/sessions/new');
+        goTo(
+          tester,
+          '/doctor/patients/${id(tester, SeedPatients.sara)}/sessions/new',
+        );
         await settle(tester);
         await capture(tester, 'd8_first_visit_${width}_ar_$theme');
 
-        goTo(tester, '/doctor/patients/${id(tester, SeedPatients.laila)}/sessions/new');
+        goTo(
+          tester,
+          '/doctor/patients/${id(tester, SeedPatients.laila)}/sessions/new',
+        );
         await settle(tester);
         await tester.tap(find.text('استشارة').first);
         await settle(tester);
@@ -144,20 +177,27 @@ void main() {
         await capture(tester, 'd9_details_${width}_ar_$theme');
       });
 
-      testWidgets('AS1, AS5 reception ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, '01000000001');
-        await capture(tester, 'as1_home_${width}_ar_$theme');
-        goTo(tester, '/assistant/patients/${id(tester, SeedPatients.laila)}');
-        await settle(tester);
-        await capture(tester, 'as4_profile_${width}_ar_$theme');
-        goTo(tester, '/assistant/patients/${id(tester, SeedPatients.laila)}/sessions/new');
-        await settle(tester);
-        await tester.tap(find.text('كشف').first);
-        await settle(tester);
-        await tester.tap(find.text('التالي'));
-        await settle(tester);
-        await capture(tester, 'as5_details_${width}_ar_$theme');
-      });
+      testWidgets(
+        'AS1, AS5 reception ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, '01000000001');
+          await capture(tester, 'as1_home_${width}_ar_$theme');
+          goTo(tester, '/assistant/patients/${id(tester, SeedPatients.laila)}');
+          await settle(tester);
+          await capture(tester, 'as4_profile_${width}_ar_$theme');
+          goTo(
+            tester,
+            '/assistant/patients/${id(tester, SeedPatients.laila)}/sessions/new',
+          );
+          await settle(tester);
+          await tester.tap(find.text('كشف').first);
+          await settle(tester);
+          await tester.tap(find.text('التالي'));
+          await settle(tester);
+          await capture(tester, 'as5_details_${width}_ar_$theme');
+        },
+      );
     }
   }
 }

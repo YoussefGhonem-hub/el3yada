@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/skeleton_loading.dart';
 import '../../../core/widgets/staggered_entrance.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../analytics/application/analytics_providers.dart';
+import '../../analytics/presentation/dashboard_analytics.dart';
 import '../../clinic/domain/clinic_permissions.dart';
 import '../../patients/clinic_paths.dart';
 import '../../patients/presentation/widgets/clinic_ui.dart';
@@ -14,11 +15,12 @@ import '../../sessions/application/sessions_providers.dart';
 import '../../sessions/domain/session_models.dart';
 import '../../sessions/presentation/widgets/session_widgets.dart';
 
-/// D1 / AS18 for Phase 2: the platform-fee cards (`billingView`): today,
-/// «2 كشف + 3 استشارة = 105 ج.م» (→ D2), and this month (→ D3). An
-/// assistant without `billingView` doesn't see them at all (AS18: hidden,
-/// not zero). The suspension banner is in the shell; the analytics
-/// (section 6.14) come in Phase 7.
+/// D1 / AS18: the platform-fee cards (`billingView`): today,
+/// «2 كشف + 3 استشارة = 105 ج.م» (→ D2), and this month (→ D3); then the
+/// analytics of section 6.14 (filter bar, KPI tiles, insights, charts C1–C12).
+/// An assistant doesn't see what her permissions don't cover (AS18: hidden,
+/// not zero). The suspension banner is in the shell; the invoice card is
+/// part of the analytics.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -34,7 +36,10 @@ class DashboardScreen extends ConsumerWidget {
           final billing = clinic.can(ClinicPermission.billingView);
           final summary = billing ? ref.watch(feeSummaryProvider) : null;
           return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(feeSummaryProvider),
+            onRefresh: () async {
+              ref.invalidate(feeSummaryProvider);
+              ref.invalidate(dashboardProvider);
+            },
             child: StaggerGroup(
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -66,7 +71,8 @@ class DashboardScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                   ],
-                  StaggeredEntrance(index: 2, child: const _AnalyticsLater()),
+                  if (clinic.can(ClinicPermission.appointmentsView) || billing || clinic.can(ClinicPermission.revenueView))
+                    AnalyticsSection(clinic: clinic, width: width - gutter * 2),
                 ],
               ),
             ),
@@ -103,37 +109,3 @@ class _FeeCards extends StatelessWidget {
   }
 }
 
-/// A calm place for the charts and insights of Phase 7.
-class _AnalyticsLater extends StatelessWidget {
-  const _AnalyticsLater();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Row(
-          children: [
-            const ExcludeSemantics(child: EmptyIllustration(width: 104)),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.homeAnalyticsLaterTitle, style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n.homeAnalyticsLaterBody,
-                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

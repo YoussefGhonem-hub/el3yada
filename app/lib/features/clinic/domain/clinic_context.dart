@@ -91,6 +91,7 @@ class ClinicDoctor {
     required this.specialtyNameAr,
     required this.specialtyNameEn,
     required this.status,
+    this.suspendedForMonth,
   });
 
   factory ClinicDoctor.fromJson(Map<String, dynamic> json) => ClinicDoctor(
@@ -103,6 +104,7 @@ class ClinicDoctor {
         specialtyNameAr: json['specialtyNameAr'] as String,
         specialtyNameEn: json['specialtyNameEn'] as String,
         status: json['status'] as String,
+        suspendedForMonth: json['suspendedForMonth'] as String?,
       );
 
   final String id;
@@ -116,6 +118,9 @@ class ClinicDoctor {
 
   /// `active` or `suspended`.
   final String status;
+
+  /// The unpaid invoice's month (`2026-10`) while the clinic is suspended for billing (BR-G5), else null.
+  final String? suspendedForMonth;
 
   /// The name in [languageCode], falling back to Arabic.
   String name(String languageCode) => languageCode == 'en' && fullNameEn != null ? fullNameEn! : fullName;

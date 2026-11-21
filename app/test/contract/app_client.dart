@@ -43,122 +43,227 @@ void appClient(ClinicDay day, {required String? skip}) {
     assistantApp?.container.dispose();
   });
 
-  test('a stale access token is refreshed by the app, and the refresh token rotates', () async {
-    final app = doctorApp = await AppStack.start(day.baseUrl!, 'contract-app-doctor-${day.run}');
-    final result = await app.auth.login(day.doctorEmail, day.doctorPassword);
-    expect(result, isA<SignedIn>());
-    final signedIn = app.session!;
-    expect(signedIn.role, UserRole.doctor);
-    expect(signedIn.doctorId, day.doctorId);
-    expect(await app.store.read(), signedIn);
-    expect((await app.container.read(clinicContextProvider.future))!.doctor.id, day.doctorId);
+  test(
+    'a stale access token is refreshed by the app, and the refresh token rotates',
+    () async {
+      final app = doctorApp = await AppStack.start(
+        day.baseUrl!,
+        'contract-app-doctor-${day.run}',
+      );
+      final result = await app.auth.login(day.doctorEmail, day.doctorPassword);
+      expect(result, isA<SignedIn>());
+      final signedIn = app.session!;
+      expect(signedIn.role, UserRole.doctor);
+      expect(signedIn.doctorId, day.doctorId);
+      expect(await app.store.read(), signedIn);
+      expect(
+        (await app.container.read(clinicContextProvider.future))!.doctor.id,
+        day.doctorId,
+      );
 
-    // Expired by the clock: refreshed before sending, so the API never sees it.
-    await app.auth.acceptSession(
-        signedIn.copyWith(accessTokenExpiresAt: DateTime.now().toUtc().subtract(const Duration(minutes: 1))));
-    app.calls.clear();
-    final profile = await app.container.read(clinicAdminRepositoryProvider).doctorProfile();
-    expect(profile.doctorId, day.doctorId);
-    final refreshed = app.session!;
-    expect(refreshed.refreshToken, isNot(signedIn.refreshToken));
-    expect(refreshed.accessTokenExpiresAt!.isAfter(DateTime.now().toUtc()), isTrue);
-    expect((await app.store.read())!.refreshToken, refreshed.refreshToken);
-    expect(app.calls, ['POST /auth/refresh 200', 'GET /doctor/profile 200']);
+      // Expired by the clock: refreshed before sending, so the API never sees it.
+      await app.auth.acceptSession(
+        signedIn.copyWith(
+          accessTokenExpiresAt: DateTime.now().toUtc().subtract(
+            const Duration(minutes: 1),
+          ),
+        ),
+      );
+      app.calls.clear();
+      final profile = await app.container
+          .read(clinicAdminRepositoryProvider)
+          .doctorProfile();
+      expect(profile.doctorId, day.doctorId);
+      final refreshed = app.session!;
+      expect(refreshed.refreshToken, isNot(signedIn.refreshToken));
+      expect(
+        refreshed.accessTokenExpiresAt!.isAfter(DateTime.now().toUtc()),
+        isTrue,
+      );
+      expect((await app.store.read())!.refreshToken, refreshed.refreshToken);
+      expect(app.calls, ['POST /auth/refresh 200', 'GET /doctor/profile 200']);
 
-    // Refused by the API (expired, outdated or forged: any 401 for a request
-    // that carried a token): refreshed once, then sent again.
-    await app.auth.acceptSession(refreshed.copyWith(accessToken: _forged(refreshed.accessToken)));
-    app.calls.clear();
-    final patient = await app.container.read(patientsRepositoryProvider).patient(day.patientId);
-    expect(patient.patientId, day.patientId);
-    final again = app.session!;
-    expect(again.refreshToken, isNot(refreshed.refreshToken));
-    expect(again.accessToken, isNot(_forged(refreshed.accessToken)));
-    expect((await app.store.read())!.refreshToken, again.refreshToken);
-    expect(app.calls, [
-      'GET /patients/${day.patientId} 401 UNAUTHENTICATED',
-      'POST /auth/refresh 200',
-      'GET /patients/${day.patientId} 200',
-    ]);
-    // A token refresh doesn't reload the clinic.
-    expect(app.container.read(clinicContextProvider).value!.doctor.id, day.doctorId);
+      // Refused by the API (expired, outdated or forged: any 401 for a request
+      // that carried a token): refreshed once, then sent again.
+      await app.auth.acceptSession(
+        refreshed.copyWith(accessToken: _forged(refreshed.accessToken)),
+      );
+      app.calls.clear();
+      final patient = await app.container
+          .read(patientsRepositoryProvider)
+          .patient(day.patientId);
+      expect(patient.patientId, day.patientId);
+      final again = app.session!;
+      expect(again.refreshToken, isNot(refreshed.refreshToken));
+      expect(again.accessToken, isNot(_forged(refreshed.accessToken)));
+      expect((await app.store.read())!.refreshToken, again.refreshToken);
+      expect(app.calls, [
+        'GET /patients/${day.patientId} 401 UNAUTHENTICATED',
+        'POST /auth/refresh 200',
+        'GET /patients/${day.patientId} 200',
+      ]);
+      // A token refresh doesn't reload the clinic.
+      expect(
+        app.container.read(clinicContextProvider).value!.doctor.id,
+        day.doctorId,
+      );
 
-    await app.auth.logout();
-    expect(app.session, isNull);
-    expect(await app.store.read(), isNull);
-  }, skip: skip);
+      await app.auth.logout();
+      expect(app.session, isNull);
+      expect(await app.store.read(), isNull);
+    },
+    skip: skip,
+  );
 
   late String assistantUserId;
   late String assistantPhone;
 
-  test('an assistant\'s clinic reloads by itself after PERMISSION_DENIED', () async {
-    final permissions = {...AssistantPreset.permissions[AssistantPreset.reception]!};
-    final created = await day.doctor.clinicAdmin.createAssistant(AssistantDraft(
-      fullName: 'ريم عادل',
-      phone: contractMobile(),
-      allBranches: true,
-      branchIds: const {},
-      permissions: permissions,
-    ));
-    assistantUserId = created.assistant.userId;
-    assistantPhone = created.assistant.phone;
+  test(
+    'an assistant\'s clinic reloads by itself after PERMISSION_DENIED',
+    () async {
+      final permissions = {
+        ...AssistantPreset.permissions[AssistantPreset.reception]!,
+      };
+      final created = await day.doctor.clinicAdmin.createAssistant(
+        AssistantDraft(
+          fullName: 'ريم عادل',
+          phone: contractMobile(),
+          allBranches: true,
+          branchIds: const {},
+          permissions: permissions,
+        ),
+      );
+      assistantUserId = created.assistant.userId;
+      assistantPhone = created.assistant.phone;
 
-    final app = assistantApp = await AppStack.start(day.baseUrl!, 'contract-app-assistant-${day.run}');
-    await app.auth.login(assistantPhone, created.temporaryPassword);
-    expect(app.session!.mustChangePassword, isTrue);
-    expect(await app.container.read(clinicContextProvider.future), isNull, reason: 'A9 first');
-    await app.auth.setNewPassword('Assist1234');
-    expect(app.session!.role, UserRole.assistant);
-    final clinic = (await app.container.read(clinicContextProvider.future))!;
-    expect(clinic.assistant!.userId, assistantUserId);
-    expect(clinic.can(ClinicPermission.sessionsCreate), isTrue);
+      final app = assistantApp = await AppStack.start(
+        day.baseUrl!,
+        'contract-app-assistant-${day.run}',
+      );
+      await app.auth.login(assistantPhone, created.temporaryPassword);
+      expect(app.session!.mustChangePassword, isTrue);
+      expect(
+        await app.container.read(clinicContextProvider.future),
+        isNull,
+        reason: 'A9 first',
+      );
+      await app.auth.setNewPassword('Assist1234');
+      expect(app.session!.role, UserRole.assistant);
+      final clinic = (await app.container.read(clinicContextProvider.future))!;
+      expect(clinic.assistant!.userId, assistantUserId);
+      expect(clinic.can(ClinicPermission.sessionsCreate), isTrue);
 
-    permissions.remove(ClinicPermission.sessionsCreate);
-    final changed = await day.doctor.clinicAdmin.updateAssistant(assistantUserId, permissions: permissions);
-    expect(changed.permissions, permissions);
-    final loads = app.clinicLoads;
-    await expectLater(
-      app.container.read(sessionsRepositoryProvider).newSessionInfo(patientId: day.patientId, branchId: day.maadiId),
-      throwsA(apiError(403, ApiCodes.permissionDenied)
-          .having((e) => e.details['permission'], 'permission', ClinicPermission.sessionsCreate)),
-    );
-    await app.until(() => app.container.read(clinicContextProvider).value?.can(ClinicPermission.sessionsCreate) == false);
-    expect(app.clinicLoads, loads + 1, reason: 'the interceptor read clinic/me again');
-    final reloaded = app.container.read(clinicContextProvider).value!;
-    expect(reloaded.permissions, permissions);
-    expect(reloaded.can(ClinicPermission.patientsManage), isTrue);
-    expect(app.session, isNotNull, reason: 'still signed in');
-  }, skip: skip);
-
-  test('an assistant\'s clinic becomes suspended by itself after DOCTOR_SUSPENDED', () async {
-    final app = assistantApp!;
-    expect(app.container.read(clinicContextProvider).value!.isSuspended, isFalse);
-    await day.admin.admin.setDoctorStatus(day.doctorId, suspended: true, reason: 'فاتورة نوفمبر غير مدفوعة');
-    try {
+      permissions.remove(ClinicPermission.sessionsCreate);
+      final changed = await day.doctor.clinicAdmin.updateAssistant(
+        assistantUserId,
+        permissions: permissions,
+      );
+      expect(changed.permissions, permissions);
       final loads = app.clinicLoads;
       await expectLater(
-        app.container.read(patientsRepositoryProvider).createPatient(
-            PatientDraft(fullName: 'رامي نبيل', gender: Gender.male, phone: contractMobile(), ageYears: 25)),
-        throwsA(apiError(403, ApiCodes.doctorSuspended)),
+        app.container
+            .read(sessionsRepositoryProvider)
+            .newSessionInfo(patientId: day.patientId, branchId: day.maadiId),
+        throwsA(
+          apiError(403, ApiCodes.permissionDenied).having(
+            (e) => e.details['permission'],
+            'permission',
+            ClinicPermission.sessionsCreate,
+          ),
+        ),
       );
-      await app.until(() => app.container.read(clinicContextProvider).value?.isSuspended == true);
-      expect(app.clinicLoads, loads + 1);
-      expect(app.container.read(clinicContextProvider).value!.doctor.status, 'suspended');
-      expect(app.session, isNotNull, reason: 'a suspension doesn\'t sign anyone out');
-    } finally {
-      await day.admin.admin.setDoctorStatus(day.doctorId, suspended: false, reason: 'تم السداد');
-    }
-    // Reactivated: the next reload (on resume, or after the next refusal) shows it.
-    await app.container.read(clinicContextProvider.notifier).reload();
-    expect(app.container.read(clinicContextProvider).value!.isSuspended, isFalse);
-  }, skip: skip);
+      await app.until(
+        () =>
+            app.container
+                .read(clinicContextProvider)
+                .value
+                ?.can(ClinicPermission.sessionsCreate) ==
+            false,
+      );
+      expect(
+        app.clinicLoads,
+        loads + 1,
+        reason: 'the interceptor read clinic/me again',
+      );
+      final reloaded = app.container.read(clinicContextProvider).value!;
+      expect(reloaded.permissions, permissions);
+      expect(reloaded.can(ClinicPermission.patientsManage), isTrue);
+      expect(app.session, isNotNull, reason: 'still signed in');
+    },
+    skip: skip,
+  );
+
+  test(
+    'an assistant\'s clinic becomes suspended by itself after DOCTOR_SUSPENDED',
+    () async {
+      final app = assistantApp!;
+      expect(
+        app.container.read(clinicContextProvider).value!.isSuspended,
+        isFalse,
+      );
+      await day.admin.admin.setDoctorStatus(
+        day.doctorId,
+        suspended: true,
+        reason: 'فاتورة نوفمبر غير مدفوعة',
+      );
+      try {
+        final loads = app.clinicLoads;
+        await expectLater(
+          app.container
+              .read(patientsRepositoryProvider)
+              .createPatient(
+                PatientDraft(
+                  fullName: 'رامي نبيل',
+                  gender: Gender.male,
+                  phone: contractMobile(),
+                  ageYears: 25,
+                ),
+              ),
+          throwsA(apiError(403, ApiCodes.doctorSuspended)),
+        );
+        await app.until(
+          () =>
+              app.container.read(clinicContextProvider).value?.isSuspended ==
+              true,
+        );
+        expect(app.clinicLoads, loads + 1);
+        expect(
+          app.container.read(clinicContextProvider).value!.doctor.status,
+          'suspended',
+        );
+        expect(
+          app.session,
+          isNotNull,
+          reason: 'a suspension doesn\'t sign anyone out',
+        );
+      } finally {
+        await day.admin.admin.setDoctorStatus(
+          day.doctorId,
+          suspended: false,
+          reason: 'تم السداد',
+        );
+      }
+      // Reactivated: the next reload (on resume, or after the next refusal) shows it.
+      await app.container.read(clinicContextProvider.notifier).reload();
+      expect(
+        app.container.read(clinicContextProvider).value!.isSuspended,
+        isFalse,
+      );
+    },
+    skip: skip,
+  );
 
   test('ACCOUNT_DISABLED signs the assistant out to A10', () async {
     final app = assistantApp!;
-    await day.doctor.clinicAdmin.setAssistantStatus(assistantUserId, AssistantStatuses.disabled);
+    await day.doctor.clinicAdmin.setAssistantStatus(
+      assistantUserId,
+      AssistantStatuses.disabled,
+    );
     try {
       await expectLater(
-        app.container.read(patientsRepositoryProvider).register(const RegisterQuery()),
+        app.container
+            .read(patientsRepositoryProvider)
+            .register(const RegisterQuery()),
         throwsA(apiError(403, ApiCodes.accountDisabled)),
       );
       await app.until(() => app.session == null);
@@ -166,10 +271,16 @@ void appClient(ClinicDay day, {required String? skip}) {
       expect(await app.store.read(), isNull);
       expect(await app.container.read(clinicContextProvider.future), isNull);
       // Signing in again is refused the same way, and A10 stays.
-      await expectLater(app.auth.login(assistantPhone, 'Assist1234'), throwsA(apiError(403, ApiCodes.accountDisabled)));
+      await expectLater(
+        app.auth.login(assistantPhone, 'Assist1234'),
+        throwsA(apiError(403, ApiCodes.accountDisabled)),
+      );
       expect(app.container.read(authBlockProvider), ApiCodes.accountDisabled);
     } finally {
-      await day.doctor.clinicAdmin.setAssistantStatus(assistantUserId, AssistantStatuses.removed);
+      await day.doctor.clinicAdmin.setAssistantStatus(
+        assistantUserId,
+        AssistantStatuses.removed,
+      );
     }
   }, skip: skip);
 }
@@ -197,23 +308,45 @@ class AppStack {
   AuthSession? get session => container.read(authControllerProvider).value;
 
   static Future<AppStack> start(String baseUrl, String deviceId) async {
-    SharedPreferences.setMockInitialValues({'settings.locale': 'ar', 'settings.languageChosen': true});
+    SharedPreferences.setMockInitialValues({
+      'settings.locale': 'ar',
+      'settings.languageChosen': true,
+    });
     final preferences = await SharedPreferences.getInstance();
     final store = MemoryTokenStore();
-    final container = ProviderContainer(overrides: [
-      apiBaseUrlProvider.overrideWithValue(baseUrl),
-      sharedPreferencesProvider.overrideWithValue(preferences),
-      appPlatformProvider.overrideWithValue(AppPlatform.mobile),
-      tokenStoreProvider.overrideWithValue(store),
-      deviceIdentityProvider.overrideWith(
-        (ref) async => DeviceIdentity(deviceId: deviceId, platform: 'android', appVersion: '1.0.0'),
-      ),
-      authRepositoryProvider.overrideWith((ref) => ApiAuthRepository(ref.watch(dioProvider), ref.watch(plainDioProvider))),
-      clinicRepositoryProvider.overrideWith((ref) => ApiClinicRepository(ref.watch(dioProvider))),
-      clinicAdminRepositoryProvider.overrideWith((ref) => ApiClinicAdminRepository(ref.watch(dioProvider))),
-      patientsRepositoryProvider.overrideWith((ref) => ApiPatientsRepository(ref.watch(dioProvider))),
-      sessionsRepositoryProvider.overrideWith((ref) => ApiSessionsRepository(ref.watch(dioProvider))),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        apiBaseUrlProvider.overrideWithValue(baseUrl),
+        sharedPreferencesProvider.overrideWithValue(preferences),
+        appPlatformProvider.overrideWithValue(AppPlatform.mobile),
+        tokenStoreProvider.overrideWithValue(store),
+        deviceIdentityProvider.overrideWith(
+          (ref) async => DeviceIdentity(
+            deviceId: deviceId,
+            platform: 'android',
+            appVersion: '1.0.0',
+          ),
+        ),
+        authRepositoryProvider.overrideWith(
+          (ref) => ApiAuthRepository(
+            ref.watch(dioProvider),
+            ref.watch(plainDioProvider),
+          ),
+        ),
+        clinicRepositoryProvider.overrideWith(
+          (ref) => ApiClinicRepository(ref.watch(dioProvider)),
+        ),
+        clinicAdminRepositoryProvider.overrideWith(
+          (ref) => ApiClinicAdminRepository(ref.watch(dioProvider)),
+        ),
+        patientsRepositoryProvider.overrideWith(
+          (ref) => ApiPatientsRepository(ref.watch(dioProvider)),
+        ),
+        sessionsRepositoryProvider.overrideWith(
+          (ref) => ApiSessionsRepository(ref.watch(dioProvider)),
+        ),
+      ],
+    );
     final app = AppStack._(container, store);
     // First in line, so it sees every answer before AuthInterceptor acts on it.
     final recorder = InterceptorsWrapper(
@@ -222,7 +355,11 @@ class AppStack {
         handler.next(response);
       },
       onError: (error, handler) {
-        app._record(error.requestOptions, error.response?.statusCode, ApiException.fromDio(error).code);
+        app._record(
+          error.requestOptions,
+          error.response?.statusCode,
+          ApiException.fromDio(error).code,
+        );
         handler.next(error);
       },
     );
@@ -242,7 +379,8 @@ class AppStack {
   Future<void> until(bool Function() done) async {
     final deadline = DateTime.now().add(const Duration(seconds: 10));
     while (!done()) {
-      if (DateTime.now().isAfter(deadline)) fail('The app did not get there in 10 seconds. Calls: $calls');
+      if (DateTime.now().isAfter(deadline))
+        fail('The app did not get there in 10 seconds. Calls: $calls');
       await Future<void>.delayed(const Duration(milliseconds: 20));
     }
   }

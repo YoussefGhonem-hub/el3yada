@@ -44,7 +44,11 @@ Future<void> pumpApp(
 
 /// Fills the login form and taps Sign in, then waits for the check mark and
 /// the next screen.
-Future<void> signIn(WidgetTester tester, String identifier, {String password = 'dev'}) async {
+Future<void> signIn(
+  WidgetTester tester,
+  String identifier, {
+  String password = 'dev',
+}) async {
   await tester.enterText(find.byType(TextFormField).at(0), identifier);
   await tester.enterText(find.byType(TextFormField).at(1), password);
   await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));

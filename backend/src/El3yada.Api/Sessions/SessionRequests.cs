@@ -58,7 +58,8 @@ public sealed record CreateSessionRequest(
     string? PrivateNote,
     DateOnly? FollowUpDate,
     int? AmountChargedPiasters,
-    string? PaymentMethod)
+    string? PaymentMethod,
+    Guid? AppointmentId = null)
 {
     /// <summary>The doctor-only fields the request fills (BR-AS5), as JSON names.</summary>
     public IReadOnlyList<string> DoctorOnlyFields() =>

@@ -15,19 +15,22 @@ void main() {
     await settle(tester);
   }
 
-  testWidgets('rows read as sentences, with who, the patient and a day heading', (tester) async {
-    await openLog(tester);
+  testWidgets(
+    'rows read as sentences, with who, the patient and a day heading',
+    (tester) async {
+      await openLog(tester);
 
-    expect(find.text('Today'), findsOneWidget);
-    expect(find.text('Changed the working hours of Maadi'), findsOneWidget);
-    expect(find.text('Changed the prices of Nasr City'), findsOneWidget);
-    expect(find.text('Examination: not set → EGP 400'), findsOneWidget);
-    expect(find.text('Changed منى سمير\'s permissions'), findsOneWidget);
-    expect(find.text('Added: Chat.'), findsOneWidget);
-    expect(find.text('Added a new patient'), findsWidgets);
-    expect(find.text('Recorded an examination'), findsWidgets);
-    expect(find.text('كريم عادل, file 18'), findsOneWidget);
-  });
+      expect(find.text('Today'), findsOneWidget);
+      expect(find.text('Changed the working hours of Maadi'), findsOneWidget);
+      expect(find.text('Changed the prices of Nasr City'), findsOneWidget);
+      expect(find.text('Examination: not set → EGP 400'), findsOneWidget);
+      expect(find.text('Changed منى سمير\'s permissions'), findsOneWidget);
+      expect(find.text('Added: Chat.'), findsOneWidget);
+      expect(find.text('Added a new patient'), findsWidgets);
+      expect(find.text('Recorded an examination'), findsWidgets);
+      expect(find.text('كريم عادل, file 18'), findsOneWidget);
+    },
+  );
 
   testWidgets('filters by person and by action', (tester) async {
     await openLog(tester);
@@ -59,14 +62,18 @@ void main() {
     expect(find.text('Changed the working hours of Maadi'), findsNothing);
   });
 
-  testWidgets('a change elsewhere shows up, and a row opens its item', (tester) async {
+  testWidgets('a change elsewhere shows up, and a row opens its item', (
+    tester,
+  ) async {
     await openLog(tester);
 
     goTo(tester, '/doctor/branches/dev-branch-nasr-city?tab=hours');
     await settle(tester);
     await tester.tap(find.text('Copy Saturday to all days'));
     await settle(tester);
-    await tester.tap(find.widgetWithText(FilledButton, 'Copy Saturday to all days'));
+    await tester.tap(
+      find.widgetWithText(FilledButton, 'Copy Saturday to all days'),
+    );
     await settle(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));
     await settle(tester);

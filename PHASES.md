@@ -389,13 +389,9 @@ Timed mode (exact times) keeps its order by time.
 
 **Tables:** Appointments, AppointmentHistory, Branches (booking columns), BranchPeriods, BranchDateOverrides, BranchDateOverridePeriods, BranchClosures, BranchDayStates, PublicHolidays [C], DoctorPatients (self-booking block), Sessions.
 
-<<<<<<< HEAD
-**Done when:** AC-21 (including the queue-order check: A books before B, B arrives first and goes in first), AC-22, AC-25 and AC-26 pass. The load test shows no double booking and no repeated queue number.
-=======
 **Status (branch `phase-6/appointments-live-board`):** API complete except the load test on real infrastructure (the API tests already race 12 requests for one slot and 10 for a 3-place period with no double booking). Screens built: D29/AS17 schedule (as a Schedule page until Phase 2's D29 tabs exist), D30, D31, D32 (existing patient via a small lookup endpoint, or quick guest), D33, D34/AS1/AS16 live board with side panel and offline banner, P15–P17. Waiting on others: Phase 2 `createSession` must call `BoardActionsService.CompleteWithSessionAsync` (BR-AP10) and the board's Finish button opens D8; "create patient now" in D32 uses D5. Still to do: Firestore listener in the app (needs Firebase; SignalR + 15-second refresh work now), drag and drop [S], doctor extras on the board (BR-LB6), D36 [C], public holidays [C].
 
-**Done when:** AC-21, AC-22, AC-25 and AC-26 pass, and the load test shows no double booking.
->>>>>>> phase-6/appointments-live-board
+**Done when:** AC-21 (including the queue-order check: A books before B, B arrives first and goes in first), AC-22, AC-25 and AC-26 pass. The load test shows no double booking and no repeated queue number.
 
 ---
 
@@ -404,18 +400,25 @@ Timed mode (exact times) keeps its order by time.
 **Goal:** the platform bills doctors monthly, the admin reviews payments, unpaid doctors are suspended and reactivated automatically, and doctors see their full analytics and revenue.
 
 **API**
-- [ ] `monthlyClose` (1st of the month, 00:05 Cairo): totals from `Sessions` with SQL aggregates, one invoice per doctor and month, idempotent.
-- [ ] `dailyBillingCheck` (00:10): reminders, `overdue`, suspension (BR-G1). `statsReconcile` [S].
-- [ ] `submitPayment` (screenshots), `reviewPayment` (approve / reject, reactivation check BR-G3).
-- [ ] `adjustInvoice`, `waiveInvoice`, `markInvoicePaid`, `extendInvoiceDueDate`, `setDoctorStatus`, `getDoctorActivity` (masked patient names).
+- [x] `monthlyClose` (1st of the month, 00:05 Cairo): totals from `Sessions` with SQL aggregates, one invoice per doctor and month, idempotent.
+- [x] `dailyBillingCheck` (00:10): reminders, `overdue`, suspension (BR-G1). `statsReconcile` [S].
+- [x] `submitPayment` (screenshots), `reviewPayment` (approve / reject, reactivation check BR-G3).
+- [x] `adjustInvoice`, `waiveInvoice`, `markInvoicePaid`, `extendInvoiceDueDate`, `setDoctorStatus`, `getDoctorActivity` (masked patient names).
   - *Done early (Phase 2), API only:* `setDoctorStatus` suspends and reactivates by hand with a reason (BR-G4), notifies the doctor and assistants and writes the audit row (`backend/docs/api-phase-1.md`); the app has it in `AdminRepository`. Not done: the AD5 screen, "disable" (it must cancel future bookings, so it waits for Phase 6), and the automatic suspension and reactivation (`dailyBillingCheck`, BR-G1, BR-G3).
-- [ ] Suspension limits applied everywhere (BR-G5, BR-G8): read-only plus payment for the doctor and assistants, patients keep read access.
-- [ ] `buildDailyMetrics` (02:30), `getDashboard`, `getRevenueReport`. Money fields are removed for callers without revenue access (BR-REV1).
+- [x] Suspension limits applied everywhere (BR-G5, BR-G8): read-only plus payment for the doctor and assistants, patients keep read access.
+- [x] `buildDailyMetrics` (02:30), `getDashboard`, `getRevenueReport`. Money fields are removed for callers without revenue access (BR-REV1).
 
 **App**
-- [ ] D18 billing hub, D19 invoice details, D20 submit payment (InstaPay box with copy buttons). AS10.
-- [ ] D1 full analytics (filters, compare, KPI tiles, charts C1–C12, insights), D35 revenue, D4 money and clinical columns, AS18.
-- [ ] AD1 admin dashboard, AD4 doctors list, AD5 doctor details (all tabs, actions), AD6 add doctor [S], AD7 payments to review, AD8 payment review, AD9 invoices, AD10 invoice details.
+- [x] D18 billing hub, D19 invoice details, D20 submit payment (InstaPay box with copy buttons). AS10.
+- [x] D1 full analytics (filters, compare, KPI tiles, charts C1–C12, insights), D35 revenue, D4 money and clinical columns, AS18.
+- [x] AD1 admin dashboard, AD4 doctors list, AD5 doctor details (all tabs, actions), AD7 payments to review, AD8 payment review, AD9 invoices, AD10 invoice details.
+
+**Status (20 Nov 2026):** the API and the app are written and their tests pass: `dotnet test` 710 of 710 (new: `BillingTests`, `AnalyticsTests`, covering AC-6, 7, 8, 9, 12, 23, 24 and a month close run twice) and `flutter test` 544 passed, 190 skipped (new: `billing_analytics_test.dart`). Contract: `backend/docs/api-phase-7.md`. Notes:
+- The jobs run in `BillingJobsHost` (`Jobs:Enabled`, off in tests); each job runs once per Cairo day per process and is idempotent. A billing suspension carries the reason `billing:{yyyy-MM}`, so a manual suspension (BR-G4) is never lifted by a payment.
+- The dashboard computes from `Sessions` and `Appointments` live; `DoctorDailyMetrics` is built nightly but not yet read by it.
+- The app needs Flutter 3.50 or newer (pdfrx needs Dart 3.13).
+- Not verified: devices and Windows runs, a load test, a run against a real SQL Server outside the tests, a contract test for Phase 7.
+- Merging Phases 1–3 with 4–6 left committed conflict markers; they are resolved, and some Phase 2/4/5 widget tests were updated to the merged app (start-up gate, floating bottom bar, live board as home).
 
 **Tables:** Invoices, InvoiceBranchBreakdown, InvoiceAdjustments, InvoiceStatusHistory, Payments, PaymentScreenshots, DailyStats, MonthlyStats, DoctorDailyMetrics, Doctors (status), DoctorAdminNotes, Sessions.
 

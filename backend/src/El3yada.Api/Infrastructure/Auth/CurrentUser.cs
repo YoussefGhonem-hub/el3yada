@@ -1,11 +1,11 @@
 using System.Security.Claims;
+using El3yada.Api.Auth;
 
 namespace El3yada.Api.Infrastructure.Auth;
 
 /// <summary>
-/// The caller, read from the access token. Only identity comes from the token:
-/// status and permissions are always read from the database (spec 9.4), see
-/// <see cref="ActiveAccountHandler"/>.
+/// The caller, read from the access token. Only identity comes from the token: status and permissions are
+/// always read from the database (spec 9.4), see <see cref="AuthSetup"/>.
 /// </summary>
 public interface ICurrentUser
 {
@@ -29,11 +29,11 @@ public sealed class HttpCurrentUser(IHttpContextAccessor accessor) : ICurrentUse
     public Guid UserId => TryGetUserId(Principal)
         ?? throw new InvalidOperationException("The request has no signed-in user.");
 
-    public string Role => Principal?.FindFirstValue(AuthClaims.Role)
+    public string Role => Principal?.FindFirstValue(ClaimNames.Role)
         ?? throw new InvalidOperationException("The request has no signed-in user.");
 
-    public Guid? DoctorId => Guid.TryParse(Principal?.FindFirstValue(AuthClaims.DoctorId), out var id) ? id : null;
+    public Guid? DoctorId => Guid.TryParse(Principal?.FindFirstValue(ClaimNames.DoctorId), out var id) ? id : null;
 
     internal static Guid? TryGetUserId(ClaimsPrincipal? principal) =>
-        Guid.TryParse(principal?.FindFirstValue(AuthClaims.UserId), out var id) ? id : null;
+        Guid.TryParse(principal?.FindFirstValue(ClaimNames.Subject), out var id) ? id : null;
 }

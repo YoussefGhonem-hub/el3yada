@@ -96,8 +96,8 @@ public static class PatientQueries
                 files.GetValueOrDefault(FileCategories.Other),
                 files.Values.Sum()),
             prescriptions,
-            NextBooking: null,
-            NoShowCount: 0);
+            (await PatientBookings.NextAsync(db, doctorId, [patientId], today, cancellationToken)).GetValueOrDefault(patientId),
+            (await PatientBookings.NoShowsAsync(db, doctorId, [patientId], cancellationToken)).GetValueOrDefault(patientId));
     }
 }
 

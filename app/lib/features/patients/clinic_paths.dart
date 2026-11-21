@@ -64,6 +64,24 @@ class ClinicPaths {
   /// D1 / AS18.
   String get dashboard => '$base/dashboard';
 
+  /// D18 / AS10: the billing hub.
+  String get billing => '$base/billing';
+
+  /// D19: one invoice.
+  String invoice(String invoiceId) => '$billing/$invoiceId';
+
+  /// D20: submit a payment for an invoice.
+  String payInvoice(String invoiceId) => '${invoice(invoiceId)}/pay';
+
+  /// D35: revenue, by month.
+  String get revenue => '$base/revenue';
+
+  /// D35 drill-down: the days of a month (`yyyy-MM`).
+  String revenueMonth(String month) => '$revenue/month/$month';
+
+  /// D35 drill-down: the sessions of a day (`yyyy-MM-dd`).
+  String revenueDay(String day) => '$revenue/day/$day';
+
   /// D2: one Cairo day (today by default).
   String today({String? day}) => '$dashboard/today${day == null ? '' : '?day=$day'}';
 

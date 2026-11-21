@@ -19,6 +19,7 @@ public sealed class AdminSupportService(
     ICurrentUser admin,
     IAuditLogger audit,
     SessionRevoker revoker,
+    AccountStateCache stateCache,
     TimeProvider clock)
 {
     // ---- AD12 --------------------------------------------------------------------------------
@@ -143,5 +144,6 @@ public sealed class AdminSupportService(
         }
 
         await tx.CommitAsync(ct);
+        stateCache.Invalidate(userId);
     }
 }

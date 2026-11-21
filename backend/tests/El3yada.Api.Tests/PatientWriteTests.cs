@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace El3yada.Api.Tests;
 
 /// <summary>"New" badges, preferences, the deletion flow (P14 → AD12) and accounts support (AD11).</summary>
-public sealed class PatientWriteTests(ApiFactory api) : IClassFixture<ApiFactory>
+public sealed class PatientWriteTests(FeaturesApiFactory api) : IClassFixture<FeaturesApiFactory>
 {
     [Fact]
     public async Task Mark_seen_clears_badges_and_ignores_foreign_ids()
@@ -91,7 +91,7 @@ public sealed class PatientWriteTests(ApiFactory api) : IClassFixture<ApiFactory
         Assert.Equal(HttpStatusCode.Conflict, again.StatusCode);
 
         // The old token stops working at once (new SecurityStamp), and login is disabled.
-        Assert.Equal(HttpStatusCode.Forbidden, (await patient.GetAsync("/api/patient/home")).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await patient.GetAsync("/api/patient/home")).StatusCode);
         var state = await api.WithDbAsync(async db => (
             await db.Users.Where(u => u.Id == otherUserId).Select(u => u.Status).SingleAsync(),
             await db.Patients.Where(p => p.Id == api.Demo.OtherPatientId).Select(p => p.Status).SingleAsync(),
@@ -126,7 +126,7 @@ public sealed class PatientWriteTests(ApiFactory api) : IClassFixture<ApiFactory
         var assistantClient = await api.ClientForAsync(api.Demo.AssistantUserId);
         Assert.Equal(HttpStatusCode.NoContent,
             (await admin.PostAsJsonAsync($"/api/admin/accounts/{api.Demo.AssistantUserId}/status", new SetLoginStatusRequest("disabled", "support ticket"))).StatusCode);
-        Assert.Equal(HttpStatusCode.Forbidden, (await assistantClient.GetAsync("/api/me/preferences")).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await assistantClient.GetAsync("/api/me/preferences")).StatusCode);
 
         Assert.Equal(HttpStatusCode.NoContent,
             (await admin.PostAsJsonAsync($"/api/admin/accounts/{api.Demo.AssistantUserId}/status", new SetLoginStatusRequest("active", null))).StatusCode);

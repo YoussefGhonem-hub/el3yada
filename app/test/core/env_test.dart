@@ -11,6 +11,9 @@ void main() {
   });
 
   test('a prod flavor with the dev config is refused', () {
-    expect(Env.flavorMismatch(flavor: 'prod', env: 'dev'), contains('config/prod.json'));
+    expect(
+      Env.flavorMismatch(flavor: 'prod', env: 'dev'),
+      contains('config/prod.json'),
+    );
   });
 }

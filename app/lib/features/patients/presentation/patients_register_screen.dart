@@ -31,7 +31,10 @@ const double _tableWidth = 900;
 /// paging. Phones and tablets show cards that grow into D6 (container
 /// transform); wide screens a table, and master-detail once a row is picked.
 class PatientsRegisterScreen extends ConsumerStatefulWidget {
-  const PatientsRegisterScreen({super.key});
+  const PatientsRegisterScreen({super.key, this.initialLastVisit});
+
+  /// A `lastVisit` filter to start with (the dashboard's «not seen» bars, C11 and AC-24).
+  final LastVisitFilter? initialLastVisit;
 
   @override
   ConsumerState<PatientsRegisterScreen> createState() => _PatientsRegisterScreenState();
@@ -65,7 +68,11 @@ class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen>
     super.initState();
     _search = TextEditingController(text: ref.read(registerQueryProvider).search);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && ref.read(registerSearchRequestProvider)) _focusSearch();
+      if (!mounted) return;
+      if (widget.initialLastVisit case final filter?) {
+        ref.read(registerQueryProvider.notifier).set(_query.copyWith(lastVisit: () => filter));
+      }
+      if (ref.read(registerSearchRequestProvider)) _focusSearch();
     });
   }
 
@@ -431,6 +438,16 @@ class _FilterBar extends StatelessWidget {
           selected: query.hasChronicDisease,
           onSelected: (on) => onChanged(query.copyWith(hasChronicDisease: on)),
         ),
+      FilterChip(
+        label: Text(l10n.patientFilterUpcoming),
+        selected: query.hasUpcomingBooking,
+        onSelected: (on) => onChanged(query.copyWith(hasUpcomingBooking: on)),
+      ),
+      FilterChip(
+        label: Text(l10n.patientFilterNoShows),
+        selected: query.hasNoShows,
+        onSelected: (on) => onChanged(query.copyWith(hasNoShows: on)),
+      ),
       FilterChip(
         label: Text(l10n.patientFilterArchived),
         selected: query.archived,
@@ -923,6 +940,21 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
         ],
       ),
     ),
+    if (width >= 1000)
+      _Column(
+        label: l10n.patientColumnNextBooking,
+        width: 112,
+        cell: (context, row) => row.nextBooking == null
+            ? Text('—', style: muted)
+            : Text(ClinicFormat.dayAuto(context, row.nextBooking!.date), style: theme.textTheme.bodyMedium),
+      ),
+    if (width >= 1000)
+      _Column(
+        label: l10n.patientColumnNoShows,
+        width: 80,
+        numeric: true,
+        cell: (context, row) => row.noShowCount == 0 ? Text('—', style: muted) : Text('${row.noShowCount}', style: theme.textTheme.bodyMedium),
+      ),
     if (clinic.can(ClinicPermission.revenueView))
       _Column(
         label: l10n.patientColumnPaid,

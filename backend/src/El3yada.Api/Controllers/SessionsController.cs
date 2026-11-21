@@ -20,7 +20,8 @@ namespace El3yada.Api.Controllers;
 [Route("api/sessions")]
 [Clinic]
 public sealed class SessionsController(
-    AppDbContext db, Auditor auditor, NotificationWriter notifications, TimeProvider time) : ControllerBase
+    AppDbContext db, Auditor auditor, NotificationWriter notifications, TimeProvider time,
+    El3yada.Api.Features.Appointments.BoardActionsService board, El3yada.Api.Features.Appointments.BoardPublisher boardPublisher) : ControllerBase
 {
     private const string DoctorOnly = "doctorOnly";
 
@@ -173,6 +174,7 @@ public sealed class SessionsController(
             PatientId = patientId,
             LinkId = link.Id,
             BranchId = branchId,
+            AppointmentId = request.AppointmentId,
             Type = type,
             FeePiasters = fee,
             PatientFeePiasters = amount.Value,
@@ -209,6 +211,22 @@ public sealed class SessionsController(
         }
 
         await FeeStats.AddAsync(db, caller.DoctorId, day, month, type, fee, cancellationToken);
+        // BR-AP10: a session started from a booking completes it, in the same transaction.
+        Guid? boardBranchId = null;
+        if (request.AppointmentId is { } appointmentId)
+        {
+            var booking = await db.Appointments.AsNoTracking()
+                .Where(a => a.Id == appointmentId && a.DoctorId == caller.DoctorId)
+                .Select(a => new { a.PatientId, a.BranchId })
+                .SingleOrDefaultAsync(cancellationToken);
+            if (booking is null || booking.PatientId != patientId || booking.BranchId != branchId)
+            {
+                return this.NotFoundProblem();
+            }
+
+            await board.CompleteWithSessionAsync(appointmentId, session.Id, caller.DoctorId, cancellationToken);
+            boardBranchId = booking.BranchId;
+        }
         var patientUserId = await db.Patients.Where(p => p.Id == patientId).Select(p => p.UserId).SingleAsync(cancellationToken);
         notifications.Add(
             patientUserId,
@@ -221,6 +239,10 @@ public sealed class SessionsController(
             new { type, branchId, feePiasters = fee, awaitingDoctor = session.AwaitingDoctor }, patientId);
         await db.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
+        if (boardBranchId is { } publishBranch)
+        {
+            await boardPublisher.PublishAsync(publishBranch, day, cancellationToken);
+        }
 
         var view = await SessionQueries.DetailAsync(db, caller, session.Id, day, cancellationToken);
         return StatusCode(StatusCodes.Status201Created, view);

@@ -41,8 +41,13 @@ class FakeFileSources implements FileSources {
 
   @override
   Future<List<UploadSource>> fromXFiles(List<XFile> files) async => [
-        for (final file in files) UploadSource(name: file.name, bytes: await file.readAsBytes(), sizeBytes: await file.length()),
-      ];
+    for (final file in files)
+      UploadSource(
+        name: file.name,
+        bytes: await file.readAsBytes(),
+        sizeBytes: await file.length(),
+      ),
+  ];
 }
 
 /// No isolates and no system PDF renderer in widget tests: files go up as
@@ -55,16 +60,17 @@ class PassThroughUploadPrep extends UploadPrep {
 
   @override
   Future<ScanPdf> scanPdf(List<Uint8List> pages) async => ScanPdf(
-        pdf: Uint8List.fromList('%PDF-1.4 scan of ${pages.length} pages'.codeUnits),
-        thumbnail: pages.first,
-        pageCount: pages.length,
-      );
+    pdf: Uint8List.fromList('%PDF-1.4 scan of ${pages.length} pages'.codeUnits),
+    thumbnail: pages.first,
+    pageCount: pages.length,
+  );
 
   @override
   Future<Uint8List?> pdfThumbnail(Uint8List pdf) async => null;
 
   @override
-  Stream<Uint8List> pdfPages(Uint8List pdf, {double dpi = 110}) => const Stream.empty();
+  Stream<Uint8List> pdfPages(Uint8List pdf, {double dpi = 110}) =>
+      const Stream.empty();
 }
 
 /// Records Open with, Download and Share.
@@ -72,19 +78,31 @@ class RecordingFileActions implements FileActions {
   final calls = <String>[];
 
   @override
-  Future<bool> openWith(Uint8List bytes, {required String fileName, required String mimeType}) async {
+  Future<bool> openWith(
+    Uint8List bytes, {
+    required String fileName,
+    required String mimeType,
+  }) async {
     calls.add('open $fileName');
     return true;
   }
 
   @override
-  Future<bool> save(Uint8List bytes, {required String fileName, required String mimeType}) async {
+  Future<bool> save(
+    Uint8List bytes, {
+    required String fileName,
+    required String mimeType,
+  }) async {
     calls.add('save $fileName');
     return true;
   }
 
   @override
-  Future<void> share(Uint8List bytes, {required String fileName, required String mimeType}) async {
+  Future<void> share(
+    Uint8List bytes, {
+    required String fileName,
+    required String mimeType,
+  }) async {
     calls.add('share $fileName');
   }
 }
@@ -96,24 +114,24 @@ List<Override> recordsOverrides({
   RecordingFileActions? actions,
   Duration delay = Duration.zero,
   void Function(FakeRecordsRepository repository)? configure,
-}) =>
-    [
-      fakeRecordsRepositoryProvider.overrideWith((ref) {
-        final repository = FakeRecordsRepository(
-          caller: () => fakeCallerOf(ref),
-          clinic: ref.watch(fakeClinicRecordsProvider),
-          delay: delay,
-        );
-        configure?.call(repository);
-        return repository;
-      }),
-      uploadPrepProvider.overrideWithValue(const PassThroughUploadPrep()),
-      fileSourcesProvider.overrideWithValue(sources ?? FakeFileSources()),
-      fileActionsProvider.overrideWithValue(actions ?? RecordingFileActions()),
-    ];
+}) => [
+  fakeRecordsRepositoryProvider.overrideWith((ref) {
+    final repository = FakeRecordsRepository(
+      caller: () => fakeCallerOf(ref),
+      clinic: ref.watch(fakeClinicRecordsProvider),
+      delay: delay,
+    );
+    configure?.call(repository);
+    return repository;
+  }),
+  uploadPrepProvider.overrideWithValue(const PassThroughUploadPrep()),
+  fileSourcesProvider.overrideWithValue(sources ?? FakeFileSources()),
+  fileActionsProvider.overrideWithValue(actions ?? RecordingFileActions()),
+];
 
 /// The medical files behind the running app.
-FakeRecordsRepository recordsRepoOf(WidgetTester tester) => appContainer(tester).read(fakeRecordsRepositoryProvider);
+FakeRecordsRepository recordsRepoOf(WidgetTester tester) =>
+    appContainer(tester).read(fakeRecordsRepositoryProvider);
 
 /// The offline clinic, with [remove] taken away from the assistant's
 /// permissions (an assistant without `filesManage`, AS6).
@@ -142,4 +160,5 @@ class LimitedClinicRepository implements ClinicRepository {
 }
 
 /// A small real image (a PNG).
-Uint8List tinyPng({int size = 8}) => img.encodePng(img.Image(width: size, height: size));
+Uint8List tinyPng({int size = 8}) =>
+    img.encodePng(img.Image(width: size, height: size));

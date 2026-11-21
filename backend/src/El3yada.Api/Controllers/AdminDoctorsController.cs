@@ -16,8 +16,9 @@ using Microsoft.EntityFrameworkCore;
 namespace El3yada.Api.Controllers;
 
 /// <summary>
-/// spec 9.1 <c>setDoctorStatus</c> (BR-G4, AD5 Suspend / Reactivate). <c>status</c>: <c>suspended</c>, or
-/// <c>active</c> to reactivate. <c>reason</c> (3–500 characters) is required both ways.
+/// spec 9.1 <c>setDoctorStatus</c> (BR-G4, AD5 Suspend / Reactivate / Disable). <c>status</c>: <c>suspended</c>, <c>disabled</c>
+/// (the clinic is closed and its future bookings are cancelled), or <c>active</c> to reactivate. <c>reason</c> (3–500
+/// characters) is required every time.
 /// </summary>
 public sealed record SetDoctorStatusRequest(Guid? DoctorId, string? Status, string? Reason);
 
@@ -26,7 +27,7 @@ public sealed class SetDoctorStatusRequestValidator : AbstractValidator<SetDocto
     public SetDoctorStatusRequestValidator()
     {
         RuleFor(x => x.DoctorId).Required();
-        RuleFor(x => x.Status).Required().OneOf(DoctorStatuses.Suspended, DoctorStatuses.Active);
+        RuleFor(x => x.Status).Required().OneOf(DoctorStatuses.Suspended, DoctorStatuses.Active, DoctorStatuses.Disabled);
         RuleFor(x => x.Reason)
             .Must(reason => reason?.Trim().Length >= 3)
             .WithErrorCode(ErrorCodes.ReasonRequired).WithMessage("Write the reason (at least 3 characters).")
@@ -75,7 +76,8 @@ public sealed record DoctorStatusView(Guid DoctorId, string FullName, string Sta
 [Route("api/admin")]
 [Authorize(Policy = Policies.Admin)]
 public sealed class AdminDoctorsController(
-    AppDbContext db, NotificationWriter notifications, Auditor auditor, AccountStateCache stateCache, TimeProvider time)
+    AppDbContext db, NotificationWriter notifications, Auditor auditor, AccountStateCache stateCache, TimeProvider time,
+    El3yada.Api.Features.Appointments.DoctorClosureService closure, El3yada.Api.Features.Appointments.BoardPublisher boardPublisher)
     : ControllerBase
 {
     /// <summary>
@@ -91,6 +93,7 @@ public sealed class AdminDoctorsController(
         var doctorId = request.DoctorId!.Value;
         var target = request.Status!;
         var suspend = target == DoctorStatuses.Suspended;
+        var disable = target == DoctorStatuses.Disabled;
         var reason = Text.CollapseSpaces(request.Reason!);
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
@@ -107,17 +110,19 @@ public sealed class AdminDoctorsController(
             return Ok(View(doctor));
         }
 
-        if (doctor.Status is not (DoctorStatuses.Active or DoctorStatuses.Suspended))
+        // Active or suspended doctors can be suspended or disabled; a disabled one can only be reactivated.
+        if (doctor.Status is not (DoctorStatuses.Active or DoctorStatuses.Suspended or DoctorStatuses.Disabled)
+            || (doctor.Status == DoctorStatuses.Disabled && target != DoctorStatuses.Active))
         {
             return this.ConflictProblem(
-                    ErrorCodes.DoctorStatusNotChangeable, "Only an active doctor can be suspended, and only a suspended one reactivated.")
+                    ErrorCodes.DoctorStatusNotChangeable, "Only an active doctor can be suspended or disabled, and only a suspended or disabled one reactivated.")
                 .WithFields(("status", doctor.Status));
         }
 
         var before = doctor.Status;
         var now = time.GetUtcNow().UtcDateTime;
         doctor.Status = target;
-        doctor.StatusReason = suspend ? reason : null;
+        doctor.StatusReason = suspend || disable ? reason : null;
         doctor.StatusChangedAt = now;
         doctor.UpdatedAt = now;
 
@@ -126,20 +131,30 @@ public sealed class AdminDoctorsController(
             .Select(a => a.UserId)
             .ToListAsync(cancellationToken);
         var data = new { doctorId };
-        notifications.Add(doctorId, suspend ? NotificationTexts.Suspended(reason) : NotificationTexts.Reactivated(), "/home", data);
-        var assistantText = suspend
-            ? NotificationTexts.SuspendedForAssistant(doctor.FullName)
-            : NotificationTexts.ReactivatedForAssistant(doctor.FullName);
-        foreach (var assistantId in assistants)
+        // A disabled doctor and their assistants can't sign in, so there is nobody to tell.
+        if (!disable)
         {
-            notifications.Add(assistantId, assistantText, "/home", data);
+            notifications.Add(doctorId, suspend ? NotificationTexts.Suspended(reason) : NotificationTexts.Reactivated(), "/home", data);
+            var assistantText = suspend
+                ? NotificationTexts.SuspendedForAssistant(doctor.FullName)
+                : NotificationTexts.ReactivatedForAssistant(doctor.FullName);
+            foreach (var assistantId in assistants)
+            {
+                notifications.Add(assistantId, assistantText, "/home", data);
+            }
         }
 
+        // Disabling closes the clinic: the bookings that have not started are cancelled and their patients told.
+        var boards = disable ? await closure.CancelFutureBookingsAsync(doctorId, cancellationToken) : [];
         auditor.Add(
-            suspend ? AuditActions.DoctorSuspended : AuditActions.DoctorReactivated,
-            AuditTargets.Doctor, doctorId, new { before, after = target, reason }, doctorId: doctorId);
+            disable ? AuditActions.DoctorDisabled : suspend ? AuditActions.DoctorSuspended : AuditActions.DoctorReactivated,
+            AuditTargets.Doctor, doctorId, new { before, after = target, reason, cancelledBookingBoards = boards.Count }, doctorId: doctorId);
         await db.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
+        foreach (var (branchId, date) in boards)
+        {
+            await boardPublisher.PublishAsync(branchId, date, cancellationToken);
+        }
 
         // The session's doctorStatus (auth/me, refresh) comes from the cached account state.
         stateCache.Invalidate(doctorId);

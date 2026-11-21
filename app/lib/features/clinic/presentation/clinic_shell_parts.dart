@@ -9,6 +9,7 @@ import '../../../core/widgets/support_contact.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../auth/application/auth_controller.dart';
 import '../../auth/domain/user_role.dart';
+import '../../patients/presentation/widgets/clinic_ui.dart' show ClinicFormat;
 import '../../startup/startup.dart';
 import '../application/clinic_providers.dart';
 import '../domain/clinic_context.dart';
@@ -98,6 +99,8 @@ class SuspensionBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final clinic = ref.watch(clinicContextProvider).value;
     final show = clinic?.isSuspended ?? false;
+    final month = clinic?.doctor.suspendedForMonth;
+    final suspendedMonth = month == null ? null : DateTime.utc(int.parse(month.substring(0, 4)), int.parse(month.substring(5, 7)));
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     return MotionSize(
@@ -117,7 +120,7 @@ class SuspensionBanner extends ConsumerWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          l10n.clinicSuspendedBanner,
+                          suspendedMonth == null ? l10n.clinicSuspendedBanner : l10n.clinicSuspendedBannerMonth(ClinicFormat.month(context, suspendedMonth)),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onErrorContainer),
                         ),
                       ),

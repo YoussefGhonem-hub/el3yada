@@ -1,25 +1,19 @@
-<<<<<<< HEAD
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-=======
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
+using System.Collections.Concurrent;
 using El3yada.Api.Development;
 using El3yada.Api.Infrastructure.Auth;
-using System.Collections.Concurrent;
 using El3yada.Api.Infrastructure.Firebase;
 using El3yada.Data;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
->>>>>>> phase-6/appointments-live-board
-using Microsoft.Extensions.DependencyInjection;
 
 namespace El3yada.Api.Tests;
 
 /// <summary>
-<<<<<<< HEAD
 /// The real API (Program.cs) in memory, with test settings: a test signing key, a temp storage folder,
 /// and the sample controller and validator from this assembly. It never opens the database.
 /// </summary>
@@ -33,6 +27,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?>
         {
             ["Jwt:SigningKey"] = "test-only-signing-key-0123456789abcdef",
+            ["Jobs:Enabled"] = "false",
             ["Storage:RootPath"] = Path.Combine(TempRoot, "files"),
             ["Email:PickupDirectory"] = Path.Combine(TempRoot, "mail"),
             ["Serilog:MinimumLevel:Default"] = "Warning",
@@ -65,17 +60,19 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         }
     }
 }
-=======
+
+
+/// <summary>
 /// Hosts the real API against a throwaway database built from the migrations and filled with
 /// <see cref="DemoDataSeeder"/>. One per test class, so tests that change data don't affect others.
 /// Uses SQL Server LocalDB by default; set EL3YADA_TEST_SQL to use another server (as the data tests do).
 /// </summary>
-public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public sealed class FeaturesApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly string _connectionString;
     private readonly string _storageRoot = Path.Combine(Path.GetTempPath(), "el3yada-tests", Guid.NewGuid().ToString("N"));
 
-    public ApiFactory()
+    public FeaturesApiFactory()
     {
         var server = Environment.GetEnvironmentVariable("EL3YADA_TEST_SQL")
             ?? @"Server=(localdb)\MSSQLLocalDB;Trusted_Connection=True;TrustServerCertificate=True";
@@ -104,10 +101,16 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Testing");
+        builder.UseEnvironment("Development");
         builder.UseSetting("ConnectionStrings:Default", _connectionString);
         builder.UseSetting("Jwt:SigningKey", "test-signing-key-0123456789-0123456789-abcdef");
-        builder.UseSetting("FileStorage:RootPath", _storageRoot);
+        builder.UseSetting("Storage:RootPath", _storageRoot);
+        builder.UseSetting("Email:Delivery", "Pickup");
+        builder.UseSetting("Email:PickupDirectory", Path.Combine(_storageRoot, "mail"));
+        builder.UseSetting("Email:ResetPasswordUrl", "https://el3yada.test/reset-password");
+        builder.UseSetting("Email:VerifyEmailUrl", "https://el3yada.test/verify-email");
+        builder.UseSetting("Serilog:MinimumLevel:Default", "Warning");
+        builder.UseSetting("Serilog:WriteTo:File:Args:path", Path.Combine(_storageRoot, "logs", "api-.log"));
         builder.UseSetting("Jobs:Enabled", "false");
         builder.ConfigureServices(services =>
         {
@@ -180,4 +183,3 @@ public sealed class FakeBoardMirror : ILiveBoardMirror
         return Task.CompletedTask;
     }
 }
->>>>>>> phase-6/appointments-live-board

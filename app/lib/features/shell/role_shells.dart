@@ -57,24 +57,15 @@ class NavDestinationSpec {
 
 /// The area each role lands in after sign-in (spec section 7.1).
 class RoleShell {
-<<<<<<< HEAD
   RoleShell({required this.role, required this.basePath, required this.destinations, this.profilePath});
-=======
-  RoleShell({required this.role, required this.basePath, required this.destinations, this.accountPath});
->>>>>>> phase-6/appointments-live-board
 
   final UserRole role;
   final String basePath;
   final List<NavDestinationSpec> destinations;
 
-<<<<<<< HEAD
   /// The user's own profile, opened from the account button in the top
   /// bar. Null when the role has no such button yet.
   final String? profilePath;
-=======
-  /// Opened from the avatar in the top bar instead of a menu item (patients, spec 7.1).
-  final String? accountPath;
->>>>>>> phase-6/appointments-live-board
 
   String get homePath => destinations.first.path;
   String get morePath => '$basePath/more';
@@ -123,7 +114,6 @@ class RoleShell {
     // D22, under Settings.
     profilePath: '/doctor/settings/profile',
     destinations: [
-<<<<<<< HEAD
       NavDestinationSpec(path: '/doctor/live', icon: Icons.monitor_heart_outlined, selectedIcon: Icons.monitor_heart, label: (l) => l.navLive, barLabel: (l) => l.navLiveShort, screenId: 'D34', primary: true),
       NavDestinationSpec(path: '/doctor/patients', icon: Icons.people_alt_outlined, selectedIcon: Icons.people_alt, label: (l) => l.navPatients, screenId: 'D4', primary: true),
       NavDestinationSpec(path: '/doctor/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'D1', primary: true),
@@ -131,23 +121,12 @@ class RoleShell {
       NavDestinationSpec(path: '/doctor/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'D30'),
       NavDestinationSpec(path: '/doctor/revenue', icon: Icons.trending_up, selectedIcon: Icons.trending_up, label: (l) => l.navRevenue, screenId: 'D35'),
       NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'D18'),
+      NavDestinationSpec(path: '/doctor/schedule', icon: Icons.schedule_outlined, selectedIcon: Icons.schedule, label: (l) => l.navSchedule, screenId: 'D29'),
       NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, selectedIcon: Icons.store_mall_directory, label: (l) => l.navBranches, screenId: 'D28'),
       NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, selectedIcon: Icons.badge, label: (l) => l.navAssistants, screenId: 'D25'),
       NavDestinationSpec(path: '/doctor/activity', icon: Icons.manage_history_outlined, selectedIcon: Icons.manage_history, label: (l) => l.navActivityLog, screenId: 'D27'),
+      NavDestinationSpec(path: '/doctor/notifications', icon: Icons.notifications_outlined, selectedIcon: Icons.notifications, label: (l) => l.navNotifications, screenId: 'D21'),
       NavDestinationSpec(path: '/doctor/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'D24'),
-=======
-      NavDestinationSpec(path: '/doctor/live', icon: Icons.monitor_heart_outlined, label: (l) => l.navLive, screenId: 'D34', primary: true),
-      NavDestinationSpec(path: '/doctor/patients', icon: Icons.people_alt_outlined, label: (l) => l.navPatients, screenId: 'D4', primary: true),
-      NavDestinationSpec(path: '/doctor/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'D1', primary: true),
-      NavDestinationSpec(path: '/doctor/chats', icon: Icons.chat_bubble_outline, label: (l) => l.navChats, screenId: 'D16', primary: true),
-      NavDestinationSpec(path: '/doctor/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'D30'),
-      NavDestinationSpec(path: '/doctor/revenue', icon: Icons.trending_up, label: (l) => l.navRevenue, screenId: 'D35'),
-      NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, label: (l) => l.navBilling, screenId: 'D18'),
-      NavDestinationSpec(path: '/doctor/schedule', icon: Icons.schedule_outlined, label: (l) => l.navSchedule, screenId: 'D29'),
-      NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, label: (l) => l.navBranches, screenId: 'D28'),
-      NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, label: (l) => l.navAssistants, screenId: 'D25'),
-      NavDestinationSpec(path: '/doctor/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'D24'),
->>>>>>> phase-6/appointments-live-board
     ],
   );
 
@@ -157,44 +136,28 @@ class RoleShell {
     role: UserRole.assistant,
     basePath: '/assistant',
     destinations: [
-<<<<<<< HEAD
       NavDestinationSpec(path: '/assistant/live', icon: Icons.monitor_heart_outlined, selectedIcon: Icons.monitor_heart, label: (l) => l.navLive, barLabel: (l) => l.navLiveShort, screenId: 'AS1', primary: true),
       NavDestinationSpec(path: '/assistant/patients', icon: Icons.people_alt_outlined, selectedIcon: Icons.people_alt, label: (l) => l.navPatients, screenId: 'AS2', primary: true),
       NavDestinationSpec(path: '/assistant/chats', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'AS9', primary: true, visibleInClinic: (c) => c.can(ClinicPermission.chat)),
       NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'AS13', visibleInClinic: (c) => c.can(ClinicPermission.appointmentsView)),
       NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AS18', visibleInClinic: (c) => c.can(ClinicPermission.billingView) || c.can(ClinicPermission.revenueView) || c.can(ClinicPermission.appointmentsView)),
       NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'AS10', visibleInClinic: (c) => c.can(ClinicPermission.billingView)),
+      NavDestinationSpec(path: '/assistant/schedule', icon: Icons.schedule_outlined, selectedIcon: Icons.schedule, label: (l) => l.navSchedule, screenId: 'AS17', visibleInClinic: (c) => c.can(ClinicPermission.scheduleManage)),
+      NavDestinationSpec(path: '/assistant/notifications', icon: Icons.notifications_outlined, selectedIcon: Icons.notifications, label: (l) => l.navNotifications, screenId: 'AS11'),
       NavDestinationSpec(path: '/assistant/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AS12'),
-=======
-      NavDestinationSpec(path: '/assistant/live', icon: Icons.monitor_heart_outlined, label: (l) => l.navLive, screenId: 'AS1', primary: true),
-      NavDestinationSpec(path: '/assistant/patients', icon: Icons.people_alt_outlined, label: (l) => l.navPatients, screenId: 'AS2', primary: true),
-      NavDestinationSpec(path: '/assistant/chats', icon: Icons.chat_bubble_outline, label: (l) => l.navChats, screenId: 'AS9', primary: true),
-      NavDestinationSpec(path: '/assistant/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'AS13'),
-      NavDestinationSpec(path: '/assistant/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'AS18'),
-      NavDestinationSpec(path: '/assistant/billing', icon: Icons.receipt_long_outlined, label: (l) => l.navBilling, screenId: 'AS10'),
-      NavDestinationSpec(path: '/assistant/schedule', icon: Icons.schedule_outlined, label: (l) => l.navSchedule, screenId: 'AS17'),
-      NavDestinationSpec(path: '/assistant/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'AS12'),
->>>>>>> phase-6/appointments-live-board
     ],
   );
 
   static final patient = RoleShell(
     role: UserRole.patient,
     basePath: '/patient',
-    accountPath: '/patient/account',
     destinations: [
-<<<<<<< HEAD
       NavDestinationSpec(path: '/patient/home', icon: Icons.home_outlined, selectedIcon: Icons.home, label: (l) => l.navHome, screenId: 'P1', primary: true),
       NavDestinationSpec(path: '/patient/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'P16', primary: true),
       NavDestinationSpec(path: '/patient/file', icon: Icons.folder_shared_outlined, selectedIcon: Icons.folder_shared, label: (l) => l.navMedicalFile, screenId: 'P4', primary: true),
       NavDestinationSpec(path: '/patient/chat', icon: Icons.chat_bubble_outline, selectedIcon: Icons.chat_bubble, label: (l) => l.navChats, screenId: 'P11', primary: true),
       NavDestinationSpec(path: '/patient/account', icon: Icons.person_outline, selectedIcon: Icons.person, label: (l) => l.navAccount, screenId: 'P14', primary: true),
-=======
-      NavDestinationSpec(path: '/patient/home', icon: Icons.home_outlined, label: (l) => l.navHome, screenId: 'P1', primary: true),
-      NavDestinationSpec(path: '/patient/appointments', icon: Icons.event_note_outlined, label: (l) => l.navAppointments, screenId: 'P16', primary: true),
-      NavDestinationSpec(path: '/patient/file', icon: Icons.folder_shared_outlined, label: (l) => l.navMedicalFile, screenId: 'P4', primary: true),
-      NavDestinationSpec(path: '/patient/chat', icon: Icons.chat_bubble_outline, label: (l) => l.navChats, screenId: 'P11', primary: true),
->>>>>>> phase-6/appointments-live-board
+      NavDestinationSpec(path: '/patient/notifications', icon: Icons.notifications_outlined, selectedIcon: Icons.notifications, label: (l) => l.navNotifications, screenId: 'P13'),
     ],
   );
 
@@ -203,32 +166,19 @@ class RoleShell {
     basePath: '/admin',
     profilePath: '/admin/settings/profile',
     destinations: [
-<<<<<<< HEAD
       NavDestinationSpec(path: '/admin/dashboard', icon: Icons.insights_outlined, selectedIcon: Icons.insights, label: (l) => l.navDashboard, screenId: 'AD1', primary: true),
       NavDestinationSpec(path: '/admin/doctors', icon: Icons.medical_services_outlined, selectedIcon: Icons.medical_services, label: (l) => l.navDoctors, screenId: 'AD4', primary: true),
       NavDestinationSpec(path: '/admin/payments', icon: Icons.payments_outlined, selectedIcon: Icons.payments, label: (l) => l.navPayments, screenId: 'AD7', primary: true),
       NavDestinationSpec(path: '/admin/invoices', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navInvoices, screenId: 'AD9', primary: true),
       NavDestinationSpec(path: '/admin/signups', icon: Icons.medical_information_outlined, selectedIcon: Icons.medical_information, label: (l) => l.navSignups, screenId: 'AD2'),
       NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, selectedIcon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
+      NavDestinationSpec(path: '/admin/deletion-requests', icon: Icons.person_remove_outlined, selectedIcon: Icons.person_remove, label: (l) => l.navDeletionRequests, screenId: 'AD12'),
       NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, selectedIcon: Icons.category, label: (l) => l.navSpecialties, screenId: 'AD19'),
       NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, selectedIcon: Icons.library_books, label: (l) => l.navCatalogs, screenId: 'AD20'),
       NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, selectedIcon: Icons.admin_panel_settings, label: (l) => l.navAdmins, screenId: 'AD14', visibleTo: (s) => s.isSuperAdmin),
       NavDestinationSpec(path: '/admin/audit', icon: Icons.history, selectedIcon: Icons.history, label: (l) => l.navAuditLog, screenId: 'AD15'),
+      NavDestinationSpec(path: '/admin/notifications', icon: Icons.notifications_outlined, selectedIcon: Icons.notifications, label: (l) => l.navNotifications, screenId: 'AD17'),
       NavDestinationSpec(path: '/admin/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AD13'),
-=======
-      NavDestinationSpec(path: '/admin/dashboard', icon: Icons.insights_outlined, label: (l) => l.navDashboard, screenId: 'AD1', primary: true),
-      NavDestinationSpec(path: '/admin/doctors', icon: Icons.medical_services_outlined, label: (l) => l.navDoctors, screenId: 'AD4', primary: true),
-      NavDestinationSpec(path: '/admin/payments', icon: Icons.payments_outlined, label: (l) => l.navPayments, screenId: 'AD7', primary: true),
-      NavDestinationSpec(path: '/admin/invoices', icon: Icons.receipt_long_outlined, label: (l) => l.navInvoices, screenId: 'AD9', primary: true),
-      NavDestinationSpec(path: '/admin/signups', icon: Icons.how_to_reg_outlined, label: (l) => l.navSignups, screenId: 'AD2'),
-      NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
-      NavDestinationSpec(path: '/admin/deletion-requests', icon: Icons.person_remove_outlined, label: (l) => l.navDeletionRequests, screenId: 'AD12'),
-      NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, label: (l) => l.navSpecialties, screenId: 'AD19'),
-      NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, label: (l) => l.navCatalogs, screenId: 'AD20'),
-      NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, label: (l) => l.navAdmins, screenId: 'AD14'),
-      NavDestinationSpec(path: '/admin/audit', icon: Icons.history, label: (l) => l.navAuditLog, screenId: 'AD15'),
-      NavDestinationSpec(path: '/admin/settings', icon: Icons.settings_outlined, label: (l) => l.navSettings, screenId: 'AD13'),
->>>>>>> phase-6/appointments-live-board
     ],
   );
 }

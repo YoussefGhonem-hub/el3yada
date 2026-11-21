@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/network/api_error.dart';
 import '../../../core/platform/contact_launcher.dart';
+import '../../../core/theme/app_theme.dart' show Breakpoints;
+import '../../../core/widgets/navigation/app_bottom_bar.dart' show AppBottomBar;
 import '../../patient/application/patient_providers.dart';
 import '../../patient/domain/patient_models.dart';
 import '../../patient/presentation/patient_format.dart';
@@ -26,10 +28,14 @@ class MyAppointmentsScreen extends ConsumerWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => context.push('/patient/appointments/book'),
-          icon: const Icon(Icons.add),
-          label: Text(l10n.book),
+        // The shell's floating bar extends the body: lift the button above it.
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).width < Breakpoints.tablet ? AppBottomBar.barHeight : 0),
+          child: FloatingActionButton.extended(
+            onPressed: () => context.push('/patient/appointments/book'),
+            icon: const Icon(Icons.add),
+            label: Text(l10n.book),
+          ),
         ),
         body: Column(
           children: [

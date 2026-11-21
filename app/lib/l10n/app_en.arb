@@ -4,9 +4,13 @@
   "appTagline": "Your clinic, organised.",
   "loginTitle": "Sign in",
   "loginWelcome": "Welcome back",
-  "@loginWelcome": { "description": "A3: the heading on the sign-in sheet, above the fields." },
+  "@loginWelcome": {
+    "description": "A3: the heading on the sign-in sheet, above the fields."
+  },
   "loginWelcomeBody": "Sign in to continue.",
-  "@loginWelcomeBody": { "description": "A3: the line under the heading. Every role signs in here." },
+  "@loginWelcomeBody": {
+    "description": "A3: the line under the heading. Every role signs in here."
+  },
   "identifierLabel": "Mobile number or email",
   "passwordLabel": "Password",
   "showPassword": "Show password",
@@ -29,7 +33,10 @@
   "@underConstructionBody": {
     "description": "Shown on placeholder screens. screenId is the screen ID from spec.md, for example D34.",
     "placeholders": {
-      "screenId": { "type": "String", "example": "D34" }
+      "screenId": {
+        "type": "String",
+        "example": "D34"
+      }
     }
   },
   "switchLanguage": "Switch language",
@@ -72,7 +79,6 @@
   "navSpecialties": "Specialties",
   "navAdmins": "Admins",
   "navAuditLog": "Audit log",
-<<<<<<< HEAD
   "done": "Done",
   "navBadgeNew": "New",
   "navBadgeUnread": "{count} unread",
@@ -99,9 +105,10 @@
       }
     }
   },
-
   "splashSlow": "Connecting…",
-  "@splashSlow": { "description": "A1: shown under the logo when start-up takes more than a few seconds." },
+  "@splashSlow": {
+    "description": "A1: shown under the logo when start-up takes more than a few seconds."
+  },
   "languageTitle": "Choose your language",
   "languageBody": "You can change it later in Settings.",
   "languageArabic": "العربية",
@@ -110,14 +117,28 @@
   "chooseAccountTitle": "Log in as",
   "chooseAccountBody": "This number has two accounts. Choose one.",
   "assistantAtClinic": "Assistant at {doctorName}'s clinic",
-  "@assistantAtClinic": { "placeholders": { "doctorName": { "type": "String", "example": "Dr. Sara" } } },
+  "@assistantAtClinic": {
+    "placeholders": {
+      "doctorName": {
+        "type": "String",
+        "example": "Dr. Sara"
+      }
+    }
+  },
   "errorSignInAgain": "Your sign-in timed out. Sign in again.",
   "errorServer": "Something went wrong on our side. Try again in a moment.",
   "errorInvalidEmail": "Enter a valid email address.",
   "errorInvalidMobile": "Enter a valid Egyptian mobile number.",
   "errorTooLong": "This is too long.",
   "errorRetryInMinutes": "Too many attempts. Try again in {minutes} min.",
-  "@errorRetryInMinutes": { "placeholders": { "minutes": { "type": "int", "example": "15" } } },
+  "@errorRetryInMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
   "forgotTitle": "Forgot password",
   "forgotBody": "Enter the email or mobile number you sign in with.",
   "forgotSubmit": "Send",
@@ -135,9 +156,22 @@
   "passwordRuleLetter": "A letter",
   "passwordRuleNumber": "A number",
   "passwordRuleMet": "Done: {rule}",
-  "@passwordRuleMet": { "description": "Screen reader text for a met password rule.", "placeholders": { "rule": { "type": "String" } } },
+  "@passwordRuleMet": {
+    "description": "Screen reader text for a met password rule.",
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
   "passwordRuleNotMet": "Not yet: {rule}",
-  "@passwordRuleNotMet": { "placeholders": { "rule": { "type": "String" } } },
+  "@passwordRuleNotMet": {
+    "placeholders": {
+      "rule": {
+        "type": "String"
+      }
+    }
+  },
   "acceptTermsLabel": "I accept the Terms of use and the Privacy Policy",
   "savePasswordButton": "Save password",
   "errorPasswordsDontMatch": "The passwords don't match.",
@@ -149,7 +183,14 @@
   "privacyTitle": "Privacy Policy",
   "legalEmpty": "This text isn't available yet.",
   "legalUpdated": "Last updated {date}",
-  "@legalUpdated": { "placeholders": { "date": { "type": "String", "example": "15/11/2026" } } },
+  "@legalUpdated": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "15/11/2026"
+      }
+    }
+  },
   "accountDisabledTitle": "Account disabled",
   "accountDisabledBody": "Your account has been disabled. Contact support.",
   "clinicNotActiveTitle": "Clinic account not active",
@@ -163,7 +204,14 @@
   "updateButton": "Update",
   "updateNoLink": "Get the latest version from where you installed the app.",
   "appVersionLabel": "Version {version}",
-  "@appVersionLabel": { "placeholders": { "version": { "type": "String", "example": "1.2.0" } } },
+  "@appVersionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.2.0"
+      }
+    }
+  },
   "maintenanceTitle": "We'll be right back",
   "maintenanceBody": "el3yada is under maintenance. Try again in a little while.",
   "retryButton": "Try again",
@@ -177,16 +225,43 @@
   "errorEmailTokenExpired": "This code has expired. Ask for a new email.",
   "errorEmailTokenUsed": "This code was already used. Ask for a new email.",
   "regTitle": "Doctor registration",
-  "@regTitle": { "description": "A4 app bar. Keys starting with reg belong to the doctor registration screens A4–A7." },
+  "@regTitle": {
+    "description": "A4 app bar. Keys starting with reg belong to the doctor registration screens A4–A7."
+  },
   "regResubmitTitle": "Edit registration",
   "regStepAccount": "Account",
   "regStepProfessional": "Professional details",
   "regStepBranch": "First branch",
   "regStepReview": "Review and send",
   "regStepOf": "Step {step} of {count}",
-  "@regStepOf": { "placeholders": { "step": { "type": "int", "example": "2" }, "count": { "type": "int", "example": "4" } } },
+  "@regStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int",
+        "example": "2"
+      },
+      "count": {
+        "type": "int",
+        "example": "4"
+      }
+    }
+  },
   "regStepSemantics": "Step {step} of {count}: {name}",
-  "@regStepSemantics": { "description": "Screen reader label of the A4 progress bar.", "placeholders": { "step": { "type": "int" }, "count": { "type": "int" }, "name": { "type": "String", "example": "Professional details" } } },
+  "@regStepSemantics": {
+    "description": "Screen reader label of the A4 progress bar.",
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String",
+        "example": "Professional details"
+      }
+    }
+  },
   "regNext": "Next",
   "regBack": "Back",
   "regSubmit": "Create my account",
@@ -211,7 +286,14 @@
   "regExtraSpecialtiesShort": "Other specialties",
   "regAddSpecialty": "Add a specialty",
   "regRemoveSpecialty": "Remove {name}",
-  "@regRemoveSpecialty": { "placeholders": { "name": { "type": "String", "example": "Cardiology" } } },
+  "@regRemoveSpecialty": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Cardiology"
+      }
+    }
+  },
   "regSearchHint": "Search",
   "regClearSearch": "Clear search",
   "regNoResults": "Nothing matches your search.",
@@ -231,9 +313,23 @@
   "regSourceGallery": "Choose from your photos",
   "regSourceFiles": "Choose a file (photo or PDF)",
   "regFileSizeKb": "{size} KB",
-  "@regFileSizeKb": { "placeholders": { "size": { "type": "int", "example": "850" } } },
+  "@regFileSizeKb": {
+    "placeholders": {
+      "size": {
+        "type": "int",
+        "example": "850"
+      }
+    }
+  },
   "regFileSizeMb": "{size} MB",
-  "@regFileSizeMb": { "placeholders": { "size": { "type": "String", "example": "2.4" } } },
+  "@regFileSizeMb": {
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "example": "2.4"
+      }
+    }
+  },
   "regBranchSection": "Branch details",
   "regBranchIntro": "Patients will see this branch. You can add more branches after approval.",
   "regBranchNameLabel": "Branch name",
@@ -255,7 +351,14 @@
   "regPhonesSection": "Clinic phone numbers",
   "regPhonesHint": "1 to 5 numbers: mobile, landline or hotline.",
   "regPhoneLabel": "Number {index}",
-  "@regPhoneLabel": { "placeholders": { "index": { "type": "int", "example": "1" } } },
+  "@regPhoneLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
   "regPhoneType": "Number type",
   "regPhoneTypeReception": "Reception",
   "regPhoneTypeMobile": "Mobile",
@@ -269,12 +372,27 @@
   "regConsultationPrice": "Consultation",
   "regCurrency": "EGP",
   "regPriceValue": "EGP {amount}",
-  "@regPriceValue": { "description": "A price. amount has Western digits in both languages.", "placeholders": { "amount": { "type": "String", "example": "300" } } },
+  "@regPriceValue": {
+    "description": "A price. amount has Western digits in both languages.",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "300"
+      }
+    }
+  },
   "regReviewIntro": "Check your details, then create your account.",
   "regReviewIntroResubmit": "Check your changes, then send them for review again.",
   "regEdit": "Edit",
   "regEditSection": "Edit {section}",
-  "@regEditSection": { "placeholders": { "section": { "type": "String", "example": "Account" } } },
+  "@regEditSection": {
+    "placeholders": {
+      "section": {
+        "type": "String",
+        "example": "Account"
+      }
+    }
+  },
   "regNotSet": "Not set",
   "regAddressLabel": "Address",
   "regLandmarkShort": "Landmark",
@@ -303,11 +421,25 @@
   "regStillPending": "Still under review. We'll notify you once it's approved.",
   "regSubmittedData": "What you sent",
   "regSubmittedOn": "Sent on {date}",
-  "@regSubmittedOn": { "placeholders": { "date": { "type": "String", "example": "Nov 14, 2026" } } },
+  "@regSubmittedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Nov 14, 2026"
+      }
+    }
+  },
   "regDataError": "Couldn't load your details.",
   "regVerifyCardTitle": "Verify your email",
   "regVerifyCardBody": "We sent a link to {email}.",
-  "@regVerifyCardBody": { "placeholders": { "email": { "type": "String", "example": "sami@example.com" } } },
+  "@regVerifyCardBody": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "sami@example.com"
+      }
+    }
+  },
   "regRejectedTitle": "Your registration wasn't approved",
   "regRejectedBody": "Fix what the review team asked for, then send your registration again.",
   "regRejectedReason": "Reason from the review team",
@@ -320,37 +452,84 @@
   "regVerifiedCheck": "I've verified",
   "regResend": "Resend the email",
   "regResendIn": "Resend in {seconds} s",
-  "@regResendIn": { "placeholders": { "seconds": { "type": "int", "example": "42" } } },
+  "@regResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
   "regResent": "Sent. Check your inbox and your spam folder.",
   "regNotVerifiedYet": "Not verified yet. Open the link in the email, then try again.",
   "regVerifiedTitle": "Email verified",
   "regVerifiedBody": "Thank you. Your email address is confirmed.",
-
   "adminMyProfile": "My profile",
-  "@adminMyProfile": {"description":"Admin top-bar button and AD18 title."},
+  "@adminMyProfile": {
+    "description": "Admin top-bar button and AD18 title."
+  },
   "adminCancel": "Cancel",
   "adminClose": "Close",
   "adminSave": "Save",
   "adminRefresh": "Refresh",
   "adminRefreshFailed": "Couldn't refresh. Showing the last list.",
   "adminListSeparator": ", ",
-  "@adminListSeparator": {"description":"Between items of a list in a sentence."},
+  "@adminListSeparator": {
+    "description": "Between items of a list in a sentence."
+  },
   "adminNotProvided": "Not provided",
   "adminSystem": "System",
   "adminUnknownUser": "Unknown user",
   "adminNew": "New",
-  "@adminNew": {"description":"Coral mark on a sign-up request sent in the last day."},
+  "@adminNew": {
+    "description": "Coral mark on a sign-up request sent in the last day."
+  },
   "adminDoctorName": "Dr. {name}",
-  "@adminDoctorName": {"placeholders":{"name":{"type":"String","example":"Sami Mansour"}}},
+  "@adminDoctorName": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Sami Mansour"
+      }
+    }
+  },
   "adminJustNow": "Just now",
   "adminMinutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
-  "@adminMinutesAgo": {"placeholders":{"count":{"type":"int","example":"5"}}},
+  "@adminMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
   "adminHoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
-  "@adminHoursAgo": {"placeholders":{"count":{"type":"int","example":"2"}}},
+  "@adminHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
   "adminDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
-  "@adminDaysAgo": {"placeholders":{"count":{"type":"int","example":"3"}}},
+  "@adminDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
   "adminMoneyEgp": "EGP {amount}",
-  "@adminMoneyEgp": {"placeholders":{"amount":{"type":"String","example":"300"}}},
+  "@adminMoneyEgp": {
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "300"
+      }
+    }
+  },
   "adminCurrency": "EGP",
   "adminUnitDays": "days",
   "adminUnitMb": "MB",
@@ -381,9 +560,27 @@
   "adminErrorAmount": "Enter an amount in EGP, with at most 2 decimals.",
   "adminErrorWholeNumber": "Enter a whole number.",
   "adminErrorRange": "Enter a value from {min} to {max}.",
-  "@adminErrorRange": {"placeholders":{"min":{"type":"String","example":"0"},"max":{"type":"String","example":"10,000"}}},
+  "@adminErrorRange": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "0"
+      },
+      "max": {
+        "type": "String",
+        "example": "10,000"
+      }
+    }
+  },
   "adminErrorMaxLength": "Use at most {max} characters.",
-  "@adminErrorMaxLength": {"placeholders":{"max":{"type":"String","example":"2,000"}}},
+  "@adminErrorMaxLength": {
+    "placeholders": {
+      "max": {
+        "type": "String",
+        "example": "2,000"
+      }
+    }
+  },
   "adminErrorInvalidPhone": "Enter a valid mobile, landline or hotline number.",
   "adminErrorInvalidWhatsapp": "Enter a valid mobile number (international numbers start with +).",
   "adminFixErrors": "Fix the highlighted fields, then save.",
@@ -398,10 +595,28 @@
   "adminSignupsNoMatchBody": "Check the spelling, or search by mobile or syndicate number.",
   "adminSelectRequest": "Choose a doctor to see their account",
   "adminSubmittedShort": "sent {time}",
-  "@adminSubmittedShort": {"placeholders":{"time":{"type":"String","example":"2 hours ago"}}},
+  "@adminSubmittedShort": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "2 hours ago"
+      }
+    }
+  },
   "adminReviewTitle": "Sign-up request",
   "adminSubmittedAt": "Sent {relative} · {date}",
-  "@adminSubmittedAt": {"placeholders":{"relative":{"type":"String","example":"2 hours ago"},"date":{"type":"String","example":"Nov 15, 2026, 10:04 AM"}}},
+  "@adminSubmittedAt": {
+    "placeholders": {
+      "relative": {
+        "type": "String",
+        "example": "2 hours ago"
+      },
+      "date": {
+        "type": "String",
+        "example": "Nov 15, 2026, 10:04 AM"
+      }
+    }
+  },
   "adminResubmitted": "Sent again",
   "adminEmailNotVerified": "Email not confirmed",
   "adminEmailVerified": "Confirmed",
@@ -435,19 +650,54 @@
   "adminPhoneLandline": "Landline",
   "adminPhoneReception": "Reception",
   "adminReviewApprovedBy": "Approved by {name}",
-  "@adminReviewApprovedBy": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminReviewApprovedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminReviewRejectedBy": "Rejected by {name}",
-  "@adminReviewRejectedBy": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminReviewRejectedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminApprove": "Approve",
   "adminReject": "Reject",
   "adminReviewHint": "Check the syndicate card against the name and number before you decide.",
   "adminApproveTitle": "Approve Dr. {name}?",
-  "@adminApproveTitle": {"placeholders":{"name":{"type":"String","example":"Sami Mansour"}}},
+  "@adminApproveTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Sami Mansour"
+      }
+    }
+  },
   "adminApproveBody": "The account becomes active and the doctor is notified. They can start using el3yada right away.",
   "adminApprovedMessage": "Dr. {name} is approved and can now use el3yada.",
-  "@adminApprovedMessage": {"placeholders":{"name":{"type":"String","example":"Sami Mansour"}}},
+  "@adminApprovedMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Sami Mansour"
+      }
+    }
+  },
   "adminRejectTitle": "Reject Dr. {name}'s sign-up?",
-  "@adminRejectTitle": {"placeholders":{"name":{"type":"String","example":"Sami Mansour"}}},
+  "@adminRejectTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Sami Mansour"
+      }
+    }
+  },
   "adminRejectBody": "The doctor sees this reason, can correct their details and send the request again.",
   "adminRejectReasonLabel": "Reason",
   "adminRejectPresets": "Common reasons",
@@ -455,26 +705,60 @@
   "adminRejectPresetNumber": "The syndicate number doesn't match the card.",
   "adminRejectPresetBranch": "The clinic address or phone number is incomplete.",
   "adminRejectedMessage": "Dr. {name}'s sign-up was rejected. They'll see your reason.",
-  "@adminRejectedMessage": {"placeholders":{"name":{"type":"String","example":"Sami Mansour"}}},
+  "@adminRejectedMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Sami Mansour"
+      }
+    }
+  },
   "adminLicenseTitle": "Syndicate card",
   "adminLicenseSubtitle": "Compare the name and number with the details below.",
   "adminLicenseImageLabel": "Syndicate card photo. Open it to zoom.",
   "adminLicenseImageOf": "Syndicate card of Dr. {name}",
-  "@adminLicenseImageOf": {"placeholders":{"name":{"type":"String","example":"Sami Mansour"}}},
+  "@adminLicenseImageOf": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Sami Mansour"
+      }
+    }
+  },
   "adminLicenseZoom": "Zoom",
   "adminLicensePdf": "Syndicate card (PDF)",
   "adminLicenseFile": "File",
   "adminLicenseFileName": "license",
-  "@adminLicenseFileName": {"description":"Start of the temporary file name of a downloaded license."},
+  "@adminLicenseFileName": {
+    "description": "Start of the temporary file name of a downloaded license."
+  },
   "adminLicenseOpen": "Open",
   "adminLicenseCantOpen": "This device can't open the file here. Open it from the computer app.",
   "adminFileSizeKb": "{kb} KB",
-  "@adminFileSizeKb": {"placeholders":{"kb":{"type":"int","example":"245"}}},
+  "@adminFileSizeKb": {
+    "placeholders": {
+      "kb": {
+        "type": "int",
+        "example": "245"
+      }
+    }
+  },
   "adminZoomIn": "Zoom in",
   "adminZoomOut": "Zoom out",
   "adminZoomReset": "Fit to screen",
   "adminSettingsLastChange": "Last changed by {name} · {time}",
-  "@adminSettingsLastChange": {"placeholders":{"name":{"type":"String","example":"Nour Adel"},"time":{"type":"String","example":"2 days ago"}}},
+  "@adminSettingsLastChange": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      },
+      "time": {
+        "type": "String",
+        "example": "2 days ago"
+      }
+    }
+  },
   "adminGroupBilling": "Billing",
   "adminGroupBillingBody": "Platform fees for each visit, and the payment rules.",
   "adminGroupPayment": "Payment",
@@ -517,43 +801,122 @@
   "adminSettingPrivacyAr": "Privacy Policy (Arabic)",
   "adminSettingPrivacyEn": "Privacy Policy (English)",
   "adminRangeHint": "From {min} to {max}",
-  "@adminRangeHint": {"placeholders":{"min":{"type":"String","example":"1"},"max":{"type":"String","example":"5"}}},
+  "@adminRangeHint": {
+    "placeholders": {
+      "min": {
+        "type": "String",
+        "example": "1"
+      },
+      "max": {
+        "type": "String",
+        "example": "5"
+      }
+    }
+  },
   "adminVersionHint": "Like 1.2.0",
   "adminPhoneHint": "Mobile, landline or hotline",
   "adminWhatsappHint": "Egyptian number, or international starting with +",
   "adminAppliesToNewSessions": "Applies to new sessions only",
   "adminAppliesToNewInvoices": "Applies to new invoices only",
   "adminWasValue": "Saved value: {value}",
-  "@adminWasValue": {"placeholders":{"value":{"type":"String","example":"EGP 30"}}},
+  "@adminWasValue": {
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "EGP 30"
+      }
+    }
+  },
   "adminCharacterCount": "{count} / {max}",
-  "@adminCharacterCount": {"placeholders":{"count":{"type":"String","example":"1,204"},"max":{"type":"String","example":"100,000"}}},
+  "@adminCharacterCount": {
+    "placeholders": {
+      "count": {
+        "type": "String",
+        "example": "1,204"
+      },
+      "max": {
+        "type": "String",
+        "example": "100,000"
+      }
+    }
+  },
   "adminFieldHistory": "Change history: {field}",
-  "@adminFieldHistory": {"placeholders":{"field":{"type":"String","example":"Examination fee"}}},
+  "@adminFieldHistory": {
+    "placeholders": {
+      "field": {
+        "type": "String",
+        "example": "Examination fee"
+      }
+    }
+  },
   "adminMaintenanceOn": "On: everyone except admins sees the maintenance screen.",
   "adminMaintenanceOff": "Off: the app is open for everyone.",
   "adminMaintenanceWillStart": "Maintenance starts as soon as you save.",
   "adminMaintenanceWillEnd": "The app opens for everyone as soon as you save.",
   "adminUnsavedChanges": "{count, plural, =1{1 change not saved} other{{count} changes not saved}}",
-  "@adminUnsavedChanges": {"placeholders":{"count":{"type":"int","example":"3"}}},
+  "@adminUnsavedChanges": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
   "adminAllSaved": "All changes saved",
   "adminDiscard": "Discard",
   "adminDiscardTitle": "Discard your changes?",
   "adminDiscardBody": "{count, plural, =1{Your change hasn't been saved and will be lost.} other{Your {count} changes haven't been saved and will be lost.}}",
-  "@adminDiscardBody": {"placeholders":{"count":{"type":"int","example":"3"}}},
+  "@adminDiscardBody": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
   "adminSettingsSaved": "{count, plural, =1{1 setting saved} other{{count} settings saved}}",
-  "@adminSettingsSaved": {"placeholders":{"count":{"type":"int","example":"2"}}},
+  "@adminSettingsSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
   "adminHistoryTitle": "Change history",
   "adminHistoryAll": "All settings",
   "adminHistoryEmptyTitle": "No changes yet",
   "adminHistoryEmptyBody": "Every saved change shows here, with who made it.",
   "adminHistoryChangedBy": "{name} · {time}",
-  "@adminHistoryChangedBy": {"placeholders":{"name":{"type":"String","example":"Nour Adel"},"time":{"type":"String","example":"Nov 15, 2026, 10:04 AM"}}},
+  "@adminHistoryChangedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      },
+      "time": {
+        "type": "String",
+        "example": "Nov 15, 2026, 10:04 AM"
+      }
+    }
+  },
   "adminHistoryChangedTo": "changed to",
   "adminHistoryBefore": "Before",
   "adminHistoryAfter": "After",
   "adminHistoryShowFull": "Show the full text",
   "adminAdminsCount": "Admins: {count} · Active super admins: {superAdmins}",
-  "@adminAdminsCount": {"placeholders":{"count":{"type":"int","example":"5"},"superAdmins":{"type":"int","example":"2"}}},
+  "@adminAdminsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      },
+      "superAdmins": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
   "adminAdminsRestricted": "Only super admins can manage admins.",
   "adminAddAdmin": "Add admin",
   "adminAddAdminBody": "They get a temporary password and choose their own at their first sign-in.",
@@ -566,45 +929,136 @@
   "adminPasswordNotSet": "Hasn't set a password",
   "adminNeverSignedIn": "Never",
   "adminLastSignIn": "Last sign-in: {time}",
-  "@adminLastSignIn": {"placeholders":{"time":{"type":"String","example":"5 hours ago"}}},
+  "@adminLastSignIn": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "5 hours ago"
+      }
+    }
+  },
   "adminYouSuffix": "{name} (you)",
-  "@adminYouSuffix": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminYouSuffix": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminThatsYou": "That's you. Another super admin can change your account.",
   "adminActionsFor": "Actions for {name}",
-  "@adminActionsFor": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminActionsFor": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminMakeSuper": "Make super admin",
   "adminMakeAdmin": "Make admin",
   "adminMakeSuperTitle": "Make {name} a super admin?",
-  "@adminMakeSuperTitle": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminMakeSuperTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminMakeSuperBody": "They'll be able to add admins, change roles and disable admins.",
   "adminMakeAdminTitle": "Make {name} an admin?",
-  "@adminMakeAdminTitle": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminMakeAdminTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminMakeAdminBody": "They'll no longer manage admins. The change takes effect right away.",
   "adminRoleChanged": "{name}'s role was changed.",
-  "@adminRoleChanged": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminRoleChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminDisable": "Disable",
   "adminEnable": "Enable",
   "adminDisableTitle": "Disable {name}?",
-  "@adminDisableTitle": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminDisableTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminDisableBody": "They're signed out everywhere at once and can't sign in until you enable them again.",
   "adminEnableTitle": "Enable {name}?",
-  "@adminEnableTitle": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminEnableTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminEnableBody": "They can sign in again with their password.",
   "adminDisabledMessage": "{name} was disabled.",
-  "@adminDisabledMessage": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminDisabledMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminEnabledMessage": "{name} was enabled.",
-  "@adminEnabledMessage": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminEnabledMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminNotAllowedTitle": "Not allowed",
   "adminCreatedTitle": "{name} was added",
-  "@adminCreatedTitle": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminCreatedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminPasswordOnceWarning": "Copy this temporary password now. It's shown only once and can't be shown again. Share it with them privately.",
   "adminTemporaryPassword": "Temporary password",
   "adminCopyPassword": "Copy password",
   "adminCopied": "Copied",
   "adminPasswordNextStep": "They sign in with {email} and this password, then choose their own password.",
-  "@adminPasswordNextStep": {"placeholders":{"email":{"type":"String","example":"nour@el3yada.app"}}},
+  "@adminPasswordNextStep": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "nour@el3yada.app"
+      }
+    }
+  },
   "adminAuditCount": "{count, plural, =0{No entries} =1{1 entry} other{{count} entries}}",
-  "@adminAuditCount": {"placeholders":{"count":{"type":"int","example":"73"}}},
+  "@adminAuditCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "73"
+      }
+    }
+  },
   "adminAuditEmptyTitle": "Nothing recorded yet",
   "adminAuditNoMatchTitle": "No entries match these filters",
   "adminAuditNoMatchBody": "Try a longer date range or clear some filters.",
@@ -619,9 +1073,27 @@
   "adminFilterAllTargets": "All targets",
   "adminFilterDates": "Any date",
   "adminFilterBy": "By {name}",
-  "@adminFilterBy": {"placeholders":{"name":{"type":"String","example":"Nour Adel"}}},
+  "@adminFilterBy": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Nour Adel"
+      }
+    }
+  },
   "adminDateRange": "{from} – {to}",
-  "@adminDateRange": {"placeholders":{"from":{"type":"String","example":"Nov 1"},"to":{"type":"String","example":"Nov 15"}}},
+  "@adminDateRange": {
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "Nov 1"
+      },
+      "to": {
+        "type": "String",
+        "example": "Nov 15"
+      }
+    }
+  },
   "adminColumnWhen": "When",
   "adminColumnWho": "Who",
   "adminColumnWhat": "What",
@@ -646,14 +1118,39 @@
   "adminAuditLicenseViewed": "Viewed a doctor's syndicate card",
   "adminAuditAdminSeeded": "Created the first super admin",
   "adminAuditAdminCreated": "Added an admin ({role})",
-  "@adminAuditAdminCreated": {"placeholders":{"role":{"type":"String","example":"Super admin"}}},
+  "@adminAuditAdminCreated": {
+    "placeholders": {
+      "role": {
+        "type": "String",
+        "example": "Super admin"
+      }
+    }
+  },
   "adminAuditAdminRoleChanged": "Changed an admin's role from {before} to {after}",
-  "@adminAuditAdminRoleChanged": {"placeholders":{"before":{"type":"String","example":"Super admin"},"after":{"type":"String","example":"Admin"}}},
+  "@adminAuditAdminRoleChanged": {
+    "placeholders": {
+      "before": {
+        "type": "String",
+        "example": "Super admin"
+      },
+      "after": {
+        "type": "String",
+        "example": "Admin"
+      }
+    }
+  },
   "adminAuditAdminDisabled": "Disabled an admin",
   "adminAuditAdminEnabled": "Enabled an admin",
   "adminAuditProfileUpdated": "Updated their profile",
   "adminAuditSettingsUpdated": "Changed settings: {fields}",
-  "@adminAuditSettingsUpdated": {"placeholders":{"fields":{"type":"String","example":"Examination fee, Grace period"}}},
+  "@adminAuditSettingsUpdated": {
+    "placeholders": {
+      "fields": {
+        "type": "String",
+        "example": "Examination fee, Grace period"
+      }
+    }
+  },
   "adminAuditPasswordSet": "Set a new password",
   "adminAuditPasswordChanged": "Changed their password",
   "adminAuditResetRequestedEmail": "Asked for a password reset by email",
@@ -696,10 +1193,25 @@
   "adminLogoutBody": "Sign out of el3yada on this device.",
   "navActivityLog": "Activity log",
   "clinicOfDoctor": "Dr {name}'s clinic",
-  "@clinicOfDoctor": {"description":"Top bar title for assistants (spec 7.6).","placeholders":{"name":{"type":"String"}}},
+  "@clinicOfDoctor": {
+    "description": "Top bar title for assistants (spec 7.6).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "clinicCurrentBranch": "Current branch",
   "clinicBranchTemporarilyClosed": "Temporarily closed",
   "clinicSuspendedBanner": "Service is suspended because an invoice is unpaid. Pay it to reactivate.",
+  "clinicSuspendedBannerMonth": "Service is suspended because the {month} invoice is unpaid. Pay it to reactivate.",
+  "@clinicSuspendedBannerMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
   "clinicPayNow": "Pay now",
   "clinicLoadFailed": "Couldn't load the clinic details.",
   "errorPermissionDenied": "You don't have permission to do this. Ask the doctor.",
@@ -707,16 +1219,35 @@
   "errorBranchNotAllowed": "This branch isn't one of yours.",
   "tempPasswordTitle": "Temporary password",
   "tempPasswordBody": "Give it to {name}. It's shown only this once, and they'll choose their own password when they sign in.",
-  "@tempPasswordBody": {"description":"Temporary password dialog (BR-P4, BR-AS2).","placeholders":{"name":{"type":"String"}}},
+  "@tempPasswordBody": {
+    "description": "Temporary password dialog (BR-P4, BR-AS2).",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "tempPasswordCopy": "Copy",
   "tempPasswordCopied": "Copied",
   "tempPasswordShareWhatsApp": "WhatsApp",
   "tempPasswordShareSms": "SMS",
   "tempPasswordMessage": "Your el3yada account: {phone}\nTemporary password: {password}\nYou'll choose a new password when you sign in.",
-  "@tempPasswordMessage": {"description":"The text shared by WhatsApp or SMS.","placeholders":{"phone":{"type":"String"},"password":{"type":"String"}}},
+  "@tempPasswordMessage": {
+    "description": "The text shared by WhatsApp or SMS.",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      },
+      "password": {
+        "type": "String"
+      }
+    }
+  },
   "tempPasswordMessageCopied": "No messaging app found. The message is copied; paste it where you like.",
   "branchErrorLimitReached": "You've reached the most branches you can have. Archive one to add another.",
-  "@branchErrorLimitReached": {"description":"BRANCH_LIMIT_REACHED (api-phase-2-clinic.md)."},
+  "@branchErrorLimitReached": {
+    "description": "BRANCH_LIMIT_REACHED (api-phase-2-clinic.md)."
+  },
   "branchErrorArchiveDefault": "The default branch can't be archived. Make another branch the default first.",
   "branchErrorLastActive": "The clinic needs at least one open branch, so this one can't be closed or archived.",
   "branchErrorHasBookings": "This branch has upcoming bookings. Move or cancel them first.",
@@ -729,14 +1260,28 @@
   "assistantErrorPhoneTaken": "This number is already an assistant, in this clinic or another.",
   "assistantErrorRemoved": "This assistant was removed. Add them again as a new assistant.",
   "profileTopBarTooltip": "My profile",
-  "@profileTopBarTooltip": {"description":"The account button in the top bar (admins: AD18, doctors: D22)."},
+  "@profileTopBarTooltip": {
+    "description": "The account button in the top bar (admins: AD18, doctors: D22)."
+  },
   "settingsSubtitleDoctor": "Your profile, prices, language, notifications and password.",
   "settingsSubtitleAssistant": "Your language, notifications and password, and what you can do in the clinic.",
   "settingsProfileHint": "Name, title, degrees and specialties",
   "settingsPermissionCount": "{count, plural, =0{No permissions} =1{1 permission} other{{count} permissions}}",
-  "@settingsPermissionCount": {"placeholders":{"count":{"type":"int"}}},
+  "@settingsPermissionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "settingsBranchCount": "{count, plural, =0{No branches} =1{1 branch} other{{count} branches}}",
-  "@settingsBranchCount": {"placeholders":{"count":{"type":"int"}}},
+  "@settingsBranchCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "settingsClinicGroup": "Clinic",
   "settingsPricesHint": "Examination and consultation, for the doctor and each branch",
   "settingsMyPermissions": "My permissions",
@@ -820,10 +1365,22 @@
   "branchAmenityWheelchair": "Wheelchair access",
   "branchAmenityKidsArea": "Children's waiting area",
   "branchEndsNextDayShort": "{range} (next day)",
-  "@branchEndsNextDayShort": {"placeholders":{"range":{"type":"String"}}},
+  "@branchEndsNextDayShort": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
   "profileSubtitle": "Your personal and professional details, as patients and the admin team see them.",
   "profileLastSaved": "Last saved {time}",
-  "@profileLastSaved": {"placeholders":{"time":{"type":"String"}}},
+  "@profileLastSaved": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "profilePersonal": "Personal details",
   "profileFullNameAr": "Full name in Arabic",
   "profileReadOnlyNote": "These identify your account and license. To change them, contact support.",
@@ -843,11 +1400,26 @@
   "pricesBranchesTitle": "Branch prices",
   "pricesUseDoctor": "Use the doctor's prices",
   "pricesUseDoctorOn": "Examination: {examination}, consultation: {consultation}",
-  "@pricesUseDoctorOn": {"placeholders":{"examination":{"type":"String"},"consultation":{"type":"String"}}},
+  "@pricesUseDoctorOn": {
+    "placeholders": {
+      "examination": {
+        "type": "String"
+      },
+      "consultation": {
+        "type": "String"
+      }
+    }
+  },
   "pricesUseDoctorOff": "This branch's own prices. An empty one uses the doctor's.",
   "pricesEmptyAskClinic": "Empty: patients see «Ask the clinic», and the amount is typed at each visit.",
   "pricesEmptyUsesDoctor": "Empty: the doctor's price ({price}) applies.",
-  "@pricesEmptyUsesDoctor": {"placeholders":{"price":{"type":"String"}}},
+  "@pricesEmptyUsesDoctor": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
   "pricesAskClinic": "Ask the clinic",
   "pricesSaved": "Prices saved. They apply to visits from now on.",
   "pricesNotYourBranch": "Only the doctor or this branch's assistants can change these prices.",
@@ -856,20 +1428,66 @@
   "pricesHistoryEmptyBody": "Every change shows here, with who made it and when.",
   "pricesNotSet": "not set",
   "pricesChange": "{type}: {before} → {after}",
-  "@pricesChange": {"placeholders":{"type":{"type":"String"},"before":{"type":"String"},"after":{"type":"String"}}},
+  "@pricesChange": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "before": {
+        "type": "String"
+      },
+      "after": {
+        "type": "String"
+      }
+    }
+  },
   "pricesChangedBy": "{name} ({role}), {time}",
-  "@pricesChangedBy": {"placeholders":{"name":{"type":"String"},"role":{"type":"String"},"time":{"type":"String"}}},
+  "@pricesChangedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "branchesSubtitle": "Where you see patients. Tap a branch to change its details, hours or status.",
   "branchesEmptyTitle": "No branches yet",
   "branchAdd": "Add branch",
   "branchCountOf": "{count} of {limit} branches",
-  "@branchCountOf": {"description":"D28 «2 من 5». Archived branches don't count.","placeholders":{"count":{"type":"int"},"limit":{"type":"int"}}},
+  "@branchCountOf": {
+    "description": "D28 «2 من 5». Archived branches don't count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "branchArchivedHint": "Archived: hidden from patients and bookings",
   "branchClosedToday": "Closed today",
   "branchUpcomingBookings": "{count, plural, =0{No upcoming bookings} =1{1 upcoming booking} other{{count} upcoming bookings}}",
-  "@branchUpcomingBookings": {"placeholders":{"count":{"type":"int"}}},
+  "@branchUpcomingBookings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "branchReopensOn": "Reopens on {date}",
-  "@branchReopensOn": {"placeholders":{"date":{"type":"String"}}},
+  "@branchReopensOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "branchSaved": "Saved",
   "branchTabInfo": "Info",
   "branchTabAddress": "Address and map",
@@ -877,7 +1495,13 @@
   "branchTabHours": "Working hours",
   "branchTabClinic": "Clinic info for patients",
   "branchTabUnsaved": "{tab}, not saved",
-  "@branchTabUnsaved": {"placeholders":{"tab":{"type":"String"}}},
+  "@branchTabUnsaved": {
+    "placeholders": {
+      "tab": {
+        "type": "String"
+      }
+    }
+  },
   "branchDescription": "Short description (optional)",
   "branchDescriptionHint": "For example: second floor, next to the pharmacy",
   "branchAreaLabel": "Area (optional)",
@@ -888,7 +1512,13 @@
   "branchForPatientsBody": "Shown on the branch card when patients book.",
   "branchPricesTitle": "This branch's prices",
   "branchHoursQueueNote": "Bookings here go by queue number. Each period takes {count} patients unless you set its own number.",
-  "@branchHoursQueueNote": {"placeholders":{"count":{"type":"int"}}},
+  "@branchHoursQueueNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "branchHoursTimedNote": "Bookings here go by appointment time.",
   "branchCopySaturday": "Copy Saturday to all days",
   "branchCopySaturdayTitle": "Copy Saturday to every day?",
@@ -911,10 +1541,22 @@
   "branchPatientsSee": "Patients see",
   "branchMakeDefault": "Make default",
   "branchMakeDefaultTitle": "Make {name} the default?",
-  "@branchMakeDefaultTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@branchMakeDefaultTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "branchMakeDefaultBody": "New visits and walk-ins use the default branch unless another one is picked.",
   "branchDefaultMessage": "{name} is now the default branch.",
-  "@branchDefaultMessage": {"placeholders":{"name":{"type":"String"}}},
+  "@branchDefaultMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "branchCloseTemporarily": "Close temporarily",
   "branchCloseBody": "Patients see this message on the branch card and can't book here until you reopen it.",
   "branchClosedMessageLabel": "Message for patients",
@@ -927,19 +1569,43 @@
   "branchReopenedMessage": "The branch is open again.",
   "branchArchive": "Archive",
   "branchArchiveTitle": "Archive {name}?",
-  "@branchArchiveTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@branchArchiveTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "branchArchiveBody": "It disappears for patients and can't take bookings. Its visits and history stay, and you can bring it back later.",
   "branchArchivedMessage": "The branch is archived.",
   "branchRestore": "Bring back",
   "branchRestoredMessage": "The branch is back and open.",
   "branchRefusedTitle": "Not possible yet",
   "branchBookingsTitle": "{count, plural, =1{1 upcoming booking} other{{count} upcoming bookings}}",
-  "@branchBookingsTitle": {"placeholders":{"count":{"type":"int"}}},
+  "@branchBookingsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "branchBookingsMore": "And {count} more.",
-  "@branchBookingsMore": {"placeholders":{"count":{"type":"int"}}},
+  "@branchBookingsMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "branchBookingsHint": "Move them to another branch or cancel them from the appointments calendar, then try again. Cancelled patients are told, with a link to book again.",
   "branchBookingGuest": "{name} (guest)",
-  "@branchBookingGuest": {"placeholders":{"name":{"type":"String"}}},
+  "@branchBookingGuest": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "branchLaterTabs": "Coming later",
   "branchLaterTabsTitle": "Booking settings and special dates",
   "branchLaterTabsBody": "They arrive with appointments.",
@@ -948,16 +1614,38 @@
   "assistantsSubtitle": "People who work with you, and what each one can do.",
   "assistantAdd": "Add assistant",
   "assistantCountOf": "{count} of {limit} assistants",
-  "@assistantCountOf": {"description":"D25 «2 من 5». Removed assistants don't count.","placeholders":{"count":{"type":"int"},"limit":{"type":"int"}}},
+  "@assistantCountOf": {
+    "description": "D25 «2 من 5». Removed assistants don't count.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "assistantsEmptyTitle": "No assistants yet",
   "assistantsEmptyBody": "Add someone from reception to record visits and bookings for you.",
   "assistantChoose": "Choose an assistant to see their details",
   "assistantAddBody": "They get a temporary password and choose their own when they first sign in.",
   "assistantNeverActive": "Hasn't used the clinic yet",
   "assistantLastActive": "Last active {time}",
-  "@assistantLastActive": {"placeholders":{"time":{"type":"String"}}},
+  "@assistantLastActive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "assistantAddedOn": "Added on {date}",
-  "@assistantAddedOn": {"placeholders":{"date":{"type":"String"}}},
+  "@assistantAddedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "assistantDetails": "Details",
   "assistantPhoneHint": "They sign in with this number.",
   "assistantBranches": "Branches",
@@ -969,94 +1657,295 @@
   "assistantPermissions": "Permissions",
   "assistantPermissionsHint": "Pick a preset, then adjust the boxes. Some need another, which is ticked for you.",
   "assistantAlsoOn": "Also turned on: {permissions}",
-  "@assistantAlsoOn": {"placeholders":{"permissions":{"type":"String"}}},
+  "@assistantAlsoOn": {
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
   "assistantAlsoOff": "Also turned off: {permissions}",
-  "@assistantAlsoOff": {"placeholders":{"permissions":{"type":"String"}}},
+  "@assistantAlsoOff": {
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
   "assistantSaved": "{name}'s changes are saved. They apply on their next action.",
-  "@assistantSaved": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantSaved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "assistantAccountActions": "Account",
   "assistantResetPassword": "Reset password",
   "assistantResetPasswordHint": "A new temporary password, when they forget theirs.",
   "assistantResetTitle": "Reset {name}'s password?",
-  "@assistantResetTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantResetTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "assistantResetBody": "They're signed out on every device and sign in again with the new temporary password.",
   "assistantNewPasswordTitle": "New temporary password",
   "assistantDisableHint": "Stops them signing in, at once. You can enable them again.",
   "assistantEnableHint": "They can sign in again.",
   "assistantDisableTitle": "Disable {name}?",
-  "@assistantDisableTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantDisableTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "assistantDisableBody": "They're signed out at once and can't sign in until you enable them again.",
   "assistantEnableTitle": "Enable {name}?",
-  "@assistantEnableTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantEnableTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "assistantEnableBody": "They can sign in again with their password.",
   "assistantRemove": "Remove",
   "assistantRemoveHint": "Final. Their history stays in the activity log.",
   "assistantRemoveTitle": "Remove {name}?",
-  "@assistantRemoveTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantRemoveTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "assistantRemoveBody": "They're signed out at once and can't come back. Their history stays in the activity log, and their number can be added again as a new assistant.",
   "assistantRemovedMessage": "{name} was removed.",
-  "@assistantRemovedMessage": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantRemovedMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "assistantRemovedTitle": "{name} was removed",
-  "@assistantRemovedTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@assistantRemovedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityCount": "{count, plural, =0{Nothing recorded yet} =1{1 entry} other{{count} entries}}",
-  "@activityCount": {"placeholders":{"count":{"type":"int"}}},
+  "@activityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "activityEmptyTitle": "Nothing recorded yet",
   "activityEmptyBody": "What you and your assistants do in the clinic shows here.",
   "activityToday": "Today",
   "activityYesterday": "Yesterday",
   "activityWhoWhen": "{who}, {time}",
-  "@activityWhoWhen": {"placeholders":{"who":{"type":"String"},"time":{"type":"String"}}},
+  "@activityWhoWhen": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "activityRemovedPerson": "{name} (removed)",
-  "@activityRemovedPerson": {"placeholders":{"name":{"type":"String"}}},
+  "@activityRemovedPerson": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityPatientFile": "{name}, file {number}",
-  "@activityPatientFile": {"placeholders":{"name":{"type":"String"},"number":{"type":"int"}}},
+  "@activityPatientFile": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "activityPatientUnlinked": "A patient no longer in the clinic",
   "activityOnlyThisPatient": "Only this patient",
   "activitySomeBranch": "a branch",
   "activitySomeAssistant": "an assistant",
   "activityBranchCreated": "Added the branch {branch}",
-  "@activityBranchCreated": {"placeholders":{"branch":{"type":"String"}}},
+  "@activityBranchCreated": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "activityBranchUpdated": "Edited {branch}",
-  "@activityBranchUpdated": {"placeholders":{"branch":{"type":"String"}}},
+  "@activityBranchUpdated": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "activityBranchHoursUpdated": "Changed the working hours of {branch}",
-  "@activityBranchHoursUpdated": {"placeholders":{"branch":{"type":"String"}}},
+  "@activityBranchHoursUpdated": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "activityBranchStatusChanged": "{branch}: {before} → {after}",
-  "@activityBranchStatusChanged": {"placeholders":{"branch":{"type":"String"},"before":{"type":"String"},"after":{"type":"String"}}},
+  "@activityBranchStatusChanged": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      },
+      "before": {
+        "type": "String"
+      },
+      "after": {
+        "type": "String"
+      }
+    }
+  },
   "activityDefaultBranchChanged": "Made {branch} the default branch",
-  "@activityDefaultBranchChanged": {"placeholders":{"branch":{"type":"String"}}},
+  "@activityDefaultBranchChanged": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "activityDoctorPricesUpdated": "Changed the doctor's visit prices",
   "activityBranchPricesUpdated": "Changed the prices of {branch}",
-  "@activityBranchPricesUpdated": {"placeholders":{"branch":{"type":"String"}}},
+  "@activityBranchPricesUpdated": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "activityProfileUpdated": "Edited the profile",
   "activitySpecialtyChanged": "Changed the specialty",
   "activityAssistantCreated": "Added the assistant {name} ({preset})",
-  "@activityAssistantCreated": {"placeholders":{"name":{"type":"String"},"preset":{"type":"String"}}},
+  "@activityAssistantCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "preset": {
+        "type": "String"
+      }
+    }
+  },
   "activityAssistantUpdated": "Edited {name}'s details",
-  "@activityAssistantUpdated": {"placeholders":{"name":{"type":"String"}}},
+  "@activityAssistantUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityAssistantPermissionsChanged": "Changed {name}'s permissions",
-  "@activityAssistantPermissionsChanged": {"placeholders":{"name":{"type":"String"}}},
+  "@activityAssistantPermissionsChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityAssistantPasswordReset": "Reset {name}'s password",
-  "@activityAssistantPasswordReset": {"placeholders":{"name":{"type":"String"}}},
+  "@activityAssistantPasswordReset": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityAssistantDisabled": "Disabled {name}",
-  "@activityAssistantDisabled": {"placeholders":{"name":{"type":"String"}}},
+  "@activityAssistantDisabled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityAssistantEnabled": "Enabled {name}",
-  "@activityAssistantEnabled": {"placeholders":{"name":{"type":"String"}}},
+  "@activityAssistantEnabled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityAssistantRemoved": "Removed {name}",
-  "@activityAssistantRemoved": {"placeholders":{"name":{"type":"String"}}},
+  "@activityAssistantRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityPasswordChanged": "Changed their password",
   "activityPasswordSet": "Set their password",
   "activityPasswordResetRequested": "{name} asked for a new password",
-  "@activityPasswordResetRequested": {"placeholders":{"name":{"type":"String"}}},
+  "@activityPasswordResetRequested": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "activityRegistrationSent": "Sent the sign-up request",
   "activityEmailVerified": "Confirmed the email",
   "activityOther": "Other action: {action}",
-  "@activityOther": {"placeholders":{"action":{"type":"String"}}},
+  "@activityOther": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
   "activityPermissionsAdded": "Added: {permissions}.",
-  "@activityPermissionsAdded": {"placeholders":{"permissions":{"type":"String"}}},
+  "@activityPermissionsAdded": {
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
   "activityPermissionsRemoved": "Removed: {permissions}.",
-  "@activityPermissionsRemoved": {"placeholders":{"permissions":{"type":"String"}}},
+  "@activityPermissionsRemoved": {
+    "placeholders": {
+      "permissions": {
+        "type": "String"
+      }
+    }
+  },
   "activityPeriods": "{count, plural, =0{Closed every day} =1{1 period a week} other{{count} periods a week}}",
-  "@activityPeriods": {"placeholders":{"count":{"type":"int"}}},
+  "@activityPeriods": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "activityActionBranchCreated": "Branch added",
   "activityActionBranchUpdated": "Branch edited",
   "activityActionBranchHoursUpdated": "Working hours changed",
@@ -1094,9 +1983,26 @@
   "activitySessionAmountChanged": "Changed the amount charged for a visit",
   "activitySessionDeleted": "Deleted a visit",
   "activityFromTo": "From {before} to {after}",
-  "@activityFromTo": {"description":"D27: an amount that changed.","placeholders":{"before":{"type":"String"},"after":{"type":"String"}}},
+  "@activityFromTo": {
+    "description": "D27: an amount that changed.",
+    "placeholders": {
+      "before": {
+        "type": "String"
+      },
+      "after": {
+        "type": "String"
+      }
+    }
+  },
   "activityReason": "Reason: {reason}",
-  "@activityReason": {"description":"D27: why a visit was deleted (BR-S7).","placeholders":{"reason":{"type":"String"}}},
+  "@activityReason": {
+    "description": "D27: why a visit was deleted (BR-S7).",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "activityActionPatientCreated": "Patient added",
   "activityActionPatientLinked": "Patient linked",
   "activityActionPatientUpdated": "Patient edited",
@@ -1113,7 +2019,14 @@
   "sessionToday": "Today",
   "sessionYesterday": "Yesterday",
   "sessionDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
-  "@sessionDaysAgo": {"description":"\"x days ago\" for a last visit (D4, D6).","placeholders":{"count":{"type":"int"}}},
+  "@sessionDaysAgo": {
+    "description": "\"x days ago\" for a last visit (D4, D6).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sessionTypeExamination": "Examination",
   "sessionTypeConsultation": "Consultation",
   "sessionPaymentCash": "Cash",
@@ -1124,16 +2037,57 @@
   "patientHasAllergies": "Has allergies",
   "patientAllergyFlag": "Allergies",
   "patientFileNumber": "File {number}",
-  "@patientFileNumber": {"description":"The per-doctor file number (BR-P6).","placeholders":{"number":{"type":"String"}}},
+  "@patientFileNumber": {
+    "description": "The per-doctor file number (BR-P6).",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
   "feesEquation": "{examinations} + {consultations} = {total}",
-  "@feesEquation": {"description":"The fee card line (BR-B2, AC-4): «2 كشف + 3 استشارة = 105 ج.م».","placeholders":{"examinations":{"type":"String"},"consultations":{"type":"String"},"total":{"type":"String"}}},
+  "@feesEquation": {
+    "description": "The fee card line (BR-B2, AC-4): «2 كشف + 3 استشارة = 105 ج.م».",
+    "placeholders": {
+      "examinations": {
+        "type": "String"
+      },
+      "consultations": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "feesExaminationCount": "{count, plural, =1{1 examination} other{{count} examinations}}",
-  "@feesExaminationCount": {"description":"Part of feesEquation.","placeholders":{"count":{"type":"int"}}},
+  "@feesExaminationCount": {
+    "description": "Part of feesEquation.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "feesConsultationCount": "{count, plural, =1{1 consultation} other{{count} consultations}}",
-  "@feesConsultationCount": {"description":"Part of feesEquation.","placeholders":{"count":{"type":"int"}}},
+  "@feesConsultationCount": {
+    "description": "Part of feesEquation.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "patientAdd": "Add patient",
   "patientRegisterCount": "{count, plural, =0{No patients} =1{1 patient} other{{count} patients}}",
-  "@patientRegisterCount": {"description":"D4 header.","placeholders":{"count":{"type":"int"}}},
+  "@patientRegisterCount": {
+    "description": "D4 header.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "patientSearchHint": "Search by name, mobile or file number",
   "patientNoMatchTitle": "No patients match",
   "patientNoMatchBody": "Try another name, number or filter.",
@@ -1169,17 +2123,64 @@
   "patientColumnPaid": "Paid",
   "patientColumnAllergies": "Allergies",
   "patientVisitsSplit": "{examinations} exam., {consultations} consult.",
-  "@patientVisitsSplit": {"description":"Visits column: examinations and consultations.","placeholders":{"examinations":{"type":"int"},"consultations":{"type":"int"}}},
+  "@patientVisitsSplit": {
+    "description": "Visits column: examinations and consultations.",
+    "placeholders": {
+      "examinations": {
+        "type": "int"
+      },
+      "consultations": {
+        "type": "int"
+      }
+    }
+  },
   "patientGenderMale": "Male",
   "patientGenderFemale": "Female",
   "patientAgeYears": "{years, plural, =0{Under 1 year} =1{1 year} other{{years} years}}",
-  "@patientAgeYears": {"description":"A patient's age.","placeholders":{"years":{"type":"int"}}},
+  "@patientAgeYears": {
+    "description": "A patient's age.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "patientAgeGender": "{age}, {gender}",
-  "@patientAgeGender": {"description":"Age and gender under a name.","placeholders":{"age":{"type":"String"},"gender":{"type":"String"}}},
+  "@patientAgeGender": {
+    "description": "Age and gender under a name.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "gender": {
+        "type": "String"
+      }
+    }
+  },
   "patientVisitsCount": "{count, plural, =0{No visits} =1{1 visit} other{{count} visits}}",
-  "@patientVisitsCount": {"description":"Number of visits.","placeholders":{"count":{"type":"int"}}},
+  "@patientVisitsCount": {
+    "description": "Number of visits.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "patientVisitsSummary": "{visits}: {examinations}, {consultations}",
-  "@patientVisitsSummary": {"description":"\"3 visits: 1 examination, 2 consultations\".","placeholders":{"visits":{"type":"String"},"examinations":{"type":"String"},"consultations":{"type":"String"}}},
+  "@patientVisitsSummary": {
+    "description": "\"3 visits: 1 examination, 2 consultations\".",
+    "placeholders": {
+      "visits": {
+        "type": "String"
+      },
+      "examinations": {
+        "type": "String"
+      },
+      "consultations": {
+        "type": "String"
+      }
+    }
+  },
   "patientSortFileNumber": "File number",
   "patientSortGender": "Gender",
   "patientSortExaminations": "Examinations",
@@ -1188,10 +2189,30 @@
   "patientSortLinkedAt": "Date added",
   "patientTotalPaid": "Total paid",
   "patientLastVisitSemantics": "Last visit: {type}, {date}, {ago}",
-  "@patientLastVisitSemantics": {"description":"Screen reader text for a register row.","placeholders":{"type":{"type":"String"},"date":{"type":"String"},"ago":{"type":"String"}}},
+  "@patientLastVisitSemantics": {
+    "description": "Screen reader text for a register row.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
   "patientResetPasswordTitle": "Reset the password?",
   "patientResetPasswordBody": "{name} gets a new temporary password and is signed out on every device. They choose their own at the next sign-in.",
-  "@patientResetPasswordBody": {"description":"BR-P5 confirmation.","placeholders":{"name":{"type":"String"}}},
+  "@patientResetPasswordBody": {
+    "description": "BR-P5 confirmation.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "patientResetPassword": "Reset password",
   "patientNewTemporaryPassword": "New temporary password",
   "patientArchiveTitle": "Archive this patient?",
@@ -1220,7 +2241,17 @@
   "patientFileSummary": "File summary",
   "patientConsultationsSinceExam": "Consultations since the last examination",
   "sessionConsultationCount": "{count, plural, =0{No consultations since the last examination (up to {max})} other{Consultation {count} of {max} since the last examination}}",
-  "@sessionConsultationCount": {"description":"BR-S4 count: «استشارة 1 من 2 منذ آخر كشف».","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}},
+  "@sessionConsultationCount": {
+    "description": "BR-S4 count: «استشارة 1 من 2 منذ آخر كشف».",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "patientProfileEmptyTitle": "No medical profile yet",
   "patientProfileEmptyBody": "Record allergies, chronic diseases and current medications.",
   "patientEditMedicalProfile": "Edit medical profile",
@@ -1236,9 +2267,23 @@
   "patientSessionsEmptyBody": "A first visit is always an examination.",
   "patientLoadMore": "Show more",
   "sessionPlatformFeeShort": "Fee {amount}",
-  "@sessionPlatformFeeShort": {"description":"The platform fee on a session row.","placeholders":{"amount":{"type":"String"}}},
+  "@sessionPlatformFeeShort": {
+    "description": "The platform fee on a session row.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "sessionRecordedBy": "Recorded by {name}",
-  "@sessionRecordedBy": {"description":"BR-AS6, shown to the doctor.","placeholders":{"name":{"type":"String"}}},
+  "@sessionRecordedBy": {
+    "description": "BR-AS6, shown to the doctor.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "patientCheckFields": "Check the highlighted fields.",
   "patientAddSubtitle": "The patient gets an account and a file number. Their temporary password is shown once.",
   "patientMobile": "Mobile number",
@@ -1251,7 +2296,14 @@
   "patientPhoneElsewhereBody": "Link the patient to add them to your list. No new account is created.",
   "patientLinkTitle": "This patient already has an account",
   "patientLinkBody": "The number {phone} belongs to a patient of another clinic. Linking adds them to your list with a new file number.",
-  "@patientLinkBody": {"description":"BR-P3 dialog.","placeholders":{"phone":{"type":"String"}}},
+  "@patientLinkBody": {
+    "description": "BR-P3 dialog.",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "patientLinkPrivacy": "You will see their name, mobile, gender and date of birth, and only the records your clinic creates.",
   "patientLinkConfirm": "Link patient",
   "patientLinkedTitle": "Patient added",
@@ -1286,32 +2338,74 @@
   "patientPhoneChangeHint": "The patient’s login. It changes on its own, with a confirmation.",
   "patientChangePhone": "Change number",
   "patientChangePhoneBody": "{name} will sign in with the new number. Devices already signed in stay signed in.",
-  "@patientChangePhoneBody": {"description":"Phone change dialog.","placeholders":{"name":{"type":"String"}}},
+  "@patientChangePhoneBody": {
+    "description": "Phone change dialog.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "patientNewMobile": "New mobile number",
   "patientChangePhoneConfirm": "Change number",
   "patientPhoneSame": "This is the current number.",
   "patientPhoneChanged": "Mobile number changed. The patient signs in with the new one.",
   "patientFamilyHistoryHint": "For example: father, diabetes",
   "patientListCount": "{count, plural, =0{None} =1{1 item} other{{count} items}}",
-  "@patientListCount": {"description":"Items in a medical profile list.","placeholders":{"count":{"type":"int"}}},
+  "@patientListCount": {
+    "description": "Items in a medical profile list.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "patientListFull": "A list holds 50 items at most.",
   "patientListDuplicate": "Already in the list.",
   "patientMoveUp": "Move up",
   "patientMoveDown": "Move down",
   "patientRemoveItem": "Remove {item}",
-  "@patientRemoveItem": {"description":"Remove a medical profile item.","placeholders":{"item":{"type":"String"}}},
+  "@patientRemoveItem": {
+    "description": "Remove a medical profile item.",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
   "patientAddItemHint": "Add an item",
   "patientAddItem": "Add",
   "sessionConsultationLimit": "{max, plural, =1{This patient has had 1 consultation in a row. Record an examination first.} other{This patient has had {max} consultations in a row. Record an examination first.}}",
-  "@sessionConsultationLimit": {"description":"BR-S4. The number follows maxConsecutiveConsultations.","placeholders":{"max":{"type":"int"}}},
+  "@sessionConsultationLimit": {
+    "description": "BR-S4. The number follows maxConsecutiveConsultations.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "sessionRuleFirstVisit": "This is the patient's first visit with you, so it must be an examination.",
   "sessionRuleChanged": "A session was just recorded for this patient on another device. {message}",
-  "@sessionRuleChanged": {"description":"AC-2: someone saved first.","placeholders":{"message":{"type":"String"}}},
+  "@sessionRuleChanged": {
+    "description": "AC-2: someone saved first.",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "sessionStepType": "Visit type",
   "sessionStepDetails": "Details and amount",
   "sessionPickType": "Choose the visit type.",
   "sessionPicked": "{type} selected",
-  "@sessionPicked": {"description":"D8 step 1 footer.","placeholders":{"type":{"type":"String"}}},
+  "@sessionPicked": {
+    "description": "D8 step 1 footer.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "sessionNext": "Next",
   "sessionSave": "Save session",
   "sessionAmountRequired": "Enter the amount charged.",
@@ -1324,7 +2418,14 @@
   "sessionAmountCharged": "Amount charged",
   "sessionNoPrice": "No visit price is set for this branch. Enter what the patient paid.",
   "sessionVisitPrice": "Visit price {amount}",
-  "@sessionVisitPrice": {"description":"The clinic visit price (6.15).","placeholders":{"amount":{"type":"String"}}},
+  "@sessionVisitPrice": {
+    "description": "The clinic visit price (6.15).",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "sessionFree": "Free",
   "sessionAmountLabel": "Amount",
   "sessionCurrency": "EGP",
@@ -1332,25 +2433,63 @@
   "sessionFreeVisit": "Free visit",
   "sessionPaymentMethod": "Payment method (optional)",
   "sessionBranch": "Branch: {name}",
-  "@sessionBranch": {"description":"D8 branch chip.","placeholders":{"name":{"type":"String"}}},
+  "@sessionBranch": {
+    "description": "D8 branch chip.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "sessionChangeBranch": "Change branch",
   "sessionFirstVisit": "First visit with you: examination only",
   "sessionLastSession": "Last session: {type}, {date}",
-  "@sessionLastSession": {"description":"\"Last session: Examination, 3 Nov\".","placeholders":{"type":{"type":"String"},"date":{"type":"String"}}},
+  "@sessionLastSession": {
+    "description": "\"Last session: Examination, 3 Nov\".",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "sessionNoPriceShort": "No price set",
   "sessionNoPriceHint": "Type the amount in the next step",
   "sessionVisitPriceLabel": "Visit price",
   "sessionPlatformFee": "Platform fee {amount}",
-  "@sessionPlatformFee": {"description":"BR-S5 fee on a type card.","placeholders":{"amount":{"type":"String"}}},
+  "@sessionPlatformFee": {
+    "description": "BR-S5 fee on a type card.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "sessionPrivateNote": "Private note",
   "sessionPrivateNoteHint": "Not visible to the patient",
   "sessionPrivateNotePlaceholder": "Only you can read this.",
   "sessionFollowUp": "Follow-up date",
   "sessionClearFollowUp": "Clear the follow-up date",
   "sessionConfirmTitle": "Save as {type}?",
-  "@sessionConfirmTitle": {"description":"BR-S6. The type is shown in bold.","placeholders":{"type":{"type":"String"}}},
+  "@sessionConfirmTitle": {
+    "description": "BR-S6. The type is shown in bold.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "sessionConfirmFee": "A fee of {amount} will be added.",
-  "@sessionConfirmFee": {"description":"BR-S6.","placeholders":{"amount":{"type":"String"}}},
+  "@sessionConfirmFee": {
+    "description": "BR-S6.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "sessionConfirmPatient": "Patient",
   "sessionConfirmBranch": "Branch",
   "sessionConfirmLocked": "The type and time can't be changed after saving.",
@@ -1358,7 +2497,20 @@
   "sessionLater": "Later",
   "sessionSaved": "Session saved",
   "sessionSavedBody": "{type} for {patient}. A fee of {fee} was added.",
-  "@sessionSavedBody": {"description":"After-save sheet.","placeholders":{"type":{"type":"String"},"patient":{"type":"String"},"fee":{"type":"String"}}},
+  "@sessionSavedBody": {
+    "description": "After-save sheet.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "patient": {
+        "type": "String"
+      },
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
   "sessionWritePrescription": "Write prescription",
   "sessionLabRequest": "Lab or radiology request",
   "sessionAttachFiles": "Attach files",
@@ -1381,9 +2533,23 @@
   "sessionNoVitals": "No vitals recorded",
   "sessionRecordedByDoctor": "The doctor",
   "feesExaminationsFee": "Examinations {amount}",
-  "@feesExaminationsFee": {"description":"Fee card part.","placeholders":{"amount":{"type":"String"}}},
+  "@feesExaminationsFee": {
+    "description": "Fee card part.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "feesConsultationsFee": "Consultations {amount}",
-  "@feesConsultationsFee": {"description":"Fee card part.","placeholders":{"amount":{"type":"String"}}},
+  "@feesConsultationsFee": {
+    "description": "Fee card part.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "sessionDetailsTitle": "Session details",
   "sessionLocked": "Can't be changed after saving",
   "sessionSummary": "Session",
@@ -1393,7 +2559,14 @@
   "sessionPlatformFeeLabel": "Platform fee",
   "sessionRecordedByLabel": "Recorded by",
   "sessionRecordedByAssistant": "{name} (assistant)",
-  "@sessionRecordedByAssistant": {"description":"BR-AS6.","placeholders":{"name":{"type":"String"}}},
+  "@sessionRecordedByAssistant": {
+    "description": "BR-AS6.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "sessionEditAmount": "Change the amount",
   "sessionAmountSaved": "Amount saved",
   "sessionAmountLogged": "Every change is recorded in the activity log.",
@@ -1439,7 +2612,14 @@
   "homeSearchPatient": "Search patient",
   "homeTodaySessions": "Today's sessions",
   "homeTodaySessionsIn": "Today's sessions in {branch}",
-  "@homeTodaySessionsIn": {"description":"Home list title (current branch).","placeholders":{"branch":{"type":"String"}}},
+  "@homeTodaySessionsIn": {
+    "description": "Home list title (current branch).",
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
   "homeNoSessionsTitle": "No sessions yet today",
   "homeNoSessionsBody": "Record the first visit of the day.",
   "sessionErrorNotLinked": "This patient isn't on your list.",
@@ -1449,9 +2629,26 @@
   "sessionErrorAmountNotEditable": "The amount can be changed only on the day of the session.",
   "sessionNoClinical": "No clinical notes yet.",
   "sessionConsultationShort": "{count} of {max}",
-  "@sessionConsultationShort": {"description":"Consultations since the last examination, D6 summary.","placeholders":{"count":{"type":"int"},"max":{"type":"int"}}},
+  "@sessionConsultationShort": {
+    "description": "Consultations since the last examination, D6 summary.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "backToSection": "Back to {section}",
-  "@backToSection": {"description":"Screen-reader name of the desktop Back pill, which shows the section it returns to.","placeholders":{"section":{"type":"String"}}},
+  "@backToSection": {
+    "description": "Screen-reader name of the desktop Back pill, which shows the section it returns to.",
+    "placeholders": {
+      "section": {
+        "type": "String"
+      }
+    }
+  },
   "trialEndedTitle": "Your free trial has ended",
   "trialEndedBody": "Contact us to activate the service and keep using el3yada. Your patients and records are kept safe.",
   "trialEndedTitleAssistant": "The clinic's free trial has ended",
@@ -1459,14 +2656,30 @@
   "trialCheckAgain": "Check again",
   "trialStillEnded": "The service isn't active yet.",
   "trialBanner": "{days, plural, =0{Your free trial ends today} =1{1 day left in your free trial} other{{days} days left in your free trial}}",
-  "@trialBanner": {"description":"BR-T6: the shell banner in the last days of the free trial.","placeholders":{"days":{"type":"int"}}},
+  "@trialBanner": {
+    "description": "BR-T6: the shell banner in the last days of the free trial.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "trialContactUs": "Contact us",
   "errorTrialEnded": "The free trial has ended. Contact us to activate the service.",
   "sessionFeeFreeTrial": "Free (trial)",
   "sessionPlatformFeeFree": "No platform fee (free trial)",
   "sessionConfirmFeeFree": "No fee: the clinic is in its free trial.",
   "sessionSavedBodyFree": "{type} for {patient}. No fee (free trial).",
-  "@sessionSavedBodyFree": {"placeholders":{"type":{"type":"String"},"patient":{"type":"String"}}},
+  "@sessionSavedBodyFree": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "patient": {
+        "type": "String"
+      }
+    }
+  },
   "adminErrorServiceAlreadyActive": "This doctor's service is already active, so there's no trial to extend.",
   "adminErrorDoctorStatusNotChangeable": "This can't be done for a doctor who is pending, rejected or disabled.",
   "adminSettingTrialDays": "Free trial",
@@ -1475,52 +2688,141 @@
   "adminSignupsFilterTrialRunning": "In free trial",
   "adminSignupsFilterTrialEnded": "Trial ended",
   "adminDoctorsCount": "{count, plural, =0{No doctors} =1{1 doctor} other{{count} doctors}}",
-  "@adminDoctorsCount": {"placeholders":{"count":{"type":"int"}}},
+  "@adminDoctorsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "adminTrialListEmpty": "No doctors here",
   "adminTrialListEmptyBody": "Doctors show up here by the state of their free trial.",
   "adminServiceActive": "Service active",
   "adminTrialEnded": "Trial ended",
   "adminTrialDaysLeft": "{days, plural, =0{Trial: ends today} =1{Trial: 1 day left} other{Trial: {days} days left}}",
-  "@adminTrialDaysLeft": {"placeholders":{"days":{"type":"int"}}},
+  "@adminTrialDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "adminSectionTrial": "Free trial",
   "adminServiceActiveBody": "The service is active. Sessions carry the platform fees.",
   "adminTrialRunningBody": "The free trial ends on {date}. Sessions until then carry no fee.",
-  "@adminTrialRunningBody": {"placeholders":{"date":{"type":"String"}}},
+  "@adminTrialRunningBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminTrialEndedBody": "The free trial ended on {date}. The doctor and their assistants can't use the clinic until you activate the service or extend the trial.",
-  "@adminTrialEndedBody": {"placeholders":{"date":{"type":"String"}}},
+  "@adminTrialEndedBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminActivateService": "Activate service",
   "adminActivateServiceTitle": "Activate the service for Dr. {name}?",
-  "@adminActivateServiceTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@adminActivateServiceTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminActivateServiceBody": "The free trial ends now, and platform fees apply to every session from now on.",
   "adminServiceActivatedMessage": "Service activated for Dr. {name}.",
-  "@adminServiceActivatedMessage": {"placeholders":{"name":{"type":"String"}}},
+  "@adminServiceActivatedMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminExtendTrial": "Extend trial",
   "adminExtendTrialTitle": "Extend Dr. {name}'s free trial",
-  "@adminExtendTrialTitle": {"placeholders":{"name":{"type":"String"}}},
+  "@adminExtendTrialTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminExtendTrialBody": "The days are added to the end of the trial, or to today if it has ended.",
   "adminExtendTrialDays": "Days",
   "adminTrialExtendedMessage": "Dr. {name}'s free trial now ends on {date}.",
-  "@adminTrialExtendedMessage": {"placeholders":{"name":{"type":"String"},"date":{"type":"String"}}},
+  "@adminTrialExtendedMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminAuditServiceActivated": "Activated a doctor's service",
   "adminAuditTrialExtended": "{days, plural, =1{Extended a doctor's free trial by 1 day} other{Extended a doctor's free trial by {days} days}}",
-  "@adminAuditTrialExtended": {"placeholders":{"days":{"type":"int"}}},
+  "@adminAuditTrialExtended": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "adminActionServiceActivated": "Service activated",
   "adminActionTrialExtended": "Trial extended",
   "catalogSetupTitle": "Getting the medicines and tests guide ready",
-  "@catalogSetupTitle": {"description": "D0: the catalog download screen's heading (spec 6.9, BR-CAT11)."},
+  "@catalogSetupTitle": {
+    "description": "D0: the catalog download screen's heading (spec 6.9, BR-CAT11)."
+  },
   "catalogSetupBody": "We're downloading the Egyptian medicines, lab tests and radiology guide to your device, so search is instant and works offline.",
   "catalogSetupMeanwhile": "You can keep working. Until it finishes, search suggests what you've written before and you can type any name.",
   "catalogSetupWifi": "Wi-Fi recommended",
   "catalogSetupProgress": "{received} of {total}",
-  "@catalogSetupProgress": {"placeholders": {"received": {"type": "String"}, "total": {"type": "String"}}},
+  "@catalogSetupProgress": {
+    "placeholders": {
+      "received": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "catalogVersionLine": "Version {version} · {size}",
-  "@catalogVersionLine": {"placeholders": {"version": {"type": "String"}, "size": {"type": "String"}}},
+  "@catalogVersionLine": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
   "catalogVersionTitle": "Version {version}",
-  "@catalogVersionTitle": {"placeholders": {"version": {"type": "String"}}},
+  "@catalogVersionTitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "catalogContinue": "Keep using the app",
   "catalogPhaseChecking": "Checking for the latest version…",
   "catalogPhaseDownloading": "Downloading… {percent}%",
-  "@catalogPhaseDownloading": {"placeholders": {"percent": {"type": "String"}}},
+  "@catalogPhaseDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
   "catalogPhaseVerifying": "Checking and preparing the file…",
   "catalogPhaseReady": "The guide is ready on your device",
   "catalogPhaseNotPublished": "No guide is published yet. Until it is, type names yourself; they're saved to your list.",
@@ -1532,16 +2834,26 @@
   "catalogFailureSchema": "The new version needs a newer app. Update the app to use it.",
   "catalogFailureStorage": "There isn't enough space on this device.",
   "catalogStatusReady": "Version {version} · ready",
-  "@catalogStatusReady": {"placeholders": {"version": {"type": "String"}}},
+  "@catalogStatusReady": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "catalogStatusFailed": "Download stopped. Open it to try again.",
   "catalogStatusNotPublished": "No version published yet",
   "catalogStatusUnavailable": "Not on this device",
   "catalogSettingsTile": "Medicines and tests guide",
   "catalogNotPublished": "No catalog version is published yet",
   "catalogMayBeUnavailable": "May not be available",
-  "@catalogMayBeUnavailable": {"description": "Under a product the drug dataset marks N/A (not on the market)."},
+  "@catalogMayBeUnavailable": {
+    "description": "Under a product the drug dataset marks N/A (not on the market)."
+  },
   "catalogCustomTag": "Added",
-  "@catalogCustomTag": {"description": "A small tag on an admin's custom catalog item (BR-CAT9)."},
+  "@catalogCustomTag": {
+    "description": "A small tag on an admin's custom catalog item (BR-CAT9)."
+  },
   "catalogTypeDrug": "Medicine",
   "catalogTypeLab": "Lab test",
   "catalogTypeRadiology": "Radiology",
@@ -1568,19 +2880,42 @@
   "catalogErrorManifest": "The manifest has no valid sha256. Choose the .json the builder wrote with this file.",
   "catalogErrorFileInvalid": "This isn't a catalog made by the catalog builder.",
   "catalogErrorSchema": "This file's format is version {actual}; the apps read version {expected}. Build it with the matching catalog builder.",
-  "@catalogErrorSchema": {"placeholders": {"actual": {"type": "String"}, "expected": {"type": "String"}}},
+  "@catalogErrorSchema": {
+    "placeholders": {
+      "actual": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
+    }
+  },
   "catalogErrorTooLarge": "The file is larger than 150 MB.",
   "catalogSourcesTitle": "Data sources and licences",
-  "@catalogSourcesTitle": {"description": "About: the LOINC notice and the other credits (BR-CAT14)."},
+  "@catalogSourcesTitle": {
+    "description": "About: the LOINC notice and the other credits (BR-CAT14)."
+  },
   "catalogSourcesIntro": "The app's medicines, lab tests and radiology guide is built from these sources. LOINC names are shown exactly as published.",
   "catalogSourceDrugsTitle": "Medicines",
   "catalogSourceDrugsBody": "The Egyptian Drug Database by karem505, in the public domain (CC0). Prices aren't shown because they go out of date.",
   "catalogSourceDrugsDate": "Data as of {date}",
-  "@catalogSourceDrugsDate": {"placeholders": {"date": {"type": "String"}}},
+  "@catalogSourceDrugsDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "catalogSourceLoincTitle": "Lab tests and radiology (LOINC)",
   "catalogSourceLoincBody": "Lab test names and codes come from LOINC, kept exactly as published. The required copyright notice:",
   "catalogSourceLoincRelease": "LOINC release on this device: {release}",
-  "@catalogSourceLoincRelease": {"placeholders": {"release": {"type": "String"}}},
+  "@catalogSourceLoincRelease": {
+    "placeholders": {
+      "release": {
+        "type": "String"
+      }
+    }
+  },
   "catalogSourceRadlexTitle": "Radiology (LOINC/RSNA Radiology Playbook)",
   "catalogSourceRadlexBody": "Radiology procedures, modalities and body regions come from the LOINC/RSNA Radiology Playbook, which includes RadLex content:",
   "catalogSourceOursTitle": "Arabic names and short names",
@@ -1594,13 +2929,43 @@
   "adminCatalogCurrentPill": "Current",
   "adminCatalogAllVersions": "All versions",
   "adminCatalogPublishedOn": "Published {date}",
-  "@adminCatalogPublishedOn": {"placeholders": {"date": {"type": "String"}}},
+  "@adminCatalogPublishedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogCounts": "{drugs} medicines · {labs} lab tests · {radiology} radiology",
-  "@adminCatalogCounts": {"placeholders": {"drugs": {"type": "String"}, "labs": {"type": "String"}, "radiology": {"type": "String"}}},
+  "@adminCatalogCounts": {
+    "placeholders": {
+      "drugs": {
+        "type": "String"
+      },
+      "labs": {
+        "type": "String"
+      },
+      "radiology": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogDrugSource": "Drug data of {date}",
-  "@adminCatalogDrugSource": {"placeholders": {"date": {"type": "String"}}},
+  "@adminCatalogDrugSource": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogLoincRelease": "LOINC {release}",
-  "@adminCatalogLoincRelease": {"placeholders": {"release": {"type": "String"}}},
+  "@adminCatalogLoincRelease": {
+    "placeholders": {
+      "release": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogNothingPublishedBody": "Until a version is published, doctors' search covers only what they've written before.",
   "adminCatalogThisDevice": "On this device",
   "adminCatalogOpenSetup": "Details",
@@ -1613,15 +2978,42 @@
   "adminCatalogChecking": "Checking the file's sha256…",
   "adminCatalogShaMatches": "The file matches its manifest (sha256)",
   "adminCatalogUploading": "Uploading… {sent} of {total}",
-  "@adminCatalogUploading": {"placeholders": {"sent": {"type": "String"}, "total": {"type": "String"}}},
+  "@adminCatalogUploading": {
+    "placeholders": {
+      "sent": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogServerChecking": "The server is checking the file…",
   "adminCatalogDropTitle": "This version has far fewer items than the current one:",
   "adminCatalogDropRow": "{table}: {previous} → {current}",
-  "@adminCatalogDropRow": {"placeholders": {"table": {"type": "String"}, "previous": {"type": "String"}, "current": {"type": "String"}}},
+  "@adminCatalogDropRow": {
+    "placeholders": {
+      "table": {
+        "type": "String"
+      },
+      "previous": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogDropBody": "Publish anyway only if that's intended, for example a cleaned-up medicines list.",
   "adminCatalogPublishAnyway": "Publish anyway",
   "adminCatalogPublished": "Version {version} published",
-  "@adminCatalogPublished": {"placeholders": {"version": {"type": "String"}}},
+  "@adminCatalogPublished": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogPublishedBody": "Doctors' devices download it in the background and switch to it when it's complete.",
   "adminCatalogAllTypes": "All",
   "adminCatalogShowDisabled": "Show disabled",
@@ -1630,15 +3022,39 @@
   "adminCatalogEditItem": "Edit item",
   "adminCatalogEdit": "Edit",
   "adminCatalogItemActions": "Actions for {name}",
-  "@adminCatalogItemActions": {"placeholders": {"name": {"type": "String"}}},
+  "@adminCatalogItemActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogItemBody": "Every doctor sees it in search within a minute, without a new catalog version.",
   "adminCatalogNoItems": "No items here yet. Add the medicines or tests the catalog is missing.",
   "adminCatalogItemDisabled": "{name} is off. Doctors stop seeing it within a minute.",
-  "@adminCatalogItemDisabled": {"placeholders": {"name": {"type": "String"}}},
+  "@adminCatalogItemDisabled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogItemEnabled": "{name} is back on. Doctors see it within a minute.",
-  "@adminCatalogItemEnabled": {"placeholders": {"name": {"type": "String"}}},
+  "@adminCatalogItemEnabled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogUpdated": "Changed {when}",
-  "@adminCatalogUpdated": {"placeholders": {"when": {"type": "String"}}},
+  "@adminCatalogUpdated": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogFieldTradeName": "Trade name",
   "adminCatalogFieldTradeNameHint": "As on the box, e.g. NEWCILLIN 500 MG 12 CAPS.",
   "adminCatalogFieldTestName": "Name",
@@ -1659,19 +3075,49 @@
   "adminCatalogMarkDone": "Mark as done",
   "adminCatalogReportHandled": "Marked as done",
   "adminCatalogHandledOn": "Handled {date}",
-  "@adminCatalogHandledOn": {"placeholders": {"date": {"type": "String"}}},
+  "@adminCatalogHandledOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "adminCatalogNoReports": "No reports here.",
   "specialtyProfilesSubtitle": "What each specialty sees first when searching medicines and tests",
   "specialtyDoctorCount": "{count, plural, =0{No doctors} =1{1 doctor} other{{count} doctors}}",
-  "@specialtyDoctorCount": {"placeholders": {"count": {"type": "int"}}},
+  "@specialtyDoctorCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "specialtyItemsSummary": "{groups} medicine groups · {labs} lab tests · {radiology} radiology",
-  "@specialtyItemsSummary": {"placeholders": {"groups": {"type": "int"}, "labs": {"type": "int"}, "radiology": {"type": "int"}}},
+  "@specialtyItemsSummary": {
+    "placeholders": {
+      "groups": {
+        "type": "int"
+      },
+      "labs": {
+        "type": "int"
+      },
+      "radiology": {
+        "type": "int"
+      }
+    }
+  },
   "specialtyGeneralBadge": "Added to every specialty",
   "specialtyWithGeneral": "With General",
   "specialtyGeneralBody": "Added to every specialty that includes it",
   "specialtyGeneralExplained": "This is the General profile: the common medicines and tests (painkillers, antibiotics, CBC …) that come first in every specialty that includes it.",
   "specialtyUpdated": "Changed {when}",
-  "@specialtyUpdated": {"placeholders": {"when": {"type": "String"}}},
+  "@specialtyUpdated": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "specialtyCatalogNotReady": "The catalog is still downloading on this device; counts, names and search show up when it's done.",
   "specialtyIncludeGeneral": "Include the General profile",
   "specialtyIncludeGeneralHint": "Painkillers, antibiotics, stomach protection, CBC and the other common items come first too.",
@@ -1679,7 +3125,13 @@
   "specialtyGroupsHint": "Medicines in these groups appear under «Your specialty». The number is how many products each group has.",
   "specialtyGroupsFilter": "Filter groups",
   "specialtySelectedCount": "{count, plural, =0{None chosen} =1{1 chosen} other{{count} chosen}}",
-  "@specialtySelectedCount": {"placeholders": {"count": {"type": "int"}}},
+  "@specialtySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "specialtyRoutesTitle": "Preferred routes",
   "specialtyRoutesHint": "Shown first inside each section, for example syrups and suppositories for children",
   "specialtyLabsTitle": "Recommended lab tests",
@@ -1693,16 +3145,34 @@
   "specialtyNoProcedures": "No recommended procedures yet.",
   "specialtyAddProcedure": "Search the catalog to add a procedure",
   "specialtyShowAll": "Show all ({count})",
-  "@specialtyShowAll": {"placeholders": {"count": {"type": "int"}}},
+  "@specialtyShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "specialtyShowFewer": "Show fewer",
   "specialtyRemove": "Remove",
   "specialtyCopyTitle": "Copy from another specialty",
   "specialtyCopyConfirmTitle": "Copy the {name} profile?",
-  "@specialtyCopyConfirmTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@specialtyCopyConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "specialtyCopyConfirmBody": "Its medicine groups, routes, tests and radiology replace this profile's. You can still change them afterwards.",
   "specialtyCopy": "Copy",
   "specialtyCopied": "Copied from {name}",
-  "@specialtyCopied": {"placeholders": {"name": {"type": "String"}}},
+  "@specialtyCopied": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "specialtyPreviewTitle": "Search preview",
   "specialtyPreviewHint": "What a doctor of this specialty sees first, with your unsaved changes",
   "specialtyPreviewTests": "Tests",
@@ -1711,7 +3181,14 @@
   "specialtyPreviewNothing": "Nothing matches.",
   "regWelcomeTitle": "Welcome to el3yada",
   "regWelcomeTrial": "{days, plural, =1{You have a free trial for 1 day.} other{You have a free trial for {days} days.}}",
-  "@regWelcomeTrial": {"description":"The welcome after sign-up: the free trial length (spec 6.16).","placeholders":{"days":{"type":"int"}}},
+  "@regWelcomeTrial": {
+    "description": "The welcome after sign-up: the free trial length (spec 6.16).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "regWelcomeBody": "Add your patients and record sessions with no platform fees during the trial.",
   "regWelcomeStart": "Get started",
   "adminDoctorTitle": "Doctor account",
@@ -1724,7 +3201,16 @@
   "recordCategoryPrescription": "Prescriptions",
   "recordCategoryOther": "Other",
   "recordChip": "{name} {count}",
-  "@recordChip": {"placeholders":{"name":{"type":"String"},"count":{"type":"int"}}},
+  "@recordChip": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordOtherReport": "Medical report",
   "recordOtherReferral": "Referral",
   "recordOtherSickLeave": "Sick leave",
@@ -1741,15 +3227,45 @@
   "recordScan": "Scan",
   "recordDropHint": "Drop the files to upload them",
   "recordFilesCount": "{count, plural, =1{1 file} other{{count} files}}",
-  "@recordFilesCount": {"placeholders":{"count":{"type":"int"}}},
+  "@recordFilesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordPagesCount": "{count, plural, =1{1 page} other{{count} pages}}",
-  "@recordPagesCount": {"placeholders":{"count":{"type":"int"}}},
+  "@recordPagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sizeBytes": "{value} B",
-  "@sizeBytes": {"placeholders":{"value":{"type":"String"}}},
+  "@sizeBytes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "sizeKb": "{value} KB",
-  "@sizeKb": {"placeholders":{"value":{"type":"String"}}},
+  "@sizeKb": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "sizeMb": "{value} MB",
-  "@sizeMb": {"placeholders":{"value":{"type":"String"}}},
+  "@sizeMb": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "recordUploadTitle": "Upload files",
   "recordScanTitle": "Scan a document",
   "recordEditTitle": "Edit file details",
@@ -1758,13 +3274,28 @@
   "recordFieldOtherTypeText": "Type",
   "recordFieldTitle": "Title (optional)",
   "recordTitleHint": "If left empty: {title}",
-  "@recordTitleHint": {"placeholders":{"title":{"type":"String"}}},
+  "@recordTitleHint": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "recordFieldDate": "Document date",
   "recordFieldNotes": "Notes (optional)",
   "recordFieldSession": "Link to a visit",
   "recordNoSession": "No visit",
   "recordSessionOption": "{type} · {date}",
-  "@recordSessionOption": {"placeholders":{"type":{"type":"String"},"date":{"type":"String"}}},
+  "@recordSessionOption": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "recordCategoryRequired": "Choose a category",
   "recordFilesHeading": "Files",
   "recordDetailsHeading": "Details",
@@ -1777,14 +3308,35 @@
   "recordUpdated": "File details saved",
   "recordPreparing": "Making it smaller…",
   "recordUploading": "Uploading {percent}%",
-  "@recordUploading": {"placeholders":{"percent":{"type":"int"}}},
+  "@recordUploading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "recordUploaded": "Uploaded",
   "recordUploadFailed": "Upload failed",
   "recordRemoveFile": "Remove",
   "recordTooLarge": "File larger than allowed ({mb} MB)",
-  "@recordTooLarge": {"placeholders":{"mb":{"type":"int"}}},
+  "@recordTooLarge": {
+    "placeholders": {
+      "mb": {
+        "type": "int"
+      }
+    }
+  },
   "recordSavedSpace": "Reduced from {from} to {to}",
-  "@recordSavedSpace": {"placeholders":{"from":{"type":"String"},"to":{"type":"String"}}},
+  "@recordSavedSpace": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
   "recordWaitForUploads": "Wait for every file to upload, or remove the ones that failed.",
   "recordNeedFiles": "Add at least one file",
   "recordUploadExpired": "This file is no longer waiting. Upload it again.",
@@ -1795,7 +3347,13 @@
   "recordScanReviewTitle": "Check the pages",
   "recordScanAddPages": "Scan more pages",
   "recordScanPage": "Page {number}",
-  "@recordScanPage": {"placeholders":{"number":{"type":"int"}}},
+  "@recordScanPage": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "recordScanMoveEarlier": "Move earlier",
   "recordScanMoveLater": "Move later",
   "recordScanDeletePage": "Delete page",
@@ -1818,9 +3376,24 @@
   "recordNoPreview": "This type of file opens in another app.",
   "recordPdfFailed": "This PDF couldn't be shown here. Open it with another app.",
   "recordAttachmentOf": "{index} of {count}",
-  "@recordAttachmentOf": {"placeholders":{"index":{"type":"int"},"count":{"type":"int"}}},
+  "@recordAttachmentOf": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordAdded": "Added {date}",
-  "@recordAdded": {"placeholders":{"date":{"type":"String"}}},
+  "@recordAdded": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "recordSize": "Size",
   "recordSourceScan": "Scanned",
   "recordSourceUpload": "Uploaded",
@@ -1849,9 +3422,23 @@
   "rxStatusCancelled": "Cancelled",
   "rxNoItems": "No items yet",
   "rxItemCount": "{count, plural, =1{1 item} other{{count} items}}",
-  "@rxItemCount": {"description":"Items on a prescription.","placeholders":{"count":{"type":"int"}}},
+  "@rxItemCount": {
+    "description": "Items on a prescription.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "rxPreparedBy": "Prepared by {name}",
-  "@rxPreparedBy": {"description":"BR-AS10: the doctor sees who prepared a draft.","placeholders":{"name":{"type":"String"}}},
+  "@rxPreparedBy": {
+    "description": "BR-AS10: the doctor sees who prepared a draft.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "rxListSeparator": ", ",
   "rxSessionCardTitle": "Prescriptions and requests",
   "rxSessionEmpty": "No prescription for this visit yet.",
@@ -1911,7 +3498,14 @@
   "rxSectionOthers": "From other specialties",
   "rxCatalogNotReady": "The catalog is still downloading: only your own history is searched. You can type any name.",
   "rxUseTyped": "Use “{text}”",
-  "@rxUseTyped": {"description":"BR-CAT8: a name that isn’t in the catalog.","placeholders":{"text":{"type":"String"}}},
+  "@rxUseTyped": {
+    "description": "BR-CAT8: a name that isn’t in the catalog.",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
   "rxNoMatches": "Nothing matches in the catalog.",
   "rxDrugName": "Medicine name",
   "rxActiveIngredient": "Active ingredient",
@@ -1933,9 +3527,23 @@
   "rxDurationUnitWeeks": "Weeks",
   "rxDurationContinuous": "Continuous",
   "rxDurationDays": "{count, plural, =1{1 day} other{{count} days}}",
-  "@rxDurationDays": {"description":"A medicine’s duration in days.","placeholders":{"count":{"type":"int"}}},
+  "@rxDurationDays": {
+    "description": "A medicine’s duration in days.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "rxDurationWeeks": "{count, plural, =1{1 week} other{{count} weeks}}",
-  "@rxDurationWeeks": {"description":"A medicine’s duration in weeks.","placeholders":{"count":{"type":"int"}}},
+  "@rxDurationWeeks": {
+    "description": "A medicine’s duration in weeks.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "rxInstructions": "Instructions",
   "rxFormTablet": "Tablet",
   "rxFormCapsule": "Capsule",
@@ -1972,7 +3580,14 @@
   "rxCancelled": "Prescription cancelled.",
   "rxCancelledNotice": "Cancelled. It can’t be printed.",
   "rxCancelledReason": "Cancelled: {reason}",
-  "@rxCancelledReason": {"description":"D15 banner on a cancelled document.","placeholders":{"reason":{"type":"String"}}},
+  "@rxCancelledReason": {
+    "description": "D15 banner on a cancelled document.",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "rxNewCopy": "Issue new copy",
   "rxPreviewFailed": "The preview couldn’t be built.",
   "rxSettingsTitle": "Prescription header and printing",
@@ -2022,25 +3637,67 @@
   "rxDeleteTemplate": "Delete template",
   "rxDeleteTemplateTitle": "Delete this template?",
   "rxDeleteTemplateBody": "“{name}” will be removed. Prescriptions made from it stay as they are.",
-  "@rxDeleteTemplateBody": {"description":"D23.","placeholders":{"name":{"type":"String"}}},
+  "@rxDeleteTemplateBody": {
+    "description": "D23.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "rxTemplateDeleted": "Template deleted.",
   "rxFrequentGroup": "Frequently used",
   "rxFrequentHint": "They come first when you search. Remove one to stop suggesting it.",
   "rxNoHistory": "Items you prescribe will appear here.",
   "rxUsedTimes": "{count, plural, =1{Used once} other{Used {count} times}}",
-  "@rxUsedTimes": {"description":"D23.","placeholders":{"count":{"type":"int"}}},
+  "@rxUsedTimes": {
+    "description": "D23.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "rxRemoveFromHistory": "Remove from suggestions",
   "rxHistoryItemRemoved": "“{name}” removed from suggestions.",
-  "@rxHistoryItemRemoved": {"description":"D23.","placeholders":{"name":{"type":"String"}}},
+  "@rxHistoryItemRemoved": {
+    "description": "D23.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "rxPdfTitle": "el3yada {kind}",
-  "@rxPdfTitle": {"description":"PDF document title.","placeholders":{"kind":{"type":"String"}}},
+  "@rxPdfTitle": {
+    "description": "PDF document title.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "rxPdfDiagnosis": "Diagnosis:",
   "rxPdfInstructions": "Instructions:",
   "rxPdfNotes": "Notes:",
   "rxPdfFollowUp": "Follow-up: {date}",
-  "@rxPdfFollowUp": {"description":"6.4.1 zone 6.","placeholders":{"date":{"type":"String"}}},
+  "@rxPdfFollowUp": {
+    "description": "6.4.1 zone 6.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "rxPdfResultsOn": "Bring the results on: {date}",
-  "@rxPdfResultsOn": {"description":"6.4.1 zone 6.","placeholders":{"date":{"type":"String"}}},
+  "@rxPdfResultsOn": {
+    "description": "6.4.1 zone 6.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "rxPdfTestsIntro": "Please do the following tests:",
   "rxPdfLabGroup": "Lab tests",
   "rxPdfRadiologyGroup": "Radiology",
@@ -2048,7 +3705,14 @@
   "rxPdfDate": "Date",
   "rxPdfAge": "Age",
   "rxPdfAgeValue": "{years} y",
-  "@rxPdfAgeValue": {"description":"Patient strip.","placeholders":{"years":{"type":"int"}}},
+  "@rxPdfAgeValue": {
+    "description": "Patient strip.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "rxPdfFile": "File no.",
   "rxPdfVisit": "Visit",
   "rxPdfExamination": "Examination",
@@ -2056,25 +3720,91 @@
   "rxPdfSignature": "Signature",
   "rxPdfScan": "Scan the code",
   "rxPdfPage": "Page {page} of {total}",
-  "@rxPdfPage": {"description":"Page 2 of a long prescription.","placeholders":{"page":{"type":"int"},"total":{"type":"int"}}},
+  "@rxPdfPage": {
+    "description": "Page 2 of a long prescription.",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "rxPdfTel": "Tel",
   "rxPdfWhatsapp": "WhatsApp",
   "activityPrescriptionDraftCreated": "started a draft: {kind}",
-  "@activityPrescriptionDraftCreated": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionDraftCreated": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityPrescriptionCopied": "issued a new copy: {kind}",
-  "@activityPrescriptionCopied": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionCopied": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityPrescriptionDraftUpdated": "edited a draft: {kind}",
-  "@activityPrescriptionDraftUpdated": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionDraftUpdated": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityPrescriptionDraftDeleted": "deleted a draft: {kind}",
-  "@activityPrescriptionDraftDeleted": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionDraftDeleted": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityPrescriptionSubmitted": "sent a draft for review: {kind}",
-  "@activityPrescriptionSubmitted": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionSubmitted": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityPrescriptionSent": "sent to the patient: {kind}",
-  "@activityPrescriptionSent": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionSent": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityPrescriptionCancelled": "cancelled: {kind}",
-  "@activityPrescriptionCancelled": {"description":"D27.","placeholders":{"kind":{"type":"String"}}},
+  "@activityPrescriptionCancelled": {
+    "description": "D27.",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
   "activityRxItems": "{count, plural, =1{1 item} other{{count} items}}",
-  "@activityRxItems": {"description":"D27 detail line.","placeholders":{"count":{"type":"int"}}},
+  "@activityRxItems": {
+    "description": "D27 detail line.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "activityRxSettingsUpdated": "changed the print settings",
   "activityRxLogoUpdated": "changed the prescription logo",
   "activityRxLogoRemoved": "removed the prescription logo",
@@ -2087,8 +3817,7 @@
   "activityActionPrescriptionSent": "Prescription sent",
   "activityActionPrescriptionCancelled": "Prescription cancelled",
   "activityActionRxSettingsUpdated": "Print settings",
-  "activityActionRxBrandingUpdated": "Logo or signature"
-=======
+  "activityActionRxBrandingUpdated": "Logo or signature",
   "retry": "Retry",
   "cancel": "Cancel",
   "seeAll": "See all",
@@ -2099,14 +3828,35 @@
   "newBadge": "New",
   "allDoctors": "All",
   "homeGreeting": "Hello, {name}",
-  "@homeGreeting": { "placeholders": { "name": { "type": "String" } } },
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "homeNewItems": "{count, plural, =1{1 new item in your file} other{{count} new items in your file}}",
-  "@homeNewItems": { "placeholders": { "count": { "type": "int" } } },
+  "@homeNewItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "homeLatestVisit": "Latest visit",
   "homeLatestPrescription": "Latest prescription",
   "homeNextFollowUp": "Next follow-up",
   "followUpWith": "{date} with {doctor}",
-  "@followUpWith": { "placeholders": { "date": { "type": "String" }, "doctor": { "type": "String" } } },
+  "@followUpWith": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "doctor": {
+        "type": "String"
+      }
+    }
+  },
   "homeRecentFiles": "Recent files",
   "homeEmpty": "Your medical file is empty for now. Visits, prescriptions and files your doctor adds will appear here.",
   "myDoctorsTitle": "My doctors",
@@ -2114,14 +3864,26 @@
   "noDoctors": "You are not linked to a doctor yet.",
   "medicalProfileTitle": "Medical profile",
   "fileNumber": "File no. {number}",
-  "@fileNumber": { "placeholders": { "number": { "type": "int" } } },
+  "@fileNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "thisDoctorsRecords": "This doctor's records",
   "branchesTitle": "Branches",
   "noBranches": "No branch details yet. Contact the clinic.",
   "mainBranch": "Main",
   "branchTemporarilyClosed": "Temporarily closed",
   "reopensOn": "Reopens on {date}",
-  "@reopensOn": { "placeholders": { "date": { "type": "String" } } },
+  "@reopensOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "openInMaps": "Open in maps",
   "call": "Call",
   "whatsApp": "WhatsApp",
@@ -2132,11 +3894,26 @@
   "workingHoursNotSet": "Ask the clinic for its hours.",
   "closedDay": "Closed",
   "timeRange": "{start} – {end}",
-  "@timeRange": { "placeholders": { "start": { "type": "String" }, "end": { "type": "String" } } },
+  "@timeRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "visitPrices": "Visit prices",
   "priceAskClinic": "Ask the clinic",
   "moneyEgp": "{amount} EGP",
-  "@moneyEgp": { "placeholders": { "amount": { "type": "String" } } },
+  "@moneyEgp": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "paymentCash": "Cash",
   "paymentCard": "Card",
   "paymentInstapay": "InstaPay",
@@ -2168,22 +3945,47 @@
   "followUpDate": "Follow-up date",
   "rxTabMedications": "Medications",
   "rxTabInvestigations": "Lab & Radiology",
-  "rxKindMedication": "Medication prescription",
-  "rxKindInvestigations": "Lab & radiology request",
   "statusCancelled": "Cancelled",
   "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
-  "@itemCount": { "placeholders": { "count": { "type": "int" } } },
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "rxCancelledTitle": "This prescription was cancelled",
   "reasonValue": "Reason: {reason}",
-  "@reasonValue": { "placeholders": { "reason": { "type": "String" } } },
+  "@reasonValue": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "rxOpenNewCopy": "Open the new copy",
   "rxSentOn": "Sent on {date}",
-  "@rxSentOn": { "placeholders": { "date": { "type": "String" } } },
-  "rxAdvice": "Advice",
+  "@rxSentOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "viewPdf": "View PDF",
   "shareOrSave": "Share or save",
   "doseAmountForm": "{dose} {form}",
-  "@doseAmountForm": { "description": "A dose and the medicine form, for example \"1 tablet\".", "placeholders": { "dose": { "type": "String" }, "form": { "type": "String" } } },
+  "@doseAmountForm": {
+    "description": "A dose and the medicine form, for example \"1 tablet\".",
+    "placeholders": {
+      "dose": {
+        "type": "String"
+      },
+      "form": {
+        "type": "String"
+      }
+    }
+  },
   "formTablet": "tablet",
   "formCapsule": "capsule",
   "formSyrup": "syrup",
@@ -2198,9 +4000,21 @@
   "timingAfterFood": "After food",
   "timingWithFood": "With food",
   "durationDays": "{count, plural, =1{for 1 day} other{for {count} days}}",
-  "@durationDays": { "placeholders": { "count": { "type": "int" } } },
+  "@durationDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationWeeks": "{count, plural, =1{for 1 week} other{for {count} weeks}}",
-  "@durationWeeks": { "placeholders": { "count": { "type": "int" } } },
+  "@durationWeeks": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "durationContinuous": "Continuous",
   "investigationLab": "Lab test",
   "investigationRadiology": "Radiology",
@@ -2223,9 +4037,24 @@
   "notes": "Notes",
   "noAttachments": "This file has no attachments.",
   "cannotPreview": "{fileName} can't be previewed here. Use Share to open it with another app.",
-  "@cannotPreview": { "placeholders": { "fileName": { "type": "String" } } },
+  "@cannotPreview": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
   "pageOf": "{current} of {total}",
-  "@pageOf": { "placeholders": { "current": { "type": "int" }, "total": { "type": "int" } } },
+  "@pageOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "personalInfo": "Personal information",
   "fullName": "Full name",
   "mobileNumber": "Mobile number",
@@ -2234,7 +4063,13 @@
   "genderFemale": "Female",
   "age": "Age",
   "ageYears": "{years, plural, =0{Under 1 year} =1{1 year} other{{years} years}}",
-  "@ageYears": { "placeholders": { "years": { "type": "int" } } },
+  "@ageYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
   "bloodType": "Blood type",
   "allergies": "Allergies",
   "chronicDiseases": "Chronic diseases",
@@ -2258,14 +4093,27 @@
   "deletionRequestSent": "Your request was sent. We'll review it soon.",
   "deletionPendingTitle": "Deletion request under review",
   "deletionPendingBody": "Sent on {date}",
-  "@deletionPendingBody": { "placeholders": { "date": { "type": "String" } } },
+  "@deletionPendingBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "deletionRejected": "Your last request was declined: {note}",
-  "@deletionRejected": { "placeholders": { "note": { "type": "String" } } },
+  "@deletionRejected": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
   "termsGateTitle": "Before you start",
   "termsGateBody": "el3yada keeps your medical file safe and shares it only with your doctors. Please read and accept the Terms of Use and Privacy Policy to continue.",
   "termsGateCheckbox": "I have read and accept the Terms of Use and Privacy Policy",
   "termsGateContinue": "Continue",
   "navDeletionRequests": "Deletion requests",
+  "navNotifications": "Notifications",
   "statusPending": "Pending",
   "statusApproved": "Approved",
   "statusRejected": "Rejected",
@@ -2282,13 +4130,37 @@
   "noAccountsFound": "No account uses this number.",
   "accountDeleted": "Account deleted at the patient's request",
   "linkedDoctors": "Doctors: {names}",
-  "@linkedDoctors": { "placeholders": { "names": { "type": "String" } } },
+  "@linkedDoctors": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
   "createdOn": "Created on {date}",
-  "@createdOn": { "placeholders": { "date": { "type": "String" } } },
+  "@createdOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "assistantOf": "Assistant of {doctor}",
-  "@assistantOf": { "placeholders": { "doctor": { "type": "String" } } },
+  "@assistantOf": {
+    "placeholders": {
+      "doctor": {
+        "type": "String"
+      }
+    }
+  },
   "lastActive": "Last active {time}",
-  "@lastActive": { "placeholders": { "time": { "type": "String" } } },
+  "@lastActive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "loginEnabled": "Login enabled",
   "loginDisabled": "Login disabled",
   "markAllRead": "Mark all as read",
@@ -2311,7 +4183,13 @@
   "chatTypeMessage": "Type a message",
   "chatSend": "Send",
   "clinicAssistant": "Clinic assistant — {name}",
-  "@clinicAssistant": { "placeholders": { "name": { "type": "String" } } },
+  "@clinicAssistant": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "chatRead": "Read",
   "chatDelivered": "Delivered",
   "chooseCategory": "Choose the category",
@@ -2330,7 +4208,13 @@
   "stageDone": "Done",
   "stageMissed": "Missed",
   "queueNumber": "No. {number}",
-  "@queueNumber": { "placeholders": { "number": { "type": "int" } } },
+  "@queueNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "errSlotTaken": "This time was just booked. Choose another one.",
   "errPeriodFull": "This period is fully booked.",
   "errOutsideHours": "This time is outside working hours.",
@@ -2352,21 +4236,57 @@
   "more": "More",
   "doctorDelayed": "Doctor delayed",
   "minutesCount": "{minutes} minutes",
-  "@minutesCount": { "placeholders": { "minutes": { "type": "int" } } },
+  "@minutesCount": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "patientsNotified": "{count, plural, =1{1 patient notified} other{{count} patients notified}}",
-  "@patientsNotified": { "placeholders": { "count": { "type": "int" } } },
+  "@patientsNotified": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cancelRestOfDay": "Cancel the rest of today",
   "cancelRestOfDayBody": "Every booking that hasn't arrived yet at this branch today will be cancelled, and patients will be told to book again.",
   "confirm": "Confirm",
   "bookingsCancelled": "{count, plural, =1{1 booking cancelled} other{{count} bookings cancelled}}",
-  "@bookingsCancelled": { "placeholders": { "count": { "type": "int" } } },
+  "@bookingsCancelled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "nowServing": "Now serving",
   "countBooked": "Booked: {count}",
-  "@countBooked": { "placeholders": { "count": { "type": "int" } } },
+  "@countBooked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "countArrived": "Arrived: {count}",
-  "@countArrived": { "placeholders": { "count": { "type": "int" } } },
+  "@countArrived": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delayedBy": "Delayed {minutes} min",
-  "@delayedBy": { "placeholders": { "minutes": { "type": "int" } } },
+  "@delayedBy": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "boardEmptyStage": "Nobody here",
   "confirmBooking": "Confirm",
   "checkIn": "Check in",
@@ -2374,13 +4294,28 @@
   "undoNoShow": "Undo no-show",
   "newPatient": "New patient",
   "lastVisitOn": "Last visit: {date} — {type}",
-  "@lastVisitOn": { "placeholders": { "date": { "type": "String" }, "type": { "type": "String" } } },
+  "@lastVisitOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "priority": "Priority",
   "late": "Late",
   "consultationNotAllowed": "Consultation not allowed",
   "guest": "Guest",
   "waitedMinutes": "{minutes} min",
-  "@waitedMinutes": { "placeholders": { "minutes": { "type": "int" } } },
+  "@waitedMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "markNoShow": "Mark no-show",
   "leftWithoutSeen": "Left without being seen",
   "sendBack": "Back to waiting",
@@ -2399,12 +4334,33 @@
   "visitType": "Visit type",
   "firstVisitIsExam": "The first visit is always an examination.",
   "consultationCount": "Consultation {count} of {max} since the last examination",
-  "@consultationCount": { "placeholders": { "count": { "type": "int" }, "max": { "type": "int" } } },
+  "@consultationCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "noOpenDays": "No open days in this range.",
   "placesLeft": "{count, plural, =0{Full} =1{1 place left} other{{count} places left}}",
-  "@placesLeft": { "placeholders": { "count": { "type": "int" } } },
+  "@placesLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "estimatedTime": "About {time}",
-  "@estimatedTime": { "placeholders": { "time": { "type": "String" } } },
+  "@estimatedTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "tabUpcoming": "Upcoming",
   "tabPast": "Past",
   "tabCancelled": "Cancelled",
@@ -2414,7 +4370,16 @@
   "bookingCancelled": "Your booking was cancelled.",
   "appointmentDetails": "Booking details",
   "nowServingYourNumber": "Now serving {now} — your number {mine}",
-  "@nowServingYourNumber": { "placeholders": { "now": { "type": "int" }, "mine": { "type": "int" } } },
+  "@nowServingYourNumber": {
+    "placeholders": {
+      "now": {
+        "type": "int"
+      },
+      "mine": {
+        "type": "int"
+      }
+    }
+  },
   "waitingForClinic": "Waiting for the clinic to confirm",
   "reschedule": "Change time",
   "callClinic": "Call the clinic",
@@ -2432,7 +4397,13 @@
   "chooseDateAndTime": "Choose the day and time",
   "bookingReasonOptional": "Reason (optional)",
   "cancelPolicy": "You can cancel or change up to {hours} hours before the appointment.",
-  "@cancelPolicy": { "placeholders": { "hours": { "type": "int" } } },
+  "@cancelPolicy": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "confirmBookingButton": "Confirm booking",
   "bookingConfirmed": "Booking confirmed",
   "bookingMoved": "Your booking was moved",
@@ -2440,7 +4411,6 @@
   "nextDay": "Next day",
   "searchBookings": "Search bookings",
   "reasonLabel": "Reason",
-  "reject": "Reject",
   "whenLabel": "When",
   "bookedBy": "Booked by",
   "overbooked": "Overbooked",
@@ -2488,10 +4458,781 @@
   "nextDayShort": "(+1 day)",
   "capacity": "Places",
   "affectedBookings": "{count, plural, =1{1 booking is affected} other{{count} bookings are affected}}",
-  "@affectedBookings": { "placeholders": { "count": { "type": "int" } } },
+  "@affectedBookings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "keepAll": "Keep all",
   "cancelAll": "Cancel all",
   "keep": "Keep",
-  "applyChanges": "Apply changes"
->>>>>>> phase-6/appointments-live-board
+  "applyChanges": "Apply changes",
+  "billTitle": "Billing",
+  "billSubtitle": "Your platform invoices and payments",
+  "billInvoices": "Invoices",
+  "billEmptyTitle": "No invoices yet",
+  "billEmptyBody": "Your first invoice appears on the 1st of next month.",
+  "billAllSettledTitle": "All settled",
+  "billAllSettledBody": "You have nothing to pay right now.",
+  "billRunningMonth": "This month so far",
+  "billRunningMonthHint": "The running total, day by day",
+  "billInvoiceOfMonth": "Invoice for {month}",
+  "@billInvoiceOfMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "billUnderReviewTitle": "Payment for {month} is under review",
+  "@billUnderReviewTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "billUnderReviewBody": "The platform team is checking your transfer. You will be notified.",
+  "billPay": "Pay",
+  "billPayTitle": "Submit a payment",
+  "billStatusUnpaid": "Unpaid",
+  "billStatusPendingReview": "Pending review",
+  "billStatusPaid": "Paid",
+  "billStatusRejected": "Rejected",
+  "billStatusOverdue": "Overdue",
+  "billStatusWaived": "Waived",
+  "billStatusNoCharge": "No charge",
+  "billDueToday": "Due today",
+  "billDueTomorrow": "Due tomorrow",
+  "billDueInDays": "Due in {days} days",
+  "@billDueInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "billDueLate": "{days} days late",
+  "@billDueLate": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "billDueOn": "Due {date}",
+  "@billDueOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "billCounts": "{examinations} exam + {consultations} consult",
+  "@billCounts": {
+    "placeholders": {
+      "examinations": {
+        "type": "int"
+      },
+      "consultations": {
+        "type": "int"
+      }
+    }
+  },
+  "billInvoiceTitle": "Invoice",
+  "billInvoiceSubtitle": "Counts, amounts and payments",
+  "billInvoiceTotals": "Totals",
+  "billExaminationsLine": "{count} examinations",
+  "@billExaminationsLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billConsultationsLine": "{count} consultations",
+  "@billConsultationsLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "billAdjustmentLine": "Adjustment: {reason}",
+  "@billAdjustmentLine": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "billTotalDue": "Total due",
+  "billPeriodLine": "Period: {month}",
+  "@billPeriodLine": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "billPaidOn": "Paid on {date} {method}",
+  "@billPaidOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "billByBranch": "By branch",
+  "billPayments": "Payments",
+  "billTimeline": "Status history",
+  "billPaymentPending": "Under review",
+  "billPaymentApproved": "Approved",
+  "billPaymentRejected": "Rejected",
+  "billTransferOn": "Transferred {date}",
+  "@billTransferOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "billReference": "Ref {reference}",
+  "@billReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "billRejectionReason": "Reason: {reason}",
+  "@billRejectionReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "billRejectedTitle": "Your payment was rejected",
+  "billRejectedBody": "{reason}. Submit the payment again with a clear screenshot.",
+  "@billRejectedBody": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "billScreenshotN": "Screenshot {number}",
+  "@billScreenshotN": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "billMethodInstapay": "InstaPay",
+  "billMethodCash": "Cash",
+  "billMethodBank": "Bank transfer",
+  "billMethodOther": "Other",
+  "billInstapayTitle": "Where to send the money",
+  "billInstapayAddress": "InstaPay address",
+  "billInstapayAccount": "Account name",
+  "billInstapayAmount": "Exact amount",
+  "billCopy": "Copy",
+  "billCopied": "Copied",
+  "billPaymentDetails": "Payment details",
+  "billScreenshots": "Screenshots of the transfer",
+  "billScreenshotsHint": "1 to 3 images, up to 10 MB each",
+  "billAddScreenshot": "Add a screenshot",
+  "billRemoveScreenshot": "Remove this screenshot",
+  "billErrorScreenshotRequired": "Add at least one screenshot of the transfer",
+  "billAmountTransferred": "Amount transferred",
+  "billEgpUnit": "EGP",
+  "billErrorAmount": "Enter the amount you transferred",
+  "billTransferDate": "Transfer date",
+  "billReferenceOptional": "InstaPay reference (optional)",
+  "billSenderOptional": "Sender name (optional)",
+  "billNoteOptional": "Note (optional)",
+  "billSubmitPayment": "Send for review",
+  "billSubmittedSnack": "Your payment is under review",
+  "billErrorNotPayable": "This invoice can't be paid right now. It may already be paid or under review.",
+  "anaPeriod": "Period",
+  "anaPresetToday": "Today",
+  "anaPresetYesterday": "Yesterday",
+  "anaPresetThisWeek": "This week",
+  "anaPresetLastWeek": "Last week",
+  "anaPresetThisMonth": "This month",
+  "anaPresetLastMonth": "Last month",
+  "anaPresetLast3Months": "Last 3 months",
+  "anaPresetLast6Months": "Last 6 months",
+  "anaPresetThisYear": "This year",
+  "anaPresetLastYear": "Last year",
+  "anaPresetCustom": "Custom range",
+  "anaAllTypes": "All visits",
+  "anaCompare": "Compare",
+  "anaInsights": "Insights",
+  "anaTileRevenue": "Clinic revenue",
+  "anaTileNet": "Net income",
+  "anaTileFees": "Platform fees",
+  "anaTileVisits": "Visits",
+  "anaTileVisitsSplit": "{examinations} exams · {consultations} consults",
+  "@anaTileVisitsSplit": {
+    "placeholders": {
+      "examinations": {
+        "type": "int"
+      },
+      "consultations": {
+        "type": "int"
+      }
+    }
+  },
+  "anaTilePatients": "Patients",
+  "anaTileNewPatients": "New patients",
+  "anaTileWeeklyAverage": "Patients per week",
+  "anaTileAveragePerVisit": "Revenue per visit",
+  "anaTileNoShow": "No-show rate",
+  "anaTileAppShare": "Booked from the app",
+  "anaTileWait": "Average wait",
+  "anaPercent": "{value}%",
+  "@anaPercent": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "anaMinutes": "{value} min",
+  "@anaMinutes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "anaNoChange": "No change",
+  "anaUp": "up",
+  "anaDown": "down",
+  "anaChangeSemantics": "{direction} {percent} percent versus the previous period",
+  "@anaChangeSemantics": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "direction": {
+        "type": "String"
+      }
+    }
+  },
+  "anaInvoiceCardTitle": "Invoice for {month}",
+  "@anaInvoiceCardTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "anaPreviousPeriod": "Previous period",
+  "anaNoData": "No data for this period",
+  "anaC1Title": "Revenue over time",
+  "anaC1Subtitle": "Examinations and consultations",
+  "anaC1Summary": "Revenue chart. Total {total}",
+  "@anaC1Summary": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "anaC2Title": "Visits over time",
+  "anaC2Summary": "Visits chart. {total} visits",
+  "@anaC2Summary": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "anaC3Title": "Patients per week",
+  "anaC3Summary": "Patients per week chart. Average {average}",
+  "@anaC3Summary": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      }
+    }
+  },
+  "anaPatientsPerWeek": "Patients",
+  "anaWeeklyAverageLine": "Average {average}",
+  "@anaWeeklyAverageLine": {
+    "placeholders": {
+      "average": {
+        "type": "String"
+      }
+    }
+  },
+  "anaWeekOf": "Week of {date}",
+  "@anaWeekOf": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "anaPatientsCount": "{count} patients",
+  "@anaPatientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anaC4Title": "Busy and quiet months",
+  "anaC4Subtitle": "Visits per month, last 12 months",
+  "anaC4Summary": "Visits per month chart with the busiest and quietest months highlighted",
+  "anaBusiest": "Busiest",
+  "anaQuietest": "Quietest",
+  "anaThisYear": "This year",
+  "anaLastYear": "Last year",
+  "anaVisitsCount": "{count} visits",
+  "@anaVisitsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anaC5Title": "Busiest days and hours",
+  "anaC5Subtitle": "Visits by weekday and hour",
+  "anaC5Summary": "Heatmap of visits by weekday and hour",
+  "anaHeatCell": "{day}, {hour}:00: {count} visits",
+  "@anaHeatCell": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "hour": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "anaSat": "Sat",
+  "anaSun": "Sun",
+  "anaMon": "Mon",
+  "anaTue": "Tue",
+  "anaWed": "Wed",
+  "anaThu": "Thu",
+  "anaFri": "Fri",
+  "anaC6Title": "New and returning patients",
+  "anaC6Summary": "New and returning patients per month",
+  "anaNewPatients": "New",
+  "anaReturningPatients": "Returning",
+  "anaC7Title": "Examinations and consultations",
+  "anaC7Summary": "{examinations} examinations and {consultations} consultations",
+  "@anaC7Summary": {
+    "placeholders": {
+      "examinations": {
+        "type": "int"
+      },
+      "consultations": {
+        "type": "int"
+      }
+    }
+  },
+  "anaByCount": "By number of visits",
+  "anaByRevenue": "By revenue",
+  "anaC8Title": "Branches",
+  "anaC8Summary": "Visits and revenue per branch",
+  "anaC9Title": "Bookings funnel",
+  "anaC9Summary": "{booked} booked, {arrived} arrived, {seen} seen",
+  "@anaC9Summary": {
+    "placeholders": {
+      "booked": {
+        "type": "int"
+      },
+      "arrived": {
+        "type": "int"
+      },
+      "seen": {
+        "type": "int"
+      }
+    }
+  },
+  "anaFunnelBooked": "Booked",
+  "anaFunnelArrived": "Arrived",
+  "anaFunnelSeen": "Seen",
+  "anaNoShows": "No-shows",
+  "anaCancellations": "Cancellations",
+  "anaC10Title": "Booking sources",
+  "anaC10Summary": "Bookings per month by source",
+  "anaSourceApp": "App",
+  "anaSourceStaff": "Staff",
+  "anaSourceWalkIn": "Walk-in",
+  "anaC11Title": "Patients not seen recently",
+  "anaC11Subtitle": "Tap a bar to open the list",
+  "anaC11Summary": "Patients whose last visit was 3, 6 or 12 or more months ago",
+  "anaNotSeenMonths": "More than {months} months",
+  "@anaNotSeenMonths": {
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "anaNotSeen12": "12 months or more",
+  "anaC12Title": "Waiting time",
+  "anaC12Summary": "Average wait per day",
+  "revTitle": "Revenue",
+  "revSubtitle": "Month by month, with fees and net income",
+  "revTabMonth": "By month",
+  "revTabBranch": "By branch",
+  "revTabType": "By visit type",
+  "revTabPayment": "By payment method",
+  "revEmptyTitle": "No visits in this period",
+  "revEmptyBody": "Change the year or the filters to see more.",
+  "revColMonth": "Month",
+  "revColExaminations": "Examinations",
+  "revColConsultations": "Consultations",
+  "revColRevenue": "Revenue",
+  "revColFees": "Platform fees",
+  "revColNet": "Net income",
+  "revColPatients": "Patients",
+  "revColNewPatients": "New",
+  "revColVisits": "Visits",
+  "revColFreeDiscounted": "Free / discounted",
+  "revColChange": "Change",
+  "revColInvoice": "Invoice",
+  "revOpenInvoice": "Open invoice",
+  "revTotals": "Totals",
+  "revBestMonth": "Best month",
+  "revWorstMonth": "Lowest month",
+  "revMonthSubtitle": "Day by day. Tap a day for its sessions.",
+  "revDaySubtitle": "Every session of the day",
+  "revNetShort": "Net {amount}",
+  "@revNetShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "revRecordedBy": "By {name}",
+  "@revRecordedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "revVisitPrice": "Visit price",
+  "revAmountCharged": "Charged",
+  "revDiscount": "Discount",
+  "revMethodUnspecified": "Not specified",
+  "abDashboardTitle": "Dashboard",
+  "abDashboardSubtitle": "The platform at a glance",
+  "abTileDoctors": "Doctors",
+  "abTileDoctorsCaption": "{active} active · {pending} pending · {suspended} suspended",
+  "@abTileDoctorsCaption": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      },
+      "pending": {
+        "type": "int"
+      },
+      "suspended": {
+        "type": "int"
+      }
+    }
+  },
+  "abTilePatients": "Patients",
+  "abTileSessionsToday": "Sessions today",
+  "abTileSessionsMonth": "Sessions this month",
+  "abTileBookingsToday": "Bookings today",
+  "abTileNoShow": "No-show rate",
+  "abLast30Days": "Last 30 days",
+  "abTileExpectedFees": "Expected fees this month",
+  "abLiveThisMonth": "Live, from the sessions saved",
+  "abTileLastMonth": "Last month collected",
+  "abCollectedOfInvoiced": "of {invoiced} invoiced",
+  "@abCollectedOfInvoiced": {
+    "placeholders": {
+      "invoiced": {
+        "type": "String"
+      }
+    }
+  },
+  "abTileOutstanding": "Outstanding",
+  "abTileOverdue": "Overdue doctors",
+  "abTilePaymentsToReview": "Payments to review",
+  "abTileSignups": "Sign-ups to approve",
+  "abChartSessions": "Sessions, last 30 days",
+  "abChartInvoiced": "Invoiced and collected, last 12 months",
+  "abInvoiced": "Invoiced",
+  "abCollected": "Collected",
+  "abListPayments": "Payments to review",
+  "abListPaymentsEmpty": "Nothing is waiting for review.",
+  "abListSignups": "Latest sign-ups",
+  "abListSignupsEmpty": "No sign-ups yet.",
+  "abListDueSoon": "Invoices due in 3 days",
+  "abListDueSoonEmpty": "No invoice is due soon.",
+  "abSeeAll": "See all",
+  "abPaymentsTitle": "Payments to review",
+  "abPaymentsSubtitle": "{count} waiting, oldest first",
+  "@abPaymentsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "abPaymentsEmptyTitle": "Nothing to review",
+  "abPaymentsEmptyBody": "New payments from doctors appear here.",
+  "abInvoiceOf": "Invoice for {month}",
+  "@abInvoiceOf": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "abAmountMismatch": "Amount differs",
+  "abInvoiceTotalShort": "of {total}",
+  "@abInvoiceTotalShort": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "abReviewTitle": "Review payment",
+  "abScreenshots": "Screenshots",
+  "abNoScreenshots": "No screenshots",
+  "abInvoiceSummary": "Invoice",
+  "abDoctor": "Doctor",
+  "abMonth": "Month",
+  "abDueDate": "Due date",
+  "abDoctorEntries": "What the doctor entered",
+  "abMismatchBanner": "The invoice total is {total}",
+  "@abMismatchBanner": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "abSubmitted": "Submitted",
+  "abEarlierAttempts": "Earlier attempts on this invoice",
+  "abAlreadyApproved": "Already approved",
+  "abAlreadyRejected": "Already rejected: {reason}",
+  "@abAlreadyRejected": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "abApprove": "Approve",
+  "abApproveTitle": "Approve this payment?",
+  "abApproveBody": "{amount} from {doctor} will mark the invoice as paid.",
+  "@abApproveBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "doctor": {
+        "type": "String"
+      }
+    }
+  },
+  "abApprovedSnack": "Payment approved",
+  "abReject": "Reject",
+  "abRejectTitle": "Reject this payment",
+  "abRejectBody": "The doctor sees the reason and can submit again.",
+  "abRejectAmount": "Amount does not match",
+  "abRejectUnclear": "Screenshot unclear",
+  "abRejectNotReceived": "Transfer not received",
+  "abRejectedSnack": "Payment rejected",
+  "abReasonLabel": "Reason",
+  "abReasonRequired": "Write at least 3 characters",
+  "abNoteLabel": "Note",
+  "abSave": "Save",
+  "abSend": "Send",
+  "abInvoicesTitle": "Invoices",
+  "abInvoicesSubtitle": "Every doctor's monthly invoice",
+  "abInvoicesEmptyTitle": "No invoices match",
+  "abInvoicesEmptyBody": "Change the month or the status.",
+  "abFilterMonth": "Month",
+  "abAllMonths": "All months",
+  "abAllStatuses": "All",
+  "abTotalsInvoices": "Invoices",
+  "abTotalsExaminations": "Examinations",
+  "abTotalsConsultations": "Consultations",
+  "abTotalsAmount": "Total",
+  "abInvoiceTitle": "Invoice",
+  "abMarkPaid": "Mark paid",
+  "abMarkPaidTitle": "Mark this invoice as paid",
+  "abMarkPaidBody": "Choose how the money arrived and add a note.",
+  "abMarkedPaidSnack": "Invoice marked as paid",
+  "abWaive": "Waive",
+  "abWaiveTitle": "Waive this invoice",
+  "abWaiveBody": "The doctor owes nothing for this month. A reason is required.",
+  "abWaivedSnack": "Invoice waived",
+  "abAdjust": "Adjust amount",
+  "abAdjustTitle": "Adjust the amount",
+  "abAdjustBody": "A discount lowers the total, a charge raises it. The total must stay above zero.",
+  "abAdjustDiscount": "Discount",
+  "abAdjustCharge": "Charge",
+  "abAdjustAmount": "Amount",
+  "abAdjustedSnack": "Invoice adjusted",
+  "abExtend": "Extend due date",
+  "abExtendTitle": "New due date",
+  "abExtendedSnack": "Due date extended",
+  "abPendingHint": "A payment is waiting for review.",
+  "abOpenQueue": "Open the queue",
+  "abDoctorsTitle": "Doctors",
+  "abDoctorsSubtitle": "{count} doctors",
+  "@abDoctorsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "abDoctorsSearchHint": "Search by name, phone, email or clinic",
+  "abDoctorsEmptyTitle": "No doctors found",
+  "abDoctorsEmptyBody": "Try a different search or filter.",
+  "abSort": "Sort",
+  "abSortName": "Name",
+  "abSortNewest": "Newest",
+  "abSortSessions": "Most sessions",
+  "abSortOutstanding": "Most owed",
+  "abSessionsThisMonth": "{count} sessions this month",
+  "@abSessionsThisMonth": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "abOutstanding": "Owes",
+  "abDoctorActive": "Active",
+  "abDoctorPending": "Pending approval",
+  "abDoctorSuspended": "Suspended",
+  "abDoctorDisabled": "Disabled",
+  "abDoctorRejected": "Rejected",
+  "abDoctorTitle": "Doctor",
+  "abTabProfile": "Profile",
+  "abTabActivity": "Activity",
+  "abTabInvoices": "Invoices",
+  "abTabPayments": "Payments",
+  "abTabAudit": "Audit",
+  "abTabBranches": "Branches",
+  "abTabAppointments": "Appointments",
+  "abTabAssistants": "Assistants",
+  "abProfile": "Profile",
+  "abFullName": "Name",
+  "abSpecialty": "Specialty",
+  "abEmail": "Email",
+  "abPhone": "Mobile",
+  "abLicense": "License number",
+  "abJoined": "Joined",
+  "abStatusReason": "Status reason",
+  "abReasonBilling": "Unpaid invoice for {month}",
+  "@abReasonBilling": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "abActions": "Actions",
+  "abSuspend": "Suspend",
+  "abSuspendTitle": "Suspend this doctor",
+  "abSuspendBody": "The doctor and the assistants can read but not add. A reason is required.",
+  "abSuspendedSnack": "Doctor suspended",
+  "abReactivate": "Reactivate",
+  "abReactivateTitle": "Reactivate this doctor",
+  "abReactivateBody": "The clinic works normally again. A reason is required.",
+  "abReactivatedSnack": "Doctor reactivated",
+  "abDisable": "Disable account",
+  "abDisableTitle": "Disable this account",
+  "abDisableBody": "The doctor and the assistants can't sign in, and the bookings from today on are cancelled and the patients told.",
+  "abDisabledSnack": "Account disabled",
+  "abSendReset": "Send password reset email",
+  "abResetTitle": "Send a password reset email?",
+  "abResetBody": "The doctor gets an email with a link to set a new password.",
+  "abResetSent": "Email sent",
+  "abAddNote": "Add note",
+  "abNotes": "Internal notes",
+  "abNotesEmpty": "No notes yet. Only admins see them.",
+  "abNoteAdded": "Note added",
+  "abSessionsPerMonth": "Sessions per month",
+  "abSessionsOfMonth": "Sessions in {month}",
+  "@abSessionsOfMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "abMaskedHint": "Patient names are masked",
+  "abNoSessions": "No sessions this month",
+  "abStatusChanges": "Status changes",
+  "abDeletedSessions": "Deleted sessions",
+  "abDeleteReason": "Reason: {reason}",
+  "@abDeleteReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "abNothingHere": "Nothing here",
+  "abAuditSuspended": "Suspended",
+  "abAuditReactivated": "Reactivated",
+  "abAuditDisabled": "Account disabled",
+  "abAuditServiceActivated": "Service activated",
+  "abAuditTrialExtended": "Trial extended",
+  "abAuditInvoiceOverdue": "Invoice became overdue",
+  "abBranchDefault": "Default",
+  "abAppointmentsCounts": "Bookings per month",
+  "abCountsOnly": "Counts only, no names",
+  "abAppointmentsLine": "{bookings} bookings · {noShows} no-shows ({rate}%) · {cancellations} cancelled · {unseen} not seen",
+  "@abAppointmentsLine": {
+    "placeholders": {
+      "bookings": {
+        "type": "int"
+      },
+      "noShows": {
+        "type": "int"
+      },
+      "cancellations": {
+        "type": "int"
+      },
+      "rate": {
+        "type": "int"
+      },
+      "unseen": {
+        "type": "int"
+      }
+    }
+  },
+  "abNoAssistants": "No assistants",
+  "billErrorTooManyScreenshots": "You can attach at most 3 screenshots",
+  "abErrorInvoiceStatus": "This invoice's status doesn't allow this action. Refresh and check.",
+  "abErrorAlreadyReviewed": "This payment was already reviewed.",
+  "abErrorAdjustment": "The total due must stay above zero. Waive the invoice instead.",
+  "abErrorDueDate": "Choose a later due date, within a year.",
+  "patientFilterUpcoming": "Has a booking",
+  "patientFilterNoShows": "Has no-shows",
+  "patientColumnNextBooking": "Next booking",
+  "patientColumnNoShows": "No-shows"
 }

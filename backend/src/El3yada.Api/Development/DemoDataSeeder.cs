@@ -38,7 +38,7 @@ public sealed record DemoData(
 /// another patient's). Idempotent: it does nothing when the demo admin already exists.
 /// Never registered outside Development.
 /// </summary>
-public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, TimeProvider clock)
+public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, El3yada.Api.Storage.IFileStorage thumbnails, TimeProvider clock)
 {
     public const string AdminEmail = "admin@el3yada.dev";
     public const string DoctorAEmail = "doctor@el3yada.dev";
@@ -190,12 +190,13 @@ public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, TimePr
         db.Prescriptions.AddRange(replacement, sentInvestigations, draft, review);
 
         var record = NewRecord(visible, "lab", "تحليل صورة دم", today.AddDays(-9), doctorAUser.Id);
+        var attachmentId = NewId.Next();
         var attachment = new MedicalRecordAttachment
         {
-            Id = NewId.Next(),
-            Path = $"medical/{doctorA.UserId}/{patient.Id}/{record.Id}/cbc.png",
-            ThumbPath = $"medical/{doctorA.UserId}/{patient.Id}/{record.Id}/cbc.thumb.jpg",
-            FileName = "cbc.png", MimeType = "image/png", SizeBytes = Png.Length,
+            Id = attachmentId,
+            Path = El3yada.Api.Storage.StoragePath.MedicalAttachment(doctorA.UserId, patient.Id, record.Id, attachmentId, "image/png").Value,
+            ThumbPath = El3yada.Api.Storage.StoragePath.MedicalAttachmentThumbnail(doctorA.UserId, patient.Id, record.Id, attachmentId).Value,
+            FileName = "cbc.png", MimeType = "image/png", SizeBytes = Png.Length, StoredSizeBytes = Png.Length,
         };
         record.MedicalRecordAttachments.Add(attachment);
         var deletedRecord = NewRecord(visible, "radiology", "DELETED-RECORD", today.AddDays(-9), doctorAUser.Id);
@@ -206,7 +207,7 @@ public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, TimePr
         await db.SaveChangesAsync(ct);
 
         await storage.SaveAsync(attachment.Path, new MemoryStream(Png), ct);
-        await storage.SaveAsync(attachment.ThumbPath, new MemoryStream(Png), ct);
+        await thumbnails.SaveThumbnailAsync(new MemoryStream(Png), El3yada.Api.Storage.StoragePath.Parse(attachment.ThumbPath), ct);
         foreach (var rx in new[] { cancelled, replacement, sentInvestigations })
             await storage.SaveAsync(rx.PdfPath!, new MemoryStream(Pdf), ct);
 
@@ -233,7 +234,7 @@ public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, TimePr
         Branch NewBranch(Guid doctorId, string nameAr, string? nameEn, string governorate, string city, string street, bool isDefault) => new()
         {
             Id = NewId.Next(), DoctorId = doctorId, NameAr = nameAr, NameEn = nameEn, IsDefault = isDefault,
-            Governorate = governorate, City = city, Area = city, Street = street, Landmark = "بجوار الصيدلية",
+            Governorate = governorate, City = city, Area = city, AddressDetails = street, Landmark = "بجوار الصيدلية",
             CreatedAt = now, UpdatedAt = now,
         };
 
@@ -270,7 +271,7 @@ public sealed class DemoDataSeeder(AppDbContext db, IFileStorage storage, TimePr
             {
                 Id = id, DoctorId = session.DoctorId, PatientId = session.PatientId, SessionId = session.Id, Kind = kind,
                 Diagnosis = session.Diagnosis, Status = status, QrShortCode = Guid.NewGuid().ToString("N")[..12],
-                PdfPath = sent ? $"prescriptions/{session.DoctorId}/{session.PatientId}/{id}.pdf" : null,
+                PdfPath = sent ? El3yada.Api.Storage.StoragePath.PrescriptionPdf(session.DoctorId, session.PatientId, id).Value : null,
                 SentAt = sent ? sentAt : null, CreatedAt = sentAt ?? now, UpdatedAt = sentAt ?? now,
             };
         }

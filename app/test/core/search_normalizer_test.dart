@@ -32,10 +32,13 @@ void main() {
     });
   });
 
-  test('ftsPrefixQuery makes every word a quoted prefix, and nothing searchable gives no query', () {
-    expect(ftsPrefixQuery('panadol ext'), '"panadol"* AND "ext"*');
-    expect(ftsPrefixQuery(' - ،'), isNull);
-  });
+  test(
+    'ftsPrefixQuery makes every word a quoted prefix, and nothing searchable gives no query',
+    () {
+      expect(ftsPrefixQuery('panadol ext'), '"panadol"* AND "ext"*');
+      expect(ftsPrefixQuery(' - ،'), isNull);
+    },
+  );
 
   test('parseStrength reads the strength out of a trade name (BR-CAT7)', () {
     expect(parseStrength('ABILIFY 15 MG 10 TABS.'), '15 MG');
@@ -49,13 +52,25 @@ void main() {
       expect(matchesWordStarts('Panadol Extra', searchWords('dol')), isFalse);
     });
 
-    test('an Arabic word also matches through its skeleton: «بنادول» finds «بانادول»', () {
-      expect(matchesWordStarts('بانادول اكسترا', searchWords('بنادول')), isTrue);
-    });
+    test(
+      'an Arabic word also matches through its skeleton: «بنادول» finds «بانادول»',
+      () {
+        expect(
+          matchesWordStarts('بانادول اكسترا', searchWords('بنادول')),
+          isTrue,
+        );
+      },
+    );
 
     test('every typed word must match', () {
-      expect(matchesWordStarts('Panadol Extra', searchWords('pan ext')), isTrue);
-      expect(matchesWordStarts('Panadol Extra', searchWords('pan cold')), isFalse);
+      expect(
+        matchesWordStarts('Panadol Extra', searchWords('pan ext')),
+        isTrue,
+      );
+      expect(
+        matchesWordStarts('Panadol Extra', searchWords('pan cold')),
+        isFalse,
+      );
     });
   });
 }

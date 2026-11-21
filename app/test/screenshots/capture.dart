@@ -16,7 +16,8 @@ import 'package:flutter_test/flutter_test.dart';
 ///
 /// (PowerShell: `$env:EL3YADA_SCREENSHOTS=1; flutter test test/screenshots`.)
 /// Shadows draw without blur in the test renderer; on a device they're soft.
-bool get screenshotsEnabled => Platform.environment['EL3YADA_SCREENSHOTS'] == '1';
+bool get screenshotsEnabled =>
+    Platform.environment['EL3YADA_SCREENSHOTS'] == '1';
 
 final screenshotKey = GlobalKey();
 
@@ -29,24 +30,32 @@ Future<void> loadRealFonts() async {
   }
   await alexandria.load();
 
-  final flutterRoot = Platform.environment['FLUTTER_ROOT'] ?? _flutterRootFromPath();
-  final iconFile = File('$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
+  final flutterRoot =
+      Platform.environment['FLUTTER_ROOT'] ?? _flutterRootFromPath();
+  final iconFile = File(
+    '$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
+  );
   if (iconFile.existsSync()) {
-    final icons = FontLoader('MaterialIcons')..addFont(Future.value(ByteData.sublistView(iconFile.readAsBytesSync())));
+    final icons = FontLoader('MaterialIcons')
+      ..addFont(Future.value(ByteData.sublistView(iconFile.readAsBytesSync())));
     await icons.load();
   }
 }
 
 String _flutterRootFromPath() {
   // flutter_tester runs from <flutter>/bin/cache/artifacts/engine/<platform>/.
-  final executable = File(Platform.resolvedExecutable).absolute.path.replaceAll(r'\', '/');
+  final executable = File(
+    Platform.resolvedExecutable,
+  ).absolute.path.replaceAll(r'\', '/');
   final index = executable.indexOf('/bin/cache/');
   return index < 0 ? '' : executable.substring(0, index);
 }
 
 /// Writes what is inside [screenshotKey] to `build/screenshots/[name].png`.
 Future<void> capture(WidgetTester tester, String name) async {
-  final boundary = screenshotKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+  final boundary =
+      screenshotKey.currentContext!.findRenderObject()!
+          as RenderRepaintBoundary;
   // Real async work (the engine, files) never completes in the test's fake
   // clock, so all of it runs inside runAsync, and the file is written sync.
   await tester.runAsync(() async {

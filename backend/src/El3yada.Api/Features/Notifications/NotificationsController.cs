@@ -1,3 +1,4 @@
+using El3yada.Api.Auth;
 using El3yada.Api.Infrastructure.Auth;
 using El3yada.Api.Infrastructure.Firebase;
 using El3yada.Api.Infrastructure.Ids;

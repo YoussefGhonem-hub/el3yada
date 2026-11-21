@@ -57,7 +57,7 @@ public sealed class StaffContext
 }
 
 /// <summary>Loads <see cref="StaffContext"/> once per request. Phase 2 endpoints should use it too.</summary>
-public sealed class StaffAccess(AppDbContext db, ICurrentUser user)
+public sealed class StaffAccess(AppDbContext db, ICurrentUser user, TimeProvider clock)
 {
     private StaffContext? _context;
 
@@ -72,9 +72,9 @@ public sealed class StaffAccess(AppDbContext db, ICurrentUser user)
         {
             var doctor = await db.Doctors.AsNoTracking()
                 .Where(d => d.UserId == userId)
-                .Select(d => new { d.FullName, d.Status })
+                .Select(d => new { d.FullName, d.Status, d.TrialEndsAt })
                 .FirstOrDefaultAsync(ct) ?? throw ApiException.Forbidden();
-            EnsureClinicOpen(doctor.Status);
+            EnsureClinicOpen(doctor.Status, doctor.TrialEndsAt);
             return _context = new StaffContext
             {
                 UserId = userId, DoctorId = userId, IsDoctor = true, DisplayName = doctor.FullName,
@@ -89,7 +89,7 @@ public sealed class StaffAccess(AppDbContext db, ICurrentUser user)
                 .Where(x => x.UserId == userId)
                 .Select(x => new
                 {
-                    x.DoctorId, x.FullName, x.Status, DoctorStatus = x.Doctor.Status, x.AllBranches,
+                    x.DoctorId, x.FullName, x.Status, DoctorStatus = x.Doctor.Status, TrialEndsAt = x.Doctor.TrialEndsAt, x.AllBranches,
                     BranchIds = x.Branches.Select(b => b.Id).ToList(),
                     x.PatientsManage, x.PatientsResetPassword, x.SessionsCreate, x.SessionsDelete, x.ClinicalView,
                     x.ClinicalEditProfile, x.FilesManage, x.PrescriptionsPrint, x.PrescriptionsDraft, x.Chat,
@@ -98,7 +98,7 @@ public sealed class StaffAccess(AppDbContext db, ICurrentUser user)
                 })
                 .FirstOrDefaultAsync(ct) ?? throw ApiException.Forbidden();
             if (a.Status != "active") throw ApiException.Forbidden();
-            EnsureClinicOpen(a.DoctorStatus);
+            EnsureClinicOpen(a.DoctorStatus, a.TrialEndsAt);
 
             var permissions = new HashSet<StaffPermission>();
             void Add(bool on, StaffPermission p) { if (on) permissions.Add(p); }
@@ -135,9 +135,11 @@ public sealed class StaffAccess(AppDbContext db, ICurrentUser user)
     private async Task<IReadOnlySet<Guid>> DoctorBranchesAsync(Guid doctorId, CancellationToken ct) =>
         (await db.Branches.AsNoTracking().Where(b => b.DoctorId == doctorId).Select(b => b.Id).ToListAsync(ct)).ToHashSet();
 
-    // Pending, rejected or disabled clinics: every request is refused (spec 9.4, BR-AS9).
-    private static void EnsureClinicOpen(string doctorStatus)
+    // Pending, rejected or disabled clinics: every request is refused (spec 9.4, BR-AS9). A clinic whose free trial
+    // has ended is closed too (BR-T4).
+    private void EnsureClinicOpen(string doctorStatus, DateTime? trialEndsAt)
     {
         if (doctorStatus is not ("active" or "suspended")) throw ApiException.Forbidden(ErrorCodes.ClinicInactive);
+        if (Doctors.Trial.HasEnded(trialEndsAt, clock.GetUtcNow().UtcDateTime)) throw ApiException.Forbidden(ErrorCodes.TrialEnded);
     }
 }

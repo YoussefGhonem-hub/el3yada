@@ -54,14 +54,20 @@ void main() {
         ProviderScope(
           overrides: await appOverrides(
             prefs: {'settings.locale': 'ar', 'settings.themeMode': theme},
-            platform: size.width > 900 ? AppPlatform.desktop : AppPlatform.mobile,
+            platform: size.width > 900
+                ? AppPlatform.desktop
+                : AppPlatform.mobile,
             extra: [
               fakeAdminOverride(),
               ...catalogOverrides(
-                backend: FakeCatalogBackend(delay: Duration.zero, chunkDelay: Duration.zero),
+                backend: FakeCatalogBackend(
+                  delay: Duration.zero,
+                  chunkDelay: Duration.zero,
+                ),
                 controller: controller,
               ),
-              if (picker != null) catalogFilePickerProvider.overrideWithValue(picker),
+              if (picker != null)
+                catalogFilePickerProvider.overrideWithValue(picker),
             ],
           ),
           child: RepaintBoundary(key: screenshotKey, child: const El3yadaApp()),
@@ -79,25 +85,54 @@ void main() {
       await settle(tester);
     }
 
-    testWidgets('D0 downloading, failed and ready (phone, $theme)', skip: !screenshotsEnabled, (tester) async {
-      final controller = FixedCatalogController();
-      await signedIn(tester, phone, 'doctor@el3yada.dev', controller: () => controller);
-      const target = CatalogVersionInfo(version: 1, schemaVersion: 1, sha256: '', sizeBytes: 7242557);
-      controller.set(
-        const CatalogState(phase: CatalogPhase.downloading, target: target, received: 3100000, total: 7242557),
-      );
-      await settle(tester);
-      await capture(tester, 'd0_downloading_phone_ar_$theme');
-      controller.set(const CatalogState(phase: CatalogPhase.failed, target: target, failure: CatalogFailure.network));
-      await settle(tester);
-      await capture(tester, 'd0_failed_phone_ar_$theme');
-      controller.set(const CatalogState(phase: CatalogPhase.ready, installed: target));
-      await settle(tester);
-      await capture(tester, 'd0_ready_phone_ar_$theme');
-    });
+    testWidgets(
+      'D0 downloading, failed and ready (phone, $theme)',
+      skip: !screenshotsEnabled,
+      (tester) async {
+        final controller = FixedCatalogController();
+        await signedIn(
+          tester,
+          phone,
+          'doctor@el3yada.dev',
+          controller: () => controller,
+        );
+        const target = CatalogVersionInfo(
+          version: 1,
+          schemaVersion: 1,
+          sha256: '',
+          sizeBytes: 7242557,
+        );
+        controller.set(
+          const CatalogState(
+            phase: CatalogPhase.downloading,
+            target: target,
+            received: 3100000,
+            total: 7242557,
+          ),
+        );
+        await settle(tester);
+        await capture(tester, 'd0_downloading_phone_ar_$theme');
+        controller.set(
+          const CatalogState(
+            phase: CatalogPhase.failed,
+            target: target,
+            failure: CatalogFailure.network,
+          ),
+        );
+        await settle(tester);
+        await capture(tester, 'd0_failed_phone_ar_$theme');
+        controller.set(
+          const CatalogState(phase: CatalogPhase.ready, installed: target),
+        );
+        await settle(tester);
+        await capture(tester, 'd0_ready_phone_ar_$theme');
+      },
+    );
 
     for (final (width, size) in [('phone', phone), ('desktop', desktop)]) {
-      testWidgets('AD20 catalogs ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
+      testWidgets('AD20 catalogs ($width, $theme)', skip: !screenshotsEnabled, (
+        tester,
+      ) async {
         await signedIn(tester, size, 'admin@el3yada.dev');
         await open(tester, '/admin/catalogs');
         await capture(tester, 'ad20_versions_${width}_ar_$theme');
@@ -109,54 +144,85 @@ void main() {
         await capture(tester, 'ad20_reports_${width}_ar_$theme');
       });
 
-      testWidgets('AD19 specialty profiles ($width, $theme)', skip: !screenshotsEnabled, (tester) async {
-        await signedIn(tester, size, 'admin@el3yada.dev');
-        await open(tester, '/admin/specialties');
-        await capture(tester, 'ad19_list_${width}_ar_$theme');
-        await open(tester, '/admin/specialties/sp-cardio');
-        await capture(tester, 'ad19_editor_${width}_ar_$theme');
-        final preview = find.widgetWithText(TextField, 'جرّب: ator أو omep أو بنادول');
-        await tester.ensureVisible(preview);
-        await tester.enterText(preview, 'ator');
-        await tester.pump(const Duration(milliseconds: 200));
-        await settle(tester);
-        await tester.ensureVisible(find.text('معاينة البحث'));
-        await settle(tester);
-        await capture(tester, 'ad19_preview_${width}_ar_$theme');
-      });
+      testWidgets(
+        'AD19 specialty profiles ($width, $theme)',
+        skip: !screenshotsEnabled,
+        (tester) async {
+          await signedIn(tester, size, 'admin@el3yada.dev');
+          await open(tester, '/admin/specialties');
+          await capture(tester, 'ad19_list_${width}_ar_$theme');
+          await open(tester, '/admin/specialties/sp-cardio');
+          await capture(tester, 'ad19_editor_${width}_ar_$theme');
+          final preview = find.widgetWithText(
+            TextField,
+            'جرّب: ator أو omep أو بنادول',
+          );
+          await tester.ensureVisible(preview);
+          await tester.enterText(preview, 'ator');
+          await tester.pump(const Duration(milliseconds: 200));
+          await settle(tester);
+          await tester.ensureVisible(find.text('معاينة البحث'));
+          await settle(tester);
+          await capture(tester, 'ad19_preview_${width}_ar_$theme');
+        },
+      );
     }
 
-    testWidgets('AD20 publish with a count drop (desktop, $theme)', skip: !screenshotsEnabled, (tester) async {
-      final path = writeTestCatalog(
-        catalog: SampleCatalog(catalogVersion: 2, drugs: sampleDrugs.take(10).toList()),
-        name: 'publish.sqlite',
-      );
-      final gz = Uint8List.fromList(gzip.encode(File(path).readAsBytesSync()));
-      final picker = _Picker([
-        PickedCatalogFile(name: 'catalog-v2.sqlite.gz', sizeBytes: gz.length, bytes: gz),
-        PickedCatalogFile(
-          name: 'catalog-v2.json',
-          sizeBytes: 80,
-          bytes: Uint8List.fromList('{"sha256": "${crypto.sha256.convert(gz)}"}'.codeUnits),
-        ),
-      ]);
-      await signedIn(tester, desktop, 'admin@el3yada.dev', picker: picker);
-      await open(tester, '/admin/catalogs');
-      await tester.tap(find.text('نشر إصدار جديد').first);
-      await settle(tester);
-      await tester.tap(find.text('اختيار الملف'));
-      await settle(tester);
-      await capture(tester, 'ad20_publish_checked_desktop_ar_$theme');
-      await tester.tap(find.descendant(of: find.byType(Dialog), matching: find.text('نشر إصدار جديد')));
-      await settle(tester);
-      await capture(tester, 'ad20_publish_drop_desktop_ar_$theme');
-    });
+    testWidgets(
+      'AD20 publish with a count drop (desktop, $theme)',
+      skip: !screenshotsEnabled,
+      (tester) async {
+        final path = writeTestCatalog(
+          catalog: SampleCatalog(
+            catalogVersion: 2,
+            drugs: sampleDrugs.take(10).toList(),
+          ),
+          name: 'publish.sqlite',
+        );
+        final gz = Uint8List.fromList(
+          gzip.encode(File(path).readAsBytesSync()),
+        );
+        final picker = _Picker([
+          PickedCatalogFile(
+            name: 'catalog-v2.sqlite.gz',
+            sizeBytes: gz.length,
+            bytes: gz,
+          ),
+          PickedCatalogFile(
+            name: 'catalog-v2.json',
+            sizeBytes: 80,
+            bytes: Uint8List.fromList(
+              '{"sha256": "${crypto.sha256.convert(gz)}"}'.codeUnits,
+            ),
+          ),
+        ]);
+        await signedIn(tester, desktop, 'admin@el3yada.dev', picker: picker);
+        await open(tester, '/admin/catalogs');
+        await tester.tap(find.text('نشر إصدار جديد').first);
+        await settle(tester);
+        await tester.tap(find.text('اختيار الملف'));
+        await settle(tester);
+        await capture(tester, 'ad20_publish_checked_desktop_ar_$theme');
+        await tester.tap(
+          find.descendant(
+            of: find.byType(Dialog),
+            matching: find.text('نشر إصدار جديد'),
+          ),
+        );
+        await settle(tester);
+        await capture(tester, 'ad20_publish_drop_desktop_ar_$theme');
+      },
+    );
 
-    testWidgets('About: data sources and licences (phone, $theme)', skip: !screenshotsEnabled, (tester) async {
-      await signedIn(tester, phone, 'doctor@el3yada.dev');
-      await open(tester, '/legal/sources');
-      await capture(tester, 'about_sources_phone_ar_$theme');
-    });
+    testWidgets(
+      'About: data sources and licences (phone, $theme)',
+      skip: !screenshotsEnabled,
+      (tester) async {
+        await signedIn(tester, phone, 'doctor@el3yada.dev');
+        await open(tester, '/legal/sources');
+        await capture(tester, 'about_sources_phone_ar_$theme');
+      },
+    );
   }
 }
 
@@ -178,8 +244,10 @@ class _Picker implements CatalogFilePicker {
   Future<PickedCatalogFile?> pickManifest() async => null;
 
   @override
-  Future<String?> readSibling(PickedCatalogFile file, String name) async => null;
+  Future<String?> readSibling(PickedCatalogFile file, String name) async =>
+      null;
 
   @override
-  Future<String> readText(PickedCatalogFile file) async => String.fromCharCodes(file.bytes ?? const []);
+  Future<String> readText(PickedCatalogFile file) async =>
+      String.fromCharCodes(file.bytes ?? const []);
 }

@@ -121,8 +121,9 @@ public sealed class DoctorStatusTests(IntegrationHost host)
     [InlineData(DoctorStatuses.PendingApproval, "active")]
     [InlineData(DoctorStatuses.Rejected, "suspended")]
     [InlineData(DoctorStatuses.Disabled, "suspended")]
-    [InlineData(DoctorStatuses.Disabled, "active")]
-    public async Task Only_an_active_doctor_is_suspended_and_only_a_suspended_one_reactivated(string current, string target)
+    [InlineData(DoctorStatuses.PendingApproval, "disabled")]
+    [InlineData(DoctorStatuses.Rejected, "disabled")]
+    public async Task Only_an_active_doctor_is_suspended_and_only_a_suspended_or_disabled_one_reactivated(string current, string target)
     {
         var admin = await TestData.CreateAdminAsync(Factory);
         var doctor = await TestData.CreateDoctorAsync(Factory, current);
@@ -152,7 +153,7 @@ public sealed class DoctorStatusTests(IntegrationHost host)
     }
 
     [Fact]
-    public async Task A_reason_is_required_both_ways_and_only_suspended_or_active_is_accepted()
+    public async Task A_reason_is_required_every_time_and_only_suspended_disabled_or_active_is_accepted()
     {
         var admin = await TestData.CreateAdminAsync(Factory);
         var doctor = await TestData.CreateDoctorAsync(Factory);
@@ -161,14 +162,14 @@ public sealed class DoctorStatusTests(IntegrationHost host)
         var (noReason, noReasonBody) = await client.PostAsync(Url, new { doctorId = doctor.Id, status = "suspended" });
         var (shortReason, shortReasonBody) = await client.PostAsync(Url, new { doctorId = doctor.Id, status = "active", reason = " ab " });
         var (longReason, longReasonBody) = await client.PostAsync(Url, new { doctorId = doctor.Id, status = "suspended", reason = new string('س', 501) });
-        var (disable, disableBody) = await client.PostAsync(Url, new { doctorId = doctor.Id, status = "disabled", reason = "حساب مكرر" });
+        var (unknown, unknownBody) = await client.PostAsync(Url, new { doctorId = doctor.Id, status = "pendingApproval", reason = "حساب مكرر" });
         var (noDoctor, noDoctorBody) = await client.PostAsync(Url, new { status = "suspended", reason = "حساب مكرر" });
 
-        Assert.All(new[] { noReason, shortReason, longReason, disable, noDoctor }, s => Assert.Equal(HttpStatusCode.BadRequest, s));
+        Assert.All(new[] { noReason, shortReason, longReason, unknown, noDoctor }, s => Assert.Equal(HttpStatusCode.BadRequest, s));
         Assert.Equal(ErrorCodes.ReasonRequired, noReasonBody.FieldCode("reason"));
         Assert.Equal(ErrorCodes.ReasonRequired, shortReasonBody.FieldCode("reason"));
         Assert.Equal(ErrorCodes.TooLong, longReasonBody.FieldCode("reason"));
-        Assert.Equal(ErrorCodes.InvalidValue, disableBody.FieldCode("status"));
+        Assert.Equal(ErrorCodes.InvalidValue, unknownBody.FieldCode("status"));
         Assert.Equal(ErrorCodes.Required, noDoctorBody.FieldCode("doctorId"));
         Assert.Equal(DoctorStatuses.Active, await TestData.WithDbAsync(Factory, db => db.Doctors.Where(d => d.UserId == doctor.Id).Select(d => d.Status).SingleAsync()));
     }

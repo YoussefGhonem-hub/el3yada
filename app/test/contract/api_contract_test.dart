@@ -88,22 +88,42 @@ void main() {
 
   String? bearer;
   Dio newDio({bool auth = false}) {
-    final dio = Dio(BaseOptions(baseUrl: '$baseUrl/api', headers: {'Accept': 'application/json'}));
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: '$baseUrl/api',
+        headers: {'Accept': 'application/json'},
+      ),
+    );
     if (auth) {
-      dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-        if (bearer != null) options.headers['Authorization'] = 'Bearer $bearer';
-        handler.next(options);
-      }));
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            if (bearer != null)
+              options.headers['Authorization'] = 'Bearer $bearer';
+            handler.next(options);
+          },
+        ),
+      );
     }
     return dio;
   }
 
-  late final ApiAuthRepository auth = ApiAuthRepository(newDio(auth: true), newDio());
-  const device = {'deviceId': 'contract-test-device', 'platform': 'android', 'appVersion': '1.0.0'};
+  late final ApiAuthRepository auth = ApiAuthRepository(
+    newDio(auth: true),
+    newDio(),
+  );
+  const device = {
+    'deviceId': 'contract-test-device',
+    'platform': 'android',
+    'appVersion': '1.0.0',
+  };
   const newPassword = 'Contract1234';
 
   test('public settings parse', () async {
-    final settings = await ApiPublicSettingsRepository(newDio(), _MemoryPrefs()).fetch();
+    final settings = await ApiPublicSettingsRepository(
+      newDio(),
+      _MemoryPrefs(),
+    ).fetch();
     expect(settings.terms.version, isNotNull);
     expect(settings.requiresUpdate('android', '999.0.0'), isFalse);
   }, skip: skip);
@@ -112,65 +132,104 @@ void main() {
     // A new identifier each run: five misses in 15 minutes lock one (TOO_MANY_ATTEMPTS).
     await expectLater(
       auth.login(
-        identifier: 'nobody-${DateTime.now().microsecondsSinceEpoch}@el3yada.dev',
+        identifier:
+            'nobody-${DateTime.now().microsecondsSinceEpoch}@el3yada.dev',
         password: 'Wrong12345',
         device: device,
       ),
-      throwsA(isA<ApiException>().having((e) => e.code, 'code', ApiCodes.invalidCredentials)),
+      throwsA(
+        isA<ApiException>().having(
+          (e) => e.code,
+          'code',
+          ApiCodes.invalidCredentials,
+        ),
+      ),
     );
   }, skip: skip);
 
-  test('first sign-in, set a new password, me, refresh, reuse, logout', () async {
-    // First sign-in with the temporary password: A9 is required.
-    final first = await auth.login(identifier: email!, password: temporaryPassword!, device: device);
-    expect(first, isA<SignedIn>());
-    var session = (first as SignedIn).session;
-    expect(session.role, UserRole.admin);
-    expect(session.adminRole, 'superAdmin');
-    expect(session.mustChangePassword, isTrue);
-    expect(session.accessTokenExpiresAt, isNotNull);
-    expect(session.accessTokenExpiresAt!.isUtc, isTrue);
+  test(
+    'first sign-in, set a new password, me, refresh, reuse, logout',
+    () async {
+      // First sign-in with the temporary password: A9 is required.
+      final first = await auth.login(
+        identifier: email!,
+        password: temporaryPassword!,
+        device: device,
+      );
+      expect(first, isA<SignedIn>());
+      var session = (first as SignedIn).session;
+      expect(session.role, UserRole.admin);
+      expect(session.adminRole, 'superAdmin');
+      expect(session.mustChangePassword, isTrue);
+      expect(session.accessTokenExpiresAt, isNotNull);
+      expect(session.accessTokenExpiresAt!.isUtc, isTrue);
 
-    // Everything but the allowed endpoints is refused until then.
-    bearer = session.accessToken;
-    final account = await auth.me();
-    expect(session.withAccount(account).userId, session.userId);
+      // Everything but the allowed endpoints is refused until then.
+      bearer = session.accessToken;
+      final account = await auth.me();
+      expect(session.withAccount(account).userId, session.userId);
 
-    session = await auth.setNewPassword(newPassword: newPassword, device: device);
-    expect(session.mustChangePassword, isFalse);
-    bearer = session.accessToken;
+      session = await auth.setNewPassword(
+        newPassword: newPassword,
+        device: device,
+      );
+      expect(session.mustChangePassword, isFalse);
+      bearer = session.accessToken;
 
-    // Refresh gives a new pair; sending the old refresh token again is theft.
-    final refreshed = await auth.refresh(session.refreshToken);
-    expect(refreshed.refreshToken, isNot(session.refreshToken));
-    await expectLater(
-      auth.refresh(session.refreshToken),
-      throwsA(isA<ApiException>().having((e) => e.code, 'code', ApiCodes.refreshTokenReused)),
-    );
+      // Refresh gives a new pair; sending the old refresh token again is theft.
+      final refreshed = await auth.refresh(session.refreshToken);
+      expect(refreshed.refreshToken, isNot(session.refreshToken));
+      await expectLater(
+        auth.refresh(session.refreshToken),
+        throwsA(
+          isA<ApiException>().having(
+            (e) => e.code,
+            'code',
+            ApiCodes.refreshTokenReused,
+          ),
+        ),
+      );
 
-    // The family is revoked, so sign in again with the new password.
-    final again = await auth.login(identifier: email, password: newPassword, device: device);
-    final fresh = (again as SignedIn).session;
-    expect(fresh.mustChangePassword, isFalse);
-    expect(fresh.doctorStatus, isNull);
+      // The family is revoked, so sign in again with the new password.
+      final again = await auth.login(
+        identifier: email,
+        password: newPassword,
+        device: device,
+      );
+      final fresh = (again as SignedIn).session;
+      expect(fresh.mustChangePassword, isFalse);
+      expect(fresh.doctorStatus, isNull);
 
-    await auth.logout(fresh, deviceId: 'contract-test-device');
-    await expectLater(
-      auth.refresh(fresh.refreshToken),
-      throwsA(isA<ApiException>().having((e) => e.status, 'status', 401)),
-    );
-  }, skip: skip);
+      await auth.logout(fresh, deviceId: 'contract-test-device');
+      await expectLater(
+        auth.refresh(fresh.refreshToken),
+        throwsA(isA<ApiException>().having((e) => e.status, 'status', 401)),
+      );
+    },
+    skip: skip,
+  );
 
   test('forgot password answers the same for an unknown email', () async {
-    await auth.requestPasswordResetEmail('nobody-${DateTime.now().millisecondsSinceEpoch}@el3yada.dev');
+    await auth.requestPasswordResetEmail(
+      'nobody-${DateTime.now().millisecondsSinceEpoch}@el3yada.dev',
+    );
   }, skip: skip);
 
-  test('a session saved as JSON text reads back the same (as SecureTokenStore does)', () async {
-    final again = await auth.login(identifier: email!, password: newPassword, device: device);
-    final session = (again as SignedIn).session;
-    final saved = jsonDecode(jsonEncode(session.toJson())) as Map<String, dynamic>;
-    expect(AuthSession.fromJson(saved), session);
-  }, skip: skip);
+  test(
+    'a session saved as JSON text reads back the same (as SecureTokenStore does)',
+    () async {
+      final again = await auth.login(
+        identifier: email!,
+        password: newPassword,
+        device: device,
+      );
+      final session = (again as SignedIn).session;
+      final saved =
+          jsonDecode(jsonEncode(session.toJson())) as Map<String, dynamic>;
+      expect(AuthSession.fromJson(saved), session);
+    },
+    skip: skip,
+  );
 
   late final ClinicDay day;
   group('Phase 2, one clinic day:', () {
@@ -182,9 +241,18 @@ void main() {
       skip: skip,
     );
   });
-  group('Phase 2, a patient of two clinics:', () => phase2LinkedPatient(day, skip: skip));
-  group('Phase 2, a booking on a branch:', () => phase2BranchBookings(day, skip: skip));
-  group('Phase 2, a suspended doctor:', () => phase2SuspendedDoctor(day, skip: skip));
+  group(
+    'Phase 2, a patient of two clinics:',
+    () => phase2LinkedPatient(day, skip: skip),
+  );
+  group(
+    'Phase 2, a booking on a branch:',
+    () => phase2BranchBookings(day, skip: skip),
+  );
+  group(
+    'Phase 2, a suspended doctor:',
+    () => phase2SuspendedDoctor(day, skip: skip),
+  );
   group("Phase 2, the app's own client:", () => appClient(day, skip: skip));
 }
 

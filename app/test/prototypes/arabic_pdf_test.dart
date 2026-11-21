@@ -8,8 +8,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-pw.Font _font(String file) =>
-    pw.Font.ttf(File('assets/fonts/$file').readAsBytesSync().buffer.asByteData());
+pw.Font _font(String file) => pw.Font.ttf(
+  File('assets/fonts/$file').readAsBytesSync().buffer.asByteData(),
+);
 
 void main() {
   test('A5 prescription with Arabic and English renders to PDF', () async {
@@ -29,15 +30,19 @@ void main() {
     const muted = PdfColor.fromInt(0xFF4C6964);
 
     pw.Widget medicine(String name, String dose) => pw.Padding(
-          padding: const pw.EdgeInsets.only(bottom: 8),
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(name, textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: latinBold, fontSize: 12)),
-              pw.Text(dose, style: const pw.TextStyle(fontSize: 11)),
-            ],
+      padding: const pw.EdgeInsets.only(bottom: 8),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            name,
+            textDirection: pw.TextDirection.ltr,
+            style: pw.TextStyle(font: latinBold, fontSize: 12),
           ),
-        );
+          pw.Text(dose, style: const pw.TextStyle(fontSize: 11)),
+        ],
+      ),
+    );
 
     doc.addPage(
       pw.Page(
@@ -54,16 +59,42 @@ void main() {
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text('د. سارة عادل', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16, color: pine)),
-                      pw.Text('استشاري الباطنة', style: const pw.TextStyle(fontSize: 10, color: muted)),
+                      pw.Text(
+                        'د. سارة عادل',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 16,
+                          color: pine,
+                        ),
+                      ),
+                      pw.Text(
+                        'استشاري الباطنة',
+                        style: const pw.TextStyle(fontSize: 10, color: muted),
+                      ),
                     ],
                   ),
                 ),
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
-                    pw.Text('Dr. Sara Adel', textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: latinBold, fontSize: 13, color: pine)),
-                    pw.Text('Internal Medicine Consultant', textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: latin, fontSize: 9, color: muted)),
+                    pw.Text(
+                      'Dr. Sara Adel',
+                      textDirection: pw.TextDirection.ltr,
+                      style: pw.TextStyle(
+                        font: latinBold,
+                        fontSize: 13,
+                        color: pine,
+                      ),
+                    ),
+                    pw.Text(
+                      'Internal Medicine Consultant',
+                      textDirection: pw.TextDirection.ltr,
+                      style: pw.TextStyle(
+                        font: latin,
+                        fontSize: 9,
+                        color: muted,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -71,13 +102,24 @@ void main() {
             pw.Divider(color: pine, thickness: 1.2),
             pw.Row(
               children: [
-                pw.Expanded(child: pw.Text('المريض: محمود حسن', style: const pw.TextStyle(fontSize: 11))),
-                pw.Text('التاريخ: 15 نوفمبر 2026', style: const pw.TextStyle(fontSize: 11)),
+                pw.Expanded(
+                  child: pw.Text(
+                    'المريض: محمود حسن',
+                    style: const pw.TextStyle(fontSize: 11),
+                  ),
+                ),
+                pw.Text(
+                  'التاريخ: 15 نوفمبر 2026',
+                  style: const pw.TextStyle(fontSize: 11),
+                ),
               ],
             ),
             pw.SizedBox(height: 14),
             medicine('Augmentin 1g', 'قرص كل 12 ساعة بعد الأكل، لمدة 7 أيام'),
-            medicine('Panadol Extra', 'قرص عند اللزوم، 4 أقراص في اليوم بحد أقصى'),
+            medicine(
+              'Panadol Extra',
+              'قرص عند اللزوم، 4 أقراص في اليوم بحد أقصى',
+            ),
             pw.Spacer(),
             pw.Divider(color: muted, thickness: 0.5),
             pw.Row(
@@ -87,9 +129,19 @@ void main() {
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
-                      pw.Text('فرع مدينة نصر، شارع عباس العقاد', style: const pw.TextStyle(fontSize: 9)),
-                      pw.Text('0100 123 4567', textDirection: pw.TextDirection.ltr, style: pw.TextStyle(font: latin, fontSize: 9)),
-                      pw.Text('امسح الكود لفتح الروشتة في تطبيق العيادة', style: const pw.TextStyle(fontSize: 8, color: muted)),
+                      pw.Text(
+                        'فرع مدينة نصر، شارع عباس العقاد',
+                        style: const pw.TextStyle(fontSize: 9),
+                      ),
+                      pw.Text(
+                        '0100 123 4567',
+                        textDirection: pw.TextDirection.ltr,
+                        style: pw.TextStyle(font: latin, fontSize: 9),
+                      ),
+                      pw.Text(
+                        'امسح الكود لفتح الروشتة في تطبيق العيادة',
+                        style: const pw.TextStyle(fontSize: 8, color: muted),
+                      ),
                     ],
                   ),
                 ),
@@ -108,7 +160,8 @@ void main() {
     );
 
     final bytes = await doc.save();
-    final out = File('build/prototypes/rx_a5_prototype.pdf')..createSync(recursive: true);
+    final out = File('build/prototypes/rx_a5_prototype.pdf')
+      ..createSync(recursive: true);
     out.writeAsBytesSync(bytes);
 
     expect(bytes.length, greaterThan(5000));

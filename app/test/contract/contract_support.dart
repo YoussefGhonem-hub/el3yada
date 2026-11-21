@@ -22,28 +22,38 @@ import 'package:flutter_test/flutter_test.dart';
 final _random = Random();
 
 /// A new Egyptian mobile number in the local form (`010XXXXXXXX`).
-String contractMobile() => '010${List.generate(8, (_) => _random.nextInt(10)).join()}';
+String contractMobile() =>
+    '010${List.generate(8, (_) => _random.nextInt(10)).join()}';
 
 /// `010 1234 5678` → `+201012345678`, as the API answers.
 String contractE164(String local) => '+2${local.replaceAll(' ', '')}';
 
 /// A suffix that makes this run's emails, names and license numbers unique.
-String contractRunId() => '${DateTime.now().millisecondsSinceEpoch}${_random.nextInt(1000)}';
+String contractRunId() =>
+    '${DateTime.now().millisecondsSinceEpoch}${_random.nextInt(1000)}';
 
 /// The `device` object of sign-in calls.
-Map<String, dynamic> contractDevice(String who, String run) =>
-    {'deviceId': 'contract-$who-$run', 'platform': 'android', 'appVersion': '1.0.0'};
+Map<String, dynamic> contractDevice(String who, String run) => {
+  'deviceId': 'contract-$who-$run',
+  'platform': 'android',
+  'appVersion': '1.0.0',
+};
 
-Dio contractClient(String? baseUrl) =>
-    Dio(BaseOptions(baseUrl: '$baseUrl/api', headers: {'Accept': 'application/json'}));
+Dio contractClient(String? baseUrl) => Dio(
+  BaseOptions(baseUrl: '$baseUrl/api', headers: {'Accept': 'application/json'}),
+);
 
 /// One signed-in person: their own client, token and repositories.
 class ContractAccount {
   ContractAccount(String? baseUrl, this.plain) : dio = contractClient(baseUrl) {
-    dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-      if (token != null) options.headers['Authorization'] = 'Bearer $token';
-      handler.next(options);
-    }));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (token != null) options.headers['Authorization'] = 'Bearer $token';
+          handler.next(options);
+        },
+      ),
+    );
     auth = ApiAuthRepository(dio, plain);
   }
 
@@ -104,12 +114,20 @@ Future<AuthSession> signInAdmin(
   Map<String, dynamic> device,
 ) async {
   try {
-    final result = await admin.auth.login(identifier: email, password: password, device: device);
+    final result = await admin.auth.login(
+      identifier: email,
+      password: password,
+      device: device,
+    );
     return (result as SignedIn).session;
   } on ApiException catch (error) {
     if (error.code != ApiCodes.invalidCredentials) rethrow;
   }
-  final first = await admin.auth.login(identifier: email, password: temporaryPassword, device: device);
+  final first = await admin.auth.login(
+    identifier: email,
+    password: temporaryPassword,
+    device: device,
+  );
   admin.token = (first as SignedIn).session.accessToken;
   return admin.auth.setNewPassword(newPassword: password, device: device);
 }
@@ -125,34 +143,36 @@ RegistrationData doctorRegistration({
   required String licenseNumber,
   required String specialtyId,
   required Map<String, dynamic> device,
-}) =>
-    RegistrationData(
-      fullName: fullName,
-      email: email,
-      phone: phone,
-      password: password,
-      locale: 'ar',
-      title: 'استشاري',
-      specialtyId: specialtyId,
-      licenseNumber: licenseNumber,
-      fullNameEn: fullNameEn,
-      examinationPricePiasters: 30000,
-      consultationPricePiasters: 15000,
-      branch: const RegistrationBranch(
-        nameAr: 'فرع المعادي',
-        governorate: 'القاهرة',
-        city: 'المعادي',
-        addressDetails: 'شارع 9',
-        landmark: 'بجوار المترو',
-        phones: [BranchPhone(number: '02 2358 1234', label: BranchPhone.landline)],
-      ),
-      acceptTerms: true,
-      device: device,
-    );
+}) => RegistrationData(
+  fullName: fullName,
+  email: email,
+  phone: phone,
+  password: password,
+  locale: 'ar',
+  title: 'استشاري',
+  specialtyId: specialtyId,
+  licenseNumber: licenseNumber,
+  fullNameEn: fullNameEn,
+  examinationPricePiasters: 30000,
+  consultationPricePiasters: 15000,
+  branch: const RegistrationBranch(
+    nameAr: 'فرع المعادي',
+    governorate: 'القاهرة',
+    city: 'المعادي',
+    addressDetails: 'شارع 9',
+    landmark: 'بجوار المترو',
+    phones: [BranchPhone(number: '02 2358 1234', label: BranchPhone.landline)],
+  ),
+  acceptTerms: true,
+  device: device,
+);
 
 /// The license part of a sign-up: a real 1×1 PNG.
-LicenseFile contractLicense() =>
-    LicenseFile(bytes: base64Decode(_onePixelPng), name: 'license.png', contentType: LicenseFile.png);
+LicenseFile contractLicense() => LicenseFile(
+  bytes: base64Decode(_onePixelPng),
+  name: 'license.png',
+  contentType: LicenseFile.png,
+);
 
 /// Another doctor with a clinic of their own: signs up with
 /// [doctorRegistration] and is active at once, in a free trial (no
@@ -180,7 +200,11 @@ Future<AuthSession> signUpDoctor({
   );
   expect(registered.doctorStatus, DoctorStatus.active);
   expect(registered.trial?.ended, isFalse);
-  final signedIn = await doctor.auth.login(identifier: email, password: password, device: device);
+  final signedIn = await doctor.auth.login(
+    identifier: email,
+    password: password,
+    device: device,
+  );
   final session = (signedIn as SignedIn).session;
   expect(session.doctorStatus, DoctorStatus.active);
   expect(session.trial?.endsAt, registered.trial?.endsAt);
@@ -189,7 +213,9 @@ Future<AuthSession> signUpDoctor({
 }
 
 TypeMatcher<ApiException> apiError(int status, String code) =>
-    isA<ApiException>().having((e) => e.status, 'status', status).having((e) => e.code, 'code', code);
+    isA<ApiException>()
+        .having((e) => e.status, 'status', status)
+        .having((e) => e.code, 'code', code);
 
 /// A 1×1 PNG: a real image, for the license part.
 const _onePixelPng =

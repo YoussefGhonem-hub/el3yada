@@ -7,15 +7,20 @@ import 'admin_support.dart' show appContainer;
 /// The offline clinic records with no delay, for the signed-in account (like
 /// the app's own provider in dev builds). [configure] can change them first,
 /// for example the visit prices or the consultation limit.
-Override fakeRecordsOverride({void Function(FakeClinicRecords records)? configure}) =>
-    fakeClinicRecordsProvider.overrideWith((ref) {
-      final records = FakeClinicRecords(caller: () => fakeCallerOf(ref), delay: Duration.zero);
-      configure?.call(records);
-      return records;
-    });
+Override fakeRecordsOverride({
+  void Function(FakeClinicRecords records)? configure,
+}) => fakeClinicRecordsProvider.overrideWith((ref) {
+  final records = FakeClinicRecords(
+    caller: () => fakeCallerOf(ref),
+    delay: Duration.zero,
+  );
+  configure?.call(records);
+  return records;
+});
 
 /// The records behind the running app.
-FakeClinicRecords recordsOf(WidgetTester tester) => appContainer(tester).read(fakeClinicRecordsProvider);
+FakeClinicRecords recordsOf(WidgetTester tester) =>
+    appContainer(tester).read(fakeClinicRecordsProvider);
 
 /// The seeded patients used by the tests (see `FakeClinicRecords._seed`).
 abstract final class SeedPatients {

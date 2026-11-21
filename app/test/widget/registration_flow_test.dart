@@ -32,7 +32,20 @@ Future<void> signIn(WidgetTester tester, String identifier) async {
   await settle(tester);
 }
 
-final _png = Uint8List.fromList([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 1, 2, 3, 4]);
+final _png = Uint8List.fromList([
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  1,
+  2,
+  3,
+  4,
+]);
 
 /// Hands back [file] for any source and remembers which one was asked for.
 class FakeLicensePicker implements LicensePicker {
@@ -50,12 +63,16 @@ class FakeLicensePicker implements LicensePicker {
 
 /// Registration that answers with the API errors a test sets.
 class FailingRegistrationRepository extends FakeRegistrationRepository {
-  FailingRegistrationRepository({super.auth, required this.error}) : super(delay: Duration.zero);
+  FailingRegistrationRepository({super.auth, required this.error})
+    : super(delay: Duration.zero);
 
   ApiException? error;
 
   @override
-  Future<AuthSession> register(RegistrationData data, LicenseFile license) async {
+  Future<AuthSession> register(
+    RegistrationData data,
+    LicenseFile license,
+  ) async {
     final failure = error;
     if (failure != null) {
       lastData = data;
@@ -85,13 +102,17 @@ class CooldownAuthRepository extends FakeAuthRepository {
 
 class _Harness {
   _Harness({FakeAuthRepository? auth, FakeRegistrationRepository? registration})
-      : auth = auth ?? FakeAuthRepository(delay: Duration.zero) {
-    this.registration = registration ?? FakeRegistrationRepository(auth: this.auth, delay: Duration.zero);
+    : auth = auth ?? FakeAuthRepository(delay: Duration.zero) {
+    this.registration =
+        registration ??
+        FakeRegistrationRepository(auth: this.auth, delay: Duration.zero);
   }
 
   final FakeAuthRepository auth;
   late final FakeRegistrationRepository registration;
-  final picker = FakeLicensePicker(PickedLicense(name: 'card.png', size: _png.length, read: () async => _png));
+  final picker = FakeLicensePicker(
+    PickedLicense(name: 'card.png', size: _png.length, read: () async => _png),
+  );
 
   /// Links "Open in Google Maps" opened.
   final opened = <Uri>[];
@@ -104,21 +125,23 @@ class _Harness {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(ProviderScope(
-      overrides: await appOverrides(
-        platform: platform,
-        auth: auth,
-        extra: [
-          registrationRepositoryProvider.overrideWithValue(registration),
-          licensePickerProvider.overrideWithValue(picker),
-          externalLinkOpenerProvider.overrideWithValue((uri) async {
-            opened.add(uri);
-            return true;
-          }),
-        ],
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: await appOverrides(
+          platform: platform,
+          auth: auth,
+          extra: [
+            registrationRepositoryProvider.overrideWithValue(registration),
+            licensePickerProvider.overrideWithValue(picker),
+            externalLinkOpenerProvider.overrideWithValue((uri) async {
+              opened.add(uri);
+              return true;
+            }),
+          ],
+        ),
+        child: const El3yadaApp(),
       ),
-      child: const El3yadaApp(),
-    ));
+    );
     await settle(tester);
   }
 }
@@ -145,7 +168,10 @@ Future<void> openPicker(WidgetTester tester, String label) async {
   await settle(tester);
 }
 
-Future<void> fillAccount(WidgetTester tester, {String email = 'sami@example.com'}) async {
+Future<void> fillAccount(
+  WidgetTester tester, {
+  String email = 'sami@example.com',
+}) async {
   await enter(tester, 'Full name', 'Sami Abdallah');
   await enter(tester, 'Email', email);
   await enter(tester, 'Mobile number', '010 1234 5678');
@@ -167,7 +193,11 @@ Future<void> fillBranch(WidgetTester tester) async {
   await openPicker(tester, 'Governorate');
   await tapText(tester, 'Cairo');
   await enter(tester, 'City or area', 'Maadi');
-  await enter(tester, 'Detailed address', '12 Street 9, 3rd floor, apartment 5');
+  await enter(
+    tester,
+    'Detailed address',
+    '12 Street 9, 3rd floor, apartment 5',
+  );
   await enter(tester, 'Number 1', '02 2358 1234');
 }
 
@@ -177,97 +207,117 @@ Future<void> openRegistration(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('A4: each step is checked before Next, Back keeps the data, and Submit welcomes the doctor home',
-      (tester) async {
-    final app = _Harness();
-    await app.pump(tester);
-    await openRegistration(tester);
+  testWidgets(
+    'A4: each step is checked before Next, Back keeps the data, and Submit welcomes the doctor home',
+    (tester) async {
+      final app = _Harness();
+      await app.pump(tester);
+      await openRegistration(tester);
 
-    // Step 1: nothing filled in.
-    await next(tester);
-    expect(find.text('Step 1 of 4'), findsOneWidget);
-    expect(find.text('Check the highlighted fields.'), findsOneWidget);
-    expect(find.text('This field is required'), findsNWidgets(5));
+      // Step 1: nothing filled in.
+      await next(tester);
+      expect(find.text('Step 1 of 4'), findsOneWidget);
+      expect(find.text('Check the highlighted fields.'), findsOneWidget);
+      expect(find.text('This field is required'), findsNWidgets(5));
 
-    await fillAccount(tester);
-    await enter(tester, 'Confirm password', 'Doctor124');
-    await next(tester);
-    expect(find.text("The passwords don't match."), findsOneWidget);
-    await enter(tester, 'Confirm password', 'Doctor123');
-    await next(tester);
-    expect(find.text('Step 2 of 4'), findsOneWidget);
+      await fillAccount(tester);
+      await enter(tester, 'Confirm password', 'Doctor124');
+      await next(tester);
+      expect(find.text("The passwords don't match."), findsOneWidget);
+      await enter(tester, 'Confirm password', 'Doctor123');
+      await next(tester);
+      expect(find.text('Step 2 of 4'), findsOneWidget);
 
-    // Step 2: nothing chosen.
-    await next(tester);
-    expect(find.text('Step 2 of 4'), findsOneWidget);
-    expect(find.text('Choose your title, or type it.'), findsOneWidget);
-    expect(find.text('Choose your specialty.'), findsOneWidget);
-    expect(find.text('The syndicate number is required.'), findsOneWidget);
-    expect(find.text('Add a photo of your syndicate card or license.'), findsOneWidget);
+      // Step 2: nothing chosen.
+      await next(tester);
+      expect(find.text('Step 2 of 4'), findsOneWidget);
+      expect(find.text('Choose your title, or type it.'), findsOneWidget);
+      expect(find.text('Choose your specialty.'), findsOneWidget);
+      expect(find.text('The syndicate number is required.'), findsOneWidget);
+      expect(
+        find.text('Add a photo of your syndicate card or license.'),
+        findsOneWidget,
+      );
 
-    // Back keeps what was typed.
-    await tapText(tester, 'Back');
-    expect(find.text('Step 1 of 4'), findsOneWidget);
-    expect(find.text('Sami Abdallah'), findsOneWidget);
-    expect(find.text('sami@example.com'), findsOneWidget);
-    await next(tester);
+      // Back keeps what was typed.
+      await tapText(tester, 'Back');
+      expect(find.text('Step 1 of 4'), findsOneWidget);
+      expect(find.text('Sami Abdallah'), findsOneWidget);
+      expect(find.text('sami@example.com'), findsOneWidget);
+      await next(tester);
 
-    await fillProfessional(tester);
-    expect(app.picker.lastSource, LicenseSource.camera);
-    expect(find.text('card.png'), findsOneWidget);
-    await next(tester);
-    expect(find.text('Step 3 of 4'), findsOneWidget);
+      await fillProfessional(tester);
+      expect(app.picker.lastSource, LicenseSource.camera);
+      expect(find.text('card.png'), findsOneWidget);
+      await next(tester);
+      expect(find.text('Step 3 of 4'), findsOneWidget);
 
-    // Step 3: a bad phone and price.
-    await fillBranch(tester);
-    await enter(tester, 'Number 1', '12');
-    await enter(tester, 'Examination', '1.234');
-    await next(tester);
-    expect(find.text('Step 3 of 4'), findsOneWidget);
-    expect(find.text('Enter a valid Egyptian number: mobile, landline or hotline.'), findsOneWidget);
-    expect(find.text('Enter an amount from 0 to 100,000, with at most 2 decimals.'), findsOneWidget);
-    await enter(tester, 'Number 1', '02 2358 1234');
-    await enter(tester, 'Examination', '300');
-    await next(tester);
+      // Step 3: a bad phone and price.
+      await fillBranch(tester);
+      await enter(tester, 'Number 1', '12');
+      await enter(tester, 'Examination', '1.234');
+      await next(tester);
+      expect(find.text('Step 3 of 4'), findsOneWidget);
+      expect(
+        find.text(
+          'Enter a valid Egyptian number: mobile, landline or hotline.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'Enter an amount from 0 to 100,000, with at most 2 decimals.',
+        ),
+        findsOneWidget,
+      );
+      await enter(tester, 'Number 1', '02 2358 1234');
+      await enter(tester, 'Examination', '300');
+      await next(tester);
 
-    // Step 4: the review, then the Terms.
-    expect(find.text('Step 4 of 4'), findsOneWidget);
-    expect(find.text('Sami Abdallah'), findsOneWidget);
-    expect(find.text('Cardiology'), findsOneWidget);
-    expect(find.text('0223581234'), findsOneWidget);
-    expect(find.text('EGP 300'), findsOneWidget);
-    await tapText(tester, 'Create my account');
-    expect(find.text('Accept the Terms and the Privacy Policy to continue.'), findsOneWidget);
-    await tester.ensureVisible(find.byType(Checkbox));
-    await tester.tap(find.byType(Checkbox));
-    await settle(tester);
-    await tapText(tester, 'Create my account');
+      // Step 4: the review, then the Terms.
+      expect(find.text('Step 4 of 4'), findsOneWidget);
+      expect(find.text('Sami Abdallah'), findsOneWidget);
+      expect(find.text('Cardiology'), findsOneWidget);
+      expect(find.text('0223581234'), findsOneWidget);
+      expect(find.text('EGP 300'), findsOneWidget);
+      await tapText(tester, 'Create my account');
+      expect(
+        find.text('Accept the Terms and the Privacy Policy to continue.'),
+        findsOneWidget,
+      );
+      await tester.ensureVisible(find.byType(Checkbox));
+      await tester.tap(find.byType(Checkbox));
+      await settle(tester);
+      await tapText(tester, 'Create my account');
 
-    // No review: the doctor is active at once, in a 14-day free trial (spec 6.16).
-    expect(find.byType(WelcomeDialog), findsOneWidget);
-    expect(find.text('Welcome to el3yada'), findsOneWidget);
-    expect(find.text('You have a free trial for 14 days.'), findsOneWidget);
-    expect(find.text('Your account is being reviewed'), findsNothing);
-    expect(app.auth.current?.doctorStatus, DoctorStatus.active);
-    expect(app.auth.current?.trial?.daysLeft, 14);
-    await tapText(tester, 'Get started');
-    // The doctor's home (D34 until the live board arrives in Phase 6).
-    expect(find.byType(WelcomeDialog), findsNothing);
-    expect(find.text('Search patient'), findsOneWidget);
-    final sent = app.registration.lastData!;
-    expect(sent.phone, '+201012345678');
-    expect(sent.title, 'استشاري');
-    expect(sent.specialtyId, 'sp-cardio');
-    expect(sent.branch.governorate, 'القاهرة');
-    expect(sent.branch.phones.single.number, '+20223581234');
-    expect(sent.examinationPricePiasters, 30000);
-    expect(sent.consultationPricePiasters, isNull);
-    expect(sent.acceptTerms, isTrue);
-    expect(sent.device?['deviceId'], 'test-device');
-    expect(app.registration.lastLicense?.contentType, LicenseFile.png);
-  });
+      // No review: the doctor is active at once, in a 14-day free trial (spec 6.16).
+      expect(find.byType(WelcomeDialog), findsOneWidget);
+      expect(find.text('Welcome to el3yada'), findsOneWidget);
+      expect(find.text('You have a free trial for 14 days.'), findsOneWidget);
+      expect(find.text('Your account is being reviewed'), findsNothing);
+      expect(app.auth.current?.doctorStatus, DoctorStatus.active);
+      expect(app.auth.current?.trial?.daysLeft, 14);
+      await tapText(tester, 'Get started');
+      // The doctor's home (D34 until the live board arrives in Phase 6).
+      expect(find.byType(WelcomeDialog), findsNothing);
+      expect(find.text('Walk-in'), findsOneWidget);
+      final sent = app.registration.lastData!;
+      expect(sent.phone, '+201012345678');
+      expect(sent.title, 'استشاري');
+      expect(sent.specialtyId, 'sp-cardio');
+      expect(sent.branch.governorate, 'القاهرة');
+      expect(sent.branch.phones.single.number, '+20223581234');
+      expect(sent.examinationPricePiasters, 30000);
+      expect(sent.consultationPricePiasters, isNull);
+      expect(sent.acceptTerms, isTrue);
+      expect(sent.device?['deviceId'], 'test-device');
+      expect(app.registration.lastLicense?.contentType, LicenseFile.png);
+    },
+  );
 
-  testWidgets('A4: an "Edit" on the review step opens that step', (tester) async {
+  testWidgets('A4: an "Edit" on the review step opens that step', (
+    tester,
+  ) async {
     final app = _Harness();
     await app.pump(tester);
     await openRegistration(tester);
@@ -285,13 +335,18 @@ void main() {
     expect(find.text('Cardiology'), findsOneWidget);
   });
 
-  testWidgets('A4: a server field error opens the step that has it', (tester) async {
+  testWidgets('A4: a server field error opens the step that has it', (
+    tester,
+  ) async {
     final registration = FailingRegistrationRepository(
       error: const ApiException(
         kind: ApiErrorKind.http,
         status: 400,
         code: ApiCodes.validationFailed,
-        fieldCodes: {'licenseNumber': 'INVALID_LICENSE_NUMBER', 'branch.addressDetails': 'TOO_LONG'},
+        fieldCodes: {
+          'licenseNumber': 'INVALID_LICENSE_NUMBER',
+          'branch.addressDetails': 'TOO_LONG',
+        },
       ),
     );
     final app = _Harness(registration: registration);
@@ -309,7 +364,10 @@ void main() {
 
     expect(find.text('Step 2 of 4'), findsOneWidget);
     expect(find.text('Check the highlighted fields.'), findsOneWidget);
-    expect(find.text('Enter the syndicate number: 3 to 20 letters or digits.'), findsOneWidget);
+    expect(
+      find.text('Enter the syndicate number: 3 to 20 letters or digits.'),
+      findsOneWidget,
+    );
 
     // Fixing it moves on; the branch error is still waiting on step 3.
     await enter(tester, 'Syndicate number', '45679');
@@ -320,43 +378,59 @@ void main() {
     expect(find.text('This is too long.'), findsOneWidget);
   });
 
-  testWidgets('A4 step 3: a pasted share text keeps only the link, a wrong link is refused, and the link opens',
-      (tester) async {
-    const label = 'Google Maps link (optional)';
-    final app = _Harness();
-    await app.pump(tester);
-    await openRegistration(tester);
-    await fillAccount(tester);
-    await next(tester);
-    await fillProfessional(tester);
-    await next(tester);
-    await fillBranch(tester);
+  testWidgets(
+    'A4 step 3: a pasted share text keeps only the link, a wrong link is refused, and the link opens',
+    (tester) async {
+      const label = 'Google Maps link (optional)';
+      final app = _Harness();
+      await app.pump(tester);
+      await openRegistration(tester);
+      await fillAccount(tester);
+      await next(tester);
+      await fillProfessional(tester);
+      await next(tester);
+      await fillBranch(tester);
 
-    await enter(tester, label, 'https://www.facebook.com/maadi.clinic');
-    await next(tester);
-    expect(find.text('Step 3 of 4'), findsOneWidget);
-    expect(find.text("That's not a Google Maps link."), findsOneWidget);
+      await enter(tester, label, 'https://www.facebook.com/maadi.clinic');
+      await next(tester);
+      expect(find.text('Step 3 of 4'), findsOneWidget);
+      expect(find.text("That's not a Google Maps link."), findsOneWidget);
 
-    // The share sheet's text: the name, then the link.
-    await enter(tester, label, 'Maadi Clinic\nhttps://maps.app.goo.gl/AbCd1234');
-    await settle(tester);
-    final link = tester.widget<TextField>(find.byKey(const ValueKey('branch.mapUrl')));
-    expect(link.controller!.text, 'https://maps.app.goo.gl/AbCd1234');
-    expect(find.text("That's not a Google Maps link."), findsNothing);
+      // The share sheet's text: the name, then the link.
+      await enter(
+        tester,
+        label,
+        'Maadi Clinic\nhttps://maps.app.goo.gl/AbCd1234',
+      );
+      await settle(tester);
+      final link = tester.widget<TextField>(
+        find.byKey(const ValueKey('branch.mapUrl')),
+      );
+      expect(link.controller!.text, 'https://maps.app.goo.gl/AbCd1234');
+      expect(find.text("That's not a Google Maps link."), findsNothing);
 
-    await tapText(tester, 'Open in Google Maps');
-    expect(app.opened, [Uri.parse('https://maps.app.goo.gl/AbCd1234')]);
+      await tapText(tester, 'Open in Google Maps');
+      expect(app.opened, [Uri.parse('https://maps.app.goo.gl/AbCd1234')]);
 
-    await next(tester);
-    expect(find.text('Step 4 of 4'), findsOneWidget);
-    await tester.ensureVisible(find.byType(Checkbox));
-    await tester.tap(find.byType(Checkbox));
-    await tapText(tester, 'Create my account');
-    expect(app.registration.lastData?.branch.mapUrl, 'https://maps.app.goo.gl/AbCd1234');
-    expect(app.registration.lastData?.branch.addressDetails, '12 Street 9, 3rd floor, apartment 5');
-  });
+      await next(tester);
+      expect(find.text('Step 4 of 4'), findsOneWidget);
+      await tester.ensureVisible(find.byType(Checkbox));
+      await tester.tap(find.byType(Checkbox));
+      await tapText(tester, 'Create my account');
+      expect(
+        app.registration.lastData?.branch.mapUrl,
+        'https://maps.app.goo.gl/AbCd1234',
+      );
+      expect(
+        app.registration.lastData?.branch.addressDetails,
+        '12 Street 9, 3rd floor, apartment 5',
+      );
+    },
+  );
 
-  testWidgets('A4: an email that is already registered is marked on step 1', (tester) async {
+  testWidgets('A4: an email that is already registered is marked on step 1', (
+    tester,
+  ) async {
     final app = _Harness();
     await app.pump(tester);
     await openRegistration(tester);
@@ -371,12 +445,21 @@ void main() {
     await tapText(tester, 'Create my account');
 
     expect(find.text('Step 1 of 4'), findsOneWidget);
-    expect(find.text('An account with this email already exists.'), findsOneWidget);
+    expect(
+      find.text('An account with this email already exists.'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('A4: a file of the wrong type is refused before upload', (tester) async {
+  testWidgets('A4: a file of the wrong type is refused before upload', (
+    tester,
+  ) async {
     final app = _Harness();
-    app.picker.file = PickedLicense(name: 'card.gif', size: 6, read: () async => Uint8List.fromList('GIF89a'.codeUnits));
+    app.picker.file = PickedLicense(
+      name: 'card.gif',
+      size: 6,
+      read: () async => Uint8List.fromList('GIF89a'.codeUnits),
+    );
     await app.pump(tester);
     await openRegistration(tester);
     await fillAccount(tester);
@@ -385,164 +468,225 @@ void main() {
     await tapText(tester, 'Choose a file (photo or PDF)');
 
     expect(app.picker.lastSource, LicenseSource.files);
-    expect(find.text('Use a photo (JPEG, PNG or WebP) or a PDF.'), findsOneWidget);
+    expect(
+      find.text('Use a photo (JPEG, PNG or WebP) or a PDF.'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('A4 with reduced motion: steps crossfade, Back still keeps the data', (tester) async {
-    tester.platformDispatcher.accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(disableAnimations: true);
-    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    final app = _Harness();
-    await app.pump(tester);
-    await openRegistration(tester);
-    await fillAccount(tester);
-    await next(tester);
-    expect(find.text('Step 2 of 4'), findsOneWidget);
-    expect(find.text('Sami Abdallah'), findsNothing);
-    await tapText(tester, 'Back');
-    expect(find.text('Sami Abdallah'), findsOneWidget);
-  });
+  testWidgets(
+    'A4 with reduced motion: steps crossfade, Back still keeps the data',
+    (tester) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      final app = _Harness();
+      await app.pump(tester);
+      await openRegistration(tester);
+      await fillAccount(tester);
+      await next(tester);
+      expect(find.text('Step 2 of 4'), findsOneWidget);
+      expect(find.text('Sami Abdallah'), findsNothing);
+      await tapText(tester, 'Back');
+      expect(find.text('Sami Abdallah'), findsOneWidget);
+    },
+  );
 
-  testWidgets('A4 on desktop: the license opens the file dialog, and the review has two columns', (tester) async {
-    final app = _Harness();
-    await app.pump(tester, size: const Size(1280, 900), platform: AppPlatform.desktop);
-    await openRegistration(tester);
-    await fillAccount(tester);
-    await next(tester);
-    await tapText(tester, 'Syndicate card or license');
-    expect(app.picker.lastSource, LicenseSource.files);
-    expect(find.text('Take a photo'), findsNothing);
-    expect(find.text('card.png'), findsOneWidget);
+  testWidgets(
+    'A4 on desktop: the license opens the file dialog, and the review has two columns',
+    (tester) async {
+      final app = _Harness();
+      await app.pump(
+        tester,
+        size: const Size(1280, 900),
+        platform: AppPlatform.desktop,
+      );
+      await openRegistration(tester);
+      await fillAccount(tester);
+      await next(tester);
+      await tapText(tester, 'Syndicate card or license');
+      expect(app.picker.lastSource, LicenseSource.files);
+      expect(find.text('Take a photo'), findsNothing);
+      expect(find.text('card.png'), findsOneWidget);
 
-    await tapText(tester, 'Consultant');
-    await openPicker(tester, 'Primary specialty');
-    expect(find.byType(Dialog), findsOneWidget);
-    await tester.enterText(find.descendant(of: find.byType(Dialog), matching: find.byType(TextField)), 'قلب');
-    await tester.pump();
-    expect(find.text('Dermatology'), findsNothing);
-    await tapText(tester, 'Cardiology');
-    await enter(tester, 'Syndicate number', '45678');
-    await next(tester);
-    await fillBranch(tester);
-    await next(tester);
+      await tapText(tester, 'Consultant');
+      await openPicker(tester, 'Primary specialty');
+      expect(find.byType(Dialog), findsOneWidget);
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(Dialog),
+          matching: find.byType(TextField),
+        ),
+        'قلب',
+      );
+      await tester.pump();
+      expect(find.text('Dermatology'), findsNothing);
+      await tapText(tester, 'Cardiology');
+      await enter(tester, 'Syndicate number', '45678');
+      await next(tester);
+      await fillBranch(tester);
+      await next(tester);
 
-    final account = tester.getRect(find.text('Account').last);
-    final branch = tester.getRect(find.text('First branch').last);
-    expect(branch.left, greaterThan(account.right));
-  });
+      final account = tester.getRect(find.text('Account').last);
+      final branch = tester.getRect(find.text('First branch').last);
+      expect(branch.left, greaterThan(account.right));
+    },
+  );
 
-  testWidgets('A7: the reason is shown, and "Edit and resubmit" fills the form and sends it back', (tester) async {
-    final app = _Harness();
-    await app.pump(tester);
-    await signIn(tester, 'rejected@el3yada.dev');
+  testWidgets(
+    'A7: the reason is shown, and "Edit and resubmit" fills the form and sends it back',
+    (tester) async {
+      final app = _Harness();
+      await app.pump(tester);
+      await signIn(tester, 'rejected@el3yada.dev');
 
-    expect(find.text("Your registration wasn't approved"), findsOneWidget);
-    expect(find.text('صورة الكارنيه غير واضحة، ارفع صورة أوضح.'), findsOneWidget);
-    await tapText(tester, 'Edit and resubmit');
+      expect(find.text("Your registration wasn't approved"), findsOneWidget);
+      expect(
+        find.text('صورة الكارنيه غير واضحة، ارفع صورة أوضح.'),
+        findsOneWidget,
+      );
+      await tapText(tester, 'Edit and resubmit');
 
-    expect(find.text('Edit registration'), findsOneWidget);
-    expect(find.text('سامي عبد الله'), findsOneWidget);
-    expect(find.text('01012345678'), findsOneWidget);
-    expect(field('Password'), findsNothing);
-    await next(tester);
-    expect(find.text('Pediatrics'), findsOneWidget);
-    expect(find.text('Current file'), findsOneWidget);
-    await enter(tester, 'Syndicate number', '45680');
-    await next(tester);
-    expect(find.text('فرع المعادي'), findsOneWidget);
-    await next(tester);
-    expect(find.byType(Checkbox), findsNothing);
-    await tapText(tester, 'Send again for review');
+      expect(find.text('Edit registration'), findsOneWidget);
+      expect(find.text('سامي عبد الله'), findsOneWidget);
+      expect(find.text('01012345678'), findsOneWidget);
+      expect(field('Password'), findsNothing);
+      await next(tester);
+      expect(find.text('Pediatrics'), findsOneWidget);
+      expect(find.text('Current file'), findsOneWidget);
+      await enter(tester, 'Syndicate number', '45680');
+      await next(tester);
+      expect(find.text('فرع المعادي'), findsOneWidget);
+      await next(tester);
+      expect(find.byType(Checkbox), findsNothing);
+      await tapText(tester, 'Send again for review');
 
-    expect(find.text('Your account is being reviewed'), findsOneWidget);
-    final sent = app.registration.lastData!;
-    expect(sent.licenseNumber, '45680');
-    expect(sent.password, isNull);
-    expect(sent.acceptTerms, isNull);
-    expect(sent.titleEn, 'Consultant');
-    expect(app.registration.lastLicense, isNull);
-  });
+      expect(find.text('Your account is being reviewed'), findsOneWidget);
+      final sent = app.registration.lastData!;
+      expect(sent.licenseNumber, '45680');
+      expect(sent.password, isNull);
+      expect(sent.acceptTerms, isNull);
+      expect(sent.titleEn, 'Consultant');
+      expect(app.registration.lastLicense, isNull);
+    },
+  );
 
-  testWidgets('A6: Refresh keeps a pending doctor here, and moves an approved one home', (tester) async {
-    final app = _Harness();
-    await app.pump(tester);
-    await signIn(tester, 'pending@el3yada.dev');
+  testWidgets(
+    'A6: Refresh keeps a pending doctor here, and moves an approved one home',
+    (tester) async {
+      final app = _Harness();
+      await app.pump(tester);
+      await signIn(tester, 'pending@el3yada.dev');
 
-    expect(find.text('Your account is being reviewed'), findsOneWidget);
-    expect(find.text('Verify your email'), findsOneWidget);
-    expect(find.text('فرع المعادي'), findsOneWidget);
-    expect(find.text('EGP 300'), findsOneWidget);
+      expect(find.text('Your account is being reviewed'), findsOneWidget);
+      expect(find.text('Verify your email'), findsOneWidget);
+      expect(find.text('فرع المعادي'), findsOneWidget);
+      expect(find.text('EGP 300'), findsOneWidget);
 
-    await tapText(tester, 'Refresh');
-    expect(find.text("Still under review. We'll notify you once it's approved."), findsOneWidget);
+      await tapText(tester, 'Refresh');
+      expect(
+        find.text("Still under review. We'll notify you once it's approved."),
+        findsOneWidget,
+      );
 
-    app.auth.current = app.auth.current!.copyWith(doctorStatus: DoctorStatus.active);
-    await tapText(tester, 'Refresh');
-    // The doctor's home (D34 until the live board arrives in Phase 6).
-    expect(find.text('Search patient'), findsOneWidget);
-  });
+      app.auth.current = app.auth.current!.copyWith(
+        doctorStatus: DoctorStatus.active,
+      );
+      await tapText(tester, 'Refresh');
+      // The doctor's home (D34 until the live board arrives in Phase 6).
+      expect(find.text('Walk-in'), findsOneWidget);
+    },
+  );
 
-  testWidgets('A5: Resend starts a visible 60-second cooldown, and a code verifies the email', (tester) async {
-    final app = _Harness();
-    await app.pump(tester);
-    await signIn(tester, 'pending@el3yada.dev');
-    await tapText(tester, 'Verify your email');
+  testWidgets(
+    'A5: Resend starts a visible 60-second cooldown, and a code verifies the email',
+    (tester) async {
+      final app = _Harness();
+      await app.pump(tester);
+      await signIn(tester, 'pending@el3yada.dev');
+      await tapText(tester, 'Verify your email');
 
-    expect(find.text('pending@el3yada.dev'), findsOneWidget);
-    await tester.ensureVisible(find.text('Resend the email'));
-    await tester.tap(find.text('Resend the email'));
-    await tester.pump(Duration.zero); // the request (zero-delay fake)
-    await tester.pump(); // the answer
-    expect(find.text('Sent. Check your inbox and your spam folder.'), findsOneWidget);
-    expect(find.text('Resend in 60 s'), findsOneWidget);
-    final resend = find.ancestor(of: find.text('Resend in 60 s'), matching: find.byWidgetPredicate((w) => w is TextButton));
-    expect(tester.widget<TextButton>(resend).onPressed, isNull);
-    await tester.pump(const Duration(seconds: 1));
-    expect(find.text('Resend in 59 s'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 59));
-    await tester.pumpAndSettle();
-    expect(find.text('Resend the email'), findsOneWidget);
+      expect(find.text('pending@el3yada.dev'), findsOneWidget);
+      await tester.ensureVisible(find.text('Resend the email'));
+      await tester.tap(find.text('Resend the email'));
+      await tester.pump(Duration.zero); // the request (zero-delay fake)
+      await tester.pump(); // the answer
+      expect(
+        find.text('Sent. Check your inbox and your spam folder.'),
+        findsOneWidget,
+      );
+      expect(find.text('Resend in 60 s'), findsOneWidget);
+      final resend = find.ancestor(
+        of: find.text('Resend in 60 s'),
+        matching: find.byWidgetPredicate((w) => w is TextButton),
+      );
+      expect(tester.widget<TextButton>(resend).onPressed, isNull);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Resend in 59 s'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 59));
+      await tester.pumpAndSettle();
+      expect(find.text('Resend the email'), findsOneWidget);
 
-    await tester.enterText(field('Code from the email'), 'expired');
-    await tapText(tester, 'Verify');
-    expect(find.text('This code has expired. Ask for a new email.'), findsOneWidget);
+      await tester.enterText(field('Code from the email'), 'expired');
+      await tapText(tester, 'Verify');
+      expect(
+        find.text('This code has expired. Ask for a new email.'),
+        findsOneWidget,
+      );
 
-    await tester.enterText(field('Code from the email'), 'abc123');
-    await tapText(tester, 'Verify');
-    expect(find.text('Email verified'), findsOneWidget);
+      await tester.enterText(field('Code from the email'), 'abc123');
+      await tapText(tester, 'Verify');
+      expect(find.text('Email verified'), findsOneWidget);
 
-    await tapText(tester, 'Continue');
-    expect(find.text('Your account is being reviewed'), findsOneWidget);
-    expect(find.text('Verify your email'), findsNothing);
-  });
+      await tapText(tester, 'Continue');
+      expect(find.text('Your account is being reviewed'), findsOneWidget);
+      expect(find.text('Verify your email'), findsNothing);
+    },
+  );
 
-  testWidgets("A5: the server's cooldown (429 with Retry-After) disables Resend", (tester) async {
-    final auth = CooldownAuthRepository();
-    final app = _Harness(auth: auth);
-    await app.pump(tester);
-    await signIn(tester, 'pending@el3yada.dev');
-    await tapText(tester, 'Verify your email');
-    await tester.ensureVisible(find.text('Resend the email'));
-    await tester.tap(find.text('Resend the email'));
-    await tester.pump();
-    await tester.pump();
+  testWidgets(
+    "A5: the server's cooldown (429 with Retry-After) disables Resend",
+    (tester) async {
+      final auth = CooldownAuthRepository();
+      final app = _Harness(auth: auth);
+      await app.pump(tester);
+      await signIn(tester, 'pending@el3yada.dev');
+      await tapText(tester, 'Verify your email');
+      await tester.ensureVisible(find.text('Resend the email'));
+      await tester.tap(find.text('Resend the email'));
+      await tester.pump();
+      await tester.pump();
 
-    expect(find.text('Wait a minute before sending another email.'), findsOneWidget);
-    expect(find.text('Resend in 42 s'), findsOneWidget);
-    await tester.tap(find.text('Resend in 42 s'));
-    await tester.pump();
-    expect(auth.resends, 1);
-    await tester.pump(const Duration(seconds: 42));
-    await tester.pumpAndSettle();
-    expect(find.text('Resend the email'), findsOneWidget);
-  });
+      expect(
+        find.text('Wait a minute before sending another email.'),
+        findsOneWidget,
+      );
+      expect(find.text('Resend in 42 s'), findsOneWidget);
+      await tester.tap(find.text('Resend in 42 s'));
+      await tester.pump();
+      expect(auth.resends, 1);
+      await tester.pump(const Duration(seconds: 42));
+      await tester.pumpAndSettle();
+      expect(find.text('Resend the email'), findsOneWidget);
+    },
+  );
 
-  testWidgets('A5: "I\'ve verified" says when the email is not verified yet', (tester) async {
+  testWidgets('A5: "I\'ve verified" says when the email is not verified yet', (
+    tester,
+  ) async {
     final app = _Harness();
     await app.pump(tester);
     await signIn(tester, 'pending@el3yada.dev');
     await tapText(tester, 'Verify your email');
     await tapText(tester, "I've verified");
-    expect(find.text('Not verified yet. Open the link in the email, then try again.'), findsOneWidget);
+    expect(
+      find.text(
+        'Not verified yet. Open the link in the email, then try again.',
+      ),
+      findsOneWidget,
+    );
 
     app.auth.current = app.auth.current!.copyWith(emailVerified: true);
     await tapText(tester, "I've verified");

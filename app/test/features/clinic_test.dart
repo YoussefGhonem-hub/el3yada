@@ -5,25 +5,75 @@ import 'package:el3yada/features/clinic/domain/clinic_permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// The example of `GET /api/clinic/me` in backend/docs/api-phase-2.md.
-Map<String, dynamic> clinicJson({String status = 'active', bool assistant = true}) => {
-      'role': assistant ? 'assistant' : 'doctor',
-      'doctor': {
-        'id': 'd1', 'fullName': 'أحمد علي', 'fullNameEn': 'Ahmed Ali', 'title': 'أخصائي', 'titleEn': null,
-        'specialtyId': 's1', 'specialtyNameAr': 'باطنة', 'specialtyNameEn': 'Internal medicine', 'status': status,
-      },
-      'assistant': assistant
-          ? {'userId': 'a1', 'fullName': 'سارة محمود', 'preset': 'reception', 'allBranches': false, 'branchIds': ['b1']}
-          : null,
-      'permissions': {for (final key in ClinicPermission.all) key: AssistantPreset.permissions['reception']!.contains(key)},
-      'branches': [
-        {'id': 'b1', 'nameAr': 'فرع المعادي', 'nameEn': null, 'isDefault': true, 'status': 'active', 'governorate': 'القاهرة', 'city': 'المعادي', 'assigned': true},
-        {'id': 'b2', 'nameAr': 'فرع مدينة نصر', 'nameEn': 'Nasr City', 'isDefault': false, 'status': 'active', 'governorate': 'القاهرة', 'city': 'مدينة نصر', 'assigned': false},
-        {'id': 'b3', 'nameAr': 'فرع قديم', 'nameEn': null, 'isDefault': false, 'status': 'archived', 'governorate': 'الجيزة', 'city': 'الدقي', 'assigned': true},
-      ],
-      'defaultBranchId': 'b1',
-      'fees': {'examinationFeePiasters': 3000, 'consultationFeePiasters': 1500, 'maxConsecutiveConsultations': 2},
-      'limits': {'maxAssistants': 5, 'maxBranches': 5, 'maxUploadMb': 50},
-    };
+Map<String, dynamic> clinicJson({
+  String status = 'active',
+  bool assistant = true,
+}) => {
+  'role': assistant ? 'assistant' : 'doctor',
+  'doctor': {
+    'id': 'd1',
+    'fullName': 'أحمد علي',
+    'fullNameEn': 'Ahmed Ali',
+    'title': 'أخصائي',
+    'titleEn': null,
+    'specialtyId': 's1',
+    'specialtyNameAr': 'باطنة',
+    'specialtyNameEn': 'Internal medicine',
+    'status': status,
+  },
+  'assistant': assistant
+      ? {
+          'userId': 'a1',
+          'fullName': 'سارة محمود',
+          'preset': 'reception',
+          'allBranches': false,
+          'branchIds': ['b1'],
+        }
+      : null,
+  'permissions': {
+    for (final key in ClinicPermission.all)
+      key: AssistantPreset.permissions['reception']!.contains(key),
+  },
+  'branches': [
+    {
+      'id': 'b1',
+      'nameAr': 'فرع المعادي',
+      'nameEn': null,
+      'isDefault': true,
+      'status': 'active',
+      'governorate': 'القاهرة',
+      'city': 'المعادي',
+      'assigned': true,
+    },
+    {
+      'id': 'b2',
+      'nameAr': 'فرع مدينة نصر',
+      'nameEn': 'Nasr City',
+      'isDefault': false,
+      'status': 'active',
+      'governorate': 'القاهرة',
+      'city': 'مدينة نصر',
+      'assigned': false,
+    },
+    {
+      'id': 'b3',
+      'nameAr': 'فرع قديم',
+      'nameEn': null,
+      'isDefault': false,
+      'status': 'archived',
+      'governorate': 'الجيزة',
+      'city': 'الدقي',
+      'assigned': true,
+    },
+  ],
+  'defaultBranchId': 'b1',
+  'fees': {
+    'examinationFeePiasters': 3000,
+    'consultationFeePiasters': 1500,
+    'maxConsecutiveConsultations': 2,
+  },
+  'limits': {'maxAssistants': 5, 'maxBranches': 5, 'maxUploadMb': 50},
+};
 
 void main() {
   group('ClinicContext', () {
@@ -51,7 +101,9 @@ void main() {
     });
 
     test('a doctor can do everything; suspension is the doctor status', () {
-      final clinic = ClinicContext.fromJson(clinicJson(assistant: false, status: 'suspended'));
+      final clinic = ClinicContext.fromJson(
+        clinicJson(assistant: false, status: 'suspended'),
+      );
       expect(clinic.isDoctor, isTrue);
       expect(clinic.assistant, isNull);
       expect(clinic.can(ClinicPermission.revenueView), isTrue);
@@ -64,13 +116,21 @@ void main() {
     test('switching one on switches on what it needs, in chains', () {
       expect(
         ClinicPermission.toggle({}, ClinicPermission.scheduleManage, on: true),
-        {ClinicPermission.scheduleManage, ClinicPermission.appointmentsManage, ClinicPermission.appointmentsView},
+        {
+          ClinicPermission.scheduleManage,
+          ClinicPermission.appointmentsManage,
+          ClinicPermission.appointmentsView,
+        },
       );
     });
 
     test('switching one off switches off what needs it', () {
       final all = AssistantPreset.permissions[AssistantPreset.officeManager]!;
-      final result = ClinicPermission.toggle(all, ClinicPermission.appointmentsView, on: false);
+      final result = ClinicPermission.toggle(
+        all,
+        ClinicPermission.appointmentsView,
+        on: false,
+      );
       expect(result.contains(ClinicPermission.appointmentsManage), isFalse);
       expect(result.contains(ClinicPermission.scheduleManage), isFalse);
       expect(result.contains(ClinicPermission.billingPay), isTrue);
@@ -79,13 +139,20 @@ void main() {
     test('a preset is matched, and any change makes it custom', () {
       final reception = AssistantPreset.permissions[AssistantPreset.reception]!;
       expect(AssistantPreset.match(reception), AssistantPreset.reception);
-      expect(AssistantPreset.match({...reception, ClinicPermission.chat}), AssistantPreset.custom);
+      expect(
+        AssistantPreset.match({...reception, ClinicPermission.chat}),
+        AssistantPreset.custom,
+      );
     });
 
     test('the presets agree with their dependencies', () {
       for (final keys in AssistantPreset.permissions.values) {
         for (final key in keys) {
-          expect(ClinicPermission.toggle(keys, key, on: true), keys, reason: key);
+          expect(
+            ClinicPermission.toggle(keys, key, on: true),
+            keys,
+            reason: key,
+          );
         }
       }
     });
@@ -95,7 +162,8 @@ void main() {
     final doctor = ClinicContext.fromJson({
       ...clinicJson(assistant: false),
       'branches': [
-        for (final b in clinicJson()['branches'] as List) {...(b as Map<String, dynamic>), 'assigned': true},
+        for (final b in clinicJson()['branches'] as List)
+          {...(b as Map<String, dynamic>), 'assigned': true},
       ],
     });
 

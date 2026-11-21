@@ -66,6 +66,8 @@ public sealed class IntegrationFactory(string connectionString, IDictionary<stri
             ["Email:ResetPasswordUrl"] = "https://el3yada.test/reset-password",
             ["Email:VerifyEmailUrl"] = "https://el3yada.test/verify-email",
             ["Auth:UserStateCacheSeconds"] = "30",
+            // Background jobs run only when a test calls them, at the time the test chooses.
+            ["Jobs:Enabled"] = "false",
             ["RateLimits:LoginPerMinute"] = "100000",
             ["RateLimits:PasswordResetPer15Minutes"] = "100000",
             ["RateLimits:PasswordResetPerIdentifierPerHour"] = "100000",

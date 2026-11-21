@@ -1,49 +1,30 @@
-using System.Text;
+using El3yada.Api.Auth;
 using El3yada.Data.Entities;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.IdentityModel.Tokens;
 
 namespace El3yada.Api.Infrastructure.Auth;
 
 /// <summary>
-/// Issues access tokens. The Phase 1 <c>login</c> and <c>refresh</c> endpoints use this,
-/// so every token carries the same claims (<see cref="AuthClaims"/>).
+/// Issues an access token for a user without a password check, with the same claims as <c>login</c>
+/// (it wraps <see cref="TokenService"/>). Used by the Development token endpoint and by the API tests.
 /// </summary>
-public sealed class JwtTokenFactory(IOptions<JwtOptions> options, TimeProvider clock)
+public sealed class JwtTokenFactory(TokenService tokens)
 {
-    private readonly JwtOptions _options = options.Value;
-
-    public static SymmetricSecurityKey CreateKey(string signingKey) => new(Encoding.UTF8.GetBytes(signingKey));
-
-    /// <param name="user">The signed-in user.</param>
+    /// <param name="user">The user to sign in as.</param>
     /// <param name="doctorId">For assistants: <c>Assistants.DoctorId</c>.</param>
-    public (string Token, DateTime ExpiresAt) CreateAccessToken(User user, Guid? doctorId = null)
-    {
-        var now = clock.GetUtcNow().UtcDateTime;
-        var expires = now.AddMinutes(_options.AccessTokenMinutes);
-
-        var claims = new Dictionary<string, object>
-        {
-            [AuthClaims.UserId] = user.Id.ToString(),
-            [AuthClaims.Role] = user.Role,
-            [AuthClaims.SecurityStamp] = user.SecurityStamp.ToString(),
-            [JwtRegisteredClaimNames.Jti] = Guid.NewGuid().ToString(),
-        };
-        if (user.AdminRole is not null) claims[AuthClaims.AdminRole] = user.AdminRole;
-        if (doctorId is not null) claims[AuthClaims.DoctorId] = doctorId.Value.ToString();
-
-        var descriptor = new SecurityTokenDescriptor
-        {
-            Issuer = _options.Issuer,
-            Audience = _options.Audience,
-            Claims = claims,
-            IssuedAt = now,
-            NotBefore = now,
-            Expires = expires,
-            SigningCredentials = new SigningCredentials(CreateKey(_options.SigningKey), SecurityAlgorithms.HmacSha256),
-        };
-
-        return (new JsonWebTokenHandler().CreateToken(descriptor), expires);
-    }
+    public (string Token, DateTime ExpiresAt) CreateAccessToken(User user, Guid? doctorId = null) =>
+        tokens.CreateAccessToken(
+            new AccountState
+            {
+                UserId = user.Id,
+                Role = user.Role,
+                AdminRole = user.AdminRole,
+                UserStatus = user.Status,
+                SecurityStamp = user.SecurityStamp,
+                MustChangePassword = user.MustChangePassword,
+                DisplayName = user.DisplayName,
+                Locale = user.Locale,
+                ThemeMode = user.ThemeMode,
+                DoctorId = user.Role == Roles.Doctor ? user.Id : doctorId,
+            },
+            Guid.NewGuid());
 }

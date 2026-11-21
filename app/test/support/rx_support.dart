@@ -41,29 +41,64 @@ class FakeCatalogSearch implements CatalogSearch {
   final calls = <({String query, bool mySpecialtyOnly})>[];
 
   @override
-  Future<CatalogHits<DrugHit>> drugs(String query, {bool mySpecialtyOnly = false, int limit = 30}) async {
+  Future<CatalogHits<DrugHit>> drugs(
+    String query, {
+    bool mySpecialtyOnly = false,
+    int limit = 30,
+  }) async {
     calls.add((query: query, mySpecialtyOnly: mySpecialtyOnly));
     return CatalogHits(
       usedBefore: const [
-        DrugHit(name: 'Atorstat 20', catalogId: 'drug:1', strengthHint: '20 mg', formHint: 'tablet', activeIngredient: 'atorvastatin'),
+        DrugHit(
+          name: 'Atorstat 20',
+          catalogId: 'drug:1',
+          strengthHint: '20 mg',
+          formHint: 'tablet',
+          activeIngredient: 'atorvastatin',
+        ),
       ],
       mySpecialty: const [
-        DrugHit(name: 'Lipitor 40', catalogId: 'drug:2', activeIngredient: 'atorvastatin', route: 'oral', manufacturer: 'Pfizer'),
+        DrugHit(
+          name: 'Lipitor 40',
+          catalogId: 'drug:2',
+          activeIngredient: 'atorvastatin',
+          route: 'oral',
+          manufacturer: 'Pfizer',
+        ),
       ],
-      others: mySpecialtyOnly ? const [] : const [DrugHit(name: 'Ator 10', catalogId: 'drug:3')],
+      others: mySpecialtyOnly
+          ? const []
+          : const [DrugHit(name: 'Ator 10', catalogId: 'drug:3')],
       catalogReady: true,
     );
   }
 
   @override
-  Future<CatalogHits<TestHit>> tests(String query, {String? category, bool mySpecialtyOnly = false, int limit = 30}) async {
+  Future<CatalogHits<TestHit>> tests(
+    String query, {
+    String? category,
+    bool mySpecialtyOnly = false,
+    int limit = 30,
+  }) async {
     calls.add((query: query, mySpecialtyOnly: mySpecialtyOnly));
     final radiology = category == 'radiology';
     return CatalogHits(
       mySpecialty: [
         radiology
-            ? const TestHit(name: 'XR Chest PA', code: '36643-5', category: 'radiology', modality: 'XR', region: 'Chest')
-            : const TestHit(name: 'CBC panel', code: '58410-2', category: 'lab', nameAr: 'صورة دم كاملة', aliases: ['CBC']),
+            ? const TestHit(
+                name: 'XR Chest PA',
+                code: '36643-5',
+                category: 'radiology',
+                modality: 'XR',
+                region: 'Chest',
+              )
+            : const TestHit(
+                name: 'CBC panel',
+                code: '58410-2',
+                category: 'lab',
+                nameAr: 'صورة دم كاملة',
+                aliases: ['CBC'],
+              ),
       ],
       catalogReady: true,
     );
@@ -73,11 +108,17 @@ class FakeCatalogSearch implements CatalogSearch {
 /// The overrides of the prescription tests: printing recorded, a fake
 /// catalog, and the PDF shown as its size (drawing pages needs the
 /// platform's PDF renderer).
-List<Override> rxOverrides({required RecordingPrinter printer, required FakeCatalogSearch search}) => [
-      rxPrinterProvider.overrideWithValue(printer),
-      catalogSearchProvider.overrideWithValue(search),
-      rxPdfViewProvider.overrideWithValue((pdf, {maxPageWidth}) => Center(child: Text('PDF ${pdf.length} bytes'))),
-    ];
+List<Override> rxOverrides({
+  required RecordingPrinter printer,
+  required FakeCatalogSearch search,
+}) => [
+  rxPrinterProvider.overrideWithValue(printer),
+  catalogSearchProvider.overrideWithValue(search),
+  rxPdfViewProvider.overrideWithValue(
+    (pdf, {maxPageWidth}) => Center(child: Text('PDF ${pdf.length} bytes')),
+  ),
+];
 
 /// The offline prescriptions behind the running app.
-FakePrescriptions prescriptionsOf(WidgetTester tester) => appContainer(tester).read(fakePrescriptionsProvider);
+FakePrescriptions prescriptionsOf(WidgetTester tester) =>
+    appContainer(tester).read(fakePrescriptionsProvider);

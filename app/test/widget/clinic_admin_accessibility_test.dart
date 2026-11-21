@@ -23,9 +23,12 @@ void main() {
     '/doctor/assistants/new',
     '/doctor/activity',
   ]) {
-    testWidgets('$path at 360 dp, large text, reduced motion, Arabic', (tester) async {
+    testWidgets('$path at 360 dp, large text, reduced motion, Arabic', (
+      tester,
+    ) async {
       tester.platformDispatcher.textScaleFactorTestValue = 1.3;
-      tester.platformDispatcher.accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(disableAnimations: true);
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
       addTearDown(tester.platformDispatcher.clearAllTestValues);
 
       await pumpApp(
@@ -34,7 +37,10 @@ void main() {
         prefs: const {'settings.locale': 'ar'},
         extra: [fakeClinicAdminOverride()],
       );
-      await tester.enterText(find.byType(TextFormField).at(0), 'doctor@el3yada.dev');
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'doctor@el3yada.dev',
+      );
       await tester.enterText(find.byType(TextFormField).at(1), 'dev');
       await tester.tap(find.byType(FilledButton).first);
       await settle(tester);

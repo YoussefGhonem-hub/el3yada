@@ -23,7 +23,9 @@ import '../../support/catalog_support.dart';
 void main() {
   late Directory dir;
 
-  setUp(() => dir = Directory.systemTemp.createTempSync('el3yada-download-test'));
+  setUp(
+    () => dir = Directory.systemTemp.createTempSync('el3yada-download-test'),
+  );
   tearDown(() {
     try {
       dir.deleteSync(recursive: true);
@@ -33,73 +35,128 @@ void main() {
   });
   tearDownAll(deleteTestCatalogs);
 
-  List<String> files() => [for (final entry in dir.listSync()) entry.uri.pathSegments.last]..sort();
+  List<String> files() =>
+      [for (final entry in dir.listSync()) entry.uri.pathSegments.last]..sort();
 
-  test('resumes an interrupted download with a range request, after a restart too', () async {
-    final published = _Published.of(const SampleCatalog());
-    final api = _ServingApi({1: published})..dropAfter = 1000;
-    final target = published.info(1);
+  test(
+    'resumes an interrupted download with a range request, after a restart too',
+    () async {
+      final published = _Published.of(const SampleCatalog());
+      final api = _ServingApi({1: published})..dropAfter = 1000;
+      final target = published.info(1);
 
-    final first = CatalogDownloader(api: api, files: CatalogFiles(dir), run: runInline);
-    await expectLater(
-      first.fetch(target),
-      throwsA(isA<CatalogDownloadException>().having((e) => e.failure, 'failure', CatalogFailure.network)),
-    );
-    expect(files(), ['download-v1.gz.part']);
-    expect(File('${dir.path}/download-v1.gz.part').lengthSync(), 1000);
+      final first = CatalogDownloader(
+        api: api,
+        files: CatalogFiles(dir),
+        run: runInline,
+      );
+      await expectLater(
+        first.fetch(target),
+        throwsA(
+          isA<CatalogDownloadException>().having(
+            (e) => e.failure,
+            'failure',
+            CatalogFailure.network,
+          ),
+        ),
+      );
+      expect(files(), ['download-v1.gz.part']);
+      expect(File('${dir.path}/download-v1.gz.part').lengthSync(), 1000);
 
-    // A new downloader, as after an app restart: it asks from byte 1000.
-    api.dropAfter = null;
-    final progress = <int>[];
-    final file = await CatalogDownloader(
-      api: api,
-      files: CatalogFiles(dir),
-      run: runInline,
-    ).fetch(target, onProgress: (received, total) => progress.add(received));
-    expect(api.requests, [0, 1000]);
-    expect(progress.first, 1000);
-    expect(progress.last, published.bytes.length);
-    expect(file.path, endsWith('catalog-v1.sqlite'));
-    expect(files(), ['catalog-v1.sqlite']);
-    expect(catalogFileSchemaVersion(file.path), catalogSchemaVersion);
-  });
+      // A new downloader, as after an app restart: it asks from byte 1000.
+      api.dropAfter = null;
+      final progress = <int>[];
+      final file = await CatalogDownloader(
+        api: api,
+        files: CatalogFiles(dir),
+        run: runInline,
+      ).fetch(target, onProgress: (received, total) => progress.add(received));
+      expect(api.requests, [0, 1000]);
+      expect(progress.first, 1000);
+      expect(progress.last, published.bytes.length);
+      expect(file.path, endsWith('catalog-v1.sqlite'));
+      expect(files(), ['catalog-v1.sqlite']);
+      expect(catalogFileSchemaVersion(file.path), catalogSchemaVersion);
+    },
+  );
 
-  test('a server that ignores the range sends the whole file, and that works too', () async {
-    final published = _Published.of(const SampleCatalog());
-    final api = _ServingApi({1: published})..dropAfter = 500;
-    final downloader = CatalogDownloader(api: api, files: CatalogFiles(dir), run: runInline);
-    await expectLater(downloader.fetch(published.info(1)), throwsA(isA<CatalogDownloadException>()));
-    api
-      ..dropAfter = null
-      ..ignoreRanges = true;
-    final file = await downloader.fetch(published.info(1));
-    expect(catalogFileSchemaVersion(file.path), catalogSchemaVersion);
-  });
+  test(
+    'a server that ignores the range sends the whole file, and that works too',
+    () async {
+      final published = _Published.of(const SampleCatalog());
+      final api = _ServingApi({1: published})..dropAfter = 500;
+      final downloader = CatalogDownloader(
+        api: api,
+        files: CatalogFiles(dir),
+        run: runInline,
+      );
+      await expectLater(
+        downloader.fetch(published.info(1)),
+        throwsA(isA<CatalogDownloadException>()),
+      );
+      api
+        ..dropAfter = null
+        ..ignoreRanges = true;
+      final file = await downloader.fetch(published.info(1));
+      expect(catalogFileSchemaVersion(file.path), catalogSchemaVersion);
+    },
+  );
 
-  test('a sha256 mismatch deletes the download and asks to try again', () async {
-    final published = _Published.of(const SampleCatalog());
-    final api = _ServingApi({1: published});
-    final wrong = CatalogVersionInfo(version: 1, schemaVersion: 1, sha256: '0' * 64, sizeBytes: published.bytes.length);
-    await expectLater(
-      CatalogDownloader(api: api, files: CatalogFiles(dir), run: runInline).fetch(wrong),
-      throwsA(isA<CatalogDownloadException>().having((e) => e.failure, 'failure', CatalogFailure.checksum)),
-    );
-    expect(files(), isEmpty);
-  });
+  test(
+    'a sha256 mismatch deletes the download and asks to try again',
+    () async {
+      final published = _Published.of(const SampleCatalog());
+      final api = _ServingApi({1: published});
+      final wrong = CatalogVersionInfo(
+        version: 1,
+        schemaVersion: 1,
+        sha256: '0' * 64,
+        sizeBytes: published.bytes.length,
+      );
+      await expectLater(
+        CatalogDownloader(
+          api: api,
+          files: CatalogFiles(dir),
+          run: runInline,
+        ).fetch(wrong),
+        throwsA(
+          isA<CatalogDownloadException>().having(
+            (e) => e.failure,
+            'failure',
+            CatalogFailure.checksum,
+          ),
+        ),
+      );
+      expect(files(), isEmpty);
+    },
+  );
 
-  test('a schema this app does not read is refused, and nothing is kept', () async {
-    final published = _Published.of(const SampleCatalog(schemaVersion: catalogSchemaVersion + 1));
-    final api = _ServingApi({1: published});
-    await expectLater(
-      CatalogDownloader(api: api, files: CatalogFiles(dir), run: runInline).fetch(published.info(1)),
-      throwsA(
-        isA<CatalogDownloadException>()
-            .having((e) => e.failure, 'failure', CatalogFailure.schema)
-            .having((e) => e.schemaVersion, 'schemaVersion', catalogSchemaVersion + 1),
-      ),
-    );
-    expect(files(), isEmpty);
-  });
+  test(
+    'a schema this app does not read is refused, and nothing is kept',
+    () async {
+      final published = _Published.of(
+        const SampleCatalog(schemaVersion: catalogSchemaVersion + 1),
+      );
+      final api = _ServingApi({1: published});
+      await expectLater(
+        CatalogDownloader(
+          api: api,
+          files: CatalogFiles(dir),
+          run: runInline,
+        ).fetch(published.info(1)),
+        throwsA(
+          isA<CatalogDownloadException>()
+              .having((e) => e.failure, 'failure', CatalogFailure.schema)
+              .having(
+                (e) => e.schemaVersion,
+                'schemaVersion',
+                catalogSchemaVersion + 1,
+              ),
+        ),
+      );
+      expect(files(), isEmpty);
+    },
+  );
 
   test('a file that is not a gzip-compressed catalog is refused', () async {
     final junk = Uint8List.fromList(gzip.encode(utf8.encode('not a database')));
@@ -110,7 +167,13 @@ void main() {
         files: CatalogFiles(dir),
         run: runInline,
       ).fetch(published.info(1)),
-      throwsA(isA<CatalogDownloadException>().having((e) => e.failure, 'failure', CatalogFailure.corrupt)),
+      throwsA(
+        isA<CatalogDownloadException>().having(
+          (e) => e.failure,
+          'failure',
+          CatalogFailure.corrupt,
+        ),
+      ),
     );
     expect(files(), isEmpty);
   });
@@ -132,7 +195,8 @@ void main() {
 
     setUp(() {
       current = 1;
-      api = _ServingApi({1: _Published.of(const SampleCatalog())})..published = () => current;
+      api = _ServingApi({1: _Published.of(const SampleCatalog())})
+        ..published = () => current;
       db = DirectCatalogDb();
       container = ProviderContainer(
         overrides: [
@@ -157,51 +221,74 @@ void main() {
 
     LocalCatalogSearch search() => LocalCatalogSearch(
       history: FixedHistory(),
-      database: () => container.read(catalogControllerProvider.notifier).database,
+      database: () =>
+          container.read(catalogControllerProvider.notifier).database,
     );
 
-    test('downloads, checks and opens version 1; nothing else is left behind', () async {
-      final state = await started();
-      expect(state.phase, CatalogPhase.ready);
-      expect(state.installed?.version, 1);
-      expect(db.path, endsWith('catalog-v1.sqlite'));
-      expect(files(), ['catalog-v1.sqlite', 'state.json']);
-      expect((await search().drugs('panadol')).others, isNotEmpty);
-    });
+    test(
+      'downloads, checks and opens version 1; nothing else is left behind',
+      () async {
+        final state = await started();
+        expect(state.phase, CatalogPhase.ready);
+        expect(state.installed?.version, 1);
+        expect(db.path, endsWith('catalog-v1.sqlite'));
+        expect(files(), ['catalog-v1.sqlite', 'state.json']);
+        expect((await search().drugs('panadol')).others, isNotEmpty);
+      },
+    );
 
-    test('a new version replaces the old one only once it is checked and open', () async {
-      await started();
-      // Version 2 adds a medicine.
-      api.versions[2] = _Published.of(
-        const SampleCatalog(
-          catalogVersion: 2,
-          drugs: [
-            ...sampleDrugs,
-            SampleDrug('NEWDRUG 10 MG 20 TABS.', 'نيودراج', 'NEWINE', 'Pharco', 'other', 'ORAL.SOLID', 'Tablet'),
-          ],
-        ),
-      );
-      current = 2;
-      final controller = container.read(catalogControllerProvider.notifier);
-      final run = controller.start();
-      // While it downloads, search still answers from version 1.
-      expect(container.read(catalogControllerProvider).installed?.version, 1);
-      expect((await search().drugs('panadol')).others, isNotEmpty);
-      await run;
+    test(
+      'a new version replaces the old one only once it is checked and open',
+      () async {
+        await started();
+        // Version 2 adds a medicine.
+        api.versions[2] = _Published.of(
+          const SampleCatalog(
+            catalogVersion: 2,
+            drugs: [
+              ...sampleDrugs,
+              SampleDrug(
+                'NEWDRUG 10 MG 20 TABS.',
+                'نيودراج',
+                'NEWINE',
+                'Pharco',
+                'other',
+                'ORAL.SOLID',
+                'Tablet',
+              ),
+            ],
+          ),
+        );
+        current = 2;
+        final controller = container.read(catalogControllerProvider.notifier);
+        final run = controller.start();
+        // While it downloads, search still answers from version 1.
+        expect(container.read(catalogControllerProvider).installed?.version, 1);
+        expect((await search().drugs('panadol')).others, isNotEmpty);
+        await run;
 
-      final state = container.read(catalogControllerProvider);
-      expect(state.phase, CatalogPhase.ready);
-      expect(state.installed?.version, 2);
-      expect(db.path, endsWith('catalog-v2.sqlite'));
-      expect(files(), ['catalog-v2.sqlite', 'state.json']);
-      expect((await search().drugs('newdrug')).others.single.name, 'NEWDRUG 10 MG 20 TABS.');
-      final saved = jsonDecode(File('${dir.path}/state.json').readAsStringSync()) as Map;
-      expect(saved['fileName'], 'catalog-v2.sqlite');
-    });
+        final state = container.read(catalogControllerProvider);
+        expect(state.phase, CatalogPhase.ready);
+        expect(state.installed?.version, 2);
+        expect(db.path, endsWith('catalog-v2.sqlite'));
+        expect(files(), ['catalog-v2.sqlite', 'state.json']);
+        expect(
+          (await search().drugs('newdrug')).others.single.name,
+          'NEWDRUG 10 MG 20 TABS.',
+        );
+        final saved =
+            jsonDecode(File('${dir.path}/state.json').readAsStringSync())
+                as Map;
+        expect(saved['fileName'], 'catalog-v2.sqlite');
+      },
+    );
 
     test('a failed new version keeps the old one in use', () async {
       await started();
-      api.versions[2] = _Published.of(const SampleCatalog(catalogVersion: 2), sha: '1' * 64);
+      api.versions[2] = _Published.of(
+        const SampleCatalog(catalogVersion: 2),
+        sha: '1' * 64,
+      );
       current = 2;
       await container.read(catalogControllerProvider.notifier).start();
       final state = container.read(catalogControllerProvider);
@@ -212,24 +299,27 @@ void main() {
       expect(files(), ['catalog-v1.sqlite', 'state.json']);
     });
 
-    test('at the next start the file on the device opens at once, offline too', () async {
-      await started();
-      api.offline = true;
-      final again = ProviderContainer(
-        overrides: [
-          catalogEligibleProvider.overrideWithValue(true),
-          catalogApiProvider.overrideWithValue(api),
-          catalogFilesProvider.overrideWith((ref) async => CatalogFiles(dir)),
-          catalogDbProvider.overrideWithValue(db),
-          catalogBackgroundRunnerProvider.overrideWithValue(runInline),
-        ],
-      );
-      addTearDown(again.dispose);
-      await again.read(catalogControllerProvider.notifier).start();
-      final state = again.read(catalogControllerProvider);
-      expect(state.phase, CatalogPhase.ready);
-      expect(state.installed?.version, 1);
-    });
+    test(
+      'at the next start the file on the device opens at once, offline too',
+      () async {
+        await started();
+        api.offline = true;
+        final again = ProviderContainer(
+          overrides: [
+            catalogEligibleProvider.overrideWithValue(true),
+            catalogApiProvider.overrideWithValue(api),
+            catalogFilesProvider.overrideWith((ref) async => CatalogFiles(dir)),
+            catalogDbProvider.overrideWithValue(db),
+            catalogBackgroundRunnerProvider.overrideWithValue(runInline),
+          ],
+        );
+        addTearDown(again.dispose);
+        await again.read(catalogControllerProvider.notifier).start();
+        final state = again.read(catalogControllerProvider);
+        expect(state.phase, CatalogPhase.ready);
+        expect(state.installed?.version, 1);
+      },
+    );
 
     test('nothing published yet: the editors use the history', () async {
       current = 0;
@@ -238,25 +328,32 @@ void main() {
       expect(state.ready, isFalse);
     });
 
-    test('offline at the first sign-in: failed with Retry, and Retry finishes it', () async {
-      api.offline = true;
-      var state = await started();
-      expect(state.phase, CatalogPhase.failed);
-      expect(state.failure, CatalogFailure.network);
-      api.offline = false;
-      await container.read(catalogControllerProvider.notifier).retry();
-      state = container.read(catalogControllerProvider);
-      expect(state.phase, CatalogPhase.ready);
-    });
+    test(
+      'offline at the first sign-in: failed with Retry, and Retry finishes it',
+      () async {
+        api.offline = true;
+        var state = await started();
+        expect(state.phase, CatalogPhase.failed);
+        expect(state.failure, CatalogFailure.network);
+        api.offline = false;
+        await container.read(catalogControllerProvider.notifier).retry();
+        state = container.read(catalogControllerProvider);
+        expect(state.phase, CatalogPhase.ready);
+      },
+    );
   });
 }
 
 class _Published {
-  _Published(this.bytes, {String? sha}) : sha256 = sha ?? crypto.sha256.convert(bytes).toString();
+  _Published(this.bytes, {String? sha})
+    : sha256 = sha ?? crypto.sha256.convert(bytes).toString();
 
   factory _Published.of(SampleCatalog catalog, {String? sha}) {
     final path = writeTestCatalog(catalog: catalog);
-    return _Published(Uint8List.fromList(gzip.encode(File(path).readAsBytesSync())), sha: sha);
+    return _Published(
+      Uint8List.fromList(gzip.encode(File(path).readAsBytesSync())),
+      sha: sha,
+    );
   }
 
   final Uint8List bytes;
@@ -290,7 +387,12 @@ class _ServingApi implements CatalogApi {
   }
 
   @override
-  Future<CatalogFileResponse> file(int version, {int from = 0, String? ifRange, CancelToken? cancel}) async {
+  Future<CatalogFileResponse> file(
+    int version, {
+    int from = 0,
+    String? ifRange,
+    CancelToken? cancel,
+  }) async {
     if (offline) throw const ApiException(kind: ApiErrorKind.network);
     requests.add(from);
     final bytes = versions[version]!.bytes;
@@ -309,11 +411,16 @@ class _ServingApi implements CatalogApi {
       }
     }
 
-    return CatalogFileResponse(partial: start > 0, totalBytes: bytes.length, body: body());
+    return CatalogFileResponse(
+      partial: start > 0,
+      totalBytes: bytes.length,
+      body: body(),
+    );
   }
 
   @override
-  Future<CustomItemSyncPage> customItems({String? since}) async => const CustomItemSyncPage(items: []);
+  Future<CustomItemSyncPage> customItems({String? since}) async =>
+      const CustomItemSyncPage(items: []);
 
   @override
   Future<CatalogProfile> myProfile() async => CatalogProfile.empty;

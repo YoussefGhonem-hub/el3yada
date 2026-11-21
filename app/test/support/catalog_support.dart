@@ -11,7 +11,10 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 
 /// A tiny catalog in the real schema (catalog_core), written to a new
 /// temporary folder that is deleted after the test file. Returns its path.
-String writeTestCatalog({SampleCatalog catalog = const SampleCatalog(), String name = 'catalog.sqlite'}) {
+String writeTestCatalog({
+  SampleCatalog catalog = const SampleCatalog(),
+  String name = 'catalog.sqlite',
+}) {
   final dir = Directory.systemTemp.createTempSync('el3yada-catalog-test');
   _temporary.add(dir);
   final path = '${dir.path}${Platform.pathSeparator}$name';
@@ -20,7 +23,9 @@ String writeTestCatalog({SampleCatalog catalog = const SampleCatalog(), String n
 }
 
 /// [writeTestCatalog], opened in the calling isolate.
-Future<DirectCatalogDb> openTestCatalog({SampleCatalog catalog = const SampleCatalog()}) async {
+Future<DirectCatalogDb> openTestCatalog({
+  SampleCatalog catalog = const SampleCatalog(),
+}) async {
   final db = DirectCatalogDb();
   await db.open(writeTestCatalog(catalog: catalog));
   return db;
@@ -43,7 +48,11 @@ void deleteTestCatalogs() {
 /// "Used before" with fixed items, like `HistoryOnlyCatalogSearch`: every
 /// item whose name contains what was typed (case-insensitive).
 class FixedHistory implements CatalogSearch {
-  FixedHistory({this.drugItems = const [], this.testItems = const [], this.matchAll = false});
+  FixedHistory({
+    this.drugItems = const [],
+    this.testItems = const [],
+    this.matchAll = false,
+  });
 
   final List<DrugHit> drugItems;
   final List<TestHit> testItems;
@@ -53,7 +62,11 @@ class FixedHistory implements CatalogSearch {
   int calls = 0;
 
   @override
-  Future<CatalogHits<DrugHit>> drugs(String query, {bool mySpecialtyOnly = false, int limit = 30}) async {
+  Future<CatalogHits<DrugHit>> drugs(
+    String query, {
+    bool mySpecialtyOnly = false,
+    int limit = 30,
+  }) async {
     calls++;
     final typed = query.trim().toLowerCase();
     return CatalogHits(
@@ -76,7 +89,8 @@ class FixedHistory implements CatalogSearch {
     return CatalogHits(
       usedBefore: [
         for (final hit in testItems)
-          if ((category == null || hit.category == category) && (matchAll || hit.name.toLowerCase().contains(typed)))
+          if ((category == null || hit.category == category) &&
+              (matchAll || hit.name.toLowerCase().contains(typed)))
             hit,
       ],
     );
@@ -121,9 +135,12 @@ List<Override> catalogOverrides({
   CatalogController Function()? controller,
 }) => [
   fakeCatalogBackendProvider.overrideWithValue(
-    backend ?? FakeCatalogBackend(delay: Duration.zero, chunkDelay: Duration.zero),
+    backend ??
+        FakeCatalogBackend(delay: Duration.zero, chunkDelay: Duration.zero),
   ),
-  catalogFilesProvider.overrideWith((ref) async => CatalogFiles(dir ?? installedCatalogDir())),
+  catalogFilesProvider.overrideWith(
+    (ref) async => CatalogFiles(dir ?? installedCatalogDir()),
+  ),
   catalogDbProvider.overrideWith((ref) {
     final db = DirectCatalogDb();
     ref.onDispose(db.dispose);

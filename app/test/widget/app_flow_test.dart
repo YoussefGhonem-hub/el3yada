@@ -14,47 +14,60 @@ void main() {
     expect(find.text('Mobile number or email'), findsOneWidget);
   });
 
-  testWidgets('a doctor on desktop lands on the home with the side menu', (tester) async {
+  testWidgets('a doctor on desktop lands on the home with the side menu', (
+    tester,
+  ) async {
     await pumpApp(tester, platform: AppPlatform.desktop);
     await signIn(tester, 'doctor@el3yada.dev');
 
-<<<<<<< HEAD
     // The side menu holds the brand and the account; there is no top bar.
     expect(find.byType(AppBar), findsNothing);
-    expect(find.descendant(of: find.byType(SideMenuBrand), matching: find.text('el3yada')), findsOneWidget);
-    expect(find.descendant(of: find.byType(SideMenuAccount), matching: find.text('Doctor')), findsOneWidget);
-    // The home until the live board (D34) arrives in Phase 6.
-    expect(find.text('Search patient'), findsOneWidget);
-=======
-    expect(find.text('el3yada · Doctor'), findsOneWidget);
-    expect(find.text('Now serving'), findsOneWidget); // D34 live board is the home screen
->>>>>>> phase-6/appointments-live-board
+    expect(
+      find.descendant(
+        of: find.byType(SideMenuBrand),
+        matching: find.text('el3yada'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(SideMenuAccount),
+        matching: find.text('Doctor'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Now serving'),
+      findsOneWidget,
+    ); // D34 live board is the home screen
     expect(find.text('Branches'), findsOneWidget); // side menu shows every item
   });
 
-  testWidgets('a patient on desktop sees the "use the mobile app" message (A14)', (tester) async {
-    await pumpApp(tester, platform: AppPlatform.desktop);
-    await signIn(tester, '01000000002');
+  testWidgets(
+    'a patient on desktop sees the "use the mobile app" message (A14)',
+    (tester) async {
+      await pumpApp(tester, platform: AppPlatform.desktop);
+      await signIn(tester, '01000000002');
 
-    expect(find.text('Patient accounts use the mobile app'), findsOneWidget);
-    expect(find.text('Mobile number or email'), findsOneWidget);
-  });
+      expect(find.text('Patient accounts use the mobile app'), findsOneWidget);
+      expect(find.text('Mobile number or email'), findsOneWidget);
+    },
+  );
 
-  testWidgets('a patient on a phone gets the bottom navigation bar', (tester) async {
+  testWidgets('a patient on a phone gets the bottom navigation bar', (
+    tester,
+  ) async {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, '01000000002');
 
-<<<<<<< HEAD
     expect(find.byType(AppBottomBar), findsOneWidget);
-    expect(find.text('Screen P1 in spec.md'), findsOneWidget);
-=======
-    expect(find.byType(NavigationBar), findsOneWidget);
     // P1 is built: first login starts with the terms acceptance (A9).
     expect(find.text('Before you start'), findsOneWidget);
->>>>>>> phase-6/appointments-live-board
   });
 
-  testWidgets('wrong credentials show the error and keep the form', (tester) async {
+  testWidgets('wrong credentials show the error and keep the form', (
+    tester,
+  ) async {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, 'doctor@el3yada.dev', password: 'wrong');
 
@@ -62,7 +75,9 @@ void main() {
     expect(find.text('Mobile number or email'), findsOneWidget);
   });
 
-  testWidgets('one number with two accounts asks "log in as" (A3)', (tester) async {
+  testWidgets('one number with two accounts asks "log in as" (A3)', (
+    tester,
+  ) async {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, '01000000003');
 
@@ -74,7 +89,9 @@ void main() {
     expect(find.text("Dr تجريبي's clinic"), findsOneWidget);
   });
 
-  testWidgets('first launch asks for the language (A2), then shows the login', (tester) async {
+  testWidgets('first launch asks for the language (A2), then shows the login', (
+    tester,
+  ) async {
     await pumpApp(tester, size: const Size(400, 800), prefs: const {});
 
     expect(find.text('العربية'), findsWidgets);
@@ -86,7 +103,9 @@ void main() {
     expect(find.text('Mobile number or email'), findsOneWidget);
   });
 
-  testWidgets('a too-old app version shows Update required (A11)', (tester) async {
+  testWidgets('a too-old app version shows Update required (A11)', (
+    tester,
+  ) async {
     await pumpApp(
       tester,
       size: const Size(400, 800),
@@ -98,20 +117,30 @@ void main() {
     expect(find.text('Mobile number or email'), findsNothing);
   });
 
-  testWidgets('maintenance shows the admin message (A13), and Retry lets the user in once it ends', (tester) async {
-    final settings = FakePublicSettingsRepository(
-      const PublicSettings(maintenanceEnabled: true, maintenanceMessageEn: 'Back at 10 pm.'),
-    );
-    await pumpApp(tester, size: const Size(400, 800), publicSettings: settings);
+  testWidgets(
+    'maintenance shows the admin message (A13), and Retry lets the user in once it ends',
+    (tester) async {
+      final settings = FakePublicSettingsRepository(
+        const PublicSettings(
+          maintenanceEnabled: true,
+          maintenanceMessageEn: 'Back at 10 pm.',
+        ),
+      );
+      await pumpApp(
+        tester,
+        size: const Size(400, 800),
+        publicSettings: settings,
+      );
 
-    expect(find.text('Back at 10 pm.'), findsOneWidget);
+      expect(find.text('Back at 10 pm.'), findsOneWidget);
 
-    settings.settings = const PublicSettings();
-    await tester.tap(find.text('Try again'));
-    await settle(tester);
+      settings.settings = const PublicSettings();
+      await tester.tap(find.text('Try again'));
+      await settle(tester);
 
-    expect(find.text('Mobile number or email'), findsOneWidget);
-  });
+      expect(find.text('Mobile number or email'), findsOneWidget);
+    },
+  );
 
   testWidgets('offline at start-up still opens the login', (tester) async {
     final settings = FakePublicSettingsRepository()..offline = true;
@@ -128,10 +157,15 @@ void main() {
   testWidgets('a rejected doctor sees the reason (A7)', (tester) async {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, 'rejected@el3yada.dev');
-    expect(find.text('صورة الكارنيه غير واضحة، ارفع صورة أوضح.'), findsOneWidget);
+    expect(
+      find.text('صورة الكارنيه غير واضحة، ارفع صورة أوضح.'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('a disabled account sees A10, and Log out returns to the login', (tester) async {
+  testWidgets('a disabled account sees A10, and Log out returns to the login', (
+    tester,
+  ) async {
     await pumpApp(tester, size: const Size(400, 800));
     await signIn(tester, 'disabled@el3yada.dev');
 
@@ -141,60 +175,75 @@ void main() {
     expect(find.text('Mobile number or email'), findsOneWidget);
   });
 
-  testWidgets('a first login must set a new password and accept the Terms (A9)', (tester) async {
-    await pumpApp(tester, size: const Size(400, 900));
-    await signIn(tester, '01000000004');
+  testWidgets(
+    'a first login must set a new password and accept the Terms (A9)',
+    (tester) async {
+      await pumpApp(tester, size: const Size(400, 900));
+      await signIn(tester, '01000000004');
 
-    expect(find.text('Set a new password'), findsOneWidget);
-    await tester.enterText(find.byType(TextFormField).at(0), 'newpass123');
-    await tester.enterText(find.byType(TextFormField).at(1), 'newpass123');
-    await tester.tap(find.text('Save password'));
-    await settle(tester);
-    expect(find.text('Accept the Terms and the Privacy Policy to continue.'), findsOneWidget);
+      expect(find.text('Set a new password'), findsOneWidget);
+      await tester.enterText(find.byType(TextFormField).at(0), 'newpass123');
+      await tester.enterText(find.byType(TextFormField).at(1), 'newpass123');
+      await tester.tap(find.text('Save password'));
+      await settle(tester);
+      expect(
+        find.text('Accept the Terms and the Privacy Policy to continue.'),
+        findsOneWidget,
+      );
 
-    await tester.tap(find.byType(Checkbox));
-    await tester.tap(find.text('Save password'));
-    await settle(tester);
+      await tester.tap(find.byType(Checkbox));
+      await tester.tap(find.text('Save password'));
+      await settle(tester);
 
-    expect(find.text('Screen P1 in spec.md'), findsOneWidget);
-  });
+      expect(find.text('Before you start'), findsOneWidget);
+    },
+  );
 
-  testWidgets('forgot password by email takes the code from the email and a new password (A8)', (tester) async {
-    await pumpApp(tester, size: const Size(400, 900));
-    await tester.tap(find.text('Forgot password?'));
-    await settle(tester);
-    await tester.enterText(find.byType(TextFormField), 'doctor@el3yada.dev');
-    await tester.tap(find.text('Send'));
-    await settle(tester);
-    expect(find.text('Check your email'), findsOneWidget);
+  testWidgets(
+    'forgot password by email takes the code from the email and a new password (A8)',
+    (tester) async {
+      await pumpApp(tester, size: const Size(400, 900));
+      await tester.tap(find.text('Forgot password?'));
+      await settle(tester);
+      await tester.enterText(find.byType(TextFormField), 'doctor@el3yada.dev');
+      await tester.tap(find.text('Send'));
+      await settle(tester);
+      expect(find.text('Check your email'), findsOneWidget);
 
-    await tester.tap(find.text('I have a code'));
-    await settle(tester);
-    await tester.enterText(find.byType(TextFormField).at(0), 'expired');
-    await tester.enterText(find.byType(TextFormField).at(1), 'newpass123');
-    await tester.enterText(find.byType(TextFormField).at(2), 'newpass123');
-    await tester.tap(find.text('Save password'));
-    await settle(tester);
-    expect(find.text('This code has expired. Ask for a new email.'), findsOneWidget);
+      await tester.tap(find.text('I have a code'));
+      await settle(tester);
+      await tester.enterText(find.byType(TextFormField).at(0), 'expired');
+      await tester.enterText(find.byType(TextFormField).at(1), 'newpass123');
+      await tester.enterText(find.byType(TextFormField).at(2), 'newpass123');
+      await tester.tap(find.text('Save password'));
+      await settle(tester);
+      expect(
+        find.text('This code has expired. Ask for a new email.'),
+        findsOneWidget,
+      );
 
-    await tester.enterText(find.byType(TextFormField).at(0), 'abc123');
-    await tester.tap(find.text('Save password'));
-    await settle(tester);
-    expect(find.text('Password changed'), findsOneWidget);
-  });
+      await tester.enterText(find.byType(TextFormField).at(0), 'abc123');
+      await tester.tap(find.text('Save password'));
+      await settle(tester);
+      expect(find.text('Password changed'), findsOneWidget);
+    },
+  );
 
-  testWidgets('forgot password by mobile tells the user their doctor will reset it (A8)', (tester) async {
-    await pumpApp(tester, size: const Size(400, 800));
-    await tester.tap(find.text('Forgot password?'));
-    await settle(tester);
+  testWidgets(
+    'forgot password by mobile tells the user their doctor will reset it (A8)',
+    (tester) async {
+      await pumpApp(tester, size: const Size(400, 800));
+      await tester.tap(find.text('Forgot password?'));
+      await settle(tester);
 
-    await tester.enterText(find.byType(TextFormField), '01000000002');
-    await tester.tap(find.text('Send'));
-    await settle(tester);
+      await tester.enterText(find.byType(TextFormField), '01000000002');
+      await tester.tap(find.text('Send'));
+      await settle(tester);
 
-    expect(find.text('Request sent'), findsOneWidget);
-    await tester.tap(find.text('Back to sign in'));
-    await settle(tester);
-    expect(find.text('Mobile number or email'), findsOneWidget);
-  });
+      expect(find.text('Request sent'), findsOneWidget);
+      await tester.tap(find.text('Back to sign in'));
+      await settle(tester);
+      expect(find.text('Mobile number or email'), findsOneWidget);
+    },
+  );
 }

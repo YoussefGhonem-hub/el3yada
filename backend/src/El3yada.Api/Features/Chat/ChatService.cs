@@ -136,8 +136,10 @@ public sealed class ChatService(
         var maxMb = await db.AppSettings.AsNoTracking().Select(s => s.MaxUploadMb).FirstAsync(ct);
         if (file.Length > maxMb * 1024L * 1024L) throw new ApiException(StatusCodes.Status400BadRequest, ErrorCodes.FileTooLarge) { Details = new { maxMb } };
 
-        var mime = string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType;
-        var type = mime.StartsWith("image/", StringComparison.OrdinalIgnoreCase) ? "image" : "file";
+        // Chat takes the same files as the medical record: JPEG, PNG, WebP and PDF (the stored path comes from IDs).
+        var mime = El3yada.Api.Storage.FileTypes.Normalize(file.ContentType)
+            ?? throw ApiException.BadRequest(ErrorCodes.FileTypeNotAllowed);
+        var type = El3yada.Api.Storage.FileTypes.IsImage(mime) ? "image" : "file";
         return await SendAsync(actor, chatId, type, null, file, ct);
     }
 
@@ -168,12 +170,19 @@ public sealed class ChatService(
         if (file is not null)
         {
             var fileName = SafeFileName(file.FileName);
-            message.AttachmentPath = $"chat/{chat.Id}/{message.Id}/{fileName}";
+            message.AttachmentPath = El3yada.Api.Storage.StoragePath.ChatAttachment(chat.Id, message.Id, El3yada.Api.Storage.FileTypes.Normalize(file.ContentType)!).Value;
             message.AttachmentFileName = fileName;
-            message.AttachmentMimeType = string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType;
+            message.AttachmentMimeType = El3yada.Api.Storage.FileTypes.Normalize(file.ContentType)!;
             message.AttachmentSizeBytes = file.Length;
             await using var stream = file.OpenReadStream();
-            await storage.SaveAsync(message.AttachmentPath, stream, ct);
+            try
+            {
+                await storage.SaveAsync(message.AttachmentPath, stream, ct);
+            }
+            catch (El3yada.Api.Storage.FileStorageException ex)
+            {
+                throw ApiException.BadRequest(ex.Code);
+            }
         }
 
         db.ChatMessages.Add(message);
@@ -297,15 +306,16 @@ public sealed class ChatService(
             CreatedAt = now,
             UpdatedAt = now,
         };
-        var path = $"medical/{staff.DoctorId}/{m.PatientId}/{record.Id}/{m.AttachmentFileName}";
+        var attachmentId = NewId.Next();
+        var path = El3yada.Api.Storage.StoragePath.MedicalAttachment(staff.DoctorId, m.PatientId, record.Id, attachmentId, m.AttachmentMimeType!).Value;
         await using (var source = await storage.OpenReadAsync(m.AttachmentPath, ct) ?? throw ApiException.NotFound(ErrorCodes.FileMissing))
         {
             await storage.SaveAsync(path, source, ct);
         }
         record.MedicalRecordAttachments.Add(new MedicalRecordAttachment
         {
-            Id = NewId.Next(), Path = path, FileName = m.AttachmentFileName!, MimeType = m.AttachmentMimeType!,
-            SizeBytes = m.AttachmentSizeBytes ?? 1,
+            Id = attachmentId, Path = path, FileName = m.AttachmentFileName!, MimeType = m.AttachmentMimeType!,
+            SizeBytes = m.AttachmentSizeBytes ?? 1, StoredSizeBytes = m.AttachmentSizeBytes ?? 1,
         });
         db.MedicalRecords.Add(record);
 

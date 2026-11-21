@@ -17,17 +17,24 @@ Future<void> pumpHarness(
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(harness(home, rtl: rtl, reduced: reduced, dark: dark));
+  await tester.pumpWidget(
+    harness(home, rtl: rtl, reduced: reduced, dark: dark),
+  );
 }
 
-Widget harness(Widget home, {bool rtl = false, bool reduced = false, bool dark = false}) => MaterialApp(
-      theme: dark ? AppTheme.dark() : AppTheme.light(),
-      locale: Locale(rtl ? 'ar' : 'en'),
-      supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
-        child: child!,
-      ),
-      home: home,
-    );
+Widget harness(
+  Widget home, {
+  bool rtl = false,
+  bool reduced = false,
+  bool dark = false,
+}) => MaterialApp(
+  theme: dark ? AppTheme.dark() : AppTheme.light(),
+  locale: Locale(rtl ? 'ar' : 'en'),
+  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  builder: (context, child) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
+    child: child!,
+  ),
+  home: home,
+);

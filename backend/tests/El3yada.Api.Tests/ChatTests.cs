@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace El3yada.Api.Tests;
 
 /// <summary>Phase 5 chat (spec 6.8) and AC-13 on the API side.</summary>
-public sealed class ChatTests(ApiFactory api) : IClassFixture<ApiFactory>
+public sealed class ChatTests(FeaturesApiFactory api) : IClassFixture<FeaturesApiFactory>
 {
     private async Task<ChatSummaryDto> PatientChatWithAsync(HttpClient patient, Guid doctorId)
     {
@@ -88,7 +88,8 @@ public sealed class ChatTests(ApiFactory api) : IClassFixture<ApiFactory>
         var chat = await PatientChatWithAsync(patient, api.Demo.DoctorAUserId);
 
         using var form = new MultipartFormDataContent();
-        var bytes = new ByteArrayContent([0x89, 0x50, 0x4E, 0x47, 1, 2, 3]);
+        var png = TestImages.Encode(2, 2, SkiaSharp.SKEncodedImageFormat.Png);
+        var bytes = new ByteArrayContent(png);
         bytes.Headers.ContentType = new MediaTypeHeaderValue("image/png");
         form.Add(bytes, "file", "../../lab result.png");
         var upload = await patient.PostAsync($"/api/patient/chats/{chat.Id}/attachments", form);
@@ -99,7 +100,7 @@ public sealed class ChatTests(ApiFactory api) : IClassFixture<ApiFactory>
 
         var download = await doctor.GetAsync($"/api/staff/chats/{chat.Id}/messages/{message.Id}/attachment");
         download.EnsureSuccessStatusCode();
-        Assert.Equal(7, (await download.Content.ReadAsByteArrayAsync()).Length);
+        Assert.Equal(png.Length, (await download.Content.ReadAsByteArrayAsync()).Length);
 
         var saved = await doctor.PostAsJsonAsync($"/api/staff/chats/{chat.Id}/messages/{message.Id}/save-to-file",
             new SaveToFileRequest("lab", null, null, "CBC from chat", null, null));
@@ -185,7 +186,7 @@ public sealed class ChatTests(ApiFactory api) : IClassFixture<ApiFactory>
 }
 
 /// <summary>Notification centre, devices and push delivery (spec 9.2, 10).</summary>
-public sealed class NotificationTests(ApiFactory api) : IClassFixture<ApiFactory>
+public sealed class NotificationTests(FeaturesApiFactory api) : IClassFixture<FeaturesApiFactory>
 {
     [Fact]
     public async Task Chat_push_arrives_in_the_recipients_language_without_text_unless_previews_are_on()
@@ -200,7 +201,7 @@ public sealed class NotificationTests(ApiFactory api) : IClassFixture<ApiFactory
 
         api.Push.Sent.Clear();
         (await patient.PostAsJsonAsync($"/api/patient/chats/{chatId}/messages", new SendTextRequest("سر طبي خاص"))).EnsureSuccessStatusCode();
-        var push = await ApiFactory.EventuallyAsync(() => api.Push.Sent.FirstOrDefault(p => p.Tokens.Contains("token-doc")) is { Message: not null } p ? p.Message : null);
+        var push = await FeaturesApiFactory.EventuallyAsync(() => api.Push.Sent.FirstOrDefault(p => p.Tokens.Contains("token-doc")) is { Message: not null } p ? p.Message : null);
 
         Assert.StartsWith("رسالة جديدة من", push.Title);          // the doctor's language is Arabic
         Assert.DoesNotContain("سر طبي", push.Body);                // previews are off by default (spec 10.1)
@@ -211,7 +212,7 @@ public sealed class NotificationTests(ApiFactory api) : IClassFixture<ApiFactory
         (await doctor.PatchAsJsonAsync("/api/me/preferences", new { notifyShowPreview = true })).EnsureSuccessStatusCode();
         api.Push.Sent.Clear();
         (await patient.PostAsJsonAsync($"/api/patient/chats/{chatId}/messages", new SendTextRequest("نص ظاهر"))).EnsureSuccessStatusCode();
-        var withPreview = await ApiFactory.EventuallyAsync(() => api.Push.Sent.FirstOrDefault().Message);
+        var withPreview = await FeaturesApiFactory.EventuallyAsync(() => api.Push.Sent.FirstOrDefault().Message);
         Assert.Equal("نص ظاهر", withPreview.Body);
 
         // Chat notifications off: nothing is pushed.
@@ -240,7 +241,7 @@ public sealed class NotificationTests(ApiFactory api) : IClassFixture<ApiFactory
         var chats = await patient.GetFromJsonAsync<List<ChatSummaryDto>>("/api/patient/chats");
         var chatB = chats!.Single(c => c.DoctorId == api.Demo.DoctorBUserId).Id;
         (await doctorB.PostAsJsonAsync($"/api/staff/chats/{chatB}/messages", new SendTextRequest("hello"))).EnsureSuccessStatusCode();
-        await ApiFactory.EventuallyAsync(() => api.WithDbAsync(db => db.UserDevices.AnyAsync(d => d.DeviceId == "shared" && d.UserId == api.Demo.PatientUserId && d.FcmToken == null)).Result ? "ok" : null);
+        await FeaturesApiFactory.EventuallyAsync(() => api.WithDbAsync(db => db.UserDevices.AnyAsync(d => d.DeviceId == "shared" && d.UserId == api.Demo.PatientUserId && d.FcmToken == null)).Result ? "ok" : null);
 
         // Logout removes the device.
         Assert.Equal(HttpStatusCode.NoContent, (await patient.DeleteAsync("/api/me/devices/shared")).StatusCode);

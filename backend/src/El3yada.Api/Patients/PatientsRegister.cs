@@ -10,8 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace El3yada.Api.Patients;
 
 /// <summary>
-/// D4 / AS2 (<c>getPatientsRegister</c>). Every filter is optional. Phase 6 adds <c>hasUpcomingBooking</c> and
-/// <c>hasNoShows</c>; until then they are not filters (unknown query parameters are ignored).
+/// D4 / AS2 (<c>getPatientsRegister</c>). Every filter is optional.
 /// </summary>
 public sealed class PatientsRegisterQuery : IPagedQuery
 {
@@ -30,6 +29,12 @@ public sealed class PatientsRegisterQuery : IPagedQuery
 
     /// <summary>Linked to the doctor in the current Cairo month.</summary>
     public bool? NewThisMonth { get; init; }
+
+    /// <summary>Patients with a pending or confirmed booking from today on.</summary>
+    public bool? HasUpcomingBooking { get; init; }
+
+    /// <summary>Patients with at least one no-show.</summary>
+    public bool? HasNoShows { get; init; }
 
     /// <summary>false or absent: active patients only (BR-P7). true: archived patients only.</summary>
     public bool? Archived { get; init; }
@@ -148,6 +153,17 @@ public static class PatientsRegister
             links = links.Where(l => l.LinkedAt >= monthStart);
         }
 
+        if (query.HasUpcomingBooking == true)
+        {
+            links = links.Where(l => db.Appointments.Any(a => a.DoctorId == doctorId && a.PatientId == l.PatientId && a.LocalDate >= today
+                && (a.Status == "pending" || a.Status == "confirmed")));
+        }
+
+        if (query.HasNoShows == true)
+        {
+            links = links.Where(l => db.Appointments.Any(a => a.DoctorId == doctorId && a.PatientId == l.PatientId && a.Status == "noShow"));
+        }
+
         if (query.HasChronicDisease == true)
         {
             links = links.Where(l => l.PatientMedicalProfileItems.Any(i => i.Kind == ProfileKinds.ChronicDisease));
@@ -192,6 +208,8 @@ public static class PatientsRegister
                 .ToDictionaryAsync(g => g.PatientId, g => g.Total, cancellationToken);
         }
 
+        var nextBookings = await PatientBookings.NextAsync(db, doctorId, patientIds, today, cancellationToken);
+        var noShows = await PatientBookings.NoShowsAsync(db, doctorId, patientIds, cancellationToken);
         ILookup<Guid, (string Kind, string Text)>? profile = null;
         if (caller.Has(ClinicPermissions.ClinicalView))
         {
@@ -214,8 +232,8 @@ public static class PatientsRegister
             PatientAge.Years(r.DateOfBirth, today),
             r.Visits.View(today),
             paid is null ? null : paid.GetValueOrDefault(r.PatientId),
-            NextBooking: null,
-            NoShowCount: 0,
+            nextBookings.GetValueOrDefault(r.PatientId),
+            noShows.GetValueOrDefault(r.PatientId),
             r.FilesCount,
             profile is null ? null : profile[r.LinkId].Any(i => i.Kind == ProfileKinds.Allergy),
             profile?[r.LinkId].Where(i => i.Kind == ProfileKinds.ChronicDisease).Select(i => i.Text).ToList(),

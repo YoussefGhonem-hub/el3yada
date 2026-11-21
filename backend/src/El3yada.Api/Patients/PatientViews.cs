@@ -53,7 +53,7 @@ public sealed record PatientDetailView(
     bool? HasAllergies,
     PatientFilesView Files,
     int PrescriptionCount,
-    object? NextBooking,
+    NextBookingView? NextBooking,
     int NoShowCount);
 
 /// <summary>createPatient answer. <c>temporaryPassword</c> is only for a new account, shown once (BR-P4).</summary>
@@ -100,7 +100,7 @@ public sealed record PatientRegisterRow(
     int AgeYears,
     PatientVisitsView Visits,
     int? TotalPaidPiasters,
-    object? NextBooking,
+    NextBookingView? NextBooking,
     int NoShowCount,
     int FilesCount,
     bool? HasAllergies,

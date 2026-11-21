@@ -19,6 +19,31 @@ The team (Youssef, Amr and Mohamed Gomaa) works through these phases together, i
 | [7](#phase-7-billing-and-analytics) | Billing and analytics | D1 (analytics), D18–D20, D35, AS10, AS18, AD1, AD4–AD10 |
 | [8](#phase-8-hardening-and-release) | Hardening and release | All |
 
+**Status (21 Nov 2026, Youssef).** Every phase is now written in code, and the checks pass: `dotnet test` 773 (764 API, 9 data), `flutter test` 611 passed, 190 skipped (screenshots), `flutter analyze` clean. What still needs people, accounts or devices is listed per phase below. Changes since the Phase 4–8 merges:
+- **Flutter 3.50.1 is required** (pdfrx 3 needs Dart 3.14). Run `flutter upgrade`. Material now comes from `package:material_ui/material_ui.dart`, never `package:flutter/material.dart`. Localization delegates come from `lib/l10n/app_localization_delegates.dart`, because the generated list still uses the old ones, and Arabic lost its Material texts. CI is pinned to 3.50.1.
+- **Android builds again:** `compileSdk` 37 and core library desugaring, both needed by `flutter_local_notifications`.
+- **Request paths are under `/api`:** write `/patient/home`, not `/api/patient/home`. The Phase 4–6 repositories asked for `/api/api/...` and worked only against the offline fakes. `test/core/api_paths_test.dart` guards this.
+- **Queue numbers at check-in** (BR-AP3, BR-AP16, the AC-21 queue order): booking only takes a place on the period's list.
+  - Check-in gives the next number in arrival order under a period lock, and notifies «دورك رقم 7، وقبلك 3 مرضى» with the wait. «دورك التالي» [S] goes to the next patient.
+  - The board orders Expected by booking time and Waiting by number; P15–P17 show the arrival-order texts.
+  - Migration `QueueNumberAtCheckIn`: **run `dotnet ef database update`.** Contract: [api-phase-6.md](backend/docs/api-phase-6.md).
+- **One schedule editor:** D29 now has the Working hours, Special dates and Booking settings tabs with the conflicts sheet (keep, move or cancel; BR-AP12).
+  - AS17 is the same screen, with the other tabs read-only.
+  - `updateBranchHours` and the separate Schedule page are gone, so hours can't change without the bookings check. Contract: [api-phase-6-schedule.md](backend/docs/api-phase-6-schedule.md).
+- **Added:**
+  - **Patient app:** P3 Book, Chat and records; P4 branch filter; P8 date filter; P14 change password, terms and support.
+  - **Doctor's screens:** D6 Appointments tab with Book and Chat; D4 unread badge, files count and CSV export (doctor only); D32 "New patient" through D5.
+  - **Schedule and branches:** branch photos (D29, shown in P3); public holidays (AD13, suggested closures).
+  - **Free trial:** reminders 3 days before and on the last day.
+  - **Admin:** AD6 add doctor; AD2 filters and pending badge; AD16 broadcast; PDF licenses in the app (AD3).
+  - **Catalog:** "Report a missing or wrong item" in D13/D14; D0 shows the free space needed.
+  - **Live board:** drag and drop, the doctor's extras (BR-LB6), D36 waiting-room screen.
+  - **App shell:** Windows tray; native splash (light and dark).
+- **Still open, needs accounts or decisions:**
+  - Firebase (`flutterfire configure`, the service-account key): until then no push reaches a phone, and the board uses SignalR plus the 15-second refresh.
+  - Crashlytics or Sentry; the hosting, database and backups; store accounts.
+  - Real-device QA, the A5 printer check, the load test on real infrastructure, the catalog's medical review.
+
 ---
 
 ## How we work

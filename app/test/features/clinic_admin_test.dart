@@ -781,18 +781,18 @@ void main() {
           'status': 400,
           'code': 'VALIDATION_FAILED',
           'errorCodes': {
-            'periods[1]': ['PERIODS_OVERLAP'],
-            'periods[2].endLocal': ['PERIOD_LENGTH_OUT_OF_RANGE'],
+            'contact.phones[1].number': ['INVALID_PHONE'],
+            'address.mapUrl': ['INVALID_MAP_LINK'],
           },
         }),
       );
       final error = await api
-          .updateBranchHours('b1', const [])
+          .updateBranch('b1', info: const BranchInfo(nameAr: 'فرع المعادي'))
           .then<Object?>((_) => null, onError: (Object e) => e);
       expect(error, isA<ApiException>());
       expect((error! as ApiException).fieldCodes, {
-        'periods[1]': 'PERIODS_OVERLAP',
-        'periods[2].endLocal': 'PERIOD_LENGTH_OUT_OF_RANGE',
+        'contact.phones[1].number': 'INVALID_PHONE',
+        'address.mapUrl': 'INVALID_MAP_LINK',
       });
     });
 

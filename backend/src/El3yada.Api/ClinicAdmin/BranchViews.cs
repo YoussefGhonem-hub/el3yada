@@ -55,11 +55,17 @@ public sealed record BranchWorkingHoursView(string BookingMode, int DefaultCapac
 
 public sealed record BranchClinicInfoView(BranchPricesView Prices, IReadOnlyList<string> PaymentMethods, IReadOnlyList<string> Amenities);
 
-/// <summary>D29: every tab except booking settings and special dates (Phase 6) and photos ([S]).</summary>
+/// <summary>A D29 branch photo [S]: read it with <c>GET /api/branches/{branchId}/photos/{id}</c> (<c>?thumb=true</c> for the thumbnail).</summary>
+public sealed record BranchPhotoView(Guid Id, int SortOrder);
+
+/// <summary>
+/// D29: every tab except booking settings and special dates (<c>GET /api/staff/branches/{id}/schedule</c>).
+/// <c>photos</c> [S] are in their order, first = the cover.
+/// </summary>
 public sealed record BranchDetailsView(
     Guid Id, bool IsDefault, string Status, string? ClosedMessage, DateOnly? ReopenDate, bool Assigned,
     BranchInfoView Info, BranchAddressView Address, BranchContactView Contact, BranchWorkingHoursView WorkingHours,
-    BranchClinicInfoView ClinicInfo, DateTime CreatedAt, DateTime UpdatedAt);
+    BranchClinicInfoView ClinicInfo, DateTime CreatedAt, DateTime UpdatedAt, IReadOnlyList<BranchPhotoView> Photos);
 
 /// <summary>A booking that stops a branch from closing or being archived (BR-BR9).</summary>
 public sealed record BranchBookingView(
@@ -79,6 +85,7 @@ public static class BranchQueries
                 Branch = b,
                 Phones = b.BranchPhones.OrderBy(p => p.SortOrder).ToList(),
                 Periods = b.BranchPeriods.OrderBy(p => p.Weekday).ThenBy(p => p.StartLocal).ToList(),
+                Photos = b.BranchPhotos.OrderBy(p => p.SortOrder).Select(p => new BranchPhotoView(p.Id, p.SortOrder)).ToList(),
                 b.Doctor.ExaminationPricePiasters,
                 b.Doctor.ConsultationPricePiasters,
             })
@@ -99,7 +106,7 @@ public static class BranchQueries
                 BranchPricesView.Of(b.ExaminationPricePiasters, b.ConsultationPricePiasters, row.ExaminationPricePiasters, row.ConsultationPricePiasters),
                 BranchChecklists.Read(b.PaymentMethodsJson),
                 BranchChecklists.Read(b.AmenitiesJson)),
-            b.CreatedAt, b.UpdatedAt);
+            b.CreatedAt, b.UpdatedAt, row.Photos);
     }
 
     /// <summary>Branches that count toward maxBranchesPerDoctor: every branch that is not archived.</summary>

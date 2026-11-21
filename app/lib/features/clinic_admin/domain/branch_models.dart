@@ -348,6 +348,20 @@ class BranchChecklistInput {
   Map<String, dynamic> toJson() => {'paymentMethods': orderedPaymentMethods, 'amenities': orderedAmenities};
 }
 
+/// A D29 branch photo [S]. Its bytes come from `GET /api/branches/{branchId}/photos/{id}` (a JPEG of at
+/// most 1600 px, or its thumbnail).
+class BranchPhoto {
+  const BranchPhoto({required this.id, this.sortOrder = 0});
+
+  factory BranchPhoto.fromJson(Map<String, dynamic> json) => BranchPhoto(id: json['id'] as String, sortOrder: json['sortOrder'] as int? ?? 0);
+
+  /// BR-BR2: up to 5 photos a branch.
+  static const max = 5;
+
+  final String id;
+  final int sortOrder;
+}
+
 /// D29: `GET /api/branches/{id}`, also the answer of every branch write.
 class BranchDetails {
   const BranchDetails({
@@ -364,6 +378,7 @@ class BranchDetails {
     required this.clinicInfo,
     required this.createdAt,
     required this.updatedAt,
+    this.photos = const [],
   });
 
   factory BranchDetails.fromJson(Map<String, dynamic> json) => BranchDetails(
@@ -380,6 +395,7 @@ class BranchDetails {
         clinicInfo: BranchClinicInfo.fromJson(readMap(json['clinicInfo'])),
         createdAt: readTime(json['createdAt']),
         updatedAt: readTime(json['updatedAt']),
+        photos: [for (final row in readList(json['photos'])) BranchPhoto.fromJson(row)],
       );
 
   final String id;
@@ -395,6 +411,9 @@ class BranchDetails {
   final BranchClinicInfo clinicInfo;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// D29 Info tab photos [S], in order (the first is the cover), at most [BranchPhoto.max].
+  final List<BranchPhoto> photos;
 
   bool get archived => status == BranchStatuses.archived;
   bool get temporarilyClosed => status == BranchStatuses.temporarilyClosed;

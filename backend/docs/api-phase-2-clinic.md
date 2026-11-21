@@ -1,6 +1,6 @@
 # el3yada API: Phase 2 clinic contract (branches, visit prices, profile, assistants, activity log)
 
-This is what the Flutter app builds against for D22, D24–D29, D37, AS12, AS17 (read-only parts) and AS19. Conventions, errors, tokens and paging are as in [api-phase-1.md](api-phase-1.md). Who may call a clinic endpoint, and the order of the access checks, are in [api-phase-2.md](api-phase-2.md#clinic-endpoints-who-may-call-them). The code is the source of truth. When this page and the code differ, fix this page.
+This is what the Flutter app builds against for D22, D24–D29, D37, AS12, AS17 (read-only parts) and AS19. D29's Working hours, Special dates and Booking settings tabs (and AS17's editable ones) use `updateBranchSchedule`: see [api-phase-6-schedule.md](api-phase-6-schedule.md). Conventions, errors, tokens and paging are as in [api-phase-1.md](api-phase-1.md). Who may call a clinic endpoint, and the order of the access checks, are in [api-phase-2.md](api-phase-2.md#clinic-endpoints-who-may-call-them). The code is the source of truth. When this page and the code differ, fix this page.
 
 - [Who may call what](#who-may-call-what)
 - [Branches (D28, D29, AS17)](#branches-d28-d29-as17)
@@ -23,7 +23,9 @@ This is what the Flutter app builds against for D22, D24–D29, D37, AS12, AS17 
 |---|---|---|---|
 | `GET /api/branches`, `GET /api/branches/{branchId}` | ✔ | ✔ any permission | none: every branch is readable |
 | `POST /api/branches/createBranch`, `updateBranch`, `setBranchStatus`, `setDefaultBranch` | ✔ | ✘ doctor only | |
-| `POST /api/branches/updateBranchHours` | ✔ | `scheduleManage` | their branches |
+| `POST /api/branches/uploadBranchPhoto`, `reorderBranchPhotos`, `deleteBranchPhoto` | ✔ | ✘ doctor only (AS17 shows the Info tab read-only) | |
+| `GET /api/branches/{branchId}/photos/{photoId}` | ✔ | ✔ any permission | none |
+| `PUT /api/staff/branches/{branchId}/schedule` (`updateBranchSchedule`, [api-phase-6-schedule.md](api-phase-6-schedule.md)) | ✔ | `scheduleManage` | their branches |
 | `GET /api/prices` | ✔ | `pricesManage` | none: every branch is listed |
 | `POST /api/prices/updatePrices` | ✔ | `pricesManage` | their branches (doctor-level prices: any) |
 | `GET /api/doctor/profile`, `POST /api/doctor/updateProfile` | ✔ | ✘ doctor only | |
@@ -107,14 +109,16 @@ Every branch of the doctor: the default first, then oldest first, archived ones 
     "paymentMethods": ["cash", "instapay"],
     "amenities": ["elevator"]
   },
-  "createdAt": "2026-11-15T10:04:00.000Z", "updatedAt": "2026-11-15T10:04:00.000Z"
+  "createdAt": "2026-11-15T10:04:00.000Z", "updatedAt": "2026-11-15T10:04:00.000Z",
+  "photos": [ { "id": "…", "sortOrder": 0 }, { "id": "…", "sortOrder": 1 } ]
 }
 ```
 
-- `workingHours.periods`: by weekday (1–7), then start time. `bookingMode` (`queue` or `timed`) and `defaultCapacity` are read-only until Phase 6; show each period's capacity in queue mode, with `defaultCapacity` as the placeholder for `null`.
+- `workingHours.periods`: by weekday (1–7), then start time. `bookingMode` (`queue` or `timed`) and `defaultCapacity` are read-only here; they change with the booking settings in `updateBranchSchedule`. Show each period's capacity in queue mode, with `defaultCapacity` as the placeholder for `null`.
+- `photos` [S]: in their order (the first is the cover), at most 5. See [branch photos](#branch-photos-d29-info-tab-s).
 - `clinicInfo.prices`: see [visit prices](#visit-prices-d37-as19). They are changed with `updatePrices`, not `updateBranch`.
 - `paymentMethods`: from `cash`, `card`, `instapay`, `wallet`. `amenities` [S]: from `elevator`, `parking`, `wheelchair`, `kidsArea`. Both come in this order.
-- Booking settings and special dates (D29 tabs, Phase 6) and photos [S] are not in this view yet.
+- Booking settings, special dates and closures are not in this view: `GET /api/staff/branches/{branchId}/schedule` has them ([api-phase-6-schedule.md](api-phase-6-schedule.md)).
 - 404 `NOT_FOUND` for another doctor's branch. An assistant reads every branch of their doctor (AS17 shows Info, Address and Contact read-only).
 
 ### Branch groups (createBranch, updateBranch)
@@ -156,7 +160,7 @@ A group that is sent **replaces that group whole**: a field left out of it is cl
 }
 ```
 
-**201** with the [branch details](#branch-details-d29). The new branch is `active` and not the default; it needs no admin approval (BR-BR1). Without `clinicInfo`, the payment methods are `["cash"]`. Working hours are set next with `updateBranchHours`, and prices with `updatePrices`.
+**201** with the [branch details](#branch-details-d29). The new branch is `active` and not the default; it needs no admin approval (BR-BR1). Without `clinicInfo`, the payment methods are `["cash"]`. Working hours are set next with `updateBranchSchedule`, and prices with `updatePrices`.
 
 | Errors | |
 |---|---|
@@ -172,36 +176,9 @@ A group that is sent **replaces that group whole**: a field left out of it is cl
 | 400 | `branchId`: `REQUIRED`; `body`: `REQUIRED` (no group sent); the group rules |
 | 404 `NOT_FOUND` | not one of the doctor's branches |
 
-### `POST /api/branches/updateBranchHours` (`scheduleManage`, their branches)
+### Working hours (retired `updateBranchHours`)
 
-Replaces the branch's whole week. An empty `periods` list closes every day.
-
-```json
-{
-  "branchId": "…",
-  "periods": [
-    { "weekday": 6, "startLocal": "10:00", "endLocal": "14:00", "endsNextDay": false, "label": "صباحي", "capacity": 25 },
-    { "weekday": 6, "startLocal": "20:00", "endLocal": "01:00", "endsNextDay": true, "label": "مسائي" },
-    { "weekday": 7, "startLocal": "10:00", "endLocal": "14:00" }
-  ]
-}
-```
-
-**200** with the branch details. The rules (spec section 11, BR-BR2):
-
-- A period ends after it starts, or has `endsNextDay: true` (20:00–01:00). It still belongs to the day it starts.
-- It lasts 15 minutes to 16 hours.
-- No two periods overlap. Overlaps are checked on the real week: Saturday 20:00–01:00 (next day) overlaps Sunday 00:30–03:00, and Sunday night runs into Monday morning. Periods that touch (14:00 and 14:00) are fine.
-- At most 10 periods a day. `label` is optional (≤ 30, for example صباحي / مسائي); `capacity` is optional (1–200; `null` uses `defaultCapacity`).
-- "Copy Saturday to all days" is done in the app: send the copied periods.
-
-| Errors | |
-|---|---|
-| 400 | `branchId`: `REQUIRED`; `periods`: `REQUIRED`, `INVALID_VALUE` (more than 10 a day); `periods[i]`: `REQUIRED` (null), `PERIODS_OVERLAP` («الفترات متداخلة», on the later period); `periods[i].weekday`: `REQUIRED`, `OUT_OF_RANGE`; `periods[i].startLocal`, `periods[i].endLocal`: `REQUIRED`, `INVALID_VALUE` (not `HH:mm`); `periods[i].endLocal`: `PERIOD_END_BEFORE_START`, `PERIOD_LENGTH_OUT_OF_RANGE`; `periods[i].label`: `TOO_LONG`; `periods[i].capacity`: `OUT_OF_RANGE` |
-| 403 `BRANCH_NOT_ALLOWED` | an assistant, and not one of their branches |
-| 404 `NOT_FOUND` | not one of the doctor's branches |
-
-Order, length and overlaps are checked once every period's fields are readable, so fix the field errors first. In Phase 6 this endpoint first lists the bookings that the new hours leave out (the BR-AP12 conflicts sheet); there are no bookings in Phase 2, so the hours apply straight away.
+`POST /api/branches/updateBranchHours` is gone (it applied new hours without looking at bookings, BR-AP12). The D29 Working hours tab and AS17 send the week with `PUT /api/staff/branches/{branchId}/schedule` ([api-phase-6-schedule.md](api-phase-6-schedule.md#working-hours-rules)), which checks the same rules (spec 11: order, length from 15 minutes to 16 hours, overlaps across midnight and the week, at most 10 periods a day) and lists the bookings a change strands before applying it. Its errors are on `weekly[i]`, `weekly[i].end` and so on instead of `periods[i]` and `periods[i].endLocal`; the codes are the same.
 
 ### `POST /api/branches/setBranchStatus` (doctor only)
 
@@ -253,6 +230,23 @@ Refused (nothing changes):
 | 409 `BRANCH_NOT_ACTIVE` | the branch is temporarily closed or archived |
 
 The default branch can be temporarily closed (while another branch is active), but never archived.
+
+### Branch photos (D29 Info tab) [S]
+
+Up to 5 photos a branch (BR-BR2). The doctor adds, orders and deletes them; every clinic caller of the doctor reads them, and so do the doctor's linked patients (P3). Files are never public URLs.
+
+- `POST /api/branches/uploadBranchPhoto`: `multipart/form-data` with `branchId` and `file` (JPEG, PNG or WebP, ≤ 10 MB, checked by its first bytes). Stored as a JPEG of at most 1600 px on the long edge, upright, without metadata (EXIF, GPS), with a thumbnail. **201** with the [branch details](#branch-details-d29); the new photo is last.
+- `POST /api/branches/reorderBranchPhotos`: `{ "branchId": "…", "photoIds": ["…", "…"] }`, every photo of the branch once, in the new order. **200** with the branch details.
+- `POST /api/branches/deleteBranchPhoto`: `{ "branchId": "…", "photoId": "…" }`. The files are deleted too. **200** with the branch details.
+- `GET /api/branches/{branchId}/photos/{photoId}`: the JPEG; `?thumb=true` for the thumbnail (at most 320 px). `Cache-Control: private, max-age=86400`: a photo never changes (a new one gets a new ID).
+- Patients: `GET /api/patient/doctors/{doctorId}` lists each branch's `photoIds` in order; `GET /api/patient/doctors/{doctorId}/branches/{branchId}/photos/{photoId}` (`?thumb=true`) reads one, for a linked patient only (404 otherwise, and for archived branches).
+
+| Errors | |
+|---|---|
+| 400 | `branchId`: `REQUIRED`; `file`: `REQUIRED`, `FILE_TOO_LARGE`, `FILE_TYPE_NOT_ALLOWED`, `FILE_CONTENT_INVALID` (not a readable image); `photoIds`: `REQUIRED`, `INVALID_VALUE` (not each photo once) |
+| 404 `NOT_FOUND` | not one of the doctor's branches or photos |
+| 409 `BRANCH_PHOTO_LIMIT` | the branch already has 5 photos |
+| 413 `REQUEST_TOO_LARGE`, 415 `UNSUPPORTED_MEDIA_TYPE` | not a multipart form, or too large to read |
 
 ## Visit prices (D37, AS19)
 
@@ -530,9 +524,9 @@ Query, all optional:
     {
       "id": 811, "at": "2026-11-15T09:58:00.000Z",
       "actor": { "userId": "…", "name": "أحمد علي", "role": "doctor" },
-      "action": "branchHoursUpdated", "targetType": "branch", "targetId": "…",
+      "action": "branchScheduleUpdated", "targetType": "branch", "targetId": "…",
       "patient": null,
-      "details": { "periods": 3 }
+      "details": { "periods": 3, "overrides": 0, "closures": 1, "mode": "queue", "kept": 0, "moved": 1, "cancelled": 0 }
     }
   ],
   "page": 1, "pageSize": 25, "totalCount": 2, "totalPages": 1,
@@ -541,7 +535,7 @@ Query, all optional:
     { "userId": "…", "name": "سارة محمود", "role": "assistant", "status": "active" },
     { "userId": "…", "name": "منى سمير", "role": "assistant", "status": "removed" }
   ],
-  "actions": ["branchHoursUpdated", "patientCreated", "pricesUpdated"]
+  "actions": ["branchScheduleUpdated", "patientCreated", "pricesUpdated"]
 }
 ```
 
@@ -569,7 +563,9 @@ Every write below adds one row in the clinic's log (`doctorId` = the clinic, the
 |---|---|---|
 | `branchCreated` | `branch` | `nameAr` |
 | `branchUpdated` | `branch` | `groups`: the groups sent (`info`, `address`, `contact`, `clinicInfo`) |
-| `branchHoursUpdated` | `branch` | `periods`: how many |
+| `branchScheduleUpdated` | `branch` | `updateBranchSchedule` ([api-phase-6-schedule.md](api-phase-6-schedule.md)): `periods`, `overrides`, `closures` (how many), `mode`, and the affected bookings `kept`, `moved`, `cancelled` |
+| `branchHoursUpdated` | `branch` | `periods`: how many. Written by the retired `updateBranchHours`; old rows still show in D27 |
+| `branchPhotosUpdated` | `branch` | `added` (photo ID), `count`, `sizeBytes`; or `reordered` (how many); or `removed` (photo ID) |
 | `branchStatusChanged` | `branch` | `before`, `after`, `reopenDate` |
 | `defaultBranchChanged` | `branch` (the new default) | `before`, `after` (branch IDs) |
 | `pricesUpdated` | `doctor` (doctor prices) or `branch` | `branchId`, `before`, `after` (`{ examinationPricePiasters, consultationPricePiasters }`) |
@@ -594,6 +590,7 @@ New in this part of Phase 2. The other codes are in [api-phase-1.md](api-phase-1
 | `LAST_ACTIVE_BRANCH` | 409 | The clinic needs at least one active branch |
 | `BRANCH_HAS_BOOKINGS` | 409 | Move or cancel the listed bookings first (`bookings`, `totalCount`) |
 | `BRANCH_NOT_ACTIVE` | 409 | Only an active branch can be the default |
+| `BRANCH_PHOTO_LIMIT` | 409 | The branch has 5 photos; delete one first |
 | `ASSISTANT_LIMIT_REACHED` | 409 | «وصلت للحد الأقصى لعدد المساعدين» |
 | `ASSISTANT_PHONE_TAKEN` | 409 | This number is already an assistant (of this or another clinic) |
 | `ASSISTANT_REMOVED` | 409 | The assistant was removed; add them again as a new assistant |
@@ -607,7 +604,7 @@ Also used here: `BRANCH_NOT_ALLOWED`, `PERMISSION_DENIED` (api-phase-2), and `RE
 ## Decisions where the spec is silent
 
 - **Branch limit:** archived branches don't count toward `maxBranchesPerDoctor`, since a branch can't be deleted. Bringing one back checks the limit.
-- **Last active branch:** closing or archiving the only active branch is refused (BR-BR1). A doctor with one branch uses closures (Phase 6) for a holiday.
+- **Last active branch:** closing or archiving the only active branch is refused (BR-BR1). A doctor with one branch uses closures (D29 Special dates) for a holiday.
 - **Default branch:** it can be temporarily closed while another branch is active, but never archived. Only an active branch can become the default.
 - **Bookings that block a closure (BR-BR9):** pending, confirmed, checked-in and with-the-doctor bookings from today (Cairo) on. With a reopening date, only those before it.
 - **Hours:** overlaps are checked across midnight and from Sunday into Monday. At most 10 periods a day.
@@ -623,8 +620,4 @@ Also used here: `BRANCH_NOT_ALLOWED`, `PERMISSION_DENIED` (api-phase-2), and `RE
 
 ## Not built yet
 
-- Branch photos [S] (BranchPhotos, up to 5).
-- Booking settings, special dates and closures (D29 tabs, Phase 6). The branch view shows `bookingMode` and `defaultCapacity` read-only.
-- The BR-AP12 conflicts dry run for working hours (Phase 6; the seam is in `updateBranchHours`).
 - The admin's side of `setAssistantStatus` (AD5, with the admin doctor screens).
-- `updateBranchSchedule` (spec 9.1) is split: weekly hours are `updateBranchHours` now; date overrides, closures and booking settings come with Phase 6.

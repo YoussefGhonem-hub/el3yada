@@ -2850,15 +2850,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get branchLaterTabs => 'لاحقاً';
-
-  @override
-  String get branchLaterTabsTitle => 'إعدادات الحجز والأيام الخاصة';
-
-  @override
-  String get branchLaterTabsBody => 'تُضاف مع الحجوزات.';
-
-  @override
   String get branchAddedMessage => 'تمت إضافة الفرع. حدّد مواعيد العمل الآن.';
 
   @override
@@ -9567,4 +9558,385 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activityActionPatientsExported => 'تصدير قائمة المرضى';
+
+  @override
+  String get scheduleSpecialHoursTitle => 'مواعيد خاصة بيوم';
+
+  @override
+  String get scheduleSpecialHoursBody =>
+      'مواعيد يوم معيّن تحل محل مواعيد نفس اليوم في الأسبوع. اليوم اللي من غير مواعيد بيكون مقفول.';
+
+  @override
+  String get scheduleAddSpecialDay => 'إضافة يوم';
+
+  @override
+  String get scheduleNoSpecialDays => 'لا توجد أيام خاصة قادمة.';
+
+  @override
+  String get scheduleDayClosed => 'مقفول طول اليوم';
+
+  @override
+  String get scheduleDayClosedToggle => 'مقفول اليوم ده';
+
+  @override
+  String get scheduleDayHours => 'مواعيد اليوم ده';
+
+  @override
+  String get scheduleClosuresBody =>
+      'اقفل يوم أو كام يوم أو جزء من يوم، للفرع ده أو لكل الفروع (إجازة).';
+
+  @override
+  String get scheduleNoClosures => 'لا يوجد إغلاق قادم.';
+
+  @override
+  String get scheduleClosureWholeDays => 'أيام كاملة';
+
+  @override
+  String get scheduleClosurePartDay => 'جزء من يوم';
+
+  @override
+  String get schedulePickDates => 'اختر الأيام';
+
+  @override
+  String get schedulePickDate => 'اختر اليوم';
+
+  @override
+  String get scheduleClosureEndBeforeStart => 'وقت النهاية قبل البداية.';
+
+  @override
+  String get scheduleClosureReason => 'السبب (اختياري)';
+
+  @override
+  String get scheduleClosureReasonHint => 'مثلاً: إجازة، مؤتمر';
+
+  @override
+  String get scheduleNothingSaved => 'لم يتم حفظ أي شيء.';
+
+  @override
+  String get scheduleMoveFull => 'المكان ده مكتمل. اختر مكاناً آخر للحجز.';
+
+  @override
+  String scheduleMovedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم نقل $count حجز',
+      few: 'تم نقل $count حجوزات',
+      two: 'تم نقل حجزين',
+      one: 'تم نقل حجز واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String scheduleCancelledCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم إلغاء $count حجز',
+      few: 'تم إلغاء $count حجوزات',
+      two: 'تم إلغاء حجزين',
+      one: 'تم إلغاء حجز واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get conflictsBody =>
+      'الحجوزات دي مش هتمشي مع المواعيد الجديدة. اختر هيحصل إيه في كل حجز، ومفيش حاجة هتتحفظ قبل ما تطبّق.';
+
+  @override
+  String get conflictsForAll => 'للكل';
+
+  @override
+  String get moveAll => 'نقل الكل';
+
+  @override
+  String get conflictMove => 'نقل';
+
+  @override
+  String conflictMoveTo(String place) {
+    return 'هيتنقل إلى $place';
+  }
+
+  @override
+  String get conflictChangePlace => 'تغيير';
+
+  @override
+  String get conflictPickPlace => 'اختر مكاناً';
+
+  @override
+  String get conflictPickNote =>
+      'الأماكن الفاضية حسب المواعيد المحفوظة دلوقتي، والمواعيد الجديدة بتتراجع لما تطبّق.';
+
+  @override
+  String get conflictKeepNote => 'هيفضل في ميعاده كاستثناء';
+
+  @override
+  String get conflictKeepNoPlace =>
+      'مفيش مكان فاضي في الأسبوعين الجايين. أبقِه أو ألغِه أو اختر مكاناً.';
+
+  @override
+  String get conflictCancelNote => 'هيوصل للمريض إشعار ولينك يحجز تاني';
+
+  @override
+  String get bookingModeQueueBody =>
+      'المريض بيحجز مكان في الفترة، والدور بأسبقية الحضور في العيادة.';
+
+  @override
+  String get bookingModeTimedBody => 'كل مريض بيحجز ميعاد محدد.';
+
+  @override
+  String get bookingModeChangeNote =>
+      'تغيير طريقة الحجز بيأثر على كل الحجوزات الجاية في الفرع ده. لما تحفظ هتختار هيحصل إيه في كل حجز.';
+
+  @override
+  String get bookingCapacityBody =>
+      'ممكن تحدد عدد مختلف لكل فترة في مواعيد العمل.';
+
+  @override
+  String get bookingAvgVisitBody =>
+      'بيُستخدم في وقت الانتظار اللي بيشوفه المريض بعد تسجيل الحضور.';
+
+  @override
+  String get bookingExamSlots => 'عدد المواعيد للكشف';
+
+  @override
+  String get bookingConsultationSlots => 'عدد المواعيد للاستشارة';
+
+  @override
+  String get bookingGroupApp => 'الحجز من التطبيق';
+
+  @override
+  String get bookingAutoConfirmOffBody =>
+      'حجوزات التطبيق هتستنى تأكيد العيادة.';
+
+  @override
+  String get bookingGroupNoShows => 'الغياب والتذكير';
+
+  @override
+  String get bookingNoShowCount => 'مرات الغياب اللي توقف الحجز من التطبيق';
+
+  @override
+  String get bookingNoShowDays => 'خلال';
+
+  @override
+  String bookingNoShowBody(int count, int days) {
+    return '$count مرات غياب خلال $days يوم توقف الحجز من التطبيق للمريض ده';
+  }
+
+  @override
+  String get bookingReminderDayBefore => 'تذكير قبلها بيوم';
+
+  @override
+  String get bookingReminderSameDay => 'تذكير قبلها بساعتين في نفس اليوم';
+
+  @override
+  String get bookingGroupClinic => 'حجوزات العيادة';
+
+  @override
+  String get bookingNone => 'بدون';
+
+  @override
+  String bookingMinutes(int count) {
+    return '$count دقيقة';
+  }
+
+  @override
+  String bookingHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ساعة',
+      few: '$count ساعات',
+      two: 'ساعتين',
+      one: 'ساعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bookingDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوم',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get branchDoctorOnlyNote =>
+      'الدكتور بس هو اللي يقدر يغيّر البيانات دي.';
+
+  @override
+  String activityBranchScheduleUpdated(String branch) {
+    return 'غيّر مواعيد $branch';
+  }
+
+  @override
+  String get activityActionBranchScheduleUpdated => 'تغيير المواعيد';
+
+  @override
+  String get branchNoWorkBranch => 'لا يوجد فرع';
+
+  @override
+  String get branchNoWorkBranchBody =>
+      'أنت غير مسجل في أي فرع. اطلب من الدكتور يضيفك لفرع.';
+
+  @override
+  String get conflictsDismiss => 'رجوع للتعديل';
+
+  @override
+  String get branchPhotosTitle => 'الصور';
+
+  @override
+  String branchPhotosBody(int count) {
+    return 'حتى $count صور. المرضى بيشوفوها في كارت الفرع، وأول صورة هي الغلاف.';
+  }
+
+  @override
+  String branchPhotosCount(int count, int max) {
+    return '$count من $max';
+  }
+
+  @override
+  String get branchPhotosNone => 'لا توجد صور.';
+
+  @override
+  String get branchPhotosAdd => 'إضافة صور';
+
+  @override
+  String branchPhotosAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تمت إضافة $count صورة',
+      few: 'تمت إضافة $count صور',
+      two: 'تمت إضافة صورتين',
+      one: 'تمت إضافة الصورة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchPhotosLimit(int max) {
+    return 'الفرع له $max صور بحد أقصى. احذف صورة الأول.';
+  }
+
+  @override
+  String get branchPhotosNotImage => 'استخدم صورة JPEG أو PNG أو WebP.';
+
+  @override
+  String get branchPhotosTooLarge => 'الصورة أكبر من 10 ميجا.';
+
+  @override
+  String get branchPhotosDeleteTitle => 'حذف الصورة دي؟';
+
+  @override
+  String get branchPhotosDeleteBody => 'المرضى مش هيشوفوها تاني.';
+
+  @override
+  String get branchPhotoLabel => 'صورة الفرع';
+
+  @override
+  String get branchPhotoCover => 'الغلاف';
+
+  @override
+  String get branchPhotoEarlier => 'تقديم';
+
+  @override
+  String get branchPhotoLater => 'تأخير';
+
+  @override
+  String activityBranchPhotosUpdated(String branch) {
+    return 'غيّر صور $branch';
+  }
+
+  @override
+  String get activityActionBranchPhotosUpdated => 'تغيير الصور';
+
+  @override
+  String get holidaysTitle => 'الإجازات الرسمية';
+
+  @override
+  String get holidaysBody =>
+      'مقترحة من إدارة التطبيق. اقفل الفرع في الأيام اللي هتاخدها إجازة، ومفيش يوم بيتقفل لوحده.';
+
+  @override
+  String get holidayCloseDay => 'إغلاق اليوم ده';
+
+  @override
+  String get holidayClosed => 'مقفول';
+
+  @override
+  String get holidaysAdminBody =>
+      'العيادات بتشوف الجاية منها كاقتراحات في الأيام الخاصة، ومفيش فرع بيتقفل لوحده.';
+
+  @override
+  String get holidayAdd => 'إضافة إجازة';
+
+  @override
+  String get holidayAdded => 'تمت إضافة الإجازة';
+
+  @override
+  String get holidayDate => 'اختر التاريخ';
+
+  @override
+  String get holidayNameAr => 'الاسم بالعربي';
+
+  @override
+  String get holidayNameEn => 'الاسم بالإنجليزي';
+
+  @override
+  String get holidaysEmpty => 'لا توجد إجازات رسمية بعد';
+
+  @override
+  String get holidaysEmptyBody =>
+      'أضف إجازات السنة علشان العيادات تقدر تخطط لها.';
+
+  @override
+  String holidayDeleteTitle(String name) {
+    return 'حذف $name؟';
+  }
+
+  @override
+  String get holidayDeleteBody =>
+      'العيادات مش هتشوفها تاني، والإغلاق اللي ضافوه هيفضل.';
+
+  @override
+  String get holidayExists => 'التاريخ ده موجود بالفعل في القائمة.';
+
+  @override
+  String get newPatientPhoneFirst => 'اكتب رقم الموبايل الأول';
+
+  @override
+  String get newPatientNewNumber => 'رقم جديد';
+
+  @override
+  String get newPatientCreate => 'إضافة المريض الآن';
+
+  @override
+  String get newPatientCreateBody =>
+      'إضافة المريض الآن: بيانات المريض، وكلمة سر مؤقتة تديها له.';
+
+  @override
+  String get newPatientGuestBody =>
+      'زائر سريع: الاسم والرقم بس، والحساب بيتعمل لما يسجل حضوره.';
+
+  @override
+  String get newPatientGuestOnly =>
+      'إضافة مريض جديد من هنا محتاجة صلاحية إضافة المرضى. تقدر تحجز له كزائر سريع.';
+
+  @override
+  String get newPatientBookFor => 'احجز للمريض ده';
+
+  @override
+  String get newPatientLink => 'ربط وحجز';
+
+  @override
+  String get newPatientContinue => 'كمّل الحجز';
 }

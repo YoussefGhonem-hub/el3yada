@@ -5,7 +5,15 @@ public static partial class AuditActions
 {
     public const string BranchCreated = "branchCreated";
     public const string BranchUpdated = "branchUpdated";
-    public const string BranchHoursUpdated = "branchHoursUpdated";
+    /// <summary>
+    /// <c>updateBranchSchedule</c> (D29, AS17): weekly hours, special dates, closures or booking settings. Rows written
+    /// before it, by the retired <c>updateBranchHours</c>, carry <c>branchHoursUpdated</c>.
+    /// </summary>
+    public const string BranchScheduleUpdated = "branchScheduleUpdated";
+
+    /// <summary>D29 Info tab photos [S]: added, reordered or deleted.</summary>
+    public const string BranchPhotosUpdated = "branchPhotosUpdated";
+
     public const string BranchStatusChanged = "branchStatusChanged";
     public const string DefaultBranchChanged = "defaultBranchChanged";
     public const string PricesUpdated = "pricesUpdated";

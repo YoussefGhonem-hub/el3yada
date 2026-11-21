@@ -275,6 +275,7 @@ class BranchInfo {
     this.prices = const VisitPrices(),
     this.paymentMethods = const [],
     this.amenities = const [],
+    this.photoIds = const [],
   });
 
   final String id;
@@ -292,6 +293,9 @@ class BranchInfo {
   final VisitPrices prices;
   final List<String> paymentMethods;
   final List<String> amenities;
+
+  /// D29 branch photos [S], in order; P3 reads them with `PatientRepository.branchPhoto`.
+  final List<String> photoIds;
 
   String displayName({required bool arabic}) => !arabic && nameEn != null ? nameEn! : nameAr;
 
@@ -311,6 +315,7 @@ class BranchInfo {
         prices: VisitPrices.fromJson(json['prices'] as Json),
         paymentMethods: _strings(json['paymentMethods']),
         amenities: _strings(json['amenities']),
+        photoIds: _strings(json['photoIds']),
       );
 }
 

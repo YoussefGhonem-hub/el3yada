@@ -166,15 +166,20 @@ void main() {
     await signInDoctorDesktop(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Book'));
     await tester.pumpAndSettle();
+    // D32 New patient: the number first; a new one can be a quick guest.
+    await tester.tap(find.text('New patient'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Mobile number'),
+      '01099887766',
+    );
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Quick guest'));
     await tester.pumpAndSettle();
     await tester.enterText(
       find.widgetWithText(TextField, 'Full name'),
       'زائر جديد تماماً',
-    );
-    await tester.enterText(
-      find.widgetWithText(TextField, 'Mobile number'),
-      '01099887766',
     );
     await tester.pumpAndSettle();
     expect(
@@ -188,20 +193,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Booking details'), findsOneWidget);
     expect(find.text('زائر جديد تماماً'), findsOneWidget);
-  });
-
-  testWidgets('schedule editor saves after copying Saturday to every day', (
-    tester,
-  ) async {
-    await signInDoctorDesktop(tester);
-    await tester.tap(find.text('Schedule'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Copy Saturday to all days'));
-    await tester.pumpAndSettle();
-    expect(find.text('Closed'), findsNothing);
-    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
-    await tester.pumpAndSettle();
-    expect(find.text('Schedule saved'), findsOneWidget);
   });
 
   test(

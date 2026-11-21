@@ -369,15 +369,15 @@ void main() {
         '/doctor/branches/${FakeClinicAdminRepository.maadiBranchId}?tab=hours',
       );
 
-      clinicAdminFake(tester).failNext(
-        'updateBranchHours',
+      // Hours are saved with updateBranchSchedule, whose errors are on weekly[i].
+      appointmentsFake(tester).failNextSave(
         const ApiException(
           kind: ApiErrorKind.http,
           status: 400,
           code: ApiCodes.validationFailed,
           fieldCodes: {
-            'periods[1]': 'PERIODS_OVERLAP',
-            'periods[2].endLocal': 'PERIOD_LENGTH_OUT_OF_RANGE',
+            'weekly[1]': 'PERIODS_OVERLAP',
+            'weekly[2].end': 'PERIOD_LENGTH_OUT_OF_RANGE',
           },
         ),
       );
@@ -412,17 +412,21 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Save'));
       await settle(tester);
 
-      final saturday = clinicAdminFake(
+      final saturday = appointmentsFake(
         tester,
-      ).lastHours!.where((p) => p.weekday == DateTime.saturday).toList();
+      ).lastSchedule!.weekly.where((p) => p.weekday == DateTime.saturday).toList();
       expect(saturday, hasLength(3));
       expect(
-        (
-          saturday.last.startLocal,
-          saturday.last.endLocal,
-          saturday.last.endsNextDay,
-        ),
+        (saturday.last.start, saturday.last.end, saturday.last.endsNextDay),
         ('23:00', '03:00', true),
+      );
+      expect(find.text('Schedule saved'), findsOneWidget);
+      // The branch keeps the week: D29 and the D28 cards read it from there.
+      expect(
+        clinicAdminFake(tester)
+            .weeklyOf(FakeClinicAdminRepository.maadiBranchId)!
+            .where((p) => p.weekday == DateTime.saturday),
+        hasLength(3),
       );
     });
 
@@ -442,9 +446,9 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Save'));
       await settle(tester);
 
-      final hours = clinicAdminFake(tester).lastHours!;
+      final hours = appointmentsFake(tester).lastSchedule!.weekly;
       expect(hours, hasLength(7));
-      expect(hours.map((p) => p.startLocal).toSet(), {'17:00'});
+      expect(hours.map((p) => p.start).toSet(), {'17:00'});
     });
   });
 }

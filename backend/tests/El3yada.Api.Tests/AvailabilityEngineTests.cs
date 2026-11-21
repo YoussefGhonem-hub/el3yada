@@ -18,7 +18,7 @@ public sealed class AvailabilityEngineTests
         new(Guid.NewGuid(), Day, period, startUtc ?? CairoTime.ToUtc(Day, period), endUtc, status, false);
 
     [Fact]
-    public void Queue_period_counts_places_and_estimates_the_time()
+    public void Queue_period_counts_places_and_gives_no_time_before_check_in()
     {
         var day = AvailabilityEngine.ForDay(new AvailabilityRequest(Day, "examination", true, NowUtc), Settings(), "active",
             [Evening], null, [], [Booking(Evening.Start), Booking(Evening.Start, "completed"), Booking(Evening.Start, "cancelled")]);
@@ -27,7 +27,6 @@ public sealed class AvailabilityEngineTests
         Assert.Equal(3, p.Capacity);
         Assert.Equal(2, p.Booked);                                // cancelled places don't count
         Assert.Equal(1, p.Remaining);
-        Assert.Equal(new TimeOnly(18, 20), p.EstimatedTime);       // 2 × 10 minutes in
         Assert.Null(day.Reason);
     }
 

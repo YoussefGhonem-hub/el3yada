@@ -9,6 +9,7 @@ import '../features/admin/presentation/broadcast/broadcast_screen.dart';
 import '../features/admin/presentation/doctors/add_doctor_screen.dart';
 import '../features/admin/presentation/profile/admin_profile_screen.dart';
 import '../features/admin/presentation/settings/admin_settings_screen.dart';
+import '../features/admin/presentation/settings/public_holidays_screen.dart';
 import '../features/admin/presentation/signups/signup_requests_screen.dart';
 import '../features/admin/presentation/signups/signup_review.dart';
 import '../features/admin_billing/presentation/admin_dashboard_screen.dart';
@@ -129,6 +130,7 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
   // AD18, opened from the profile button in the top bar.
   AdminRoutes.settings: [
     GoRoute(path: 'profile', builder: (context, state) => const AdminProfileScreen()),
+    GoRoute(path: 'holidays', builder: (context, state) => const PublicHolidaysScreen()),
   ],
   // AD19's editor.
   AdminRoutes.specialties: [

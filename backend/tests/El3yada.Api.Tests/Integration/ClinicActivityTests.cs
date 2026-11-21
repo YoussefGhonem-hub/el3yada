@@ -35,10 +35,7 @@ public sealed class ClinicActivityTests(IntegrationHost host)
         using var assistantClient = await Factory.SignedInClientAsync(assistant);
         using var doctorClient = await Factory.SignedInClientAsync(doctor);
         await doctorClient.PostAsync("/api/prices/updatePrices", new { examinationPricePiasters = 20000 });
-        await assistantClient.PostAsync("/api/branches/updateBranchHours", new
-        {
-            branchId = branch, periods = new[] { new { weekday = 6, startLocal = "10:00", endLocal = "14:00" } },
-        });
+        await assistantClient.PutScheduleAsync(branch, TestData.ScheduleBody([TestData.Period(6, "10:00", "14:00")]));
         await AddRowAsync(doctor.Id, admin.Id, "admin", "doctorLicenseViewed", DateTime.UtcNow);
         using var otherClient = await Factory.SignedInClientAsync(other);
         await otherClient.PostAsync("/api/prices/updatePrices", new { examinationPricePiasters = 1 });
@@ -47,7 +44,7 @@ public sealed class ClinicActivityTests(IntegrationHost host)
 
         Assert.Equal(HttpStatusCode.OK, status);
         var items = body.GetProperty("items").EnumerateArray().ToList();
-        Assert.Equal(["branchHoursUpdated", "pricesUpdated"], items.Select(i => i.Str("action")));
+        Assert.Equal(["branchScheduleUpdated", "pricesUpdated"], items.Select(i => i.Str("action")));
         var hours = items[0];
         Assert.Equal(assistant.Id.ToString(), hours.GetProperty("actor").Str("userId"));
         Assert.Equal("منى سمير", hours.GetProperty("actor").Str("name"));
@@ -58,7 +55,7 @@ public sealed class ClinicActivityTests(IntegrationHost host)
         Assert.Equal(JsonValueKind.Null, hours.GetProperty("patient").ValueKind);
         Assert.Equal("doctor", items[1].GetProperty("actor").Str("role"));
         Assert.Equal(2, body.GetProperty("totalCount").GetInt32());
-        Assert.Equal(["branchHoursUpdated", "pricesUpdated"], body.GetProperty("actions").EnumerateArray().Select(a => a.GetString()));
+        Assert.Equal(["branchScheduleUpdated", "pricesUpdated"], body.GetProperty("actions").EnumerateArray().Select(a => a.GetString()));
     }
 
     [Fact]

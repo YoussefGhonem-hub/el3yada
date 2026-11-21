@@ -2854,15 +2854,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get branchLaterTabs => 'Coming later';
-
-  @override
-  String get branchLaterTabsTitle => 'Booking settings and special dates';
-
-  @override
-  String get branchLaterTabsBody => 'They arrive with appointments.';
-
-  @override
   String get branchAddedMessage => 'Branch added. Now set its working hours.';
 
   @override
@@ -9518,4 +9509,376 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityActionPatientsExported => 'Patient list exported';
+
+  @override
+  String get scheduleSpecialHoursTitle => 'Special hours';
+
+  @override
+  String get scheduleSpecialHoursBody =>
+      'Hours for one date replace that weekday\'s hours. A date with no hours is closed.';
+
+  @override
+  String get scheduleAddSpecialDay => 'Add a date';
+
+  @override
+  String get scheduleNoSpecialDays => 'No special dates coming up.';
+
+  @override
+  String get scheduleDayClosed => 'Closed all day';
+
+  @override
+  String get scheduleDayClosedToggle => 'Closed that day';
+
+  @override
+  String get scheduleDayHours => 'Hours that day';
+
+  @override
+  String get scheduleClosuresBody =>
+      'Close a day, a few days or part of a day, for this branch or for every branch (a vacation).';
+
+  @override
+  String get scheduleNoClosures => 'No closures coming up.';
+
+  @override
+  String get scheduleClosureWholeDays => 'Whole days';
+
+  @override
+  String get scheduleClosurePartDay => 'Part of a day';
+
+  @override
+  String get schedulePickDates => 'Choose the days';
+
+  @override
+  String get schedulePickDate => 'Choose the day';
+
+  @override
+  String get scheduleClosureEndBeforeStart => 'It ends before it starts.';
+
+  @override
+  String get scheduleClosureReason => 'Reason (optional)';
+
+  @override
+  String get scheduleClosureReasonHint => 'For example: vacation, a conference';
+
+  @override
+  String get scheduleNothingSaved => 'Nothing was saved.';
+
+  @override
+  String get scheduleMoveFull =>
+      'That place is full. Choose another one for the booking.';
+
+  @override
+  String scheduleMovedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bookings moved',
+      one: '1 booking moved',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String scheduleCancelledCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bookings cancelled',
+      one: '1 booking cancelled',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get conflictsBody =>
+      'These bookings don\'t fit the new schedule. Choose what happens to each one. Nothing is saved until you apply.';
+
+  @override
+  String get conflictsForAll => 'For all';
+
+  @override
+  String get moveAll => 'Move all';
+
+  @override
+  String get conflictMove => 'Move';
+
+  @override
+  String conflictMoveTo(String place) {
+    return 'Moves to $place';
+  }
+
+  @override
+  String get conflictChangePlace => 'Change';
+
+  @override
+  String get conflictPickPlace => 'Choose a place';
+
+  @override
+  String get conflictPickNote =>
+      'Free places from the schedule as it is saved now. The new hours are checked when you apply.';
+
+  @override
+  String get conflictKeepNote => 'Stays at its time, as an exception';
+
+  @override
+  String get conflictKeepNoPlace =>
+      'No free place in the next two weeks. Keep it, cancel it, or choose a place.';
+
+  @override
+  String get conflictCancelNote =>
+      'The patient is told, with a link to book again';
+
+  @override
+  String get bookingModeQueueBody =>
+      'Patients book a place in a period. Turns go by arrival at the clinic.';
+
+  @override
+  String get bookingModeTimedBody => 'Each patient books an exact time.';
+
+  @override
+  String get bookingModeChangeNote =>
+      'Changing the mode affects every upcoming booking here. When you save, you choose what happens to each one.';
+
+  @override
+  String get bookingCapacityBody =>
+      'Each period can set its own number in Working hours.';
+
+  @override
+  String get bookingAvgVisitBody =>
+      'Used for the waiting time patients see after check-in.';
+
+  @override
+  String get bookingExamSlots => 'Slots for an examination';
+
+  @override
+  String get bookingConsultationSlots => 'Slots for a consultation';
+
+  @override
+  String get bookingGroupApp => 'Booking from the app';
+
+  @override
+  String get bookingAutoConfirmOffBody =>
+      'App bookings wait for the clinic to confirm them.';
+
+  @override
+  String get bookingGroupNoShows => 'No-shows and reminders';
+
+  @override
+  String get bookingNoShowCount => 'No-shows that stop app booking';
+
+  @override
+  String get bookingNoShowDays => 'Counted over';
+
+  @override
+  String bookingNoShowBody(int count, int days) {
+    return '$count no-shows in $days days turn off app booking for that patient';
+  }
+
+  @override
+  String get bookingReminderDayBefore => 'Reminder a day before';
+
+  @override
+  String get bookingReminderSameDay => 'Reminder 2 hours before, on the day';
+
+  @override
+  String get bookingGroupClinic => 'Clinic bookings';
+
+  @override
+  String get bookingNone => 'None';
+
+  @override
+  String bookingMinutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String bookingHours(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours',
+      one: '1 hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bookingDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get branchDoctorOnlyNote => 'Only the doctor can change this.';
+
+  @override
+  String activityBranchScheduleUpdated(String branch) {
+    return 'Changed the schedule of $branch';
+  }
+
+  @override
+  String get activityActionBranchScheduleUpdated => 'Schedule changed';
+
+  @override
+  String get branchNoWorkBranch => 'No branch yet';
+
+  @override
+  String get branchNoWorkBranchBody =>
+      'You are not assigned to a branch. Ask the doctor to add you to one.';
+
+  @override
+  String get conflictsDismiss => 'Back to editing';
+
+  @override
+  String get branchPhotosTitle => 'Photos';
+
+  @override
+  String branchPhotosBody(int count) {
+    return 'Up to $count. Patients see them on the branch card; the first is the cover.';
+  }
+
+  @override
+  String branchPhotosCount(int count, int max) {
+    return '$count of $max';
+  }
+
+  @override
+  String get branchPhotosNone => 'No photos.';
+
+  @override
+  String get branchPhotosAdd => 'Add photos';
+
+  @override
+  String branchPhotosAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos added',
+      one: 'Photo added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchPhotosLimit(int max) {
+    return 'A branch has at most $max photos. Remove one first.';
+  }
+
+  @override
+  String get branchPhotosNotImage => 'Use a JPEG, PNG or WebP photo.';
+
+  @override
+  String get branchPhotosTooLarge => 'The photo is larger than 10 MB.';
+
+  @override
+  String get branchPhotosDeleteTitle => 'Remove this photo?';
+
+  @override
+  String get branchPhotosDeleteBody => 'Patients won\'t see it any more.';
+
+  @override
+  String get branchPhotoLabel => 'Branch photo';
+
+  @override
+  String get branchPhotoCover => 'Cover';
+
+  @override
+  String get branchPhotoEarlier => 'Move earlier';
+
+  @override
+  String get branchPhotoLater => 'Move later';
+
+  @override
+  String activityBranchPhotosUpdated(String branch) {
+    return 'Changed the photos of $branch';
+  }
+
+  @override
+  String get activityActionBranchPhotosUpdated => 'Photos changed';
+
+  @override
+  String get holidaysTitle => 'Public holidays';
+
+  @override
+  String get holidaysBody =>
+      'Suggested by el3yada. Close the branch on the ones you take off; nothing closes by itself.';
+
+  @override
+  String get holidayCloseDay => 'Close this day';
+
+  @override
+  String get holidayClosed => 'Closed';
+
+  @override
+  String get holidaysAdminBody =>
+      'Clinics see the coming ones as suggestions in their special dates. No branch closes by itself.';
+
+  @override
+  String get holidayAdd => 'Add holiday';
+
+  @override
+  String get holidayAdded => 'Holiday added';
+
+  @override
+  String get holidayDate => 'Choose the date';
+
+  @override
+  String get holidayNameAr => 'Name in Arabic';
+
+  @override
+  String get holidayNameEn => 'Name in English';
+
+  @override
+  String get holidaysEmpty => 'No public holidays yet';
+
+  @override
+  String get holidaysEmptyBody =>
+      'Add the year\'s holidays so clinics can plan around them.';
+
+  @override
+  String holidayDeleteTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get holidayDeleteBody =>
+      'Clinics stop seeing it. Closures they already added stay.';
+
+  @override
+  String get holidayExists => 'That date is already on the list.';
+
+  @override
+  String get newPatientPhoneFirst => 'Type the mobile number first';
+
+  @override
+  String get newPatientNewNumber => 'A new number';
+
+  @override
+  String get newPatientCreate => 'Create patient now';
+
+  @override
+  String get newPatientCreateBody =>
+      'Create patient now: the patient\'s details, and a temporary password to give them.';
+
+  @override
+  String get newPatientGuestBody =>
+      'Quick guest: the name and number only. The account is made when they check in.';
+
+  @override
+  String get newPatientGuestOnly =>
+      'Only staff who add patients can create one here. You can book them as a quick guest.';
+
+  @override
+  String get newPatientBookFor => 'Book for this patient';
+
+  @override
+  String get newPatientLink => 'Link and book';
+
+  @override
+  String get newPatientContinue => 'Continue the booking';
 }

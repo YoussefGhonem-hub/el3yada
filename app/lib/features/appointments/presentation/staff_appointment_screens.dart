@@ -1,10 +1,18 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/network/api_error.dart';
 import '../../../core/platform/contact_launcher.dart';
+import '../../../core/theme/motion.dart';
 import '../../../core/validation/validators.dart';
+import '../../clinic/application/clinic_providers.dart' show clinicContextProvider;
+import '../../clinic/domain/clinic_permissions.dart';
+import '../../patients/data/patients_repository.dart';
+import '../../patients/domain/patient_models.dart' show PhoneLookup, PhoneLookupStatus;
+import '../../patients/presentation/add_patient_screen.dart';
 import '../../patient/presentation/patient_format.dart';
 import '../../patient/presentation/widgets/patient_widgets.dart';
 import '../application/appointment_providers.dart';
@@ -250,6 +258,16 @@ class StaffBookScreen extends ConsumerStatefulWidget {
 
 class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
   bool _guest = false;
+
+  /// D32 step 1: "New patient" instead of "Existing patient". The mobile number comes first.
+  bool _newPatient = false;
+
+  /// `lookupPhone` for the number typed under "New patient" (BR-P3): ours, another clinic's, or new.
+  PhoneLookup? _found;
+  String? _checked;
+  bool _checking = false;
+  int _lookupRequest = 0;
+  Timer? _debounce;
   late PatientLookup? _patient = widget.initialPatient;
   final _name = TextEditingController();
   final _phone = TextEditingController();
@@ -275,6 +293,7 @@ class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _name.dispose();
     _phone.dispose();
     _notes.dispose();
@@ -344,6 +363,81 @@ class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
 
   bool get _isNew => _guest || (_patient?.isNew ?? false);
 
+  /// Creating or linking a patient is D5's, with `patientsManage`.
+  bool get _canAddPatients => ref.read(clinicContextProvider).value?.can(ClinicPermission.patientsManage) ?? false;
+
+  void _chooseNew(bool newPatient) => setState(() {
+        _newPatient = newPatient;
+        _guest = false;
+        _patient = null;
+        _visitType = null;
+        _place = null;
+        _found = null;
+        _checked = null;
+      });
+
+  void _onNewPhone(String value) {
+    _debounce?.cancel();
+    final number = Validators.normalizeEgyptianMobile(value);
+    if (number != _checked) {
+      setState(() {
+        _found = null;
+        _checked = null;
+        _guest = false;
+      });
+    }
+    if (number == null || !_canAddPatients) return;
+    _debounce = Timer(const Duration(milliseconds: 450), () => _checkPhone(number));
+  }
+
+  Future<void> _checkPhone(String number) async {
+    final request = ++_lookupRequest;
+    setState(() => _checking = true);
+    try {
+      final found = await ref.read(patientsRepositoryProvider).lookupPhone(number);
+      if (!mounted || request != _lookupRequest) return;
+      setState(() {
+        _found = found;
+        _checked = number;
+      });
+    } on Object {
+      // Unknown: the guest path still works.
+      if (mounted && request == _lookupRequest) setState(() => _checked = number);
+    } finally {
+      if (mounted && request == _lookupRequest) setState(() => _checking = false);
+    }
+  }
+
+  /// The booking goes on with [patient]: its visit count and consultation rule come from the
+  /// staff lookup (BR-AP4); until it answers, a new patient books an examination.
+  Future<void> _bookFor(BookingPatient patient) async {
+    var lookup = PatientLookup(
+      patientId: patient.patientId, name: patient.name, phone: patient.phone, fileNumber: patient.fileNumber,
+      sessionCount: patient.isNew ? 0 : 1, consultationAllowed: false, consultationsSinceExam: 0,
+    );
+    try {
+      final found = await ref.read(appointmentsRepositoryProvider).lookupPatients(patient.phone);
+      lookup = found.where((p) => p.patientId == patient.patientId).firstOrNull ?? lookup;
+    } on Object {
+      // Keep what D5 answered.
+    }
+    if (!mounted) return;
+    setState(() {
+      _patient = lookup;
+      _guest = false;
+      _visitType = null;
+    });
+  }
+
+  /// D5 with the number already typed: create the patient (temporary password shown) or link
+  /// another clinic's (BR-P3), then back here with them.
+  Future<void> _openAddPatient() async {
+    final created = await Navigator.of(context).push<BookingPatient>(
+      MaterialPageRoute(builder: (context) => AddPatientScreen(initialPhone: _phone.text.trim(), forBooking: true)),
+    );
+    if (created != null && mounted) await _bookFor(created);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -366,20 +460,17 @@ class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
                       if (!_reschedule) ...[
                         const SizedBox(height: 12),
                         SegmentedButton<bool>(
-                          segments: [ButtonSegment(value: false, label: Text(l10n.existingPatient)), ButtonSegment(value: true, label: Text(l10n.quickGuest))],
-                          selected: {_guest},
-                          onSelectionChanged: (v) => setState(() {
-                            _guest = v.single;
-                            _patient = null;
-                            _visitType = null;
-                          }),
+                          segments: [
+                            ButtonSegment(value: false, icon: const Icon(Icons.person_search_outlined), label: Text(l10n.existingPatient)),
+                            ButtonSegment(value: true, icon: const Icon(Icons.person_add_alt_1_outlined), label: Text(l10n.newPatient)),
+                          ],
+                          selected: {_newPatient},
+                          onSelectionChanged: (v) => _chooseNew(v.single),
                         ),
                         const SizedBox(height: 12),
-                        if (_guest) ...[
-                          TextField(controller: _name, decoration: InputDecoration(labelText: l10n.fullName)),
-                          const SizedBox(height: 8),
-                          TextField(controller: _phone, keyboardType: TextInputType.phone, decoration: InputDecoration(labelText: l10n.mobileNumber)),
-                        ] else if (_patient == null)
+                        if (_patient == null && _newPatient)
+                          ..._newPatientStep(context)
+                        else if (_patient == null)
                           PatientPickerField(onPicked: (p) => setState(() => _patient = p))
                         else
                           Card(
@@ -427,6 +518,132 @@ class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
               ],
             ),
     );
+  }
+
+  /// D32 "New patient": the mobile number first. One of this doctor's patients is offered; another
+  /// clinic's is linked through D5 (BR-P3); a new number is created through D5 (the form, the
+  /// temporary password) or booked as a quick guest (name and phone, converted at check-in).
+  List<Widget> _newPatientStep(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final number = Validators.normalizeEgyptianMobile(_phone.text);
+    final canAdd = _canAddPatients;
+    final found = number != null && number == _checked ? _found : null;
+
+    Widget note(String text, {IconData icon = Icons.info_outline}) => Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ExcludeSemantics(child: Icon(icon, size: 18, color: scheme.onSurfaceVariant)),
+            const SizedBox(width: 8),
+            Expanded(child: Text(text, style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant))),
+          ],
+        );
+
+    Widget guestButton() => OutlinedButton.icon(
+          onPressed: () => setState(() => _guest = true),
+          icon: const Icon(Icons.person_outline),
+          label: Text(l10n.quickGuest),
+        );
+
+    final Widget result;
+    if (number == null) {
+      result = const SizedBox(key: ValueKey('none'), width: double.infinity);
+    } else if (_guest) {
+      result = Column(
+        key: const ValueKey('guest'),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          note(l10n.newPatientGuestBody, icon: Icons.person_outline),
+          const SizedBox(height: 8),
+          TextField(controller: _name, autofocus: true, decoration: InputDecoration(labelText: l10n.fullName)),
+        ],
+      );
+    } else if (!canAdd) {
+      result = Column(
+        key: const ValueKey('guestOnly'),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [note(l10n.newPatientGuestOnly), const SizedBox(height: 8), Align(alignment: AlignmentDirectional.centerStart, child: guestButton())],
+      );
+    } else if (_checking || found == null) {
+      result = Row(
+        key: const ValueKey('checking'),
+        children: [
+          const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+          const SizedBox(width: 8),
+          Text(l10n.patientPhoneChecking, style: theme.textTheme.bodySmall),
+        ],
+      );
+    } else {
+      result = Card(
+        key: ValueKey(found.status),
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: switch (found.status) {
+              PhoneLookupStatus.linkedToYou => [
+                  Text(l10n.patientPhoneOurs, style: theme.textTheme.titleSmall),
+                  if (found.fullName != null) Text('${found.fullName} · ${l10n.fileNumber(found.fileNumber ?? 0)}'),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: FilledButton.icon(
+                      onPressed: found.patientId == null
+                          ? null
+                          : () => _bookFor((
+                                patientId: found.patientId!, name: found.fullName ?? '', phone: number,
+                                fileNumber: found.fileNumber ?? 0, isNew: false,
+                              )),
+                      icon: const Icon(Icons.event_available_outlined),
+                      label: Text(l10n.newPatientBookFor),
+                    ),
+                  ),
+                ],
+              PhoneLookupStatus.existsElsewhere => [
+                  Text(l10n.patientPhoneElsewhere, style: theme.textTheme.titleSmall),
+                  Text(l10n.patientPhoneElsewhereBody, style: theme.textTheme.bodySmall),
+                  const SizedBox(height: 8),
+                  Wrap(spacing: 8, runSpacing: 8, children: [
+                    FilledButton.icon(onPressed: _openAddPatient, icon: const Icon(Icons.link), label: Text(l10n.newPatientLink)),
+                    guestButton(),
+                  ]),
+                ],
+              PhoneLookupStatus.isNew => [
+                  Text(l10n.newPatientNewNumber, style: theme.textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  Wrap(spacing: 8, runSpacing: 8, children: [
+                    FilledButton.icon(onPressed: _openAddPatient, icon: const Icon(Icons.person_add_alt_1_outlined), label: Text(l10n.newPatientCreate)),
+                    guestButton(),
+                  ]),
+                  const SizedBox(height: 8),
+                  note(l10n.newPatientCreateBody),
+                  const SizedBox(height: 4),
+                  note(l10n.newPatientGuestBody, icon: Icons.person_outline),
+                ],
+            },
+          ),
+        ),
+      );
+    }
+
+    return [
+      TextField(
+        controller: _phone,
+        keyboardType: TextInputType.phone,
+        textDirection: TextDirection.ltr,
+        decoration: InputDecoration(labelText: l10n.mobileNumber, helperText: l10n.newPatientPhoneFirst),
+        onChanged: _onNewPhone,
+      ),
+      const SizedBox(height: 12),
+      AnimatedSwitcher(
+        duration: Motion.of(context).reduced ? Duration.zero : Motion.normal,
+        switchInCurve: Motion.enterCurve,
+        switchOutCurve: Motion.exitCurve,
+        child: result,
+      ),
+    ];
   }
 }
 

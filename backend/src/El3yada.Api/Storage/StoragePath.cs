@@ -82,6 +82,14 @@ public sealed partial record StoragePath
     public static StoragePath DoctorLicense(Guid doctorId, Guid fileId, string contentType) =>
         Create($"doctors/{Id(doctorId)}/license/{Id(fileId)}.{FileTypes.ExtensionFor(contentType)}");
 
+    // doctors/{doctorId}/branches/{branchId}/{photoId}.jpg: a D29 branch photo [S], at most 1600 px
+    public static StoragePath BranchPhoto(Guid doctorId, Guid branchId, Guid photoId) =>
+        Create($"doctors/{Id(doctorId)}/branches/{Id(branchId)}/{Id(photoId)}.jpg");
+
+    // doctors/{doctorId}/branches/{branchId}/{photoId}.thumb.jpg
+    public static StoragePath BranchPhotoThumbnail(Guid doctorId, Guid branchId, Guid photoId) =>
+        Create($"doctors/{Id(doctorId)}/branches/{Id(branchId)}/{Id(photoId)}.thumb.jpg");
+
     // catalogs/v{n}.sqlite.gz: a published catalog version (spec 9.5, AD20)
     public static StoragePath Catalog(int versionNumber)
     {

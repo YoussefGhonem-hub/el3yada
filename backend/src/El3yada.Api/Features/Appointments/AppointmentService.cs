@@ -200,7 +200,9 @@ public sealed class AppointmentService(
             actor.Staff!.RequireBranch(current.BranchId).RequireBranch(r.BranchId);
         }
 
-        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        // A schedule change (BR-AP12, ScheduleService) moves its bookings inside its own transaction: it commits
+        // them with the change and publishes the board itself.
+        await using var tx = db.Database.CurrentTransaction is null ? await db.Database.BeginTransactionAsync(ct) : null;
         // Lock both days in a fixed order, so two opposite moves can't deadlock.
         var days = new[] { (current.BranchId, current.LocalDate), (r.BranchId, r.Date) }
             .Distinct().OrderBy(d => d.Item1).ThenBy(d => d.Item2).ToList();
@@ -246,6 +248,7 @@ public sealed class AppointmentService(
         }
 
         await SaveBookingAsync(ct);
+        if (tx is null) return await GetAsync(actor, id, ct);
         await tx.CommitAsync(ct);
         await board.PublishAsync(current.BranchId, current.LocalDate, ct);
         if (current.BranchId != appointment.BranchId || current.LocalDate != appointment.LocalDate)

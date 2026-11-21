@@ -58,6 +58,38 @@ public static partial class TestData
         return id;
     }
 
+    /// <summary>A weekly period for <see cref="ScheduleBody"/>: ISO weekday, "HH:mm" Cairo times.</summary>
+    public static object Period(int weekday, string start, string end, bool endsNextDay = false, string? label = null, int? capacity = null) =>
+        new { weekday, start, end, endsNextDay, label, capacity };
+
+    /// <summary>
+    /// An <c>updateBranchSchedule</c> body (<c>PUT /api/staff/branches/{id}/schedule</c>, the only way to change a
+    /// branch's hours): <paramref name="weekly"/> with the spec's default booking settings, no special dates and no
+    /// closures. A dictionary, so a test can change <c>dryRun</c> or <c>decisions</c>.
+    /// </summary>
+    public static Dictionary<string, object?> ScheduleBody(
+        IEnumerable<object> weekly, string mode = "queue", int slotMinutes = 15, bool staffOverbooking = true,
+        IEnumerable<object>? dateOverrides = null, IEnumerable<object>? closures = null) => new()
+    {
+        ["weekly"] = weekly.ToList(),
+        ["dateOverrides"] = (dateOverrides ?? []).ToList(),
+        ["closures"] = (closures ?? []).ToList(),
+        ["settings"] = new
+        {
+            mode, slotMinutes, examSlots = 1, consultationSlots = 1, defaultCapacity = 30, avgVisitMinutes = 10,
+            selfBooking = true, autoConfirm = true, windowDays = 30, minNoticeMinutes = 0, sameDay = true, freeCancelMinutes = 120,
+            maxReschedules = 2, maxUpcomingPerPatient = 1, noShowLimitCount = 3, noShowLimitDays = 90, reminderMinutes = new[] { 1440, 120 },
+            staffOverbooking, waitingOrderByArrival = false,
+        },
+        ["dryRun"] = false,
+        ["decisions"] = new List<object>(),
+    };
+
+    /// <summary>Sends a <see cref="ScheduleBody"/> for <paramref name="branchId"/>.</summary>
+    public static Task<(System.Net.HttpStatusCode Status, System.Text.Json.JsonElement Body)> PutScheduleAsync(
+        this HttpClient client, Guid branchId, Dictionary<string, object?> body) =>
+        client.PutAsync($"/api/staff/branches/{branchId}/schedule", body);
+
     /// <summary>Sets maxAssistantsPerDoctor (AD13) straight in the database and returns the old value.</summary>
     public static Task<int> SetAssistantLimitAsync(IntegrationFactory factory, int limit) =>
         WithDbAsync(factory, async db =>

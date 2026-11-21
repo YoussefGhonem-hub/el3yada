@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,6 +23,7 @@ abstract final class ClinicAdminCodes {
   static const lastActiveBranch = 'LAST_ACTIVE_BRANCH';
   static const branchHasBookings = 'BRANCH_HAS_BOOKINGS';
   static const branchNotActive = 'BRANCH_NOT_ACTIVE';
+  static const branchPhotoLimit = 'BRANCH_PHOTO_LIMIT';
   static const assistantLimitReached = 'ASSISTANT_LIMIT_REACHED';
   static const assistantPhoneTaken = 'ASSISTANT_PHONE_TAKEN';
   static const assistantRemoved = 'ASSISTANT_REMOVED';
@@ -65,8 +68,17 @@ abstract interface class ClinicAdminRepository {
     BranchChecklistInput? clinicInfo,
   });
 
-  /// Replaces the whole week.
-  Future<BranchDetails> updateBranchHours(String branchId, List<BranchPeriod> periods);
+  /// D29 Info tab photos [S] (doctor only): JPEG, PNG or WebP. The server keeps a JPEG of at most
+  /// 1600 px and a thumbnail; past [BranchPhoto.max] it answers `BRANCH_PHOTO_LIMIT`.
+  Future<BranchDetails> uploadBranchPhoto(String branchId, Uint8List bytes, String fileName);
+
+  /// Every photo of the branch once, in the new order (the first is the cover).
+  Future<BranchDetails> reorderBranchPhotos(String branchId, List<String> photoIds);
+
+  Future<BranchDetails> deleteBranchPhoto(String branchId, String photoId);
+
+  /// A photo's JPEG, or its [thumbnail].
+  Future<Uint8List> branchPhoto(String branchId, String photoId, {bool thumbnail = false});
 
   /// Throws [BranchHasBookingsException] for `BRANCH_HAS_BOOKINGS`.
   Future<BranchDetails> setBranchStatus(String branchId, String status, {String? closedMessage, DateTime? reopenDate});
@@ -165,11 +177,26 @@ class ApiClinicAdminRepository implements ClinicAdminRepository {
           })));
 
   @override
-  Future<BranchDetails> updateBranchHours(String branchId, List<BranchPeriod> periods) =>
-      _call(() async => BranchDetails.fromJson(await _post('/branches/updateBranchHours', {
-            'branchId': branchId,
-            'periods': [for (final period in periods) period.toJson()],
-          })));
+  Future<BranchDetails> uploadBranchPhoto(String branchId, Uint8List bytes, String fileName) => _call(() async {
+        final form = FormData.fromMap({'branchId': branchId, 'file': MultipartFile.fromBytes(bytes, filename: fileName)});
+        final response = await _dio.post<Map<String, dynamic>>('/branches/uploadBranchPhoto', data: form);
+        return BranchDetails.fromJson(response.data ?? const {});
+      });
+
+  @override
+  Future<BranchDetails> reorderBranchPhotos(String branchId, List<String> photoIds) => _call(() async =>
+      BranchDetails.fromJson(await _post('/branches/reorderBranchPhotos', {'branchId': branchId, 'photoIds': photoIds})));
+
+  @override
+  Future<BranchDetails> deleteBranchPhoto(String branchId, String photoId) => _call(() async =>
+      BranchDetails.fromJson(await _post('/branches/deleteBranchPhoto', {'branchId': branchId, 'photoId': photoId})));
+
+  @override
+  Future<Uint8List> branchPhoto(String branchId, String photoId, {bool thumbnail = false}) => _call(() async {
+        final response = await _dio.get<List<int>>('/branches/$branchId/photos/$photoId',
+            queryParameters: {if (thumbnail) 'thumb': true}, options: Options(responseType: ResponseType.bytes));
+        return Uint8List.fromList(response.data ?? const []);
+      });
 
   @override
   Future<BranchDetails> setBranchStatus(String branchId, String status, {String? closedMessage, DateTime? reopenDate}) =>

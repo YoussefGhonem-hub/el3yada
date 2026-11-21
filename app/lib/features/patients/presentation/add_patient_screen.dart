@@ -32,8 +32,15 @@ import 'widgets/patient_identity_form.dart';
 /// clinic's patient asks to link them (BR-P3, identity only); a new number
 /// gets the full form and, on save, the temporary password shown once
 /// (BR-P4). Then the profile (D6) opens.
+///
+/// D32's "New patient" opens it with [forBooking] and the number already
+/// typed ([initialPhone]): it closes with the patient ([BookingPatient])
+/// instead of opening D6, and the booking goes on with them.
 class AddPatientScreen extends ConsumerWidget {
-  const AddPatientScreen({super.key});
+  const AddPatientScreen({super.key, this.initialPhone, this.forBooking = false});
+
+  final String? initialPhone;
+  final bool forBooking;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,20 +52,26 @@ class AddPatientScreen extends ConsumerWidget {
             return AdminErrorView(error: const ApiException(kind: ApiErrorKind.http, status: 403, code: ApiCodes.permissionDenied));
           }
           if (clinic.isSuspended) return SuspendedNotice(backFallback: paths.patients);
-          return _AddPatientForm(clinic: clinic, paths: paths);
+          return _AddPatientForm(clinic: clinic, paths: paths, initialPhone: initialPhone, forBooking: forBooking);
         },
       ),
     );
   }
 }
 
+/// What D5 hands back to D32: the patient to book for. [isNew]: no visit with
+/// this doctor yet (a new account or a link, BR-AP4: an examination).
+typedef BookingPatient = ({String patientId, String name, String phone, int fileNumber, bool isNew});
+
 enum _Lookup { idle, checking, isNew, linkedToYou, existsElsewhere, failed }
 
 class _AddPatientForm extends ConsumerStatefulWidget {
-  const _AddPatientForm({required this.clinic, required this.paths});
+  const _AddPatientForm({required this.clinic, required this.paths, this.initialPhone, this.forBooking = false});
 
   final ClinicContext clinic;
   final ClinicPaths paths;
+  final String? initialPhone;
+  final bool forBooking;
 
   @override
   ConsumerState<_AddPatientForm> createState() => _AddPatientFormState();
@@ -86,6 +99,18 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
   String? _phoneError;
   String? _formError;
   int _failures = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // D32: the number typed there is checked straight away.
+    final initial = widget.initialPhone;
+    if (initial != null) {
+      _phone.text = initial;
+      final number = Validators.normalizeEgyptianMobile(initial);
+      if (number != null) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? _check(number) : null);
+    }
+  }
 
   @override
   void dispose() {
@@ -170,7 +195,20 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
     if (confirmed == true && mounted) await _save(link: true);
   }
 
-  void _openExisting(String patientId) => context.go(widget.paths.patient(patientId));
+  void _openExisting(String patientId) {
+    final found = _found;
+    if (widget.forBooking) {
+      Navigator.of(context).pop<BookingPatient>((
+        patientId: patientId,
+        name: found?.fullName ?? '',
+        phone: _checked ?? _phone.text.trim(),
+        fileNumber: found?.fileNumber ?? 0,
+        isNew: false,
+      ));
+      return;
+    }
+    context.go(widget.paths.patient(patientId));
+  }
 
   Future<void> _save({bool link = false}) async {
     final l10n = AppLocalizations.of(context);
@@ -212,7 +250,12 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
             icon: const Icon(Icons.how_to_reg_outlined),
             title: Text(l10n.patientLinkedTitle),
             content: Text(l10n.patientLinkedBody),
-            actions: [FilledButton(onPressed: () => Navigator.pop(context), child: Text(l10n.patientOpenFile))],
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(widget.forBooking ? l10n.newPatientContinue : l10n.patientOpenFile),
+              ),
+            ],
           ),
         );
       } else {
@@ -223,7 +266,18 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
           password: created.temporaryPassword!,
         );
       }
-      if (mounted) context.go(widget.paths.patient(patient.patientId));
+      if (!mounted) return;
+      if (widget.forBooking) {
+        Navigator.of(context).pop<BookingPatient>((
+          patientId: patient.patientId,
+          name: patient.fullName,
+          phone: patient.phone,
+          fileNumber: patient.fileNumber,
+          isNew: true,
+        ));
+        return;
+      }
+      context.go(widget.paths.patient(patient.patientId));
     } on ApiException catch (error) {
       if (!mounted) return;
       setState(() {
@@ -331,8 +385,8 @@ class _AddPatientFormState extends ConsumerState<_AddPatientForm> {
                   ? null
                   : FilledButton.tonalIcon(
                       onPressed: () => _openExisting(found!.patientId!),
-                      icon: const Icon(Icons.open_in_new),
-                      label: Text(l10n.patientOpenFile),
+                      icon: Icon(widget.forBooking ? Icons.event_available_outlined : Icons.open_in_new),
+                      label: Text(widget.forBooking ? l10n.newPatientBookFor : l10n.patientOpenFile),
                     ),
             ),
           _Lookup.existsElsewhere => _LookupBanner(

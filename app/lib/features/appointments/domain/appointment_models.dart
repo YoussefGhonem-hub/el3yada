@@ -218,7 +218,6 @@ class PeriodSlot {
     required this.capacity,
     required this.booked,
     required this.remaining,
-    this.estimatedTime,
     this.unavailable,
   });
 
@@ -228,7 +227,6 @@ class PeriodSlot {
   final int capacity;
   final int booked;
   final int remaining;
-  final String? estimatedTime;
 
   /// Null when bookable; otherwise a 6.12.6 code.
   final String? unavailable;
@@ -242,7 +240,6 @@ class PeriodSlot {
         capacity: j['capacity'] as int,
         booked: j['booked'] as int,
         remaining: j['remaining'] as int,
-        estimatedTime: j['estimatedTime'] == null ? null : _hhmm(j['estimatedTime']),
         unavailable: j['unavailable'] as String?,
       );
 }
@@ -806,24 +803,48 @@ class BookingSettings {
       );
 
   BookingSettings copyWith({
-    String? mode, int? slotMinutes, int? defaultCapacity, int? avgVisitMinutes, bool? selfBooking, bool? autoConfirm,
-    int? windowDays, int? minNoticeMinutes, bool? sameDay, int? freeCancelMinutes, int? maxReschedules,
-    int? maxUpcomingPerPatient, bool? staffOverbooking,
+    String? mode, int? slotMinutes, int? examSlots, int? consultationSlots, int? defaultCapacity, int? avgVisitMinutes,
+    bool? selfBooking, bool? autoConfirm, int? windowDays, int? minNoticeMinutes, bool? sameDay, int? freeCancelMinutes,
+    int? maxReschedules, int? maxUpcomingPerPatient, int? noShowLimitCount, int? noShowLimitDays, List<int>? reminderMinutes,
+    bool? staffOverbooking,
   }) =>
       BookingSettings(
-        mode: mode ?? this.mode, slotMinutes: slotMinutes ?? this.slotMinutes, examSlots: examSlots, consultationSlots: consultationSlots,
+        mode: mode ?? this.mode, slotMinutes: slotMinutes ?? this.slotMinutes, examSlots: examSlots ?? this.examSlots,
+        consultationSlots: consultationSlots ?? this.consultationSlots,
         defaultCapacity: defaultCapacity ?? this.defaultCapacity, avgVisitMinutes: avgVisitMinutes ?? this.avgVisitMinutes,
         selfBooking: selfBooking ?? this.selfBooking, autoConfirm: autoConfirm ?? this.autoConfirm, windowDays: windowDays ?? this.windowDays,
         minNoticeMinutes: minNoticeMinutes ?? this.minNoticeMinutes, sameDay: sameDay ?? this.sameDay,
         freeCancelMinutes: freeCancelMinutes ?? this.freeCancelMinutes, maxReschedules: maxReschedules ?? this.maxReschedules,
-        maxUpcomingPerPatient: maxUpcomingPerPatient ?? this.maxUpcomingPerPatient, noShowLimitCount: noShowLimitCount,
-        noShowLimitDays: noShowLimitDays, reminderMinutes: reminderMinutes, staffOverbooking: staffOverbooking ?? this.staffOverbooking,
+        maxUpcomingPerPatient: maxUpcomingPerPatient ?? this.maxUpcomingPerPatient,
+        noShowLimitCount: noShowLimitCount ?? this.noShowLimitCount, noShowLimitDays: noShowLimitDays ?? this.noShowLimitDays,
+        reminderMinutes: reminderMinutes ?? this.reminderMinutes, staffOverbooking: staffOverbooking ?? this.staffOverbooking,
         waitingOrderByArrival: waitingOrderByArrival,
       );
 }
 
+/// A public holiday the admin lists (AD13 [C], BR-AP13): a suggestion to close on, never a closure by itself.
+class HolidayRef {
+  const HolidayRef({required this.date, required this.nameAr, required this.nameEn});
+
+  final DateTime date;
+  final String nameAr;
+  final String nameEn;
+
+  String name({required bool arabic}) => arabic ? nameAr : nameEn;
+
+  factory HolidayRef.fromJson(Json j) =>
+      HolidayRef(date: DateTime.parse(j['date'] as String), nameAr: j['nameAr'] as String, nameEn: j['nameEn'] as String);
+}
+
 class BranchScheduleData {
-  const BranchScheduleData({required this.branchId, this.weekly = const [], this.overrides = const [], this.closures = const [], this.settings = const BookingSettings()});
+  const BranchScheduleData({
+    required this.branchId,
+    this.weekly = const [],
+    this.overrides = const [],
+    this.closures = const [],
+    this.settings = const BookingSettings(),
+    this.holidays = const [],
+  });
 
   final String branchId;
   final List<WeeklyPeriod> weekly;
@@ -831,9 +852,12 @@ class BranchScheduleData {
   final List<Closure> closures;
   final BookingSettings settings;
 
+  /// The coming year's public holidays (read only; not sent back).
+  final List<HolidayRef> holidays;
+
   BranchScheduleData copyWith({List<WeeklyPeriod>? weekly, List<DateOverride>? overrides, List<Closure>? closures, BookingSettings? settings}) =>
       BranchScheduleData(branchId: branchId, weekly: weekly ?? this.weekly, overrides: overrides ?? this.overrides,
-          closures: closures ?? this.closures, settings: settings ?? this.settings);
+          closures: closures ?? this.closures, settings: settings ?? this.settings, holidays: holidays);
 
   factory BranchScheduleData.fromJson(Json j) => BranchScheduleData(
         branchId: j['branchId'] as String,
@@ -841,17 +865,52 @@ class BranchScheduleData {
         overrides: [for (final o in j['dateOverrides'] as List) DateOverride.fromJson(o as Json)],
         closures: [for (final c in j['closures'] as List) Closure.fromJson(c as Json)],
         settings: BookingSettings.fromJson(j['settings'] as Json),
+        holidays: [for (final h in (j['holidays'] as List?) ?? const []) HolidayRef.fromJson(h as Json)],
       );
 }
 
+/// A place a booking can move to: a period start (queue) or a slot start (timed).
+class MovePlace {
+  const MovePlace({required this.branchId, required this.date, required this.time});
+
+  final String branchId;
+  final DateTime date;
+  final String time;
+
+  factory MovePlace.fromJson(Json j) =>
+      MovePlace(branchId: j['branchId'] as String, date: DateTime.parse(j['date'] as String), time: _hhmm(j['time']));
+
+  @override
+  bool operator ==(Object other) => other is MovePlace && other.branchId == branchId && other.date == date && other.time == time;
+
+  @override
+  int get hashCode => Object.hash(branchId, date, time);
+}
+
+/// A booking the new schedule leaves without a place (BR-AP12). [suggestion] is the server's
+/// nearest free place under the new schedule, or null.
 class ScheduleConflict {
-  const ScheduleConflict({required this.appointmentId, required this.displayName, required this.date, required this.time, this.queueNumber});
+  const ScheduleConflict({
+    required this.appointmentId,
+    required this.displayName,
+    required this.date,
+    required this.time,
+    this.queueNumber,
+    this.status = AppointmentStatus.confirmed,
+    this.branchId,
+    this.visitType = 'examination',
+    this.suggestion,
+  });
 
   final String appointmentId;
   final String displayName;
   final DateTime date;
   final String time;
   final int? queueNumber;
+  final String status;
+  final String? branchId;
+  final String visitType;
+  final MovePlace? suggestion;
 
   factory ScheduleConflict.fromJson(Json j) => ScheduleConflict(
         appointmentId: j['appointmentId'] as String,
@@ -859,5 +918,36 @@ class ScheduleConflict {
         date: DateTime.parse(j['date'] as String),
         time: _hhmm(j['time']),
         queueNumber: j['queueNumber'] as int?,
+        status: j['status'] as String? ?? AppointmentStatus.confirmed,
+        branchId: j['branchId'] as String?,
+        visitType: j['visitType'] as String? ?? 'examination',
+        suggestion: j['suggestion'] == null ? null : MovePlace.fromJson(Map<String, dynamic>.from(j['suggestion'] as Map)),
       );
+}
+
+/// What to do with one affected booking (BR-AP12): keep it as an exception, move it to [to], or
+/// cancel it (the patient is told, with a rebook link).
+class ConflictDecision {
+  const ConflictDecision.keep() : action = keepAction, to = null;
+  const ConflictDecision.cancel() : action = cancelAction, to = null;
+  const ConflictDecision.move(MovePlace this.to) : action = moveAction;
+
+  static const keepAction = 'keep';
+  static const moveAction = 'move';
+  static const cancelAction = 'cancel';
+
+  final String action;
+  final MovePlace? to;
+
+  Json toJson(String appointmentId) => {
+        'appointmentId': appointmentId,
+        'action': action,
+        if (to != null) ...{'branchId': to!.branchId, 'date': dayKey(to!.date), 'time': to!.time},
+      };
+
+  @override
+  bool operator ==(Object other) => other is ConflictDecision && other.action == action && other.to == to;
+
+  @override
+  int get hashCode => Object.hash(action, to);
 }

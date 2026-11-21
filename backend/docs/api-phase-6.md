@@ -26,7 +26,7 @@ Timed mode (`"timed"`) is unchanged: the booked time sets the order and there ar
 | Method and route | Name | Notes |
 |---|---|---|
 | `GET /api/patient/doctors/{doctorId}/booking-options` | `getBookingOptions` | P15 steps 1–3: branches (with `mode`), visit-type rule, prices, `upcomingAppointmentId` |
-| `GET /api/patient/availability?branchId&visitType&from&to` | `getPatientAvailability` | Server-side only (BR-AP1). Queue: `periods[]` with `capacity, booked, remaining, unavailable`; timed: `slots[]` |
+| `GET /api/patient/availability?branchId&visitType&from&to` | `getPatientAvailability` | Server-side only (BR-AP1). Queue: `periods[]` with `capacity, booked, remaining, unavailable` and no time estimate (the turn and its estimate come at check-in, BR-AP3); timed: `slots[]` |
 | `GET /api/patient/appointments?tab=upcoming\|past\|cancelled` | `getMyAppointments` | `Appointment[]` (P16, P1) |
 | `GET /api/patient/appointments/{id}` | `getMyAppointment` | `Appointment` with `history` (P17) |
 | `POST /api/patient/appointments` | `createMyAppointment` | `{ branchId, visitType, date, time, reason }`; queue: `time` = the period start |

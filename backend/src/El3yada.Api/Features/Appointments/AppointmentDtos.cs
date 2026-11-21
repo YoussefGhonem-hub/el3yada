@@ -1,3 +1,4 @@
+using El3yada.Api.ClinicAdmin;
 using El3yada.Api.Features.PatientPortal;
 using El3yada.Api.Infrastructure.Paging;
 using El3yada.Api.Infrastructure.Validation;
@@ -167,7 +168,10 @@ public sealed record BoardPatientSummaryDto(
 
 // ---- Schedule (D29, AS17) ---------------------------------------------------------------------
 
-public sealed record PeriodInput(int Weekday, TimeOnly Start, TimeOnly End, bool EndsNextDay, string? Label, int? Capacity);
+public sealed record PeriodInput(int Weekday, TimeOnly Start, TimeOnly End, bool EndsNextDay, string? Label, int? Capacity)
+{
+    public WeeklyPeriod ToPeriod() => new(Weekday, Start, End, EndsNextDay, Label, Capacity);
+}
 
 public sealed record DatePeriodInput(TimeOnly Start, TimeOnly End, bool EndsNextDay, string? Label, int? Capacity);
 
@@ -183,8 +187,16 @@ public sealed record BookingSettingsInput(
     int MaxReschedules, int MaxUpcomingPerPatient, int NoShowLimitCount, int NoShowLimitDays,
     IReadOnlyList<int> ReminderMinutes, bool StaffOverbooking, bool WaitingOrderByArrival);
 
-/// <summary><c>keep</c> or <c>cancel</c> for one affected booking (BR-AP12). Move = reschedule it first.</summary>
-public sealed record ConflictDecision(Guid AppointmentId, string Action);
+/// <summary>
+/// What to do with one affected booking (BR-AP12): <c>keep</c> it as an exception, <c>move</c> it to
+/// <c>date</c> and <c>time</c> (a period start in queue mode, a slot start in timed mode) in <c>branchId</c>
+/// (its own branch when null), or <c>cancel</c> it (the patient is notified with a rebook link). A move is a
+/// clinic reschedule (BR-AP6) made in the same transaction as the schedule change.
+/// </summary>
+public sealed record ConflictDecision(Guid AppointmentId, string Action, Guid? BranchId = null, DateOnly? Date = null, TimeOnly? Time = null);
+
+/// <summary>A place a booking can move to: a period start (queue) or a slot start (timed).</summary>
+public sealed record MovePlaceDto(Guid BranchId, DateOnly Date, TimeOnly Time);
 
 public sealed record UpdateScheduleRequest(
     IReadOnlyList<PeriodInput> Weekly,
@@ -194,14 +206,26 @@ public sealed record UpdateScheduleRequest(
     bool DryRun,
     IReadOnlyList<ConflictDecision>? Decisions);
 
+/// <summary>AD13 [C]: a public holiday, suggested in D29 Special dates (BR-AP13).</summary>
+public sealed record HolidayDto(DateOnly Date, string NameAr, string NameEn);
+
+/// <param name="Holidays">The public holidays of the next year (AD13): suggestions to close on, never closures by themselves.</param>
 public sealed record ScheduleDto(
     Guid BranchId,
     IReadOnlyList<PeriodInput> Weekly,
     IReadOnlyList<DateOverrideInput> DateOverrides,
     IReadOnlyList<ClosureInput> Closures,
-    BookingSettingsInput Settings);
+    BookingSettingsInput Settings,
+    IReadOnlyList<HolidayDto> Holidays);
 
-public sealed record ScheduleConflictDto(Guid AppointmentId, string DisplayName, DateOnly Date, TimeOnly Time, int? QueueNumber, string Status);
+/// <summary>
+/// A booking the new schedule leaves without a place (BR-AP12). <c>suggestion</c> is the nearest free place under
+/// the new schedule in the booking's branch (the same day first, then up to 14 days later, closest to the booked
+/// time), or null when there is none. The suggestions in one answer never take the same place twice.
+/// </summary>
+public sealed record ScheduleConflictDto(
+    Guid AppointmentId, string DisplayName, DateOnly Date, TimeOnly Time, int? QueueNumber, string Status,
+    Guid BranchId, string VisitType, MovePlaceDto? Suggestion);
 
 public sealed record UpdateScheduleResult(bool Applied, IReadOnlyList<ScheduleConflictDto> Conflicts);
 
@@ -256,20 +280,45 @@ public sealed class UpdateScheduleRequestValidator : AbstractValidator<UpdateSch
 {
     public UpdateScheduleRequestValidator()
     {
-        RuleForEach(x => x.Weekly).ChildRules(p =>
+        // The D29 working-hours rules (spec 11, ClinicAdmin/WeeklyHours.cs), on the period they are about:
+        // weekly[i].weekday, .label and .capacity first; then, once every weekday is readable, the whole week:
+        // weekly[i].end (PERIOD_END_BEFORE_START, PERIOD_LENGTH_OUT_OF_RANGE), weekly[i] (PERIODS_OVERLAP, on the
+        // later period) and weekly (INVALID_VALUE: more than 10 periods in a day).
+        RuleFor(x => x.Weekly).NotNull().WithErrorCode(ErrorCodes.Required);
+        RuleForEach(x => x.Weekly).Cascade(CascadeMode.Continue).ChildRules(p =>
         {
-            p.RuleFor(x => x.Weekday).InclusiveBetween(1, 7).WithErrorCode("INVALID_WEEKDAY");
-            p.RuleFor(x => x).Must(x => PeriodRules.LengthOk(x.Start, x.End, x.EndsNextDay)).WithName("period").WithErrorCode("PERIOD_LENGTH");
-            p.RuleFor(x => x.Capacity).InclusiveBetween(1, 200).When(x => x.Capacity is not null).WithErrorCode("INVALID_RANGE");
-            p.RuleFor(x => x.Label).MaximumLength(30).WithErrorCode("TOO_LONG");
+            p.RuleFor(x => x.Weekday).InclusiveBetween(1, 7).WithErrorCode(ErrorCodes.OutOfRange);
+            p.RuleFor(x => x.Capacity).InclusiveBetween(WeeklyHours.MinCapacity, WeeklyHours.MaxCapacity)
+                .When(x => x.Capacity is not null).WithErrorCode(ErrorCodes.OutOfRange);
+            p.RuleFor(x => x.Label).Must(l => l is null || l.Trim().Length <= WeeklyHours.MaxLabelChars).WithErrorCode(ErrorCodes.TooLong);
         });
-        RuleFor(x => x.Weekly).Must(PeriodRules.NoOverlap).WithErrorCode("PERIODS_OVERLAP");
-        RuleForEach(x => x.DateOverrides).ChildRules(o =>
+        RuleFor(x => x.Weekly).Custom((periods, context) =>
         {
-            o.RuleForEach(x => x.Periods).Must(p => PeriodRules.LengthOk(p.Start, p.End, p.EndsNextDay)).WithErrorCode("PERIOD_LENGTH");
-            o.RuleFor(x => x.Periods).Must(ps => PeriodRules.NoOverlap(ps.Select(p => new PeriodInput(1, p.Start, p.End, p.EndsNextDay, null, null)).ToList()))
-                .WithErrorCode("PERIODS_OVERLAP");
+            if (periods is null || periods.Any(p => p is null || p.Weekday is < 1 or > 7)) return;
+            AddPeriodProblems(context, "Weekly", WeeklyHours.Check(periods.Select(p => p.ToPeriod()).ToList()));
         });
+        RuleFor(x => x.DateOverrides).NotNull().WithErrorCode(ErrorCodes.Required);
+        RuleForEach(x => x.DateOverrides).Cascade(CascadeMode.Continue).ChildRules(o =>
+        {
+            o.RuleForEach(x => x.Periods).Cascade(CascadeMode.Continue).ChildRules(p =>
+            {
+                p.RuleFor(x => x.Capacity).InclusiveBetween(WeeklyHours.MinCapacity, WeeklyHours.MaxCapacity)
+                    .When(x => x.Capacity is not null).WithErrorCode(ErrorCodes.OutOfRange);
+                p.RuleFor(x => x.Label).Must(l => l is null || l.Trim().Length <= WeeklyHours.MaxLabelChars).WithErrorCode(ErrorCodes.TooLong);
+            });
+        });
+        // Each special date: the same rules, on one day (dateOverrides[i].periods[j].end, dateOverrides[i].periods[j]).
+        RuleFor(x => x.DateOverrides).Custom((overrides, context) =>
+        {
+            if (overrides is null) return;
+            for (var i = 0; i < overrides.Count; i++)
+            {
+                if (overrides[i]?.Periods is not { } periods) continue;
+                AddPeriodProblems(context, $"DateOverrides[{i}].Periods", WeeklyHours.Check(periods
+                    .Select(p => new WeeklyPeriod(1, p.Start, p.End, p.EndsNextDay, p.Label, p.Capacity)).ToList()));
+            }
+        });
+        RuleFor(x => x.Closures).NotNull().WithErrorCode(ErrorCodes.Required);
         RuleForEach(x => x.Closures).Must(c => c.ToLocal > c.FromLocal).WithErrorCode("INVALID_RANGE");
         RuleFor(x => x.Settings.Mode).Must(m => m is "queue" or "timed").WithName("mode").WithErrorCode("INVALID_MODE");
         RuleFor(x => x.Settings.SlotMinutes).InclusiveBetween(5, 120).WithName("slotMinutes").WithErrorCode("INVALID_RANGE");
@@ -285,28 +334,24 @@ public sealed class UpdateScheduleRequestValidator : AbstractValidator<UpdateSch
         RuleFor(x => x.Settings.NoShowLimitCount).InclusiveBetween(1, 20).WithName("noShowLimitCount").WithErrorCode("INVALID_RANGE");
         RuleFor(x => x.Settings.NoShowLimitDays).InclusiveBetween(1, 365).WithName("noShowLimitDays").WithErrorCode("INVALID_RANGE");
         RuleFor(x => x.Settings.ReminderMinutes).Must(r => r.Count <= 3 && r.All(m => m is >= 15 and <= 2880)).WithName("reminderMinutes").WithErrorCode("INVALID_RANGE");
-        RuleForEach(x => x.Decisions).Must(d => d.Action is "keep" or "cancel").WithErrorCode("INVALID_ACTION");
-    }
-}
-
-/// <summary>Working-hours rules (spec 11).</summary>
-public static class PeriodRules
-{
-    public static int Minutes(TimeOnly start, TimeOnly end, bool nextDay) =>
-        (int)((end.ToTimeSpan() + (nextDay ? TimeSpan.FromDays(1) : TimeSpan.Zero)) - start.ToTimeSpan()).TotalMinutes;
-
-    /// <summary>Ends after it starts (or the next day), and lasts 15 minutes to 16 hours.</summary>
-    public static bool LengthOk(TimeOnly start, TimeOnly end, bool nextDay) => Minutes(start, end, nextDay) is >= 15 and <= 960;
-
-    public static bool NoOverlap(IReadOnlyList<PeriodInput> periods) =>
-        periods.GroupBy(p => p.Weekday).All(day =>
+        RuleForEach(x => x.Decisions).Cascade(CascadeMode.Continue).ChildRules(d =>
         {
-            var ordered = day.OrderBy(p => p.Start).ToList();
-            for (var i = 1; i < ordered.Count; i++)
-            {
-                var prevEnd = ordered[i - 1].Start.ToTimeSpan() + TimeSpan.FromMinutes(Minutes(ordered[i - 1].Start, ordered[i - 1].End, ordered[i - 1].EndsNextDay));
-                if (ordered[i].Start.ToTimeSpan() < prevEnd) return false;
-            }
-            return true;
+            d.RuleFor(x => x.Action).Must(a => a is "keep" or "move" or "cancel").WithErrorCode("INVALID_ACTION");
+            d.RuleFor(x => x.Date).NotNull().When(x => x.Action == "move").WithErrorCode(ErrorCodes.Required);
+            d.RuleFor(x => x.Time).NotNull().When(x => x.Action == "move").WithErrorCode(ErrorCodes.Required);
         });
+    }
+
+    /// <summary>WeeklyHours problems as failures on <c>{root}[i].end</c>, <c>{root}[i]</c> or <c>{root}</c>.</summary>
+    private static void AddPeriodProblems<T>(ValidationContext<T> context, string root, IReadOnlyList<PeriodProblem> problems)
+    {
+        foreach (var problem in problems)
+        {
+            var field = problem.Field switch { "startLocal" => "Start", "endLocal" => "End", var other => other };
+            var path = problem.Index < 0 ? root
+                : field.Length == 0 ? $"{root}[{problem.Index}]"
+                : $"{root}[{problem.Index}].{field}";
+            context.AddFailure(new FluentValidation.Results.ValidationFailure(path, problem.Message) { ErrorCode = problem.Code });
+        }
+    }
 }

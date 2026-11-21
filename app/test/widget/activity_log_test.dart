@@ -82,10 +82,10 @@ void main() {
     await settle(tester);
     await tester.tap(find.byTooltip('Refresh'));
     await settle(tester);
-    expect(find.text('Changed the working hours of Nasr City'), findsOneWidget);
+    expect(find.text('Changed the schedule of Nasr City'), findsOneWidget);
     expect(find.text('7 periods a week'), findsOneWidget);
 
-    await tester.tap(find.text('Changed the working hours of Nasr City'));
+    await tester.tap(find.text('Changed the schedule of Nasr City'));
     await settle(tester);
     expect(find.byType(BranchEditorScreen), findsOneWidget);
   });

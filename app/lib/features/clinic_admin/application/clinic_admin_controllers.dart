@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/paged.dart';
@@ -57,6 +60,15 @@ class BranchesController extends AsyncNotifier<BranchList> {
   }
 }
 
+/// A branch photo's bytes (or its thumbnail), kept a few minutes after the last screen stops showing it.
+final branchPhotoProvider = FutureProvider.autoDispose.family<Uint8List, ({String branchId, String photoId, bool thumbnail})>((ref, key) async {
+  final bytes = await ref.read(clinicAdminRepositoryProvider).branchPhoto(key.branchId, key.photoId, thumbnail: key.thumbnail);
+  final link = ref.keepAlive();
+  final timer = Timer(const Duration(minutes: 5), link.close);
+  ref.onDispose(timer.cancel);
+  return bytes;
+});
+
 /// D29: one branch. Each tab saves its own group.
 final branchDetailProvider = AsyncNotifierProvider.autoDispose
     .family<BranchDetailController, BranchDetails, String>(BranchDetailController.new, retry: noRetry);
@@ -94,7 +106,14 @@ class BranchDetailController extends AsyncNotifier<BranchDetails> {
   Future<BranchDetails> saveChecklists(BranchChecklistInput clinicInfo) =>
       _keep(_repository.updateBranch(branchId, clinicInfo: clinicInfo));
 
-  Future<BranchDetails> saveHours(List<BranchPeriod> periods) => _keep(_repository.updateBranchHours(branchId, periods));
+  /// After the schedule tabs saved (`updateBranchSchedule`): the week shows here and on the D28
+  /// cards. Keeps the page on screen while it loads.
+  Future<void> refresh() async {
+    final next = await AsyncValue.guard(() => _repository.branch(branchId));
+    if (!ref.mounted || next.hasError) return;
+    state = next;
+    ref.invalidate(branchesProvider);
+  }
 
   /// Throws `BranchHasBookingsException` when bookings stand in the way (BR-BR9).
   Future<BranchDetails> setStatus(String status, {String? closedMessage, DateTime? reopenDate}) => _keep(
@@ -103,6 +122,13 @@ class BranchDetailController extends AsyncNotifier<BranchDetails> {
       );
 
   Future<BranchDetails> makeDefault() => _keep(_repository.setDefaultBranch(branchId), clinic: true);
+
+  /// D29 Info tab photos [S] (doctor only).
+  Future<BranchDetails> uploadPhoto(Uint8List bytes, String fileName) => _keep(_repository.uploadBranchPhoto(branchId, bytes, fileName));
+
+  Future<BranchDetails> reorderPhotos(List<String> photoIds) => _keep(_repository.reorderBranchPhotos(branchId, photoIds));
+
+  Future<BranchDetails> deletePhoto(String photoId) => _keep(_repository.deleteBranchPhoto(branchId, photoId));
 
   /// The branch's own prices from the Clinic info tab (`updatePrices`).
   Future<void> savePrices({int? examination, int? consultation}) async {

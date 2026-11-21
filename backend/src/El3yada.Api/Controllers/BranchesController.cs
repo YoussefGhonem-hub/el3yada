@@ -12,8 +12,10 @@ namespace El3yada.Api.Controllers;
 /// <summary>
 /// Branches (D28, D29, AS17; spec 9.1 <c>createBranch</c>, <c>updateBranch</c>, <c>setBranchStatus</c>, BR-BR1–BR10).
 /// Any clinic caller reads every branch of the doctor. Identity, address, contact, status and the default are
-/// doctor only (BR-AS5); working hours also accept an assistant with <c>scheduleManage</c> in that branch.
-/// Photos [S] are not built yet. There is no delete: a branch with history is archived (BR-BR9).
+/// doctor only (BR-AS5). Working hours, special dates and booking settings are not here: they change only through
+/// <c>updateBranchSchedule</c> (<c>PUT /api/staff/branches/{id}/schedule</c>, Features/Appointments/ScheduleService.cs),
+/// which lists the bookings a change affects first (BR-AP12). There is no delete: a branch with history is
+/// archived (BR-BR9).
 /// </summary>
 [ApiController]
 [Route("api/branches")]
@@ -138,56 +140,6 @@ public sealed class BranchesController(AppDbContext db, Auditor auditor, TimePro
 
         branch.UpdatedAt = Now;
         auditor.AddClinic(caller, AuditActions.BranchUpdated, AuditTargets.Branch, branch.Id, new { groups });
-        await db.SaveChangesAsync(cancellationToken);
-        return Ok(await BranchQueries.LoadDetailsAsync(db, caller, branch.Id, cancellationToken));
-    }
-
-    /// <summary>
-    /// Replaces the branch's weekly working hours (D29 Working hours tab, AS17). The doctor, or an assistant with
-    /// <c>scheduleManage</c> who works in the branch (BR-AS13).
-    /// </summary>
-    [HttpPost("updateBranchHours")]
-    [Clinic(ClinicPermissions.ScheduleManage)]
-    public async Task<IActionResult> UpdateBranchHours(UpdateBranchHoursRequest request, CancellationToken cancellationToken)
-    {
-        var caller = HttpContext.Clinic();
-        var branchId = request.BranchId!.Value;
-        if (!caller.CanUseBranch(branchId))
-        {
-            return this.BranchNotAllowed();
-        }
-
-        var branch = await db.Branches.Include(b => b.BranchPeriods)
-            .SingleOrDefaultAsync(b => b.Id == branchId && b.DoctorId == caller.DoctorId, cancellationToken);
-        if (branch is null)
-        {
-            return this.NotFoundProblem();
-        }
-
-        var periods = request.Periods!.Select(p => p.ToPeriod()).ToList();
-
-        // BR-AP12 (Phase 6): bookings that the new hours leave outside a period are listed here first (the D29
-        // conflicts sheet), and the change is applied with the action chosen for each. Until bookings exist in
-        // Phase 6 there is nothing to conflict with, so the new hours apply straight away.
-
-        db.BranchPeriods.RemoveRange(branch.BranchPeriods);
-        foreach (var period in periods)
-        {
-            db.BranchPeriods.Add(new BranchPeriod
-            {
-                Id = Guid.NewGuid(),
-                BranchId = branch.Id,
-                Weekday = (byte)period.Weekday,
-                StartLocal = period.Start,
-                EndLocal = period.End,
-                EndsNextDay = period.EndsNextDay,
-                Label = period.Label,
-                Capacity = period.Capacity,
-            });
-        }
-
-        branch.UpdatedAt = Now;
-        auditor.AddClinic(caller, AuditActions.BranchHoursUpdated, AuditTargets.Branch, branch.Id, new { periods = periods.Count });
         await db.SaveChangesAsync(cancellationToken);
         return Ok(await BranchQueries.LoadDetailsAsync(db, caller, branch.Id, cancellationToken));
     }

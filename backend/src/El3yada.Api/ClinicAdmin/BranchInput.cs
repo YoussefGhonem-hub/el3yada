@@ -194,60 +194,6 @@ public sealed class UpdateBranchRequestValidator : AbstractValidator<UpdateBranc
     }
 }
 
-/// <summary>One weekly period: ISO <c>weekday</c> (1 = Monday … 7 = Sunday), "HH:mm" times in Cairo.</summary>
-public sealed record BranchPeriodInput(int? Weekday, string? StartLocal, string? EndLocal, bool? EndsNextDay, string? Label, int? Capacity)
-{
-    /// <summary>The period, once the validator has passed.</summary>
-    public WeeklyPeriod ToPeriod() => new(
-        Weekday!.Value, WeeklyHours.ParseTime(StartLocal)!.Value, WeeklyHours.ParseTime(EndLocal)!.Value,
-        EndsNextDay ?? false, Text.TrimToNull(Label), Capacity);
-}
-
-/// <summary><c>updateBranchHours</c> (<c>scheduleManage</c>): the whole week, replacing every period. An empty list closes every day.</summary>
-public sealed record UpdateBranchHoursRequest(Guid? BranchId, List<BranchPeriodInput>? Periods);
-
-public sealed class UpdateBranchHoursRequestValidator : AbstractValidator<UpdateBranchHoursRequest>
-{
-    public UpdateBranchHoursRequestValidator()
-    {
-        RuleFor(x => x.BranchId).Required();
-        RuleFor(x => x.Periods).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("Send the week's periods (an empty list closes every day).");
-        // Continue: every period gets its own error, not only the first one that fails.
-        RuleForEach(x => x.Periods).Cascade(CascadeMode.Continue).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.").ChildRules(period =>
-        {
-            period.RuleFor(p => p.Weekday).NotNull().WithErrorCode(ErrorCodes.Required).WithMessage("This field is required.")
-                .InclusiveBetween(1, 7).WithErrorCode(ErrorCodes.OutOfRange).WithMessage("1 = Monday … 7 = Sunday.");
-            period.RuleFor(p => p.StartLocal).Required()
-                .Must(value => WeeklyHours.ParseTime(value) is not null)
-                .WithErrorCode(ErrorCodes.InvalidValue).WithMessage("Use HH:mm.");
-            period.RuleFor(p => p.EndLocal).Required()
-                .Must(value => WeeklyHours.ParseTime(value) is not null)
-                .WithErrorCode(ErrorCodes.InvalidValue).WithMessage("Use HH:mm.");
-            period.RuleFor(p => p.Label).MaxChars(WeeklyHours.MaxLabelChars);
-            period.RuleFor(p => p.Capacity).InclusiveBetween(WeeklyHours.MinCapacity, WeeklyHours.MaxCapacity)
-                .WithErrorCode(ErrorCodes.OutOfRange);
-        });
-
-        // Order, length and overlaps need the whole week, so they run once the single fields are readable.
-        RuleFor(x => x.Periods).Custom((periods, context) =>
-        {
-            if (periods is null || periods.Any(p => p is null || p.Weekday is not (>= 1 and <= 7)
-                || WeeklyHours.ParseTime(p.StartLocal) is null || WeeklyHours.ParseTime(p.EndLocal) is null))
-            {
-                return;
-            }
-
-            foreach (var problem in WeeklyHours.Check(periods.Select(p => p.ToPeriod()).ToList()))
-            {
-                var path = problem.Index < 0 ? "Periods"
-                    : problem.Field.Length == 0 ? $"Periods[{problem.Index}]"
-                    : $"Periods[{problem.Index}].{problem.Field}";
-                context.AddFailure(new FluentValidation.Results.ValidationFailure(path, problem.Message) { ErrorCode = problem.Code });
-            }
-        });
-    }
-}
-
 /// <summary>
 /// <c>setBranchStatus</c> (doctor only). <c>temporarilyClosed</c> needs <c>closedMessage</c> (shown to patients,
 /// BR-BR10) and may have <c>reopenDate</c> (a Cairo date, today or later). Other statuses clear both.

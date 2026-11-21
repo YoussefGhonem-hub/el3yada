@@ -6465,10 +6465,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorForbidden => 'ليس لديك صلاحية للوصول إلى هذا.';
 
   @override
-  String get errorDeletionAlreadyRequested =>
-      'لديك طلب حذف قيد المراجعة بالفعل.';
-
-  @override
   String get couldNotOpen => 'تعذّر الفتح على هذا الجهاز';
 
   @override
@@ -6955,33 +6951,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accountTitle => 'الحساب';
 
   @override
-  String get requestAccountDeletion => 'طلب حذف الحساب';
-
-  @override
-  String get deletionConfirmBody =>
-      'سيتم إرسال طلبك لفريق «العيادة». بعد الموافقة لن تتمكن من تسجيل الدخول. يحتفظ أطباؤك بالسجلات الطبية الملزمين بحفظها.';
-
-  @override
   String get deletionReasonLabel => 'السبب (اختياري)';
-
-  @override
-  String get deletionConfirmButton => 'إرسال الطلب';
-
-  @override
-  String get deletionRequestSent => 'تم إرسال طلبك وسنراجعه قريباً.';
-
-  @override
-  String get deletionPendingTitle => 'طلب الحذف قيد المراجعة';
-
-  @override
-  String deletionPendingBody(String date) {
-    return 'أُرسل يوم $date';
-  }
-
-  @override
-  String deletionRejected(String note) {
-    return 'تم رفض طلبك السابق: $note';
-  }
 
   @override
   String get termsGateTitle => 'قبل أن تبدأ';
@@ -6998,41 +6968,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get termsGateContinue => 'متابعة';
 
   @override
-  String get navDeletionRequests => 'طلبات حذف الحسابات';
-
-  @override
   String get navNotifications => 'الإشعارات';
-
-  @override
-  String get statusPending => 'قيد المراجعة';
-
-  @override
-  String get statusApproved => 'مقبولة';
-
-  @override
-  String get statusRejected => 'مرفوضة';
-
-  @override
-  String get noDeletionRequests => 'لا توجد طلبات هنا.';
 
   @override
   String get approve => 'موافقة';
 
   @override
   String get reject => 'رفض';
-
-  @override
-  String get approveDeletionTitle => 'الموافقة على الحذف؟';
-
-  @override
-  String get approveDeletionBody =>
-      'سيتم تسجيل خروج المريض من كل الأجهزة ولن يتمكن من الدخول مرة أخرى. تبقى السجلات الطبية لدى أطبائه.';
-
-  @override
-  String get rejectDeletionTitle => 'رفض الطلب';
-
-  @override
-  String get reasonRequiredLabel => 'السبب (يظهر للمريض)';
 
   @override
   String get errorInvalidPhone => 'رقم الموبايل غير صحيح';
@@ -7046,9 +6988,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noAccountsFound => 'لا يوجد حساب بهذا الرقم.';
-
-  @override
-  String get accountDeleted => 'تم حذف الحساب بناءً على طلب المريض';
 
   @override
   String linkedDoctors(String names) {
@@ -9939,4 +9878,314 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get newPatientContinue => 'كمّل الحجز';
+
+  @override
+  String get accountDeletionTile => 'حذف الحساب';
+
+  @override
+  String get accountDeletionTileBody =>
+      'بيتقفل على طول، وتقدر ترجّعه خلال فترة السماح';
+
+  @override
+  String get accountDeletionSheetTitle => 'حذف حسابك';
+
+  @override
+  String get accountDeletionWhatHappens => 'إيه اللي هيحصل';
+
+  @override
+  String accountDeletionStepGrace(int days, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days يوم',
+      few: '$days أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return 'لمدة $_temp0، لحد $date، تقدر ترجّعه لو دخلت بكلمة السر.';
+  }
+
+  @override
+  String get accountDeletionStepClosed =>
+      'حسابك هيتقفل دلوقتي، وهيتعمل تسجيل خروج من كل الأجهزة.';
+
+  @override
+  String get accountDeletionStepErase =>
+      'بعد كده اسمك ورقمك وإيميلك وصورك بيتمسحوا نهائياً.';
+
+  @override
+  String get accountDeletionPatientBookings =>
+      'مواعيدك الجاية هتتلغي، والشات مع العيادات هيتقفل.';
+
+  @override
+  String get accountDeletionPatientRecords =>
+      'سجلاتك الطبية بتفضل عند دكاترتك باسم «مريض محذوف».';
+
+  @override
+  String get accountDeletionDoctorClinic =>
+      'العيادة هتقف: المساعدين هيخرجوا، ومواعيد المرضى الجاية هتتلغي ويوصلهم إشعار.';
+
+  @override
+  String get accountDeletionDoctorRecords =>
+      'المرضى بيفضلوا شايفين كشوفاتهم وملفاتهم وروشتاتهم باسم «طبيب محذوف».';
+
+  @override
+  String get accountDeletionDoctorBilling =>
+      'الفواتير بتتحفظ، والحذف النهائي بيستنى لحد ما كل الفواتير تتدفع.';
+
+  @override
+  String get accountDeletionAssistant =>
+      'هتخرج من مساعدين العيادة، والدكتور هيوصله إشعار.';
+
+  @override
+  String get accountDeletionAdmin =>
+      'صلاحياتك كمسؤول هتتقفل، وسجل المراجعة بيفضل زي ما هو.';
+
+  @override
+  String accountDeletionFinalInvoice(String amount) {
+    return 'هيتعمل فاتورة نهائية بمبلغ $amount ولازم تتدفع قبل الحذف النهائي.';
+  }
+
+  @override
+  String get accountDeletionUnpaidTitle => 'لازم تسدد الفواتير المستحقة الأول';
+
+  @override
+  String get accountDeletionUnpaidBody =>
+      'مينفعش تحذف حسابك وعليك فاتورة مش مدفوعة أو متأخرة أو تحت المراجعة.';
+
+  @override
+  String get accountDeletionOpenInvoices => 'افتح الفواتير';
+
+  @override
+  String get accountDeletionPasswordHelper => 'علشان نتأكد إنه إنت.';
+
+  @override
+  String get accountDeletionConfirm => 'احذف حسابي';
+
+  @override
+  String get accountDeletionDoneTitle => 'حسابك اتقفل';
+
+  @override
+  String accountDeletionDoneBody(String date) {
+    return 'حسابك هيتحذف نهائياً يوم $date. لو غيرت رأيك، ادخل بكلمة السر قبلها ورجّعه.';
+  }
+
+  @override
+  String get accountDeletionRestoreTitle => 'حسابك مجدول للحذف';
+
+  @override
+  String accountDeletionRestoreBody(String date) {
+    return 'حسابك هيتحذف نهائياً يوم $date. رجّعه لو عايز تكمّل على «العيادة».';
+  }
+
+  @override
+  String get accountDeletionWaitingPaymentBody =>
+      'فترة السماح خلصت. حسابك هيتحذف أول ما الفواتير اللي تحت تتدفع، إلا لو رجّعته.';
+
+  @override
+  String get accountDeletionRestoreBookings =>
+      'المواعيد اللي اتلغت مع طلب الحذف هتفضل ملغية.';
+
+  @override
+  String accountDeletionRestoreByAdmin(String reason) {
+    return 'فريق «العيادة» بدأ حذف الحساب: $reason';
+  }
+
+  @override
+  String get accountDeletionRestoreButton => 'رجّع حسابي';
+
+  @override
+  String get accountDeletionRestoreDone => 'حسابك رجع تاني، أهلاً بيك!';
+
+  @override
+  String get accountDeletionInvoicesTitle => 'فواتير لازم تتدفع';
+
+  @override
+  String get accountDeletionInvoicesBody =>
+      'الحذف النهائي بيستنى لحد ما دول يتدفعوا.';
+
+  @override
+  String get chooseAccountPendingDeletion => 'مجدول للحذف';
+
+  @override
+  String get deletionStatusScheduled => 'مجدول';
+
+  @override
+  String get deletionStatusWaitingPayment => 'مستني الدفع';
+
+  @override
+  String get deletionStatusRestored => 'اترجع';
+
+  @override
+  String get deletionStatusCompleted => 'اتحذف';
+
+  @override
+  String get deletedPatient => 'مريض محذوف';
+
+  @override
+  String get deletedDoctor => 'طبيب محذوف';
+
+  @override
+  String get deletedAssistant => 'مساعد محذوف';
+
+  @override
+  String get deletedAdmin => 'مسؤول محذوف';
+
+  @override
+  String get patientPendingDeletionBanner => 'حساب المريض مجدول للحذف';
+
+  @override
+  String get patientPendingDeletionBody =>
+      'الملف والسجلات بتفضل معاك، وتقدر تسجل كشوفات عادي. الشات مقفول.';
+
+  @override
+  String get assistantPendingDeletion => 'طلب حذف حسابه';
+
+  @override
+  String get navAccountDeletions => 'حذف الحسابات';
+
+  @override
+  String get adminDeletionsSubtitle =>
+      'المجدولة والمستنية دفع واللي اترجعت واللي اتحذفت';
+
+  @override
+  String adminDeletionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلب',
+      few: '$count طلبات',
+      two: 'طلبين',
+      one: 'طلب واحد',
+      zero: 'مفيش طلبات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDeletionsEmpty => 'مفيش طلبات حذف هنا.';
+
+  @override
+  String get adminDeletionsRoleFilter => 'النوع';
+
+  @override
+  String get adminDeletionsStatusFilter => 'الحالة';
+
+  @override
+  String get adminDeletionsAll => 'الكل';
+
+  @override
+  String adminDeletionRequestedOn(String date) {
+    return 'اتطلب يوم $date';
+  }
+
+  @override
+  String adminDeletionScheduledFor(String date) {
+    return 'الحذف النهائي يوم $date';
+  }
+
+  @override
+  String adminDeletionCompletedOn(String date) {
+    return 'اتحذف يوم $date';
+  }
+
+  @override
+  String adminDeletionRestoredOn(String date, String name) {
+    return 'اترجع يوم $date بواسطة $name';
+  }
+
+  @override
+  String adminDeletionByAdmin(String name) {
+    return 'بدأه $name';
+  }
+
+  @override
+  String adminDeletionRestoreReason(String reason) {
+    return 'سبب الاسترجاع: $reason';
+  }
+
+  @override
+  String adminDeletionOwed(String amount, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فاتورة',
+      few: '$count فواتير',
+      two: 'فاتورتين',
+      one: 'فاتورة واحدة',
+    );
+    return 'عليه $amount ($_temp0)';
+  }
+
+  @override
+  String get adminDeletionCancel => 'إلغاء الحذف واسترجاع الحساب';
+
+  @override
+  String get adminDeletionCancelTitle => 'إلغاء الحذف؟';
+
+  @override
+  String get adminDeletionCancelBody =>
+      'الحساب هيرجع يشتغل على طول. الحجوزات اللي اتلغت هتفضل ملغية.';
+
+  @override
+  String get adminDeletionReasonLabel =>
+      'السبب (مطلوب، بيتسجل في سجل المراجعة)';
+
+  @override
+  String get adminDeletionCancelled => 'الحساب اترجع';
+
+  @override
+  String get adminDeleteAccount => 'حذف الحساب';
+
+  @override
+  String adminDeleteAccountTitle(String name) {
+    return 'حذف حساب $name؟';
+  }
+
+  @override
+  String get adminDeleteAccountBody =>
+      'الحساب هيتقفل على طول ويتحذف نهائياً بعد فترة السماح، وصاحبه يقدر يرجّعه لو دخل قبلها. السجلات الطبية والفواتير بتفضل.';
+
+  @override
+  String get adminDeleteAccountConfirm => 'ابدأ الحذف';
+
+  @override
+  String get adminDeletionStarted => 'بدأ حذف الحساب';
+
+  @override
+  String adminAccountPendingDeletion(String date) {
+    return 'مجدول للحذف يوم $date';
+  }
+
+  @override
+  String get adminSettingDeletionGrace => 'فترة السماح قبل حذف الحساب';
+
+  @override
+  String get adminAppliesToNewDeletions => 'على طلبات الحذف الجديدة بس';
+
+  @override
+  String billFinalInvoiceOf(String month) {
+    return 'فاتورة نهائية · $month';
+  }
+
+  @override
+  String billCarriedAdjustment(String month) {
+    return 'كشوفات بعد الفاتورة النهائية لشهر $month';
+  }
+
+  @override
+  String get errorAccountPendingDeletion => 'حسابك مجدول للحذف. رجّعه الأول.';
+
+  @override
+  String get errorAccountDeletionScheduled => 'الحساب ده مجدول للحذف بالفعل.';
+
+  @override
+  String get errorAccountNotPendingDeletion => 'الحساب ده مش مجدول للحذف.';
+
+  @override
+  String get errorAccountDeleted => 'الحساب ده اتحذف.';
+
+  @override
+  String get errorChatClosed =>
+      'المحادثة دي مقفولة لأن الحساب اتحذف أو مجدول للحذف.';
 }

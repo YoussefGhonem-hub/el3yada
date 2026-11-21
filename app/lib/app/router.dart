@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../core/settings/app_settings.dart';
 import '../core/theme/motion.dart';
+import '../features/account_deletion/presentation/account_deletions_screen.dart';
+import '../features/account_deletion/presentation/restore_account_screen.dart';
 import '../features/admin_support/presentation/admin_support_screens.dart';
 import '../features/appointments/presentation/appointments_routes.dart';
 import '../features/auth/application/auth_controller.dart';
@@ -15,12 +17,15 @@ import '../features/auth/presentation/language_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/set_password_screen.dart';
 import '../features/auth/presentation/trial_ended_screen.dart';
+import '../features/billing/presentation/invoice_details_screen.dart';
+import '../features/billing/presentation/submit_payment_screen.dart';
 import '../features/catalog/presentation/catalog_setup_screen.dart';
 import '../features/catalog/presentation/catalog_sources_screen.dart';
 import '../features/clinic/application/clinic_providers.dart';
 import '../features/doctor_registration/presentation/registration_status_screens.dart';
 import '../features/chat/chat_routes.dart';
 import '../features/patient/presentation/patient_routes.dart';
+import '../features/patients/clinic_paths.dart';
 import '../features/patients/domain/patient_models.dart' show LastVisitFilter;
 import '../features/patients/presentation/patients_register_screen.dart';
 import '../features/shell/fade_through_branches.dart';
@@ -49,7 +54,7 @@ final Map<String, GoRouterWidgetBuilder> _shellPages = {
   ...ChatRoutes.shellPages,
   ...AppointmentsRoutes.shellPages,
   '/admin/accounts': (context, state) => const AccountsSupportScreen(),
-  '/admin/deletion-requests': (context, state) => const DeletionRequestsScreen(),
+  '/admin/account-deletions': (context, state) => const AccountDeletionsScreen(),
 };
 
 Widget _destinationScreen(BuildContext context, GoRouterState state, NavDestinationSpec destination) =>
@@ -111,6 +116,23 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: AppRoutes.blocked, builder: (context, state) => const BlockedScreen()),
       GoRoute(path: AppRoutes.trialEnded, builder: (context, state) => const TrialEndedScreen()),
+      GoRoute(
+        path: AppRoutes.restoreAccount,
+        builder: (context, state) => const RestoreAccountScreen(),
+        routes: [
+          // A doctor pays from A16 (BR-DEL9): D19 and D20, outside the shell.
+          GoRoute(
+            path: 'invoices/:invoiceId',
+            builder: (context, state) => InvoiceDetailsScreen(invoiceId: state.pathParameters['invoiceId']!),
+            routes: [
+              GoRoute(
+                path: 'pay',
+                builder: (context, state) => SubmitPaymentScreen(invoiceId: state.pathParameters['invoiceId']!),
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(path: AppRoutes.update, builder: (context, state) => const UpdateScreen()),
       GoRoute(path: AppRoutes.maintenance, builder: (context, state) => const MaintenanceScreen()),
       GoRoute(path: AppRoutes.terms, builder: (context, state) => const LegalScreen(document: LegalDocument.terms)),
@@ -179,6 +201,8 @@ final routerProvider = Provider<GoRouter>((ref) {
 /// 6. Sign-in refused (disabled account, inactive clinic) → A10.
 /// 7. Signed out → the login and its sub-screens (A3, A4, A8).
 /// 8. `mustChangePassword` → A9.
+/// 8b. The account is in its deletion grace period → A16 only (a doctor's
+///     D19 and D20 open under it: `/doctor/billing/…` is sent there).
 /// 9. Doctor waiting for approval → A6 (and A5); rejected → A7 (and A4 to resubmit).
 /// 10. The clinic's free trial ended (doctor or assistant) → A15 only.
 /// 11. A5 can open over the shell for a doctor (the "Verify your email"
@@ -215,6 +239,16 @@ String? appRedirect(Ref ref, String location) {
   }
 
   if (session.mustChangePassword) return go(AppRoutes.setPassword);
+
+  if (session.isPendingDeletion) {
+    if (at(AppRoutes.restoreAccount)) return null;
+    // The invoice screens' Back and Pay go to the doctor's billing paths.
+    final billing = ClinicPaths.doctor.billing;
+    if (session.role == UserRole.doctor && location.startsWith('$billing/')) {
+      return '${AppRoutes.restoreAccount}/invoices/${location.substring(billing.length + 1)}';
+    }
+    return AppRoutes.restoreAccount;
+  }
 
   if (session.role == UserRole.doctor) {
     switch (session.doctorStatus) {

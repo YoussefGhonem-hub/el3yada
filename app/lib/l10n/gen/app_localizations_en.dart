@@ -6449,10 +6449,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorForbidden => 'You don\'t have access to this.';
 
   @override
-  String get errorDeletionAlreadyRequested =>
-      'You already have a deletion request under review.';
-
-  @override
   String get couldNotOpen => 'Couldn\'t open it on this device';
 
   @override
@@ -6930,34 +6926,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountTitle => 'Account';
 
   @override
-  String get requestAccountDeletion => 'Request account deletion';
-
-  @override
-  String get deletionConfirmBody =>
-      'We\'ll send your request to the el3yada team. Once it is approved you won\'t be able to sign in. Your doctors keep the medical records they are required to keep.';
-
-  @override
   String get deletionReasonLabel => 'Reason (optional)';
-
-  @override
-  String get deletionConfirmButton => 'Send request';
-
-  @override
-  String get deletionRequestSent =>
-      'Your request was sent. We\'ll review it soon.';
-
-  @override
-  String get deletionPendingTitle => 'Deletion request under review';
-
-  @override
-  String deletionPendingBody(String date) {
-    return 'Sent on $date';
-  }
-
-  @override
-  String deletionRejected(String note) {
-    return 'Your last request was declined: $note';
-  }
 
   @override
   String get termsGateTitle => 'Before you start';
@@ -6974,41 +6943,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get termsGateContinue => 'Continue';
 
   @override
-  String get navDeletionRequests => 'Deletion requests';
-
-  @override
   String get navNotifications => 'Notifications';
-
-  @override
-  String get statusPending => 'Pending';
-
-  @override
-  String get statusApproved => 'Approved';
-
-  @override
-  String get statusRejected => 'Rejected';
-
-  @override
-  String get noDeletionRequests => 'No requests here.';
 
   @override
   String get approve => 'Approve';
 
   @override
   String get reject => 'Reject';
-
-  @override
-  String get approveDeletionTitle => 'Approve deletion?';
-
-  @override
-  String get approveDeletionBody =>
-      'The patient will be signed out everywhere and can\'t sign in again. Medical records stay with their doctors.';
-
-  @override
-  String get rejectDeletionTitle => 'Reject the request';
-
-  @override
-  String get reasonRequiredLabel => 'Reason (the patient sees it)';
 
   @override
   String get errorInvalidPhone => 'Invalid mobile number';
@@ -7022,9 +6963,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAccountsFound => 'No account uses this number.';
-
-  @override
-  String get accountDeleted => 'Account deleted at the patient\'s request';
 
   @override
   String linkedDoctors(String names) {
@@ -9881,4 +9819,314 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newPatientContinue => 'Continue the booking';
+
+  @override
+  String get accountDeletionTile => 'Delete account';
+
+  @override
+  String get accountDeletionTileBody =>
+      'Closes at once. You can restore it during the grace period.';
+
+  @override
+  String get accountDeletionSheetTitle => 'Delete your account';
+
+  @override
+  String get accountDeletionWhatHappens => 'What happens';
+
+  @override
+  String accountDeletionStepGrace(int days, String date) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'For $_temp0, until $date, signing in with your password lets you restore it.';
+  }
+
+  @override
+  String get accountDeletionStepClosed =>
+      'Your account closes now, and every device is signed out.';
+
+  @override
+  String get accountDeletionStepErase =>
+      'After that, your name, number, email and photos are erased for good.';
+
+  @override
+  String get accountDeletionPatientBookings =>
+      'Your upcoming appointments are cancelled, and your chats with clinics are closed.';
+
+  @override
+  String get accountDeletionPatientRecords =>
+      'Your medical records stay with your doctors, under \"Deleted patient\".';
+
+  @override
+  String get accountDeletionDoctorClinic =>
+      'Your clinic stops: assistants are signed out, and upcoming bookings are cancelled and the patients told.';
+
+  @override
+  String get accountDeletionDoctorRecords =>
+      'Your patients keep their visits, files and prescriptions, under \"Deleted doctor\".';
+
+  @override
+  String get accountDeletionDoctorBilling =>
+      'Invoices are kept, and the final deletion waits until every invoice is paid.';
+
+  @override
+  String get accountDeletionAssistant =>
+      'You leave the clinic\'s assistants, and the doctor is told.';
+
+  @override
+  String get accountDeletionAdmin =>
+      'Your admin access closes. The audit log stays as it is.';
+
+  @override
+  String accountDeletionFinalInvoice(String amount) {
+    return 'A final invoice of $amount will be issued, and it must be paid before the final deletion.';
+  }
+
+  @override
+  String get accountDeletionUnpaidTitle =>
+      'Pay your outstanding invoices first';
+
+  @override
+  String get accountDeletionUnpaidBody =>
+      'You can\'t delete your account while an invoice is unpaid, overdue or under review.';
+
+  @override
+  String get accountDeletionOpenInvoices => 'Open invoices';
+
+  @override
+  String get accountDeletionPasswordHelper => 'To confirm it\'s you.';
+
+  @override
+  String get accountDeletionConfirm => 'Delete my account';
+
+  @override
+  String get accountDeletionDoneTitle => 'Your account is closed';
+
+  @override
+  String accountDeletionDoneBody(String date) {
+    return 'It will be permanently deleted on $date. Changed your mind? Sign in before then and restore it.';
+  }
+
+  @override
+  String get accountDeletionRestoreTitle => 'Your account is being deleted';
+
+  @override
+  String accountDeletionRestoreBody(String date) {
+    return 'Your account will be permanently deleted on $date. Restore it to keep using el3yada.';
+  }
+
+  @override
+  String get accountDeletionWaitingPaymentBody =>
+      'The grace period is over. Your account is deleted as soon as the invoices below are paid, unless you restore it.';
+
+  @override
+  String get accountDeletionRestoreBookings =>
+      'Appointments cancelled when the deletion started stay cancelled.';
+
+  @override
+  String accountDeletionRestoreByAdmin(String reason) {
+    return 'The el3yada team started this deletion: $reason';
+  }
+
+  @override
+  String get accountDeletionRestoreButton => 'Restore my account';
+
+  @override
+  String get accountDeletionRestoreDone =>
+      'Your account is back. Welcome back!';
+
+  @override
+  String get accountDeletionInvoicesTitle => 'Invoices to pay';
+
+  @override
+  String get accountDeletionInvoicesBody =>
+      'The final deletion waits until these are paid.';
+
+  @override
+  String get chooseAccountPendingDeletion => 'Scheduled for deletion';
+
+  @override
+  String get deletionStatusScheduled => 'Scheduled';
+
+  @override
+  String get deletionStatusWaitingPayment => 'Waiting for payment';
+
+  @override
+  String get deletionStatusRestored => 'Restored';
+
+  @override
+  String get deletionStatusCompleted => 'Deleted';
+
+  @override
+  String get deletedPatient => 'Deleted patient';
+
+  @override
+  String get deletedDoctor => 'Deleted doctor';
+
+  @override
+  String get deletedAssistant => 'Deleted assistant';
+
+  @override
+  String get deletedAdmin => 'Deleted admin';
+
+  @override
+  String get patientPendingDeletionBanner =>
+      'This patient\'s account is scheduled for deletion';
+
+  @override
+  String get patientPendingDeletionBody =>
+      'The file and records stay with you, and you can still record sessions. Chat is closed.';
+
+  @override
+  String get assistantPendingDeletion => 'Asked to delete their account';
+
+  @override
+  String get navAccountDeletions => 'Account deletions';
+
+  @override
+  String get adminDeletionsSubtitle =>
+      'Scheduled, waiting for payment, restored and completed';
+
+  @override
+  String adminDeletionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count deletions',
+      one: '1 deletion',
+      zero: 'No deletions',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminDeletionsEmpty => 'No account deletions here.';
+
+  @override
+  String get adminDeletionsRoleFilter => 'Role';
+
+  @override
+  String get adminDeletionsStatusFilter => 'Status';
+
+  @override
+  String get adminDeletionsAll => 'All';
+
+  @override
+  String adminDeletionRequestedOn(String date) {
+    return 'Asked on $date';
+  }
+
+  @override
+  String adminDeletionScheduledFor(String date) {
+    return 'Erased on $date';
+  }
+
+  @override
+  String adminDeletionCompletedOn(String date) {
+    return 'Erased on $date';
+  }
+
+  @override
+  String adminDeletionRestoredOn(String date, String name) {
+    return 'Restored on $date by $name';
+  }
+
+  @override
+  String adminDeletionByAdmin(String name) {
+    return 'Started by $name';
+  }
+
+  @override
+  String adminDeletionRestoreReason(String reason) {
+    return 'Restore reason: $reason';
+  }
+
+  @override
+  String adminDeletionOwed(String amount, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count invoices',
+      one: '1 invoice',
+    );
+    return 'Owes $amount ($_temp0)';
+  }
+
+  @override
+  String get adminDeletionCancel => 'Cancel and restore';
+
+  @override
+  String get adminDeletionCancelTitle => 'Cancel this deletion?';
+
+  @override
+  String get adminDeletionCancelBody =>
+      'The account works again at once. Cancelled bookings stay cancelled.';
+
+  @override
+  String get adminDeletionReasonLabel =>
+      'Reason (required, kept in the audit log)';
+
+  @override
+  String get adminDeletionCancelled => 'The account was restored';
+
+  @override
+  String get adminDeleteAccount => 'Delete account';
+
+  @override
+  String adminDeleteAccountTitle(String name) {
+    return 'Delete $name\'s account?';
+  }
+
+  @override
+  String get adminDeleteAccountBody =>
+      'The account closes at once and is erased after the grace period. Its owner can restore it by signing in before then. Medical and billing records stay.';
+
+  @override
+  String get adminDeleteAccountConfirm => 'Start deletion';
+
+  @override
+  String get adminDeletionStarted => 'The deletion started';
+
+  @override
+  String adminAccountPendingDeletion(String date) {
+    return 'Scheduled for deletion on $date';
+  }
+
+  @override
+  String get adminSettingDeletionGrace => 'Account deletion grace period';
+
+  @override
+  String get adminAppliesToNewDeletions => 'New deletions only';
+
+  @override
+  String billFinalInvoiceOf(String month) {
+    return 'Final invoice · $month';
+  }
+
+  @override
+  String billCarriedAdjustment(String month) {
+    return 'Sessions after the final invoice of $month';
+  }
+
+  @override
+  String get errorAccountPendingDeletion =>
+      'Your account is scheduled for deletion. Restore it first.';
+
+  @override
+  String get errorAccountDeletionScheduled =>
+      'This account is already scheduled for deletion.';
+
+  @override
+  String get errorAccountNotPendingDeletion =>
+      'This account isn\'t scheduled for deletion.';
+
+  @override
+  String get errorAccountDeleted => 'This account was deleted.';
+
+  @override
+  String get errorChatClosed =>
+      'This chat is closed: an account in it was deleted or is being deleted.';
 }

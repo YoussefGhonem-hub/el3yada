@@ -55,6 +55,14 @@ abstract class AuthSession with _$AuthSession {
     /// own, an assistant's doctor's. Null when there is none (the service is
     /// active) and for other roles.
     TrialInfo? trial,
+
+    /// `active`, or `pendingDeletion` during the account's deletion grace
+    /// period (backend/docs/api-account-deletion.md).
+    @Default('active') String accountStatus,
+
+    /// The account's deletion in progress: the app shows only A16 (restore,
+    /// sign out and, for a doctor, pay invoices). Null otherwise.
+    PendingDeletion? pendingDeletion,
     required String accessToken,
     DateTime? accessTokenExpiresAt,
     required String refreshToken,
@@ -68,6 +76,9 @@ abstract class AuthSession with _$AuthSession {
   /// The clinic's free trial has ended: the doctor and their assistants only
   /// see A15 until the admin activates the service or extends the trial.
   bool get trialEnded => trial?.ended ?? false;
+
+  /// The account is in its deletion grace period: A16 only.
+  bool get isPendingDeletion => pendingDeletion != null;
 
   /// The same tokens with the account fields from `GET /api/auth/me`.
   /// (Round-trips through JSON text: `toJson` keeps enums and dates as objects.)
@@ -106,6 +117,41 @@ abstract class TrialInfo with _$TrialInfo {
   factory TrialInfo.fromJson(Map<String, dynamic> json) => _$TrialInfoFromJson(json);
 
   bool get running => !ended;
+}
+
+/// An account's deletion in progress (spec 6.17): in the session while the
+/// account is in its grace period. Dates are UTC; A16 shows the Cairo day of
+/// [scheduledFor].
+@freezed
+abstract class PendingDeletion with _$PendingDeletion {
+  const PendingDeletion._();
+
+  const factory PendingDeletion({
+    required String requestId,
+
+    /// `scheduled`, or `waitingPayment` once a doctor's grace period
+    /// passed with an invoice unpaid.
+    @Default('scheduled') String status,
+    required DateTime requestedAt,
+
+    /// When the identity is erased (for a doctor, once every invoice is paid).
+    required DateTime scheduledFor,
+    String? reason,
+
+    /// An admin started it (a support case).
+    @Default(false) bool requestedByAdmin,
+
+    /// Doctors: the invoices still to pay, and their total in piasters.
+    @Default(0) int unpaidInvoices,
+    @Default(0) int outstandingPiasters,
+
+    /// The erasure waits for those invoices, even after [scheduledFor].
+    @Default(false) bool waitsForPayment,
+  }) = _PendingDeletion;
+
+  factory PendingDeletion.fromJson(Map<String, dynamic> json) => _$PendingDeletionFromJson(json);
+
+  bool get waitingPayment => status == 'waitingPayment';
 }
 
 /// `Doctors.Status` (spec 8). A disabled doctor never gets a session: the API

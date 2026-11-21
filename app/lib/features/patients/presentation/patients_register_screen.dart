@@ -16,6 +16,7 @@ import '../../../core/widgets/skeleton_loading.dart';
 import '../../../core/widgets/staggered_entrance.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../account_deletion/presentation/account_deletion_text.dart';
 import '../../clinic/domain/clinic_context.dart';
 import '../../clinic/domain/clinic_permissions.dart';
 import '../../records/data/file_actions.dart';
@@ -697,7 +698,7 @@ class _PatientCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InitialAvatar(name: row.fullName, size: 46, muted: row.archived),
+                  InitialAvatar(name: personName(context, row.fullName), size: 46, muted: row.archived),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -707,7 +708,7 @@ class _PatientCard extends StatelessWidget {
                           children: [
                             Flexible(
                               child: Text(
-                                row.fullName,
+                                personName(context, row.fullName),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.titleMedium,
@@ -858,7 +859,7 @@ class _CompactRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            InitialAvatar(name: row.fullName, size: 38, muted: row.archived),
+            InitialAvatar(name: personName(context, row.fullName), size: 38, muted: row.archived),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -867,7 +868,7 @@ class _CompactRow extends StatelessWidget {
                   Row(
                     children: [
                       Flexible(
-                        child: Text(row.fullName,
+                        child: Text(personName(context, row.fullName),
                             maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall),
                       ),
                       if (row.hasAllergies ?? false) ...[const SizedBox(width: 6), const AllergyFlag(compact: true)],
@@ -941,11 +942,11 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
         children: [
           // A narrow table keeps the room for the name.
           if (width >= 1000) ...[
-            InitialAvatar(name: row.fullName, size: 32, muted: row.archived),
+            InitialAvatar(name: personName(context, row.fullName), size: 32, muted: row.archived),
             const SizedBox(width: 10),
           ],
           Flexible(
-            child: Text(row.fullName, maxLines: 2, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall),
+            child: Text(personName(context, row.fullName), maxLines: 2, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall),
           ),
         ],
       ),

@@ -945,9 +945,13 @@ class _AccountChooser extends StatelessWidget {
                     child: ListTile(
                       leading: Icon(account.role == UserRole.assistant ? Icons.badge_outlined : Icons.person_outline),
                       title: Text(account.role.label(l10n)),
-                      subtitle: Text(account.role == UserRole.assistant && account.doctorName != null
-                          ? l10n.assistantAtClinic(account.doctorName!)
-                          : account.displayName),
+                      subtitle: Text([
+                        account.role == UserRole.assistant && account.doctorName != null
+                            ? l10n.assistantAtClinic(account.doctorName!)
+                            : account.displayName,
+                        // Spec 6.17: choosing it opens the restore screen (A16).
+                        if (account.pendingDeletion) l10n.chooseAccountPendingDeletion,
+                      ].join(' · ')),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () => Navigator.of(context).pop(account.role),
                     ),

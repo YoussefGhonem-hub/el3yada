@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/format/app_format.dart';
+import '../../../account_deletion/presentation/account_deletion_text.dart';
 import '../../../../core/theme/motion.dart';
 import '../../../../core/widgets/empty_state.dart';
 import '../../../../core/widgets/pressable.dart';
@@ -282,7 +283,7 @@ class AssistantTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(assistant.fullName, style: theme.textTheme.titleMedium),
+                  Text(personName(context, assistant.fullName), style: theme.textTheme.titleMedium),
                   LtrText(AppFormat.phone(assistant.phone), style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
                   const SizedBox(height: 8),
                   Wrap(
@@ -292,6 +293,7 @@ class AssistantTile extends StatelessWidget {
                       PresetPill(preset: assistant.preset),
                       AssistantStatusPill(status: assistant.status),
                       if (assistant.mustChangePassword) StatusPill(label: l10n.adminPasswordNotSet, tone: PillTone.warning),
+                      if (assistant.pendingDeletion) StatusPill(label: l10n.assistantPendingDeletion, tone: PillTone.danger),
                     ],
                   ),
                   const SizedBox(height: 8),

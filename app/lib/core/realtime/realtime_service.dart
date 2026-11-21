@@ -169,9 +169,10 @@ final realtimeServiceProvider = Provider<RealtimeService>((ref) {
   // Follows the session: connect after sign-in, disconnect on sign-out.
   ref.listen(authControllerProvider, (previous, next) {
     final session = next.value;
-    if (session == null) {
+    // A16 (an account in its deletion grace period) needs no live updates.
+    if (session == null || session.isPendingDeletion) {
       service.disconnect();
-    } else if (previous?.value?.accessToken != session.accessToken) {
+    } else if (previous?.value?.accessToken != session.accessToken || (previous?.value?.isPendingDeletion ?? false)) {
       service.connect(session);
     }
   }, fireImmediately: true);

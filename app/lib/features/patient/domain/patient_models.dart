@@ -958,41 +958,6 @@ class PatientHome {
 
 // ---- P14 ------------------------------------------------------------------------------------
 
-enum DeletionRequestStatus {
-  pending,
-  approved,
-  rejected;
-
-  static DeletionRequestStatus fromJson(String value) => DeletionRequestStatus.values.byName(value);
-}
-
-class DeletionRequest {
-  const DeletionRequest({
-    required this.id,
-    required this.status,
-    this.reason,
-    required this.createdAt,
-    this.reviewedAt,
-    this.reviewNote,
-  });
-
-  final String id;
-  final DeletionRequestStatus status;
-  final String? reason;
-  final DateTime createdAt;
-  final DateTime? reviewedAt;
-  final String? reviewNote;
-
-  factory DeletionRequest.fromJson(Json json) => DeletionRequest(
-        id: json['id'] as String,
-        status: DeletionRequestStatus.fromJson(json['status'] as String),
-        reason: json['reason'] as String?,
-        createdAt: _date(json['createdAt']),
-        reviewedAt: _dateOrNull(json['reviewedAt']),
-        reviewNote: json['reviewNote'] as String?,
-      );
-}
-
 class NotificationPrefs {
   const NotificationPrefs({required this.chat, required this.reminders, required this.showPreview});
 
@@ -1016,7 +981,6 @@ class PatientAccount {
     required this.themeMode,
     required this.notifications,
     this.acceptedTermsAt,
-    this.deletionRequest,
   });
 
   final PersonalInfo personal;
@@ -1024,14 +988,10 @@ class PatientAccount {
   final String themeMode;
   final NotificationPrefs notifications;
   final DateTime? acceptedTermsAt;
-  final DeletionRequest? deletionRequest;
-
-  bool get hasPendingDeletion => deletionRequest?.status == DeletionRequestStatus.pending;
 
   PatientAccount copyWith({
     NotificationPrefs? notifications,
     DateTime? acceptedTermsAt,
-    DeletionRequest? deletionRequest,
   }) =>
       PatientAccount(
         personal: personal,
@@ -1039,7 +999,6 @@ class PatientAccount {
         themeMode: themeMode,
         notifications: notifications ?? this.notifications,
         acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
-        deletionRequest: deletionRequest ?? this.deletionRequest,
       );
 
   factory PatientAccount.fromJson(Json json) => PatientAccount(
@@ -1052,7 +1011,5 @@ class PatientAccount {
           showPreview: json['notifyShowPreview'] as bool,
         ),
         acceptedTermsAt: _dateOrNull(json['acceptedTermsAt']),
-        deletionRequest:
-            json['deletionRequest'] == null ? null : DeletionRequest.fromJson(json['deletionRequest'] as Json),
       );
 }

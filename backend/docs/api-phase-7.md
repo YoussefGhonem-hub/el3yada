@@ -25,13 +25,13 @@ Who may call what:
 }
 ```
 
-`InvoiceListItem`: `id, monthKey, periodStart, periodEnd, examCount, consultationCount, examAmountPiasters, consultationAmountPiasters, adjustmentsPiasters, totalDuePiasters, dueDate, status, canPay, paidAt`.
+`InvoiceListItem`: `id, monthKey, periodStart, periodEnd, examCount, consultationCount, examAmountPiasters, consultationAmountPiasters, adjustmentsPiasters, totalDuePiasters, dueDate, status, canPay, paidAt, isFinal`. `isFinal`: a month closed early by the doctor's account deletion ([api-account-deletion.md](api-account-deletion.md)).
 `status`: `unpaid | pendingReview | paid | rejected | overdue | waived | noCharge`. `canPay` is true for `unpaid`, `rejected` and `overdue`.
 The running month is not an invoice: D18 shows it from `GET /api/sessions/month` (Phase 2).
 
 ### `GET /api/billing/invoices/{id}` (D19)
 
-`InvoiceDetail`: the list fields plus `paidMethod`, `branches` (`branchId, nameAr, nameEn, examCount, consultationCount, amountPiasters`), `adjustments` (`id, amountPiasters, reason, createdAt`), `timeline` (`status, note, changedAt, changedByRole`), `payments` (`id, amountPiasters, transferDate, reference, senderName, note, status, submittedAt, reviewedAt, rejectionReason, screenshots`), and `doctor` (null here). 404 for another doctor's invoice.
+`InvoiceDetail`: the list fields plus `paidMethod`, `branches` (`branchId, nameAr, nameEn, examCount, consultationCount, amountPiasters`), `adjustments` (`id, amountPiasters, reason, createdAt, carriedMonthKey`; `carriedMonthKey` marks fees carried from a final invoice of that month), `timeline` (`status, note, changedAt, changedByRole`), `payments` (`id, amountPiasters, transferDate, reference, senderName, note, status, submittedAt, reviewedAt, rejectionReason, screenshots`), and `doctor` (null here). 404 for another doctor's invoice.
 
 ### `GET /api/billing/paymentInfo` (D20)
 
@@ -130,10 +130,11 @@ Query: `year`, or `from` and `to`; `branchId`; `type`.
 
 | Job | When | What |
 |---|---|---|
-| `monthlyClose` | from 00:05 (the previous month, once a day; a closed month changes nothing) | One invoice per doctor with sessions in the month, from the fee snapshots; `noCharge` when the total is 0; due date = last day of the month + `gracePeriodDays`; notifies the doctor. |
+| `monthlyClose` | from 00:05 (the previous month, once a day; a closed month changes nothing) | One invoice per doctor with sessions in the month, from the fee snapshots; `noCharge` when the total is 0; due date = last day of the month + `gracePeriodDays`; notifies the doctor. Fees of sessions saved after an earlier final invoice are added as adjustment lines, also for a doctor with no session this month (api-account-deletion.md, BR-DEL10). |
 | `dailyBillingCheck` | 00:10 | Reminders 2 days before and on the due date (once each); `unpaid` / `rejected` invoices past their due date become `overdue` and the doctor is suspended with the reason `billing:{monthKey}`; doctors suspended for billing with nothing overdue are reactivated. `pendingReview` never suspends (BR-G2). |
 | `buildDailyMetrics` | 02:30 | Yesterday's `DoctorDailyMetrics` rows per doctor and branch, and any earlier day whose sessions changed in the last two days. |
 | `statsReconcile` | 03:00 | Recalculates yesterday's `DailyStats` and the month's `MonthlyStats` from the sessions, corrects drift and writes one audit row per correction. |
+| `accountErasure` | 03:30 | Erases the accounts whose deletion grace period has passed; a doctor who still owes an invoice waits (`waitingPayment`). See [api-account-deletion.md](api-account-deletion.md). |
 
 Set `Jobs:Enabled=false` to turn the hosted scheduler off (tests call the jobs directly). `Jobs:BillingIntervalMinutes` (default 5) is how often it checks the clock.
 

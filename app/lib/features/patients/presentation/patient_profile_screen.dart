@@ -16,6 +16,7 @@ import '../../../core/widgets/staggered_entrance.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../core/widgets/temporary_password_dialog.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../account_deletion/presentation/account_deletion_text.dart';
 import '../../appointments/domain/appointment_models.dart' show Appointment, AppointmentStatus, PatientLookup;
 import '../../appointments/presentation/appointment_format.dart' show AppointmentFormat, StatusChip;
 import '../../chat/chat_data.dart' show chatRepositoryProvider;
@@ -399,7 +400,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InitialAvatar(name: patient.fullName, size: 60, muted: patient.archived),
+                InitialAvatar(name: l10n.personName(patient.fullName), size: 60, muted: patient.archived || patient.deleted),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
@@ -407,7 +408,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                     children: [
                       Semantics(
                         header: true,
-                        child: Text(patient.fullName, style: theme.textTheme.headlineSmall),
+                        child: Text(l10n.personName(patient.fullName), style: theme.textTheme.headlineSmall),
                       ),
                       const SizedBox(height: 8),
                       Wrap(
@@ -429,8 +430,15 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            _PhoneRow(phone: patient.phone),
+            // Spec 6.17: the account is in its deletion grace period. The file and records stay; chat is closed.
+            if (patient.pendingDeletion) ...[
+              const SizedBox(height: 14),
+              const _PendingDeletionBanner(),
+            ],
+            if (patient.phone.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              _PhoneRow(phone: patient.phone),
+            ],
             if (actions.isNotEmpty) ...[
               const SizedBox(height: 14),
               // Two to a row, so four actions still fit a phone.
@@ -572,6 +580,51 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
 }
 
 /// The phone, left to right, with Call and WhatsApp.
+/// D6: «حساب المريض مجدول للحذف».
+class _PendingDeletionBanner extends StatelessWidget {
+  const _PendingDeletionBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Semantics(
+      container: true,
+      child: DecoratedBox(
+        key: const Key('patientPendingDeletionBanner'),
+        decoration: BoxDecoration(color: scheme.errorContainer, borderRadius: BorderRadius.circular(14)),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ExcludeSemantics(child: Icon(Icons.hourglass_top_outlined, color: scheme.onErrorContainer)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.patientPendingDeletionBanner,
+                      style: theme.textTheme.titleSmall?.copyWith(color: scheme.onErrorContainer),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.patientPendingDeletionBody,
+                      style: theme.textTheme.bodySmall?.copyWith(color: scheme.onErrorContainer),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _PhoneRow extends StatelessWidget {
   const _PhoneRow({required this.phone});
 

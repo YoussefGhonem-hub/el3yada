@@ -13,8 +13,9 @@ class ApiError implements Exception {
   static const forbidden = 'FORBIDDEN';
   static const unauthorized = 'UNAUTHORIZED';
   static const validationFailed = 'VALIDATION_FAILED';
-  static const deletionAlreadyRequested = 'DELETION_ALREADY_REQUESTED';
   static const accountDeleted = 'ACCOUNT_DELETED';
+  static const accountDeletionScheduled = 'ACCOUNT_DELETION_SCHEDULED';
+  static const chatClosed = 'CHAT_CLOSED';
   static const fileMissing = 'FILE_MISSING';
 
   final String code;
@@ -47,8 +48,10 @@ extension ApiErrorMessage on AppLocalizations {
   String apiErrorMessage(Object error) => switch (ApiError.from(error).code) {
         ApiError.network => errorNoInternet,
         ApiError.notFound || ApiError.fileMissing => errorNotFound,
-        ApiError.forbidden || ApiError.unauthorized || ApiError.accountDeleted => errorForbidden,
-        ApiError.deletionAlreadyRequested => errorDeletionAlreadyRequested,
+        ApiError.forbidden || ApiError.unauthorized => errorForbidden,
+        ApiError.accountDeleted => errorAccountDeleted,
+        ApiError.accountDeletionScheduled => errorAccountDeletionScheduled,
+        ApiError.chatClosed => errorChatClosed,
         _ => errorUnknown,
       };
 }

@@ -148,6 +148,8 @@ abstract final class SettingFields {
     SettingFieldSpec('maxConsecutiveConsultations', SettingKind.integer, SettingGroup.billing,
         min: 1, max: 5, appliesToNewOnly: true),
     SettingFieldSpec('trialDays', SettingKind.integer, SettingGroup.billing, min: 1, max: 90, appliesToNewOnly: true),
+    // Spec 6.17 BR-DEL2: days from a deletion request to the erasure.
+    SettingFieldSpec('accountDeletionGraceDays', SettingKind.integer, SettingGroup.clinics, min: 7, max: 90, appliesToNewOnly: true),
     SettingFieldSpec('instapayAddress', SettingKind.text, SettingGroup.payment, maxLength: 200),
     SettingFieldSpec('instapayAccountName', SettingKind.text, SettingGroup.payment, maxLength: 100),
     SettingFieldSpec('instapayInstructionsAr', SettingKind.text, SettingGroup.payment,

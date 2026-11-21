@@ -137,7 +137,15 @@ class PatientView {
   /// This clinic created the account, so it sees and edits the optional
   /// details. A clinic that linked an existing patient doesn't (BR-P3).
   final bool ownsDetails;
+
+  /// `active`, `pendingDeletion` while the patient's account is in its
+  /// deletion grace period (D6 banner), or `deleted` once erased (spec 6.17).
   final String accountStatus;
+
+  bool get pendingDeletion => accountStatus == 'pendingDeletion';
+
+  /// The identity was erased: the file reads «مريض محذوف», without a number.
+  bool get deleted => accountStatus == 'deleted';
   final bool archived;
   final DateTime? archivedAt;
   final DateTime linkedAt;

@@ -51,6 +51,7 @@ class Assistant {
     required this.createdAt,
     this.updatedAt,
     this.removedAt,
+    this.accountStatus = 'active',
   });
 
   factory Assistant.fromJson(Map<String, dynamic> json) {
@@ -70,6 +71,7 @@ class Assistant {
       createdAt: readTime(json['createdAt']),
       updatedAt: readTimeOrNull(json['updatedAt']),
       removedAt: readTimeOrNull(json['removedAt']),
+      accountStatus: json['accountStatus'] as String? ?? 'active',
     );
   }
 
@@ -99,6 +101,12 @@ class Assistant {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final DateTime? removedAt;
+
+  /// Their login (Users.Status): `pendingDeletion` while they are deleting
+  /// their account (spec 6.17), when they no longer act for the clinic.
+  final String accountStatus;
+
+  bool get pendingDeletion => accountStatus == 'pendingDeletion';
 
   bool get isActive => status == AssistantStatuses.active;
   bool get isRemoved => status == AssistantStatuses.removed;

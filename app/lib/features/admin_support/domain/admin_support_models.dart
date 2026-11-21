@@ -2,53 +2,23 @@ import '../../patient/domain/patient_models.dart' show Json;
 
 DateTime? _date(Object? v) => v == null ? null : DateTime.parse(v as String);
 
-/// AD12 row. Patient name and phone only: no medical data.
-class AdminDeletionRequest {
-  const AdminDeletionRequest({
-    required this.id,
-    required this.patientId,
-    required this.patientName,
-    required this.patientPhone,
-    this.reason,
-    required this.status,
-    required this.createdAt,
-    this.reviewedAt,
-    this.reviewedByName,
-    this.reviewNote,
-  });
+/// An account's deletion in progress (spec 6.17), in AD11's search results.
+class SupportDeletion {
+  const SupportDeletion({required this.id, required this.status, required this.scheduledFor});
+
+  factory SupportDeletion.fromJson(Json json) => SupportDeletion(
+        id: json['id'] as String,
+        status: json['status'] as String,
+        scheduledFor: _date(json['scheduledFor'])!,
+      );
 
   final String id;
-  final String patientId;
-  final String patientName;
-  final String patientPhone;
-  final String? reason;
 
-  /// pending, approved or rejected.
+  /// scheduled or waitingPayment.
   final String status;
-  final DateTime createdAt;
-  final DateTime? reviewedAt;
-  final String? reviewedByName;
-  final String? reviewNote;
+  final DateTime scheduledFor;
 
-  bool get isPending => status == 'pending';
-
-  AdminDeletionRequest reviewed(String newStatus, String? note, DateTime at) => AdminDeletionRequest(
-        id: id, patientId: patientId, patientName: patientName, patientPhone: patientPhone, reason: reason,
-        status: newStatus, createdAt: createdAt, reviewedAt: at, reviewNote: note,
-      );
-
-  factory AdminDeletionRequest.fromJson(Json json) => AdminDeletionRequest(
-        id: json['id'] as String,
-        patientId: json['patientId'] as String,
-        patientName: json['patientName'] as String,
-        patientPhone: json['patientPhone'] as String,
-        reason: json['reason'] as String?,
-        status: json['status'] as String,
-        createdAt: _date(json['createdAt'])!,
-        reviewedAt: _date(json['reviewedAt']),
-        reviewedByName: json['reviewedByName'] as String?,
-        reviewNote: json['reviewNote'] as String?,
-      );
+  static SupportDeletion? fromJsonOrNull(Object? json) => json == null ? null : SupportDeletion.fromJson(json as Json);
 }
 
 class LinkedDoctor {
@@ -71,6 +41,7 @@ class SupportPatient {
     required this.patientStatus,
     required this.createdAt,
     this.doctors = const [],
+    this.deletion,
   });
 
   final String userId;
@@ -78,8 +49,11 @@ class SupportPatient {
   final String fullName;
   final String phone;
 
-  /// Users.Status: active or disabled.
+  /// Users.Status: active, disabled, pendingDeletion or deleted.
   final String loginStatus;
+
+  /// The deletion in progress, if any.
+  final SupportDeletion? deletion;
 
   /// Patients.Status: active, disabled or deleted.
   final String patientStatus;
@@ -95,6 +69,7 @@ class SupportPatient {
         patientStatus: json['patientStatus'] as String,
         createdAt: _date(json['createdAt'])!,
         doctors: [for (final d in json['doctors'] as List) LinkedDoctor.fromJson(d as Json)],
+        deletion: SupportDeletion.fromJsonOrNull(json['deletion']),
       );
 }
 
@@ -109,6 +84,7 @@ class SupportAssistant {
     required this.doctorName,
     required this.preset,
     this.lastActiveAt,
+    this.deletion,
   });
 
   final String userId;
@@ -123,6 +99,9 @@ class SupportAssistant {
   final String preset;
   final DateTime? lastActiveAt;
 
+  /// The deletion in progress, if any.
+  final SupportDeletion? deletion;
+
   factory SupportAssistant.fromJson(Json json) => SupportAssistant(
         userId: json['userId'] as String,
         fullName: json['fullName'] as String,
@@ -133,6 +112,7 @@ class SupportAssistant {
         doctorName: json['doctorName'] as String,
         preset: json['preset'] as String,
         lastActiveAt: _date(json['lastActiveAt']),
+        deletion: SupportDeletion.fromJsonOrNull(json['deletion']),
       );
 }
 

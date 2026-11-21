@@ -70,7 +70,7 @@ final catalogBackgroundRunnerProvider = Provider<BackgroundRunner>((ref) => runI
 /// clinic is open, and assistants with `prescriptionsDraft`. Never patients.
 final catalogEligibleProvider = Provider<bool>((ref) {
   final session = ref.watch(authControllerProvider.select((auth) => auth.value));
-  if (session == null || session.mustChangePassword || session.trialEnded) return false;
+  if (session == null || session.mustChangePassword || session.trialEnded || session.isPendingDeletion) return false;
   return switch (session.role) {
     UserRole.admin => true,
     UserRole.patient => false,

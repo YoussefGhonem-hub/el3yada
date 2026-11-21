@@ -45,6 +45,8 @@ The dev login screen lists them; tap one to fill it in. Any password works excep
 | Doctor | `doctor@el3yada.dev` |
 | Assistant | `01000000001` |
 | Patient | `01000000002` (blocked on desktop) |
+| Doctor whose account is being deleted (A16, with an unpaid final invoice) | `deleting@el3yada.dev` |
+| Patient whose account is being deleted (A16) | `01000000007` |
 
 ## Configuration
 

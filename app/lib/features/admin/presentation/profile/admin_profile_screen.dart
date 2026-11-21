@@ -10,6 +10,7 @@ import '../../../../core/widgets/staggered_entrance.dart';
 import '../../../../core/widgets/state_switcher.dart';
 import '../../../../core/widgets/submit_button.dart';
 import '../../../../l10n/gen/app_localizations.dart';
+import '../../../account_deletion/presentation/delete_account_flow.dart';
 import '../../../auth/application/auth_controller.dart';
 import '../../../auth/presentation/change_password_form.dart';
 import '../../admin_routes.dart';
@@ -55,6 +56,7 @@ class AdminProfileScreen extends ConsumerWidget {
               const preferences = _PreferencesCard();
               const password = _PasswordCard();
               const logout = _LogoutCard();
+              const deletion = _DeleteAccountCard();
               return StaggerGroup(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.fromLTRB(gutter, 12, gutter, 24 + MediaQuery.paddingOf(context).bottom),
@@ -80,7 +82,7 @@ class AdminProfileScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                Expanded(child: enter(password)),
+                                Expanded(child: Column(children: [enter(password), gap, enter(deletion)])),
                               ],
                             )
                           else ...[
@@ -91,6 +93,8 @@ class AdminProfileScreen extends ConsumerWidget {
                             enter(password),
                             gap,
                             enter(logout),
+                            gap,
+                            enter(deletion),
                           ],
                         ],
                       ),
@@ -310,6 +314,33 @@ class _LogoutCard extends ConsumerWidget {
           onPressed: () => ref.read(authControllerProvider.notifier).logout(),
           icon: const Icon(Icons.logout),
           label: Text(l10n.logout),
+        ),
+      ),
+    );
+  }
+}
+
+/// AD18 «حذف الحساب» (spec 6.17). The last active super admin is refused, as
+/// in AD14.
+class _DeleteAccountCard extends StatelessWidget {
+  const _DeleteAccountCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return SectionCard(
+      icon: Icons.delete_forever_outlined,
+      title: l10n.accountDeletionTile,
+      subtitle: l10n.accountDeletionTileBody,
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: OutlinedButton.icon(
+          key: const Key('deleteAccountTile'),
+          style: OutlinedButton.styleFrom(foregroundColor: scheme.error, side: BorderSide(color: scheme.error, width: 2)),
+          onPressed: () => showDeleteAccountFlow(context),
+          icon: const Icon(Icons.delete_forever_outlined),
+          label: Text(l10n.accountDeletionTile),
         ),
       ),
     );

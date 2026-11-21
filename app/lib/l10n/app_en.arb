@@ -3820,7 +3820,6 @@
   "seeAll": "See all",
   "errorNotFound": "This item is not available.",
   "errorForbidden": "You don't have access to this.",
-  "errorDeletionAlreadyRequested": "You already have a deletion request under review.",
   "couldNotOpen": "Couldn't open it on this device",
   "newBadge": "New",
   "allDoctors": "All",
@@ -4083,49 +4082,18 @@
   "notifyShowPreview": "Show message text in notifications",
   "notifyShowPreviewHint": "Off keeps your messages private on the lock screen.",
   "accountTitle": "Account",
-  "requestAccountDeletion": "Request account deletion",
-  "deletionConfirmBody": "We'll send your request to the el3yada team. Once it is approved you won't be able to sign in. Your doctors keep the medical records they are required to keep.",
   "deletionReasonLabel": "Reason (optional)",
-  "deletionConfirmButton": "Send request",
-  "deletionRequestSent": "Your request was sent. We'll review it soon.",
-  "deletionPendingTitle": "Deletion request under review",
-  "deletionPendingBody": "Sent on {date}",
-  "@deletionPendingBody": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "deletionRejected": "Your last request was declined: {note}",
-  "@deletionRejected": {
-    "placeholders": {
-      "note": {
-        "type": "String"
-      }
-    }
-  },
   "termsGateTitle": "Before you start",
   "termsGateBody": "el3yada keeps your medical file safe and shares it only with your doctors. Please read and accept the Terms of Use and Privacy Policy to continue.",
   "termsGateCheckbox": "I have read and accept the Terms of Use and Privacy Policy",
   "termsGateContinue": "Continue",
-  "navDeletionRequests": "Deletion requests",
   "navNotifications": "Notifications",
-  "statusPending": "Pending",
-  "statusApproved": "Approved",
-  "statusRejected": "Rejected",
-  "noDeletionRequests": "No requests here.",
   "approve": "Approve",
   "reject": "Reject",
-  "approveDeletionTitle": "Approve deletion?",
-  "approveDeletionBody": "The patient will be signed out everywhere and can't sign in again. Medical records stay with their doctors.",
-  "rejectDeletionTitle": "Reject the request",
-  "reasonRequiredLabel": "Reason (the patient sees it)",
   "errorInvalidPhone": "Invalid mobile number",
   "search": "Search",
   "accountsSupportHint": "Search by mobile number only. Patient and assistant accounts are shown, never medical data.",
   "noAccountsFound": "No account uses this number.",
-  "accountDeleted": "Account deleted at the patient's request",
   "linkedDoctors": "Doctors: {names}",
   "@linkedDoctors": {
     "placeholders": {
@@ -5771,5 +5739,210 @@
   "newPatientGuestOnly": "Only staff who add patients can create one here. You can book them as a quick guest.",
   "newPatientBookFor": "Book for this patient",
   "newPatientLink": "Link and book",
-  "newPatientContinue": "Continue the booking"
+  "newPatientContinue": "Continue the booking",
+  "accountDeletionTile": "Delete account",
+  "accountDeletionTileBody": "Closes at once. You can restore it during the grace period.",
+  "accountDeletionSheetTitle": "Delete your account",
+  "accountDeletionWhatHappens": "What happens",
+  "accountDeletionStepGrace": "For {days, plural, =1{1 day} other{{days} days}}, until {date}, signing in with your password lets you restore it.",
+  "@accountDeletionStepGrace": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletionStepClosed": "Your account closes now, and every device is signed out.",
+  "accountDeletionStepErase": "After that, your name, number, email and photos are erased for good.",
+  "accountDeletionPatientBookings": "Your upcoming appointments are cancelled, and your chats with clinics are closed.",
+  "accountDeletionPatientRecords": "Your medical records stay with your doctors, under \"Deleted patient\".",
+  "accountDeletionDoctorClinic": "Your clinic stops: assistants are signed out, and upcoming bookings are cancelled and the patients told.",
+  "accountDeletionDoctorRecords": "Your patients keep their visits, files and prescriptions, under \"Deleted doctor\".",
+  "accountDeletionDoctorBilling": "Invoices are kept, and the final deletion waits until every invoice is paid.",
+  "accountDeletionAssistant": "You leave the clinic's assistants, and the doctor is told.",
+  "accountDeletionAdmin": "Your admin access closes. The audit log stays as it is.",
+  "accountDeletionFinalInvoice": "A final invoice of {amount} will be issued, and it must be paid before the final deletion.",
+  "@accountDeletionFinalInvoice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletionUnpaidTitle": "Pay your outstanding invoices first",
+  "accountDeletionUnpaidBody": "You can't delete your account while an invoice is unpaid, overdue or under review.",
+  "accountDeletionOpenInvoices": "Open invoices",
+  "accountDeletionPasswordHelper": "To confirm it's you.",
+  "accountDeletionConfirm": "Delete my account",
+  "accountDeletionDoneTitle": "Your account is closed",
+  "accountDeletionDoneBody": "It will be permanently deleted on {date}. Changed your mind? Sign in before then and restore it.",
+  "@accountDeletionDoneBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletionRestoreTitle": "Your account is being deleted",
+  "accountDeletionRestoreBody": "Your account will be permanently deleted on {date}. Restore it to keep using el3yada.",
+  "@accountDeletionRestoreBody": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletionWaitingPaymentBody": "The grace period is over. Your account is deleted as soon as the invoices below are paid, unless you restore it.",
+  "accountDeletionRestoreBookings": "Appointments cancelled when the deletion started stay cancelled.",
+  "accountDeletionRestoreByAdmin": "The el3yada team started this deletion: {reason}",
+  "@accountDeletionRestoreByAdmin": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDeletionRestoreButton": "Restore my account",
+  "accountDeletionRestoreDone": "Your account is back. Welcome back!",
+  "accountDeletionInvoicesTitle": "Invoices to pay",
+  "accountDeletionInvoicesBody": "The final deletion waits until these are paid.",
+  "chooseAccountPendingDeletion": "Scheduled for deletion",
+  "deletionStatusScheduled": "Scheduled",
+  "deletionStatusWaitingPayment": "Waiting for payment",
+  "deletionStatusRestored": "Restored",
+  "deletionStatusCompleted": "Deleted",
+  "deletedPatient": "Deleted patient",
+  "deletedDoctor": "Deleted doctor",
+  "deletedAssistant": "Deleted assistant",
+  "deletedAdmin": "Deleted admin",
+  "patientPendingDeletionBanner": "This patient's account is scheduled for deletion",
+  "patientPendingDeletionBody": "The file and records stay with you, and you can still record sessions. Chat is closed.",
+  "assistantPendingDeletion": "Asked to delete their account",
+  "navAccountDeletions": "Account deletions",
+  "adminDeletionsSubtitle": "Scheduled, waiting for payment, restored and completed",
+  "adminDeletionsCount": "{count, plural, =0{No deletions} =1{1 deletion} other{{count} deletions}}",
+  "@adminDeletionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminDeletionsEmpty": "No account deletions here.",
+  "adminDeletionsRoleFilter": "Role",
+  "adminDeletionsStatusFilter": "Status",
+  "adminDeletionsAll": "All",
+  "adminDeletionRequestedOn": "Asked on {date}",
+  "@adminDeletionRequestedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeletionScheduledFor": "Erased on {date}",
+  "@adminDeletionScheduledFor": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeletionCompletedOn": "Erased on {date}",
+  "@adminDeletionCompletedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeletionRestoredOn": "Restored on {date} by {name}",
+  "@adminDeletionRestoredOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeletionByAdmin": "Started by {name}",
+  "@adminDeletionByAdmin": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeletionRestoreReason": "Restore reason: {reason}",
+  "@adminDeletionRestoreReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeletionOwed": "Owes {amount} ({count, plural, =1{1 invoice} other{{count} invoices}})",
+  "@adminDeletionOwed": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "adminDeletionCancel": "Cancel and restore",
+  "adminDeletionCancelTitle": "Cancel this deletion?",
+  "adminDeletionCancelBody": "The account works again at once. Cancelled bookings stay cancelled.",
+  "adminDeletionReasonLabel": "Reason (required, kept in the audit log)",
+  "adminDeletionCancelled": "The account was restored",
+  "adminDeleteAccount": "Delete account",
+  "adminDeleteAccountTitle": "Delete {name}'s account?",
+  "@adminDeleteAccountTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "adminDeleteAccountBody": "The account closes at once and is erased after the grace period. Its owner can restore it by signing in before then. Medical and billing records stay.",
+  "adminDeleteAccountConfirm": "Start deletion",
+  "adminDeletionStarted": "The deletion started",
+  "adminAccountPendingDeletion": "Scheduled for deletion on {date}",
+  "@adminAccountPendingDeletion": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "adminSettingDeletionGrace": "Account deletion grace period",
+  "adminAppliesToNewDeletions": "New deletions only",
+  "billFinalInvoiceOf": "Final invoice · {month}",
+  "@billFinalInvoiceOf": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "billCarriedAdjustment": "Sessions after the final invoice of {month}",
+  "@billCarriedAdjustment": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "errorAccountPendingDeletion": "Your account is scheduled for deletion. Restore it first.",
+  "errorAccountDeletionScheduled": "This account is already scheduled for deletion.",
+  "errorAccountNotPendingDeletion": "This account isn't scheduled for deletion.",
+  "errorAccountDeleted": "This account was deleted.",
+  "errorChatClosed": "This chat is closed: an account in it was deleted or is being deleted."
 }

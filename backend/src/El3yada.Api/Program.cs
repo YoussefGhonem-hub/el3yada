@@ -96,11 +96,16 @@ try
     builder.Services.AddSingleton<IRealtime, SignalRRealtime>();
     builder.Services.AddEl3yadaFirebase(builder.Configuration);
 
-    // Phase 4: patient app, accounts support and deletion requests.
+    // Phase 4: patient app and accounts support.
     builder.Services.AddScoped<PatientContext>();
     builder.Services.AddScoped<PatientPortalService>();
     builder.Services.AddScoped<PatientAccountService>();
     builder.Services.AddScoped<AdminSupportService>();
+
+    // Account deletion for every role (spec 6.17): requests, restore, AD12 and the daily erasure.
+    builder.Services.AddScoped<El3yada.Api.Features.AccountDeletion.AccountDeletionService>();
+    builder.Services.AddScoped<El3yada.Api.Features.AccountDeletion.AccountErasure>();
+    builder.Services.AddScoped<El3yada.Api.Features.AccountDeletion.AccountDeletionJob>();
 
     // Phase 5: chat.
     builder.Services.AddScoped<ChatService>();
@@ -146,6 +151,8 @@ try
             options.Filters.Add<ValidationFilter>();
             // An account with mustChangePassword may only call the endpoints marked for it (A9).
             options.Filters.Add<PasswordChangeGate>();
+            // An account in its deletion grace period may only restore, sign out and pay (A16, BR-DEL3).
+            options.Filters.Add<PendingDeletionGate>();
         })
         .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter()))
         .ConfigureApiBehaviorOptions(options =>

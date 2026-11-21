@@ -38,6 +38,10 @@ abstract final class AppRoutes {
   /// A15: the clinic's free trial ended (spec 6.16).
   static const trialEnded = '/trial-ended';
 
+  /// A16: the account is in its deletion grace period (spec 6.17): restore,
+  /// sign out, and a doctor's invoices (`invoices/{id}`, `invoices/{id}/pay`).
+  static const restoreAccount = '/restore-account';
+
   /// A11.
   static const update = '/update';
 

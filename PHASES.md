@@ -470,6 +470,7 @@ Timed mode (exact times) keeps its order by time.
 - [ ] Monitoring: Crashlytics or Sentry in the app, API logs with alerts on billing-job errors.
 - [ ] Backups and point-in-time restore tested on a copy of `prod`.
 - [ ] Security review: rate limits, file access, authorization tests green, admin blocked from medical content.
+- [x] Account deletion for every role (spec 6.17, backend/docs/api-account-deletion.md; branch `feat/account-deletion`, 21 Nov): delete from P14, D24, AS12 and AD18 with the current password, no admin approval. The account is disabled at once, signing in during the 30-day grace period (`accountDeletionGraceDays`, AD13) opens only A16 (restore, sign out, a doctor's invoices), and the daily `accountErasure` job erases the identity while medical and billing records stay. Doctors: refused with unpaid invoices, a final invoice closed early, erasure waits for payment, carried fees after a paid final invoice. AD12 lists every deletion with Cancel and restore; AD5 and AD11 start one. Store listings can point to it (privacy forms).
 - [ ] Legal review of the Terms and Privacy Policy against Law 151 of 2020.
 - [ ] Name and store checks: search the stores for the existing app «el3eyada» and check the Egyptian trademark register before submitting. Confirm the bundle ID `com.el3yada.app`; it cannot change after the first upload.
 - [ ] Store listings: name «el3yada | العيادة», Arabic keywords (عيادة, عياده, دكتور, كشف, حجز, روشتة), screenshots in Arabic and English, privacy forms, account-deletion flow.

@@ -252,7 +252,8 @@ public static class PatientsRegister
             r.PatientId,
             r.FileNumber,
             r.PatientName,
-            r.PatientPhone,
+            // An erased patient's link keeps a placeholder, never shown (spec 6.17).
+            Features.AccountDeletion.Tombstones.IsPhone(r.PatientPhone) ? "" : r.PatientPhone,
             r.Gender,
             r.DateOfBirth,
             r.DateOfBirthEstimated,

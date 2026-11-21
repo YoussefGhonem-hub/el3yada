@@ -14,15 +14,6 @@ public sealed class MarkSeenRequestValidator : AbstractValidator<MarkSeenRequest
     }
 }
 
-public sealed class RequestAccountDeletionRequestValidator : AbstractValidator<RequestAccountDeletionRequest>
-{
-    public RequestAccountDeletionRequestValidator()
-    {
-        // DeletionRequests.Reason is NVARCHAR(500).
-        RuleFor(x => x.Reason).MaximumLength(500).WithErrorCode("TOO_LONG");
-    }
-}
-
 public sealed class PatientListQueryValidator : AbstractValidator<PatientListQuery>
 {
     private static readonly string[] Kinds = ["medication", "investigations", "prescription", "lab", "radiology", "other"];

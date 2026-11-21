@@ -6,6 +6,7 @@ import '../../../app/routes.dart';
 import '../../../core/network/api_error.dart';
 import '../../../core/settings/app_settings.dart';
 import '../../../core/widgets/support_contact.dart';
+import '../../account_deletion/presentation/delete_account_flow.dart';
 import '../../auth/application/auth_controller.dart';
 import '../../auth/presentation/change_password_form.dart';
 import '../application/patient_providers.dart';
@@ -15,8 +16,8 @@ import 'patient_format.dart';
 import 'widgets/patient_widgets.dart';
 
 /// P14 Account and settings: name and phone (read-only), language, appearance, notification
-/// toggles and the "show message text" switch, change password, the account deletion request
-/// (required by the App Store and Google Play), Logout, then Terms and Privacy (A12) and the
+/// toggles and the "show message text" switch, change password, «حذف الحساب» (spec 6.17,
+/// required by the App Store and Google Play), Logout, then Terms and Privacy (A12) and the
 /// support contact from the public settings.
 class PatientAccountScreen extends ConsumerWidget {
   const PatientAccountScreen({super.key});
@@ -138,7 +139,7 @@ class _AccountBody extends ConsumerWidget {
                 subtitle: Text(l10n.adminChangePasswordBody),
                 onTap: () => _showChangePassword(context),
               ),
-              _DeletionTile(account: account),
+              const _DeletionTile(),
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: Text(l10n.logout),
@@ -221,94 +222,20 @@ class _Header extends StatelessWidget {
       );
 }
 
-/// "Request account deletion": confirmation with an optional reason → admin queue (AD12).
-class _DeletionTile extends ConsumerWidget {
-  const _DeletionTile({required this.account});
-
-  final PatientAccount account;
-
-  Future<void> _request(BuildContext context, WidgetRef ref) async {
-    final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
-    final reason = await showDialog<String>(context: context, builder: (context) => const _DeletionDialog());
-    if (reason == null) return;
-    try {
-      await ref.read(patientAccountProvider.notifier).requestDeletion(reason);
-      messenger.showSnackBar(SnackBar(content: Text(l10n.deletionRequestSent)));
-    } catch (error) {
-      messenger.showSnackBar(SnackBar(content: Text(l10n.apiErrorMessage(error))));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
-    final request = account.deletionRequest;
-
-    if (account.hasPendingDeletion) {
-      return ListTile(
-        leading: Icon(Icons.hourglass_top_outlined, color: scheme.error),
-        title: Text(l10n.deletionPendingTitle),
-        subtitle: Text(l10n.deletionPendingBody(context.date(request!.createdAt))),
-      );
-    }
-    return ListTile(
-      leading: Icon(Icons.delete_forever_outlined, color: scheme.error),
-      title: Text(l10n.requestAccountDeletion, style: TextStyle(color: scheme.error)),
-      subtitle: request?.status == DeletionRequestStatus.rejected
-          ? Text(l10n.deletionRejected(request!.reviewNote ?? ''))
-          : null,
-      onTap: () => _request(context, ref),
-    );
-  }
-}
-
-class _DeletionDialog extends StatefulWidget {
-  const _DeletionDialog();
-
-  @override
-  State<_DeletionDialog> createState() => _DeletionDialogState();
-}
-
-class _DeletionDialogState extends State<_DeletionDialog> {
-  final _reason = TextEditingController();
-
-  @override
-  void dispose() {
-    _reason.dispose();
-    super.dispose();
-  }
+/// «حذف الحساب» (spec 6.17; the App Store and Google Play require it): the
+/// shared flow, which explains, asks for the password and signs out.
+class _DeletionTile extends StatelessWidget {
+  const _DeletionTile();
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final scheme = Theme.of(context).colorScheme;
-    return AlertDialog(
-      icon: Icon(Icons.delete_forever_outlined, color: scheme.error),
-      title: Text(l10n.requestAccountDeletion),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(l10n.deletionConfirmBody),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _reason,
-            maxLength: 500,
-            maxLines: 3,
-            decoration: InputDecoration(labelText: l10n.deletionReasonLabel),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: Text(l10n.cancel)),
-        FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: scheme.error, foregroundColor: scheme.onError),
-          onPressed: () => Navigator.pop(context, _reason.text),
-          child: Text(l10n.deletionConfirmButton),
-        ),
-      ],
+    return ListTile(
+      leading: Icon(Icons.delete_forever_outlined, color: scheme.error),
+      title: Text(l10n.accountDeletionTile, style: TextStyle(color: scheme.error)),
+      subtitle: Text(l10n.accountDeletionTileBody),
+      onTap: () => showDeleteAccountFlow(context),
     );
   }
 }

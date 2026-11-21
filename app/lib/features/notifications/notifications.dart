@@ -289,7 +289,9 @@ final notificationSetupProvider = Provider<void>((ref) {
     final now = next.value;
     final repository = ref.read(notificationsRepositoryProvider);
     try {
-      if (now != null && before?.userId != now.userId) {
+      // An account in its deletion grace period has no push devices (spec 6.17):
+      // it registers again once restored.
+      if (now != null && !now.isPendingDeletion && (before?.userId != now.userId || (before?.isPendingDeletion ?? false))) {
         final push = ref.read(pushTokenSourceProvider);
         await push.requestPermission();
         await repository.registerDevice(deviceId: id, platform: currentPlatform(), pushToken: await push.token(), appVersion: appVersion);

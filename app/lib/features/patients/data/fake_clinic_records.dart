@@ -99,6 +99,9 @@ class _Account {
 
   /// This clinic created the account (`ownsDetails`, BR-P3).
   final bool ownedByUs;
+
+  /// `active`, `pendingDeletion` (D6's banner) or `deleted` (spec 6.17).
+  String accountStatus = 'active';
 }
 
 class _Link {
@@ -284,6 +287,22 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     final password = _password();
     return CreatedPatient.fromJson({'linked': false, 'temporaryPassword': password, 'patient': _patientJson(id, who)});
   }
+
+  /// Spec 6.17, as the API answers it: the patient named [fullName] is in
+  /// their deletion grace period (`pendingDeletion`, D6's banner) or erased
+  /// (`deleted`, «مريض محذوف» without a number). For tests and demos.
+  void setAccountStatus(String fullName, String status) {
+    final account = _accounts[patientIdOf(fullName)]!;
+    account.accountStatus = status;
+    if (status == 'deleted') {
+      account
+        ..fullName = 'مريض محذوف'
+        ..phone = '';
+    }
+  }
+
+  /// The ID of the seeded patient named [fullName].
+  String patientIdOf(String fullName) => _accounts.values.firstWhere((a) => a.fullName == fullName).id;
 
   @override
   Future<PatientView> patient(String patientId) async {
@@ -1158,7 +1177,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
       'emergencyContactName': details ? account.emergencyName : null,
       'emergencyContactPhone': details ? account.emergencyPhone : null,
       'ownsDetails': details,
-      'accountStatus': 'active',
+      'accountStatus': account.accountStatus,
       'archived': link.archived,
       'archivedAt': link.archivedAt?.toIso8601String(),
       'linkedAt': link.linkedAt.toUtc().toIso8601String(),

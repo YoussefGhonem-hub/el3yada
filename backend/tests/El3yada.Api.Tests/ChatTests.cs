@@ -252,13 +252,23 @@ public sealed class NotificationTests(FeaturesApiFactory api) : IClassFixture<Fe
     public async Task Notification_centre_lists_and_marks_read()
     {
         var admin = await api.ClientForAsync(api.Demo.AdminUserId);
-        var patient2 = await api.ClientForAsync(await api.WithDbAsync(db => db.Patients.Where(p => p.Id == api.Demo.OtherPatientId).Select(p => p.UserId).SingleAsync()));
-        (await patient2.PostAsJsonAsync("/api/patient/deletion-request", new { reason = "test" })).EnsureSuccessStatusCode();
+        // An AD17 notice, as a doctor's account deletion writes it (Integration/AccountDeletionTests sends the real one).
+        await api.WithDbAsync(async db =>
+        {
+            db.Notifications.Add(new El3yada.Data.Entities.Notification
+            {
+                Id = Guid.NewGuid(), RecipientUserId = api.Demo.AdminUserId, Type = "deletionRequest",
+                TitleAr = "طبيب طلب حذف حسابه", TitleEn = "A doctor asked to delete their account", BodyAr = "د. تجربة", BodyEn = "Dr Test",
+                Route = "/admin/account-deletions", CreatedAt = DateTime.UtcNow,
+            });
+            await db.SaveChangesAsync();
+            return 0;
+        });
 
         var page = await admin.GetFromJsonAsync<NotificationPage>("/api/me/notifications");
         var item = Assert.Single(page!.Page.Items, n => n.Type == "deletionRequest");
         Assert.True(page.UnreadCount >= 1);
-        Assert.Equal("/admin/deletion-requests", item.Route);
+        Assert.Equal("/admin/account-deletions", item.Route);
 
         (await admin.PostAsync($"/api/me/notifications/{item.Id}/read", null)).EnsureSuccessStatusCode();
         (await admin.PostAsync("/api/me/notifications/read-all", null)).EnsureSuccessStatusCode();

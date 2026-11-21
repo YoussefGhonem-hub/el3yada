@@ -23,6 +23,15 @@ public static class AccountStatuses
 {
     public const string Active = "active";
     public const string Disabled = "disabled";
+
+    /// <summary>
+    /// The user (or an admin) started the account's deletion (BR-DEL2): every device is signed out, and signing in
+    /// opens only the restore screen until the daily job erases the account.
+    /// </summary>
+    public const string PendingDeletion = "pendingDeletion";
+
+    /// <summary>The identity was erased (BR-DEL4). Nobody can sign in to it again.</summary>
+    public const string Deleted = "deleted";
 }
 
 /// <summary>Doctors.Status values.</summary>

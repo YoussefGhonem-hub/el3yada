@@ -5,6 +5,7 @@ using El3yada.Api.Features.Admin;
 using El3yada.Api.Features.PatientPortal;
 using El3yada.Api.Infrastructure.Paging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace El3yada.Api.Tests;
 
@@ -56,52 +57,42 @@ public sealed class PatientWriteTests(FeaturesApiFactory api) : IClassFixture<Fe
     }
 
     [Fact]
-    public async Task Deletion_request_flow_disables_the_account_on_approval()
+    public async Task Requesting_deletion_checks_the_password_and_signs_the_patient_out()
     {
         // Uses the second patient, so the main demo patient stays signed in for the other tests.
+        // The full flow (restore, erasure, every role) is Integration/AccountDeletionTests.
         var otherUserId = await api.WithDbAsync(db =>
             db.Patients.Where(p => p.Id == api.Demo.OtherPatientId).Select(p => p.UserId).SingleAsync());
+        const string password = "Passw0rd1";
+        using (var scope = api.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<El3yada.Data.AppDbContext>();
+            var user = await db.Users.SingleAsync(u => u.Id == otherUserId);
+            user.PasswordHash = scope.ServiceProvider.GetRequiredService<El3yada.Api.Auth.Passwords>().Hash(user, password);
+            await db.SaveChangesAsync();
+        }
+
         var patient = await api.ClientForAsync(otherUserId);
         var admin = await api.ClientForAsync(api.Demo.AdminUserId);
 
-        var created = await patient.PostAsJsonAsync("/api/patient/deletion-request", new RequestAccountDeletionRequest("لم أعد أحتاج التطبيق"));
-        Assert.Equal(HttpStatusCode.Created, created.StatusCode);
-        var request = await created.Content.ReadFromJsonAsync<DeletionRequestDto>();
-        Assert.Equal("pending", request!.Status);
+        var wrong = await patient.PostAsJsonAsync("/api/me/requestAccountDeletion", new { currentPassword = "not-it-1", reason = "test" });
+        Assert.Equal(HttpStatusCode.BadRequest, wrong.StatusCode);
+        Assert.Contains("CURRENT_PASSWORD_INCORRECT", await wrong.Content.ReadAsStringAsync());
 
-        var duplicate = await patient.PostAsJsonAsync("/api/patient/deletion-request", new RequestAccountDeletionRequest(null));
-        Assert.Equal(HttpStatusCode.Conflict, duplicate.StatusCode);
-        Assert.Contains("DELETION_ALREADY_REQUESTED", await duplicate.Content.ReadAsStringAsync());
+        var started = await patient.PostAsJsonAsync("/api/me/requestAccountDeletion", new { currentPassword = password, reason = "لم أعد أحتاج التطبيق" });
+        started.EnsureSuccessStatusCode();
 
-        // Admins were notified, and the request is in the AD12 queue.
-        var notified = await api.WithDbAsync(db => db.Notifications.AnyAsync(n => n.RecipientUserId == api.Demo.AdminUserId && n.Type == "deletionRequest"));
-        Assert.True(notified);
-        var queue = await admin.GetFromJsonAsync<PagedResult<AdminDeletionRequestDto>>("/api/admin/deletion-requests");
-        Assert.Contains(queue!.Items, r => r.Id == request.Id);
-
-        // Rejecting needs a note.
-        var noNote = await admin.PostAsJsonAsync($"/api/admin/deletion-requests/{request.Id}/review", new ReviewDeletionRequest("reject", null));
-        Assert.Equal(HttpStatusCode.BadRequest, noNote.StatusCode);
-
-        var approved = await admin.PostAsJsonAsync($"/api/admin/deletion-requests/{request.Id}/review", new ReviewDeletionRequest("approve", null));
-        approved.EnsureSuccessStatusCode();
-        Assert.Equal("approved", (await approved.Content.ReadFromJsonAsync<DeletionRequestDto>())!.Status);
-
-        var again = await admin.PostAsJsonAsync($"/api/admin/deletion-requests/{request.Id}/review", new ReviewDeletionRequest("approve", null));
-        Assert.Equal(HttpStatusCode.Conflict, again.StatusCode);
-
-        // The old token stops working at once (new SecurityStamp), and login is disabled.
+        // Signed out at once (new security stamp), and the account waits in AD12.
         Assert.Equal(HttpStatusCode.Unauthorized, (await patient.GetAsync("/api/patient/home")).StatusCode);
-        var state = await api.WithDbAsync(async db => (
-            await db.Users.Where(u => u.Id == otherUserId).Select(u => u.Status).SingleAsync(),
-            await db.Patients.Where(p => p.Id == api.Demo.OtherPatientId).Select(p => p.Status).SingleAsync(),
-            await db.AuditLogs.AnyAsync(a => a.Action == "deletionRequest.approved" && a.TargetId == request.Id.ToString())));
-        Assert.Equal(("disabled", "deleted", true), state);
+        var queue = await admin.GetFromJsonAsync<PagedResult<El3yada.Api.Features.AccountDeletion.AccountDeletionItem>>(
+            $"/api/admin/accountDeletions?userId={otherUserId}");
+        Assert.Equal("scheduled", Assert.Single(queue!.Items).Status);
+        Assert.Equal("pendingDeletion", await api.WithDbAsync(db => db.Users.Where(u => u.Id == otherUserId).Select(u => u.Status).SingleAsync()));
 
-        // Medical records are kept (retention is open question Q16).
+        // Medical records are kept.
         Assert.True(await api.WithDbAsync(db => db.Sessions.AnyAsync(s => s.PatientId == api.Demo.OtherPatientId)));
 
-        // AD11 can't turn a deleted patient back on.
+        // AD11 can't switch an account being deleted back on: that is AD12's "Cancel and restore".
         var enable = await admin.PostAsJsonAsync($"/api/admin/accounts/{otherUserId}/status", new SetLoginStatusRequest("active", null));
         Assert.Equal(HttpStatusCode.Conflict, enable.StatusCode);
     }

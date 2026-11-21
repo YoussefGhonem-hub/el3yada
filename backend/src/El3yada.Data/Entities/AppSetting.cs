@@ -16,6 +16,9 @@ public partial class AppSetting
     /// <summary>Free trial length in days, from approval (spec 6.16 BR-T1). 1–90.</summary>
     public int TrialDays { get; set; } = 14;
 
+    /// <summary>Days from an account deletion request to the erasure of the identity (BR-DEL2). 7–90.</summary>
+    public int AccountDeletionGraceDays { get; set; } = 30;
+
     public int MaxConsecutiveConsultations { get; set; } = 2;
 
     public int MaxUploadMb { get; set; } = 50;

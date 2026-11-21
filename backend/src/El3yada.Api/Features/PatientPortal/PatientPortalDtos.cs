@@ -197,8 +197,6 @@ public sealed record PatientHomeDto(
     NewCounts New);
 
 // P14: account
-public sealed record DeletionRequestDto(Guid Id, string Status, string? Reason, DateTime CreatedAt, DateTime? ReviewedAt, string? ReviewNote);
-
 public sealed record PatientAccountDto(
     PersonalInfoDto Personal,
     string Locale,
@@ -206,16 +204,13 @@ public sealed record PatientAccountDto(
     bool NotifyChat,
     bool NotifyReminders,
     bool NotifyShowPreview,
-    DateTime? AcceptedTermsAt,
-    DeletionRequestDto? DeletionRequest);
+    DateTime? AcceptedTermsAt);
 
 // Requests
 public sealed record MarkSeenRequest(
     IReadOnlyList<Guid>? Visits,
     IReadOnlyList<Guid>? Prescriptions,
     IReadOnlyList<Guid>? Files);
-
-public sealed record RequestAccountDeletionRequest(string? Reason);
 
 /// <summary>Filters for the visits, prescriptions and files lists.</summary>
 public sealed record PatientListQuery : Infrastructure.Paging.PageQuery

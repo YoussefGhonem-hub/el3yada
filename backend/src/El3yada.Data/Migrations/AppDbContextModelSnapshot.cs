@@ -53,6 +53,10 @@ namespace El3yada.Data.Migrations
                     b.Property<byte>("Id")
                         .HasColumnType("tinyint");
 
+                    b.Property<int>("AccountDeletionGraceDays")
+                        .HasColumnType("int")
+                        .HasDefaultValue(30);
+
                     b.Property<int>("ConsultationFeePiasters")
                         .HasColumnType("int")
                         .HasDefaultValue(1500);
@@ -182,6 +186,8 @@ namespace El3yada.Data.Migrations
 
                     b.ToTable("AppSettings", null, t =>
                         {
+                            t.HasCheckConstraint("CK_AppSettings_DeletionGraceDays", "([AccountDeletionGraceDays]>=(7) AND [AccountDeletionGraceDays]<=(90))");
+
                             t.HasCheckConstraint("CK_AppSettings_Fees", "([ExamFeePiasters]>=(0) AND [ExamFeePiasters]<=(1000000) AND ([ConsultationFeePiasters]>=(0) AND [ConsultationFeePiasters]<=(1000000)))");
 
                             t.HasCheckConstraint("CK_AppSettings_Grace", "([GracePeriodDays]>=(0) AND [GracePeriodDays]<=(31))");
@@ -1530,43 +1536,81 @@ namespace El3yada.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("(newsequentialid())");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasPrecision(3)
-                        .HasColumnType("datetime2(3)")
-                        .HasDefaultValueSql("(sysutcdatetime())");
+                    b.Property<Guid?>("AssistantId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PatientId")
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<Guid?>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FinalInvoiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Reason")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("ReviewNote")
+                    b.Property<DateTime>("RequestedAt")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValueSql("(sysutcdatetime())");
+
+                    b.Property<Guid>("RequestedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RestoreReason")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<DateTime?>("ReviewedAt")
+                    b.Property<DateTime?>("RestoredAt")
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
 
-                    b.Property<Guid?>("ReviewedBy")
+                    b.Property<Guid?>("RestoredBy")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<DateTime>("ScheduledFor")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(8)
+                        .HasMaxLength(14)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(8)")
-                        .HasDefaultValue("pending");
+                        .HasColumnType("varchar(14)")
+                        .HasDefaultValue("scheduled");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Status", "CreatedAt" }, "IX_DeletionRequests_Status");
+                    b.HasIndex(new[] { "Status", "ScheduledFor" }, "IX_DeletionRequests_Status");
+
+                    b.HasIndex(new[] { "UserId", "RequestedAt" }, "IX_DeletionRequests_User")
+                        .IsDescending(false, true);
+
+                    b.HasIndex(new[] { "UserId" }, "UQ_DeletionRequests_User_Open")
+                        .IsUnique()
+                        .HasFilter("([Status] IN ('scheduled', 'waitingPayment'))");
 
                     b.ToTable("DeletionRequests", null, t =>
                         {
-                            t.HasCheckConstraint("CK_DeletionRequests_Status", "([Status]='rejected' OR [Status]='approved' OR [Status]='pending')");
+                            t.HasCheckConstraint("CK_DeletionRequests_Role", "([Role]='patient' AND [PatientId] IS NOT NULL OR [Role]='doctor' AND [DoctorId] IS NOT NULL OR [Role]='assistant' AND [AssistantId] IS NOT NULL OR [Role]='admin')");
+
+                            t.HasCheckConstraint("CK_DeletionRequests_Status", "([Status]='completed' OR [Status]='restored' OR [Status]='waitingPayment' OR [Status]='scheduled')");
                         });
                 });
 
@@ -2075,6 +2119,10 @@ namespace El3yada.Data.Migrations
                     b.Property<int>("ExamCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsFinal")
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("MonthKey")
                         .IsRequired()
                         .HasMaxLength(7)
@@ -2140,12 +2188,18 @@ namespace El3yada.Data.Migrations
                     b.Property<int>("AmountPiasters")
                         .HasColumnType("int");
 
+                    b.Property<string>("CarriedMonthKey")
+                        .HasMaxLength(7)
+                        .IsUnicode(false)
+                        .HasColumnType("char(7)")
+                        .IsFixedLength();
+
                     b.Property<DateTime>("CreatedAt")
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)")
                         .HasDefaultValueSql("(sysutcdatetime())");
 
-                    b.Property<Guid>("CreatedBy")
+                    b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("InvoiceId")
@@ -2163,6 +2217,8 @@ namespace El3yada.Data.Migrations
                     b.ToTable("InvoiceAdjustments", null, t =>
                         {
                             t.HasCheckConstraint("CK_InvoiceAdjustments_Amount", "([AmountPiasters]<>(0))");
+
+                            t.HasCheckConstraint("CK_InvoiceAdjustments_CarriedMonthKey", "([CarriedMonthKey] IS NULL OR [CarriedMonthKey] like '[12][0-9][0-9][0-9]-[01][0-9]')");
                         });
                 });
 
@@ -3592,9 +3648,9 @@ namespace El3yada.Data.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(16)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(10)")
+                        .HasColumnType("varchar(16)")
                         .HasDefaultValue("active");
 
                     b.Property<string>("ThemeMode")
@@ -3634,7 +3690,7 @@ namespace El3yada.Data.Migrations
 
                             t.HasCheckConstraint("CK_Users_Role", "([Role]='patient' OR [Role]='assistant' OR [Role]='doctor' OR [Role]='admin')");
 
-                            t.HasCheckConstraint("CK_Users_Status", "([Status]='disabled' OR [Status]='active')");
+                            t.HasCheckConstraint("CK_Users_Status", "([Status]='deleted' OR [Status]='pendingDeletion' OR [Status]='disabled' OR [Status]='active')");
 
                             t.HasCheckConstraint("CK_Users_ThemeMode", "([ThemeMode]='dark' OR [ThemeMode]='light' OR [ThemeMode]='system')");
                         });
@@ -4126,20 +4182,56 @@ namespace El3yada.Data.Migrations
 
             modelBuilder.Entity("El3yada.Data.Entities.DeletionRequest", b =>
                 {
+                    b.HasOne("El3yada.Data.Entities.Assistant", "Assistant")
+                        .WithMany()
+                        .HasForeignKey("AssistantId")
+                        .HasConstraintName("FK_DeletionRequests_AssistantId");
+
+                    b.HasOne("El3yada.Data.Entities.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .HasConstraintName("FK_DeletionRequests_DoctorId");
+
+                    b.HasOne("El3yada.Data.Entities.Invoice", "FinalInvoice")
+                        .WithMany()
+                        .HasForeignKey("FinalInvoiceId")
+                        .HasConstraintName("FK_DeletionRequests_FinalInvoiceId");
+
                     b.HasOne("El3yada.Data.Entities.Patient", "Patient")
                         .WithMany("DeletionRequests")
                         .HasForeignKey("PatientId")
-                        .IsRequired()
                         .HasConstraintName("FK_DeletionRequests_PatientId");
 
-                    b.HasOne("El3yada.Data.Entities.User", "ReviewedByNavigation")
+                    b.HasOne("El3yada.Data.Entities.User", "RequestedByNavigation")
+                        .WithMany()
+                        .HasForeignKey("RequestedBy")
+                        .IsRequired()
+                        .HasConstraintName("FK_DeletionRequests_RequestedBy");
+
+                    b.HasOne("El3yada.Data.Entities.User", "RestoredByNavigation")
+                        .WithMany()
+                        .HasForeignKey("RestoredBy")
+                        .HasConstraintName("FK_DeletionRequests_RestoredBy");
+
+                    b.HasOne("El3yada.Data.Entities.User", "User")
                         .WithMany("DeletionRequests")
-                        .HasForeignKey("ReviewedBy")
-                        .HasConstraintName("FK_DeletionRequests_ReviewedBy");
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_DeletionRequests_UserId");
+
+                    b.Navigation("Assistant");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("FinalInvoice");
 
                     b.Navigation("Patient");
 
-                    b.Navigation("ReviewedByNavigation");
+                    b.Navigation("RequestedByNavigation");
+
+                    b.Navigation("RestoredByNavigation");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("El3yada.Data.Entities.Doctor", b =>
@@ -4288,7 +4380,6 @@ namespace El3yada.Data.Migrations
                     b.HasOne("El3yada.Data.Entities.User", "CreatedByNavigation")
                         .WithMany("InvoiceAdjustments")
                         .HasForeignKey("CreatedBy")
-                        .IsRequired()
                         .HasConstraintName("FK_InvoiceAdjustments_CreatedBy");
 
                     b.HasOne("El3yada.Data.Entities.Invoice", "Invoice")

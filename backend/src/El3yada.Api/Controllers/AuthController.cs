@@ -92,15 +92,19 @@ public sealed class AuthController(
     /// <summary>The signed-in account, for splash routing (A1) and the A6 "Refresh" button.</summary>
     [HttpGet("me")]
     [AllowWhilePasswordChangeRequired]
+    [AllowWhilePendingDeletion]
     public async Task<IActionResult> Me(CancellationToken cancellationToken)
     {
         var account = await AccountState.LoadAsync(db, User.UserId(), cancellationToken);
-        return account is null ? this.NotFoundProblem() : Ok(SessionView.Of(account, time.GetUtcNow().UtcDateTime));
+        return account is null
+            ? this.NotFoundProblem()
+            : Ok(await SessionView.OfAsync(db, account, time.GetUtcNow().UtcDateTime, cancellationToken));
     }
 
     /// <summary>Language and appearance, saved in Users.Locale and Users.ThemeMode (push language, spec 12).</summary>
     [HttpPost("updatePreferences")]
     [AllowWhilePasswordChangeRequired]
+    [AllowWhilePendingDeletion]
     public async Task<IActionResult> UpdatePreferences(UpdatePreferencesRequest request, CancellationToken cancellationToken)
     {
         var user = await db.Users.SingleAsync(u => u.Id == User.UserId(), cancellationToken);
@@ -109,7 +113,7 @@ public sealed class AuthController(
         user.UpdatedAt = Now;
         await db.SaveChangesAsync(cancellationToken);
         stateCache.Invalidate(user.Id);
-        return Ok(SessionView.Of((await AccountState.LoadAsync(db, user.Id, cancellationToken))!, Now));
+        return Ok(await SessionView.OfAsync(db, (await AccountState.LoadAsync(db, user.Id, cancellationToken))!, Now, cancellationToken));
     }
 
     /// <summary>
@@ -118,6 +122,7 @@ public sealed class AuthController(
     /// </summary>
     [HttpPost("setNewPassword")]
     [AllowWhilePasswordChangeRequired]
+    [AllowWhilePendingDeletion]
     public async Task<IActionResult> SetNewPassword(SetNewPasswordRequest request, CancellationToken cancellationToken)
     {
         var user = await db.Users.SingleAsync(u => u.Id == User.UserId(), cancellationToken);
@@ -318,7 +323,8 @@ public sealed class AuthController(
         }
 
         var links = await db.DoctorPatients
-            .Where(l => l.PatientId == patient.Id && (l.Doctor.Status == DoctorStatuses.Active || l.Doctor.Status == DoctorStatuses.Suspended))
+            .Where(l => l.PatientId == patient.Id && (l.Doctor.Status == DoctorStatuses.Active || l.Doctor.Status == DoctorStatuses.Suspended)
+                && l.Doctor.User.Status == AccountStatuses.Active)
             .Select(l => new
             {
                 l.Id,

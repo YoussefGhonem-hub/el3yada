@@ -10,6 +10,8 @@ import '../../../core/widgets/skeleton_loading.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../admin/admin_routes.dart';
+import '../../account_deletion/presentation/account_deletion_text.dart';
+import '../../account_deletion/presentation/account_deletions_screen.dart';
 import '../../admin/presentation/widgets/admin_widgets.dart';
 import '../../billing/presentation/billing_widgets.dart';
 import '../../patients/presentation/widgets/clinic_ui.dart'
@@ -484,7 +486,7 @@ class _ProfileTabState extends ConsumerState<_ProfileTab> {
               ),
               child: ResponsiveGrid(
                 children: [
-                  InfoRow(label: l10n.abFullName, value: data.name(language)),
+                  InfoRow(label: l10n.abFullName, value: l10n.personName(data.name(language))),
                   InfoRow(
                     label: l10n.abSpecialty,
                     value: data.specialty(language),
@@ -561,6 +563,13 @@ class _ProfileTabState extends ConsumerState<_ProfileTab> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 16),
+            // Spec 6.17: start the deletion for a support case, or cancel the one in progress.
+            SectionCard(
+              title: l10n.accountDeletionTile,
+              icon: Icons.delete_forever_outlined,
+              child: AdminAccountDeletionCard(userId: widget.doctorId, name: data.name(language)),
             ),
             const SizedBox(height: 16),
             SectionCard(

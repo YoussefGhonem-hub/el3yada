@@ -14,7 +14,7 @@ The Web API and the SQL Server database for the el3yada app. The full product sp
 
 | Folder | What it holds |
 |---|---|
-| `Features/<Area>/` | One folder per area: controller, service, DTOs, validators. For example `Features/PatientPortal` (P1–P14) and `Features/Admin` (AD11, AD12). |
+| `Features/<Area>/` | One folder per area: controller, service, DTOs, validators. For example `Features/PatientPortal` (P1–P14), `Features/Admin` (AD11) and `Features/AccountDeletion` (every role's account deletion, AD12, the daily erasure; [docs/api-account-deletion.md](docs/api-account-deletion.md)). |
 | `Infrastructure/Auth` | JWT bearer setup, `JwtTokenFactory` (the Phase 1 login uses it), policies, `ICurrentUser`, `SessionRevoker`. |
 | `Infrastructure/Errors` | `ApiException` and `ErrorCodes`. Every error is ProblemDetails with a `code` field. |
 | `Infrastructure/Auditing` | `IAuditLogger`, the single way to write `AuditLogs`. |

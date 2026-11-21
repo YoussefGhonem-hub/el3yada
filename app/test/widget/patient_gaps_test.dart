@@ -83,7 +83,7 @@ void main() {
       // The rest of the P14 row is still there.
       expect(find.text('Show message text in notifications'), findsOneWidget);
       expect(find.byType(SwitchListTile), findsNWidgets(3));
-      expect(find.text('Request account deletion'), findsOneWidget);
+      expect(find.text('Delete account'), findsOneWidget);
       expect(find.text('Log out'), findsOneWidget);
       expect(find.text('Contact support'), findsOneWidget);
       expect(find.text('WhatsApp'), findsOneWidget);

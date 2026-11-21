@@ -10,6 +10,7 @@ import '../../core/network/api_error.dart';
 import '../../core/platform/app_platform.dart';
 import '../../core/platform/file_share.dart';
 import '../../l10n/gen/app_localizations.dart';
+import '../account_deletion/presentation/account_deletion_text.dart';
 import '../patient/presentation/patient_format.dart';
 import '../patient/presentation/widgets/patient_widgets.dart';
 import 'chat_data.dart';
@@ -115,7 +116,7 @@ class _ChatRow extends StatelessWidget {
       onTap: onTap,
       leading: const CircleAvatar(child: Icon(Icons.person_outline)),
       title: Text(
-        [chat.displayName(arabic: context.isArabic), if (chat.fileNumber != null) l10n.fileNumber(chat.fileNumber!)].join(' · '),
+        [l10n.personName(chat.displayName(arabic: context.isArabic)), if (chat.fileNumber != null) l10n.fileNumber(chat.fileNumber!)].join(' · '),
         style: TextStyle(fontWeight: unread ? FontWeight.w700 : FontWeight.w500),
       ),
       subtitle: Text(preview, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -176,6 +177,7 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
 
   static String _errorText(AppLocalizations l10n, Object error) => switch (ApiError.from(error).code) {
         'CHAT_UNAVAILABLE' => l10n.chatDoctorUnavailable,
+        'CHAT_CLOSED' => l10n.errorChatClosed,
         'DOCTOR_SUSPENDED' => l10n.chatSuspended,
         'FILE_TOO_LARGE' => l10n.fileTooLarge,
         _ => l10n.apiErrorMessage(error),
@@ -283,7 +285,7 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     final chat = thread.value?.chat;
 
     return Scaffold(
-      appBar: AppBar(title: Text(chat?.displayName(arabic: context.isArabic) ?? '')),
+      appBar: AppBar(title: Text(chat == null ? '' : l10n.personName(chat.displayName(arabic: context.isArabic)))),
       body: AsyncValueView(
         value: thread,
         onRetry: () => ref.invalidate(chatThreadProvider(widget.chatId)),
@@ -316,7 +318,12 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
                 padding: const EdgeInsets.all(16),
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: Text(
-                  data.chat.unavailableReason == 'DOCTOR_SUSPENDED' ? l10n.chatSuspended : l10n.chatDoctorUnavailable,
+                  switch (data.chat.unavailableReason) {
+                    'DOCTOR_SUSPENDED' => l10n.chatSuspended,
+                    // Spec 6.17: an account in this chat is being deleted, or was.
+                    'CHAT_CLOSED' => l10n.errorChatClosed,
+                    _ => l10n.chatDoctorUnavailable,
+                  },
                   textAlign: TextAlign.center,
                 ),
               )
@@ -380,9 +387,9 @@ class _Bubble extends ConsumerWidget {
     // BR-C8: patients see assistant messages as «مساعد العيادة — name»; staff see every sender.
     String? sender;
     if (message.senderRole == 'assistant') {
-      sender = staffView ? message.senderName : l10n.clinicAssistant(message.senderName);
+      sender = staffView ? l10n.personName(message.senderName) : l10n.clinicAssistant(l10n.personName(message.senderName));
     } else if (staffView && message.senderRole == 'doctor' && !mine) {
-      sender = message.senderName;
+      sender = l10n.personName(message.senderName);
     }
 
     Widget content;

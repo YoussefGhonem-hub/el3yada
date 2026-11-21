@@ -934,6 +934,7 @@ class FakeAdminRepository implements AdminRepository {
       'gracePeriodDays': 7,
       'maxConsecutiveConsultations': 2,
       'trialDays': 14,
+      'accountDeletionGraceDays': 30,
       'instapayAddress': 'el3yada@instapay',
       'instapayAccountName': 'El3yada Health Tech',
       'instapayInstructionsAr': 'حوّل قيمة الفاتورة على عنوان إنستاباي ثم ارفع صورة التحويل من شاشة الفواتير.',

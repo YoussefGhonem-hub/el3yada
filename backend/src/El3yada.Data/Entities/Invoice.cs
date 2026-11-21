@@ -37,6 +37,13 @@ public partial class Invoice
 
     public Guid? ClosedBy { get; set; }
 
+    /// <summary>
+    /// A final invoice: the month closed early because the doctor asked to delete their account (BR-DEL8).
+    /// <see cref="PeriodEnd"/> is that day. Fees of the month's sessions saved after it are carried into the doctor's
+    /// next invoice as an adjustment (<see cref="InvoiceAdjustment.CarriedMonthKey"/>, BR-DEL10).
+    /// </summary>
+    public bool IsFinal { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

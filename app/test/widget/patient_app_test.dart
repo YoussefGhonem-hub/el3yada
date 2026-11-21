@@ -212,21 +212,14 @@ void main() {
     expect(find.text('Prescriptions (0)'), findsOneWidget);
   });
 
-  testWidgets('account: request deletion, then it shows as pending', (
-    tester,
-  ) async {
+  testWidgets('account: «حذف الحساب» opens the deletion flow', (tester) async {
     await pumpPatientApp(tester, size: const Size(400, 1400));
     await tester.tap(find.byTooltip('Account'));
     await tester.pumpAndSettle();
 
     expect(find.text('محمد إبراهيم'), findsOneWidget);
-    await tester.tap(find.text('Request account deletion'));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'لم أعد أحتاجه');
-    await tester.tap(find.text('Send request'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Deletion request under review'), findsOneWidget);
+    // The whole flow is test/widget/account_deletion_test.dart.
+    expect(find.text('Delete account'), findsOneWidget);
   });
 
   testWidgets(

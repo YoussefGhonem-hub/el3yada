@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/env.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_exception.dart';
+import '../../account_deletion/data/fake_account_deletion_repository.dart';
 import '../domain/auth_session.dart';
 import '../domain/login_result.dart';
 import '../domain/user_role.dart';
@@ -208,9 +209,25 @@ class FakeAuthRepository implements AuthRepository {
     '+201000000002': const FakeAccount(UserRole.patient, 'مريض تجريبي'),
     '+201000000003': const FakeAccount(UserRole.patient, 'مريض بحسابين', alsoAssistant: true),
     '+201000000004': const FakeAccount(UserRole.patient, 'مريض جديد', mustChangePassword: true, mustAcceptTerms: true),
+    // Account deletion (spec 6.17): in the grace period, so signing in opens A16.
+    // The doctor still owes the final invoice.
+    'deleting@el3yada.dev': const FakeAccount(UserRole.doctor, 'د. هشام فؤاد',
+        doctorStatus: DoctorStatus.active, pendingDeletionInDays: 12),
+    '+201000000007': const FakeAccount(UserRole.patient, 'مريض طلب حذف حسابه', pendingDeletionInDays: 20),
   };
 
   AuthSession? _last;
+
+  /// The offline accounts' deletions: login answers A16's session for these.
+  final deletions = FakeDeletionStore();
+
+  /// The store key of [session]'s account: its email or number, and
+  /// `#assistant` for the assistant account on a shared number.
+  String keyOf(AuthSession session) {
+    final identifier = session.email ?? session.phone ?? session.userId;
+    final shared = accounts[identifier]?.alsoAssistant ?? false;
+    return shared && session.role == UserRole.assistant ? '$identifier#assistant' : identifier;
+  }
 
   /// The signed-in account, which `me` and `refresh` answer with. Other
   /// fakes change it (doctor registration: `FakeRegistrationRepository`).
@@ -230,11 +247,20 @@ class FakeAuthRepository implements AuthRepository {
     }
     if (account.alsoAssistant) {
       return ChooseAccount(selectionToken: 'fake:$identifier', accounts: [
-        AccountChoice(role: UserRole.patient, displayName: account.name),
-        AccountChoice(role: UserRole.assistant, displayName: account.name, doctorName: 'د. تجريبي'),
+        AccountChoice(
+          role: UserRole.patient,
+          displayName: account.name,
+          pendingDeletion: deletions.pending.containsKey(identifier),
+        ),
+        AccountChoice(
+          role: UserRole.assistant,
+          displayName: account.name,
+          doctorName: 'د. تجريبي',
+          pendingDeletion: deletions.pending.containsKey('$identifier#assistant'),
+        ),
       ]);
     }
-    return SignedIn(_last = account.session(identifier));
+    return SignedIn(_last = deletions.apply(identifier, account.session(identifier)));
   }
 
   @override
@@ -249,7 +275,8 @@ class FakeAuthRepository implements AuthRepository {
     final chosen = role == UserRole.assistant
         ? FakeAccount(UserRole.assistant, account.name, doctorStatus: DoctorStatus.active)
         : account;
-    return _last = chosen.session(identifier);
+    final key = role == UserRole.assistant ? '$identifier#assistant' : identifier;
+    return _last = deletions.apply(key, chosen.session(identifier));
   }
 
   @override
@@ -349,6 +376,7 @@ class FakeAccount {
     this.mustAcceptTerms = false,
     this.alsoAssistant = false,
     this.trialDaysLeft,
+    this.pendingDeletionInDays,
   });
 
   final UserRole role;
@@ -367,6 +395,9 @@ class FakeAccount {
   /// The clinic's free trial: null for none (the service is active), 0 for
   /// one that ended yesterday, otherwise the days left.
   final int? trialDaysLeft;
+
+  /// In its deletion grace period, erased in this many days (A16).
+  final int? pendingDeletionInDays;
 
   TrialInfo? get _trial {
     final days = trialDaysLeft;

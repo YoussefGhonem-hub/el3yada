@@ -11,7 +11,7 @@ namespace El3yada.Api.Infrastructure.Realtime;
 /// every change goes through the REST API.
 /// </summary>
 [Authorize(Policy = Policies.SignedIn)]
-public sealed class AppHub(StaffAccess staff) : Hub
+public sealed class AppHub(StaffAccess staff, AccountStateCache accounts, El3yada.Data.AppDbContext db) : Hub
 {
     public const string Path = "/hubs/app";
 
@@ -31,6 +31,17 @@ public sealed class AppHub(StaffAccess staff) : Hub
     {
         var userId = HttpCurrentUser.TryGetUserId(Context.User) ?? throw new HubException("FORBIDDEN");
         var role = Context.User?.FindFirst(ClaimNames.Role)?.Value ?? throw new HubException("FORBIDDEN");
+
+        // Hub calls skip the MVC filters (PendingDeletionGate), and an open connection keeps the token it started
+        // with. So the account is read again here: one waiting for its deletion, or blocked since it connected (an
+        // assistant whose doctor is being deleted), watches no board (BR-DEL3).
+        var account = await accounts.GetAsync(db, userId, Context.ConnectionAborted)
+            ?? throw new HubException(ErrorCodes.Unauthenticated);
+        if (account.IsPendingDeletion)
+            throw new HubException(ErrorCodes.AccountPendingDeletion);
+        if (account.BlockCode is { } blocked)
+            throw new HubException(blocked);
+
         StaffContext context;
         try
         {

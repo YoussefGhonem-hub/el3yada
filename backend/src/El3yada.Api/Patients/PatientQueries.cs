@@ -42,6 +42,7 @@ public static class PatientQueries
                 l.Patient.EmergencyContactPhone,
                 l.Patient.CreatedByDoctorId,
                 l.Patient.Status,
+                UserStatus = l.Patient.User.Status,
             })
             .SingleOrDefaultAsync(cancellationToken);
         if (row is null)
@@ -71,7 +72,7 @@ public static class PatientQueries
             patientId,
             row.FileNumber,
             row.FullName,
-            row.Phone,
+            Features.AccountDeletion.Tombstones.IsPhone(row.Phone) ? "" : row.Phone,
             row.Gender,
             row.DateOfBirth,
             row.DateOfBirthEstimated,
@@ -82,7 +83,8 @@ public static class PatientQueries
             ownsDetails ? row.EmergencyContactName : null,
             ownsDetails ? row.EmergencyContactPhone : null,
             ownsDetails,
-            row.Status,
+            // D6 banner «حساب المريض مجدول للحذف» while the account is in its grace period; "deleted" once erased.
+            row.Status == "deleted" ? "deleted" : row.UserStatus == AccountStatuses.PendingDeletion ? AccountStatuses.PendingDeletion : row.Status,
             row.Archived,
             row.ArchivedAt,
             row.LinkedAt,

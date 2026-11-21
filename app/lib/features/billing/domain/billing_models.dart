@@ -99,6 +99,7 @@ class InvoiceItem {
     required this.status,
     required this.canPay,
     this.paidAt,
+    this.isFinal = false,
   });
 
   factory InvoiceItem.fromJson(Map<String, dynamic> json) => InvoiceItem(
@@ -118,9 +119,14 @@ class InvoiceItem {
         json['canPay'] as bool? ??
         InvoiceStatus.fromWire(json['status']).payable,
     paidAt: _timeOrNull(json['paidAt']),
+    isFinal: json['isFinal'] as bool? ?? false,
   );
 
   final String id;
+
+  /// A final invoice: the month closed early because the doctor deleted
+  /// their account (spec 6.17, BR-DEL8). [periodEnd] is that day.
+  final bool isFinal;
 
   /// `2026-10`.
   final String monthKey;
@@ -234,6 +240,7 @@ class InvoiceAdjustment {
     required this.amountPiasters,
     required this.reason,
     required this.createdAt,
+    this.carriedMonthKey,
   });
 
   factory InvoiceAdjustment.fromJson(Map<String, dynamic> json) =>
@@ -242,7 +249,12 @@ class InvoiceAdjustment {
         amountPiasters: json['amountPiasters'] as int,
         reason: json['reason'] as String,
         createdAt: _time(json['createdAt']),
+        carriedMonthKey: json['carriedMonthKey'] as String?,
       );
+
+  /// Set on a line the system added for sessions saved after a final invoice
+  /// of this month (`2026-11`, BR-DEL10); the app shows its own text.
+  final String? carriedMonthKey;
 
   final String id;
 

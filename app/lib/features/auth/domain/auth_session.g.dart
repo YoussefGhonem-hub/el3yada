@@ -28,6 +28,12 @@ _AuthSession _$AuthSessionFromJson(Map<String, dynamic> json) => _AuthSession(
   trial: json['trial'] == null
       ? null
       : TrialInfo.fromJson(json['trial'] as Map<String, dynamic>),
+  accountStatus: json['accountStatus'] as String? ?? 'active',
+  pendingDeletion: json['pendingDeletion'] == null
+      ? null
+      : PendingDeletion.fromJson(
+          json['pendingDeletion'] as Map<String, dynamic>,
+        ),
   accessToken: json['accessToken'] as String,
   accessTokenExpiresAt: json['accessTokenExpiresAt'] == null
       ? null
@@ -56,6 +62,8 @@ Map<String, dynamic> _$AuthSessionToJson(
   'locale': instance.locale,
   'themeMode': instance.themeMode,
   'trial': instance.trial,
+  'accountStatus': instance.accountStatus,
+  'pendingDeletion': instance.pendingDeletion,
   'accessToken': instance.accessToken,
   'accessTokenExpiresAt': instance.accessTokenExpiresAt?.toIso8601String(),
   'refreshToken': instance.refreshToken,
@@ -88,4 +96,30 @@ Map<String, dynamic> _$TrialInfoToJson(_TrialInfo instance) =>
       'endsAt': instance.endsAt.toIso8601String(),
       'ended': instance.ended,
       'daysLeft': instance.daysLeft,
+    };
+
+_PendingDeletion _$PendingDeletionFromJson(Map<String, dynamic> json) =>
+    _PendingDeletion(
+      requestId: json['requestId'] as String,
+      status: json['status'] as String? ?? 'scheduled',
+      requestedAt: DateTime.parse(json['requestedAt'] as String),
+      scheduledFor: DateTime.parse(json['scheduledFor'] as String),
+      reason: json['reason'] as String?,
+      requestedByAdmin: json['requestedByAdmin'] as bool? ?? false,
+      unpaidInvoices: (json['unpaidInvoices'] as num?)?.toInt() ?? 0,
+      outstandingPiasters: (json['outstandingPiasters'] as num?)?.toInt() ?? 0,
+      waitsForPayment: json['waitsForPayment'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$PendingDeletionToJson(_PendingDeletion instance) =>
+    <String, dynamic>{
+      'requestId': instance.requestId,
+      'status': instance.status,
+      'requestedAt': instance.requestedAt.toIso8601String(),
+      'scheduledFor': instance.scheduledFor.toIso8601String(),
+      'reason': instance.reason,
+      'requestedByAdmin': instance.requestedByAdmin,
+      'unpaidInvoices': instance.unpaidInvoices,
+      'outstandingPiasters': instance.outstandingPiasters,
+      'waitsForPayment': instance.waitsForPayment,
     };

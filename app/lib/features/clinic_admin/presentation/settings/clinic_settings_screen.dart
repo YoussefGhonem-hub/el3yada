@@ -13,6 +13,7 @@ import '../../../../core/widgets/support_contact.dart';
 import '../../../../l10n/gen/app_localizations.dart';
 import '../../../auth/application/auth_controller.dart';
 import '../../../auth/domain/user_role.dart';
+import '../../../account_deletion/presentation/delete_account_flow.dart';
 import '../../../auth/presentation/change_password_form.dart';
 import '../../../catalog/application/catalog_providers.dart';
 import '../../../catalog/presentation/catalog_text.dart';
@@ -29,7 +30,7 @@ import '../widgets/clinic_admin_widgets.dart';
 
 /// D24 (doctor) and AS12 (assistant) settings. Both have the identity
 /// ticket, language and appearance, notification preferences, change
-/// password, support, about and log out. The doctor's ticket opens the
+/// password, support, about, log out and «حذف الحساب» (spec 6.17). The doctor's ticket opens the
 /// profile (D22) and Visit prices opens D37; an assistant sees their
 /// permissions and branches read-only, and Visit prices (AS19) only with
 /// `pricesManage`.
@@ -494,6 +495,15 @@ class _AccountGroup extends ConsumerWidget {
           subtitle: l10n.adminLogoutBody,
           destructive: true,
           onTap: () => ref.read(authControllerProvider.notifier).logout(),
+        ),
+        // Spec 6.17: closes at once, erased after the grace period.
+        SettingsTile(
+          key: const Key('deleteAccountTile'),
+          icon: Icons.delete_forever_outlined,
+          title: l10n.accountDeletionTile,
+          subtitle: l10n.accountDeletionTileBody,
+          destructive: true,
+          onTap: () => showDeleteAccountFlow(context),
         ),
       ],
     );

@@ -7,6 +7,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/motion.dart';
 import '../../../../core/widgets/pressable.dart';
 import '../../../../l10n/gen/app_localizations.dart';
+import '../../../account_deletion/presentation/account_deletion_text.dart';
 import '../../../patients/presentation/widgets/clinic_ui.dart';
 import '../../domain/session_models.dart';
 
@@ -162,7 +163,7 @@ class DaySessionRow extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Flexible(child: Text(item.patientName, style: theme.textTheme.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                Flexible(child: Text(personName(context, item.patientName), style: theme.textTheme.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
                 const SizedBox(width: 8),
                 Flexible(child: FileNumberPill(item.fileNumber)),
               ],
@@ -196,7 +197,7 @@ class DaySessionRow extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Flexible(child: Text(item.patientName, style: theme.textTheme.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                    Flexible(child: Text(personName(context, item.patientName), style: theme.textTheme.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis)),
                     const SizedBox(width: 8),
                     TypeBadge(item.type),
                   ],

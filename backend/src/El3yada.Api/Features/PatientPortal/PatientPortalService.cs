@@ -89,7 +89,8 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
             .Select(l => new MyDoctorDto(
                 new DoctorRef(l.Doctor.UserId, l.Doctor.FullName, l.Doctor.FullNameEn, l.Doctor.Title, l.Doctor.TitleEn),
                 new SpecialtyRef(l.Doctor.Specialty.Id, l.Doctor.Specialty.NameAr, l.Doctor.Specialty.NameEn),
-                l.Doctor.Status,
+                // A doctor whose account is being deleted has stopped the service: no new bookings (spec 6.17).
+                l.Doctor.User.Status == AccountStatuses.Active ? l.Doctor.Status : DoctorStatuses.Disabled,
                 l.FileNumber,
                 l.LinkedAt,
                 l.LastSessionAt,
@@ -115,7 +116,7 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
                 Specialty = new SpecialtyRef(l.Doctor.Specialty.Id, l.Doctor.Specialty.NameAr, l.Doctor.Specialty.NameEn),
                 l.Doctor.DegreesAr,
                 l.Doctor.DegreesEn,
-                l.Doctor.Status,
+                Status = l.Doctor.User.Status == AccountStatuses.Active ? l.Doctor.Status : DoctorStatuses.Disabled,
                 l.FileNumber,
                 l.Doctor.ExaminationPricePiasters,
                 l.Doctor.ConsultationPricePiasters,

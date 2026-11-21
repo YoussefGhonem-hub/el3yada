@@ -12,6 +12,7 @@ import '../../../core/widgets/staggered_entrance.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../core/widgets/submit_button.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../account_deletion/presentation/account_deletion_text.dart';
 import '../../clinic/domain/clinic_context.dart';
 import '../../clinic/domain/clinic_permissions.dart';
 import '../../patients/application/patients_providers.dart';
@@ -151,7 +152,7 @@ class _DetailsState extends ConsumerState<_Details> {
         final header = enter(
           ClinicHeader(
             title: l10n.sessionDetailsTitle,
-            subtitle: session.patientName,
+            subtitle: personName(context, session.patientName),
             backFallback: paths.patient(session.patientId),
             trailingTitle: TypeBadge(session.type, large: true, locked: true),
             actions: [

@@ -5,12 +5,14 @@ namespace El3yada.Api.Billing;
 
 /// <summary>
 /// The scheduled jobs of spec 9.3 that run once a day (Africa/Cairo): <c>monthlyClose</c> (1st, 00:05),
-/// <c>dailyBillingCheck</c> (00:10), <c>buildDailyMetrics</c> (02:30), <c>statsReconcile</c> [S] (03:00) and
-/// <c>trialReminders</c> [S] (10:00, so the push arrives in the day; spec 6.16 BR-T6).
+/// <c>dailyBillingCheck</c> (00:10), <c>buildDailyMetrics</c> (02:30), <c>statsReconcile</c> [S] (03:00),
+/// <c>accountErasure</c> (03:30, spec 6.17 BR-DEL4) and <c>trialReminders</c> [S] (10:00, so the push arrives in the
+/// day; spec 6.16 BR-T6).
 /// Each is idempotent, so a restart, a second server or a run missed during downtime changes nothing it should not.
 /// </summary>
 public sealed class BillingJobs(
-    BillingService billing, DailyMetricsBuilder metrics, Doctors.TrialReminders trialReminders, TimeProvider time, JobStatus status,
+    BillingService billing, DailyMetricsBuilder metrics, Doctors.TrialReminders trialReminders,
+    Features.AccountDeletion.AccountDeletionJob accountErasure, TimeProvider time, JobStatus status,
     ILogger<BillingJobs> logger)
 {
     private DateOnly Today => CairoTime.Today(time);
@@ -35,6 +37,12 @@ public sealed class BillingJobs(
     /// <summary><c>statsReconcile</c> [S]: yesterday's counters against the sessions.</summary>
     public Task<int> StatsReconcileAsync(CancellationToken cancellationToken) =>
         billing.ReconcileStatsAsync(Today.AddDays(-1), cancellationToken);
+
+    /// <summary>
+    /// <c>accountErasure</c>: erases the accounts whose deletion grace period has passed, except doctors who still owe an
+    /// invoice (BR-DEL9). Returns the accounts erased.
+    /// </summary>
+    public Task<int> AccountErasureAsync(CancellationToken cancellationToken) => accountErasure.RunAsync(cancellationToken);
 
     /// <summary><c>trialReminders</c>: 3 days before the free trial ends and on its last day. Returns the notifications added.</summary>
     public Task<int> TrialRemindersAsync(CancellationToken cancellationToken) => trialReminders.SendAsync(cancellationToken);
@@ -83,6 +91,7 @@ public sealed class BillingJobsHost(IServiceScopeFactory scopes, IConfiguration 
         ("dailyBillingCheck", new TimeOnly(0, 10)),
         ("buildDailyMetrics", new TimeOnly(2, 30)),
         ("statsReconcile", new TimeOnly(3, 0)),
+        ("accountErasure", new TimeOnly(3, 30)),
         ("trialReminders", new TimeOnly(10, 0)),
     ];
 
@@ -119,6 +128,7 @@ public sealed class BillingJobsHost(IServiceScopeFactory scopes, IConfiguration 
                         "dailyBillingCheck" => jobs.DailyBillingCheckAsync,
                         "buildDailyMetrics" => jobs.BuildDailyMetricsAsync,
                         "trialReminders" => jobs.TrialRemindersAsync,
+                        "accountErasure" => jobs.AccountErasureAsync,
                         _ => jobs.StatsReconcileAsync,
                     },
                     stoppingToken);

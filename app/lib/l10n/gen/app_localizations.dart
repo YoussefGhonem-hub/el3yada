@@ -10978,12 +10978,6 @@ abstract class AppLocalizations {
   /// **'You don\'t have access to this.'**
   String get errorForbidden;
 
-  /// No description provided for @errorDeletionAlreadyRequested.
-  ///
-  /// In en, this message translates to:
-  /// **'You already have a deletion request under review.'**
-  String get errorDeletionAlreadyRequested;
-
   /// No description provided for @couldNotOpen.
   ///
   /// In en, this message translates to:
@@ -11806,53 +11800,11 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get accountTitle;
 
-  /// No description provided for @requestAccountDeletion.
-  ///
-  /// In en, this message translates to:
-  /// **'Request account deletion'**
-  String get requestAccountDeletion;
-
-  /// No description provided for @deletionConfirmBody.
-  ///
-  /// In en, this message translates to:
-  /// **'We\'ll send your request to the el3yada team. Once it is approved you won\'t be able to sign in. Your doctors keep the medical records they are required to keep.'**
-  String get deletionConfirmBody;
-
   /// No description provided for @deletionReasonLabel.
   ///
   /// In en, this message translates to:
   /// **'Reason (optional)'**
   String get deletionReasonLabel;
-
-  /// No description provided for @deletionConfirmButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Send request'**
-  String get deletionConfirmButton;
-
-  /// No description provided for @deletionRequestSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Your request was sent. We\'ll review it soon.'**
-  String get deletionRequestSent;
-
-  /// No description provided for @deletionPendingTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Deletion request under review'**
-  String get deletionPendingTitle;
-
-  /// No description provided for @deletionPendingBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Sent on {date}'**
-  String deletionPendingBody(String date);
-
-  /// No description provided for @deletionRejected.
-  ///
-  /// In en, this message translates to:
-  /// **'Your last request was declined: {note}'**
-  String deletionRejected(String note);
 
   /// No description provided for @termsGateTitle.
   ///
@@ -11878,41 +11830,11 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get termsGateContinue;
 
-  /// No description provided for @navDeletionRequests.
-  ///
-  /// In en, this message translates to:
-  /// **'Deletion requests'**
-  String get navDeletionRequests;
-
   /// No description provided for @navNotifications.
   ///
   /// In en, this message translates to:
   /// **'Notifications'**
   String get navNotifications;
-
-  /// No description provided for @statusPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending'**
-  String get statusPending;
-
-  /// No description provided for @statusApproved.
-  ///
-  /// In en, this message translates to:
-  /// **'Approved'**
-  String get statusApproved;
-
-  /// No description provided for @statusRejected.
-  ///
-  /// In en, this message translates to:
-  /// **'Rejected'**
-  String get statusRejected;
-
-  /// No description provided for @noDeletionRequests.
-  ///
-  /// In en, this message translates to:
-  /// **'No requests here.'**
-  String get noDeletionRequests;
 
   /// No description provided for @approve.
   ///
@@ -11925,30 +11847,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reject'**
   String get reject;
-
-  /// No description provided for @approveDeletionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Approve deletion?'**
-  String get approveDeletionTitle;
-
-  /// No description provided for @approveDeletionBody.
-  ///
-  /// In en, this message translates to:
-  /// **'The patient will be signed out everywhere and can\'t sign in again. Medical records stay with their doctors.'**
-  String get approveDeletionBody;
-
-  /// No description provided for @rejectDeletionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reject the request'**
-  String get rejectDeletionTitle;
-
-  /// No description provided for @reasonRequiredLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Reason (the patient sees it)'**
-  String get reasonRequiredLabel;
 
   /// No description provided for @errorInvalidPhone.
   ///
@@ -11973,12 +11871,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No account uses this number.'**
   String get noAccountsFound;
-
-  /// No description provided for @accountDeleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Account deleted at the patient\'s request'**
-  String get accountDeleted;
 
   /// No description provided for @linkedDoctors.
   ///
@@ -16767,6 +16659,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue the booking'**
   String get newPatientContinue;
+
+  /// No description provided for @accountDeletionTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get accountDeletionTile;
+
+  /// No description provided for @accountDeletionTileBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes at once. You can restore it during the grace period.'**
+  String get accountDeletionTileBody;
+
+  /// No description provided for @accountDeletionSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account'**
+  String get accountDeletionSheetTitle;
+
+  /// No description provided for @accountDeletionWhatHappens.
+  ///
+  /// In en, this message translates to:
+  /// **'What happens'**
+  String get accountDeletionWhatHappens;
+
+  /// No description provided for @accountDeletionStepGrace.
+  ///
+  /// In en, this message translates to:
+  /// **'For {days, plural, =1{1 day} other{{days} days}}, until {date}, signing in with your password lets you restore it.'**
+  String accountDeletionStepGrace(int days, String date);
+
+  /// No description provided for @accountDeletionStepClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account closes now, and every device is signed out.'**
+  String get accountDeletionStepClosed;
+
+  /// No description provided for @accountDeletionStepErase.
+  ///
+  /// In en, this message translates to:
+  /// **'After that, your name, number, email and photos are erased for good.'**
+  String get accountDeletionStepErase;
+
+  /// No description provided for @accountDeletionPatientBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'Your upcoming appointments are cancelled, and your chats with clinics are closed.'**
+  String get accountDeletionPatientBookings;
+
+  /// No description provided for @accountDeletionPatientRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Your medical records stay with your doctors, under \"Deleted patient\".'**
+  String get accountDeletionPatientRecords;
+
+  /// No description provided for @accountDeletionDoctorClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Your clinic stops: assistants are signed out, and upcoming bookings are cancelled and the patients told.'**
+  String get accountDeletionDoctorClinic;
+
+  /// No description provided for @accountDeletionDoctorRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Your patients keep their visits, files and prescriptions, under \"Deleted doctor\".'**
+  String get accountDeletionDoctorRecords;
+
+  /// No description provided for @accountDeletionDoctorBilling.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices are kept, and the final deletion waits until every invoice is paid.'**
+  String get accountDeletionDoctorBilling;
+
+  /// No description provided for @accountDeletionAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'You leave the clinic\'s assistants, and the doctor is told.'**
+  String get accountDeletionAssistant;
+
+  /// No description provided for @accountDeletionAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Your admin access closes. The audit log stays as it is.'**
+  String get accountDeletionAdmin;
+
+  /// No description provided for @accountDeletionFinalInvoice.
+  ///
+  /// In en, this message translates to:
+  /// **'A final invoice of {amount} will be issued, and it must be paid before the final deletion.'**
+  String accountDeletionFinalInvoice(String amount);
+
+  /// No description provided for @accountDeletionUnpaidTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay your outstanding invoices first'**
+  String get accountDeletionUnpaidTitle;
+
+  /// No description provided for @accountDeletionUnpaidBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t delete your account while an invoice is unpaid, overdue or under review.'**
+  String get accountDeletionUnpaidBody;
+
+  /// No description provided for @accountDeletionOpenInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Open invoices'**
+  String get accountDeletionOpenInvoices;
+
+  /// No description provided for @accountDeletionPasswordHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'To confirm it\'s you.'**
+  String get accountDeletionPasswordHelper;
+
+  /// No description provided for @accountDeletionConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my account'**
+  String get accountDeletionConfirm;
+
+  /// No description provided for @accountDeletionDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is closed'**
+  String get accountDeletionDoneTitle;
+
+  /// No description provided for @accountDeletionDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be permanently deleted on {date}. Changed your mind? Sign in before then and restore it.'**
+  String accountDeletionDoneBody(String date);
+
+  /// No description provided for @accountDeletionRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is being deleted'**
+  String get accountDeletionRestoreTitle;
+
+  /// No description provided for @accountDeletionRestoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account will be permanently deleted on {date}. Restore it to keep using el3yada.'**
+  String accountDeletionRestoreBody(String date);
+
+  /// No description provided for @accountDeletionWaitingPaymentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The grace period is over. Your account is deleted as soon as the invoices below are paid, unless you restore it.'**
+  String get accountDeletionWaitingPaymentBody;
+
+  /// No description provided for @accountDeletionRestoreBookings.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments cancelled when the deletion started stay cancelled.'**
+  String get accountDeletionRestoreBookings;
+
+  /// No description provided for @accountDeletionRestoreByAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'The el3yada team started this deletion: {reason}'**
+  String accountDeletionRestoreByAdmin(String reason);
+
+  /// No description provided for @accountDeletionRestoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore my account'**
+  String get accountDeletionRestoreButton;
+
+  /// No description provided for @accountDeletionRestoreDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is back. Welcome back!'**
+  String get accountDeletionRestoreDone;
+
+  /// No description provided for @accountDeletionInvoicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices to pay'**
+  String get accountDeletionInvoicesTitle;
+
+  /// No description provided for @accountDeletionInvoicesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The final deletion waits until these are paid.'**
+  String get accountDeletionInvoicesBody;
+
+  /// No description provided for @chooseAccountPendingDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for deletion'**
+  String get chooseAccountPendingDeletion;
+
+  /// No description provided for @deletionStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get deletionStatusScheduled;
+
+  /// No description provided for @deletionStatusWaitingPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for payment'**
+  String get deletionStatusWaitingPayment;
+
+  /// No description provided for @deletionStatusRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored'**
+  String get deletionStatusRestored;
+
+  /// No description provided for @deletionStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted'**
+  String get deletionStatusCompleted;
+
+  /// No description provided for @deletedPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted patient'**
+  String get deletedPatient;
+
+  /// No description provided for @deletedDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted doctor'**
+  String get deletedDoctor;
+
+  /// No description provided for @deletedAssistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted assistant'**
+  String get deletedAssistant;
+
+  /// No description provided for @deletedAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted admin'**
+  String get deletedAdmin;
+
+  /// No description provided for @patientPendingDeletionBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'This patient\'s account is scheduled for deletion'**
+  String get patientPendingDeletionBanner;
+
+  /// No description provided for @patientPendingDeletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The file and records stay with you, and you can still record sessions. Chat is closed.'**
+  String get patientPendingDeletionBody;
+
+  /// No description provided for @assistantPendingDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked to delete their account'**
+  String get assistantPendingDeletion;
+
+  /// No description provided for @navAccountDeletions.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletions'**
+  String get navAccountDeletions;
+
+  /// No description provided for @adminDeletionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled, waiting for payment, restored and completed'**
+  String get adminDeletionsSubtitle;
+
+  /// No description provided for @adminDeletionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No deletions} =1{1 deletion} other{{count} deletions}}'**
+  String adminDeletionsCount(int count);
+
+  /// No description provided for @adminDeletionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No account deletions here.'**
+  String get adminDeletionsEmpty;
+
+  /// No description provided for @adminDeletionsRoleFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get adminDeletionsRoleFilter;
+
+  /// No description provided for @adminDeletionsStatusFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get adminDeletionsStatusFilter;
+
+  /// No description provided for @adminDeletionsAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get adminDeletionsAll;
+
+  /// No description provided for @adminDeletionRequestedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked on {date}'**
+  String adminDeletionRequestedOn(String date);
+
+  /// No description provided for @adminDeletionScheduledFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Erased on {date}'**
+  String adminDeletionScheduledFor(String date);
+
+  /// No description provided for @adminDeletionCompletedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Erased on {date}'**
+  String adminDeletionCompletedOn(String date);
+
+  /// No description provided for @adminDeletionRestoredOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored on {date} by {name}'**
+  String adminDeletionRestoredOn(String date, String name);
+
+  /// No description provided for @adminDeletionByAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Started by {name}'**
+  String adminDeletionByAdmin(String name);
+
+  /// No description provided for @adminDeletionRestoreReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore reason: {reason}'**
+  String adminDeletionRestoreReason(String reason);
+
+  /// No description provided for @adminDeletionOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Owes {amount} ({count, plural, =1{1 invoice} other{{count} invoices}})'**
+  String adminDeletionOwed(String amount, int count);
+
+  /// No description provided for @adminDeletionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel and restore'**
+  String get adminDeletionCancel;
+
+  /// No description provided for @adminDeletionCancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this deletion?'**
+  String get adminDeletionCancelTitle;
+
+  /// No description provided for @adminDeletionCancelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The account works again at once. Cancelled bookings stay cancelled.'**
+  String get adminDeletionCancelBody;
+
+  /// No description provided for @adminDeletionReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (required, kept in the audit log)'**
+  String get adminDeletionReasonLabel;
+
+  /// No description provided for @adminDeletionCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'The account was restored'**
+  String get adminDeletionCancelled;
+
+  /// No description provided for @adminDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get adminDeleteAccount;
+
+  /// No description provided for @adminDeleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}\'s account?'**
+  String adminDeleteAccountTitle(String name);
+
+  /// No description provided for @adminDeleteAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The account closes at once and is erased after the grace period. Its owner can restore it by signing in before then. Medical and billing records stay.'**
+  String get adminDeleteAccountBody;
+
+  /// No description provided for @adminDeleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Start deletion'**
+  String get adminDeleteAccountConfirm;
+
+  /// No description provided for @adminDeletionStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'The deletion started'**
+  String get adminDeletionStarted;
+
+  /// No description provided for @adminAccountPendingDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled for deletion on {date}'**
+  String adminAccountPendingDeletion(String date);
+
+  /// No description provided for @adminSettingDeletionGrace.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion grace period'**
+  String get adminSettingDeletionGrace;
+
+  /// No description provided for @adminAppliesToNewDeletions.
+  ///
+  /// In en, this message translates to:
+  /// **'New deletions only'**
+  String get adminAppliesToNewDeletions;
+
+  /// No description provided for @billFinalInvoiceOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Final invoice · {month}'**
+  String billFinalInvoiceOf(String month);
+
+  /// No description provided for @billCarriedAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions after the final invoice of {month}'**
+  String billCarriedAdjustment(String month);
+
+  /// No description provided for @errorAccountPendingDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is scheduled for deletion. Restore it first.'**
+  String get errorAccountPendingDeletion;
+
+  /// No description provided for @errorAccountDeletionScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is already scheduled for deletion.'**
+  String get errorAccountDeletionScheduled;
+
+  /// No description provided for @errorAccountNotPendingDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'This account isn\'t scheduled for deletion.'**
+  String get errorAccountNotPendingDeletion;
+
+  /// No description provided for @errorAccountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This account was deleted.'**
+  String get errorAccountDeleted;
+
+  /// No description provided for @errorChatClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'This chat is closed: an account in it was deleted or is being deleted.'**
+  String get errorChatClosed;
 }
 
 class _AppLocalizationsDelegate

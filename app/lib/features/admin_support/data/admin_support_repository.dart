@@ -4,17 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/env.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_error.dart';
-import '../../patient/domain/patient_models.dart' show Json, Paged;
+import '../../patient/domain/patient_models.dart' show Json;
 import '../domain/admin_support_models.dart';
 
-/// AD11 accounts support and AD12 deletion requests (`/api/admin`). No medical data.
+/// AD11 accounts support (`/api/admin`). No medical data. Account deletions (AD12)
+/// are features/account_deletion.
 abstract interface class AdminSupportRepository {
-  /// [status]: pending, approved, rejected or all.
-  Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1});
-
-  /// `reviewDeletionRequest`. Rejecting needs a [note].
-  Future<void> reviewDeletionRequest(String id, {required bool approve, String? note});
-
   /// [phone] is already normalized (E.164).
   Future<AccountSearchResult> searchAccounts(String phone);
 
@@ -36,16 +31,6 @@ class ApiAdminSupportRepository implements AdminSupportRepository {
   }
 
   @override
-  Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1}) async => Paged.fromJson(
-        await _call('GET', '/admin/deletion-requests', query: {'status': status, 'page': page, 'pageSize': 25}) as Json,
-        AdminDeletionRequest.fromJson,
-      );
-
-  @override
-  Future<void> reviewDeletionRequest(String id, {required bool approve, String? note}) =>
-      _call('POST', '/admin/deletion-requests/$id/review', body: {'decision': approve ? 'approve' : 'reject', 'note': note});
-
-  @override
   Future<AccountSearchResult> searchAccounts(String phone) async =>
       AccountSearchResult.fromJson(await _call('GET', '/admin/accounts', query: {'phone': phone}) as Json);
 
@@ -59,26 +44,7 @@ class FakeAdminSupportRepository implements AdminSupportRepository {
   FakeAdminSupportRepository({DateTime? now}) : _now = now ?? DateTime.now();
 
   final DateTime _now;
-  late final List<AdminDeletionRequest> _requests = [
-    AdminDeletionRequest(
-      id: 'del-1', patientId: 'pat-2', patientName: 'خالد يوسف', patientPhone: '+201000000003',
-      reason: 'لم أعد أحتاج التطبيق', status: 'pending', createdAt: _now.subtract(const Duration(days: 1)),
-    ),
-  ];
   final Map<String, String> _status = {'u-pat': 'active', 'u-as': 'active'};
-
-  @override
-  Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1}) async {
-    final items = _requests.where((r) => status == 'all' || r.status == status).toList();
-    return Paged(items: items, page: 1, pageSize: 25, totalCount: items.length);
-  }
-
-  @override
-  Future<void> reviewDeletionRequest(String id, {required bool approve, String? note}) async {
-    final i = _requests.indexWhere((r) => r.id == id);
-    if (i < 0) throw const ApiError(ApiError.notFound, status: 404);
-    _requests[i] = _requests[i].reviewed(approve ? 'approved' : 'rejected', note, _now);
-  }
 
   @override
   Future<AccountSearchResult> searchAccounts(String phone) async => AccountSearchResult(

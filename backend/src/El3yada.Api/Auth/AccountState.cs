@@ -48,14 +48,22 @@ public sealed record AccountState
     public string StampHash => SecretTokens.StampHash(SecurityStamp);
 
     /// <summary>
+    /// The account is in its deletion grace period (BR-DEL2): the session may only restore, sign out, read its own
+    /// state and, for a doctor, pay invoices (<see cref="AllowWhilePendingDeletionAttribute"/>).
+    /// </summary>
+    public bool IsPendingDeletion => UserStatus == AccountStatuses.PendingDeletion;
+
+    /// <summary>
     /// Why this account may not use the API at all, or null. <c>ACCOUNT_DISABLED</c>: the user, doctor,
     /// assistant or patient record is disabled or removed. <c>CLINIC_NOT_ACTIVE</c>: an assistant whose doctor
     /// is pending, rejected or disabled (BR-AS9). Pending, rejected and suspended doctors are not blocked here:
     /// they sign in and see A6, A7 or the suspension banner. Nor is a clinic whose free trial ended: its doctor and
-    /// assistants sign in and see A15 (BR-T4).
+    /// assistants sign in and see A15 (BR-T4). Nor is an account waiting for its deletion: it signs in to the restore
+    /// screen (A16, BR-DEL3), whatever its clinic's state.
     /// </summary>
     public string? BlockCode => this switch
     {
+        { UserStatus: AccountStatuses.PendingDeletion } => null,
         { UserStatus: not AccountStatuses.Active } => ErrorCodes.AccountDisabled,
         { Role: Roles.Doctor, DoctorStatus: DoctorStatuses.Disabled or null } => ErrorCodes.AccountDisabled,
         { Role: Roles.Assistant, AssistantStatus: not "active" } => ErrorCodes.AccountDisabled,

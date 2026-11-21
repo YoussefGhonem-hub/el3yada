@@ -520,7 +520,7 @@ class _Heatmap extends StatelessWidget {
       title: l10n.anaC5Title,
       subtitle: l10n.anaC5Subtitle,
       empty: peak == 0,
-      height: 7 * 28.0 + 32,
+      height: 7 * 28.0 + 48,
       semanticLabel: l10n.anaC5Summary,
       child: LayoutBuilder(
         builder: (context, constraints) {

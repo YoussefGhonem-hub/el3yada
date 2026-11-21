@@ -117,30 +117,33 @@ class _QueueRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                LtrText(
-                  AppFormat.egp(context, item.amountPiasters),
-                  style: theme.textTheme.titleSmall,
-                ),
-                const SizedBox(height: 4),
-                if (item.mismatch)
-                  StatusPill(
-                    label: l10n.abAmountMismatch,
-                    tone: PillTone.danger,
-                    icon: Icons.warning_amber_rounded,
-                  )
-                else
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 124),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
                   LtrText(
-                    l10n.abInvoiceTotalShort(
-                      AppFormat.egp(context, item.invoiceTotalPiasters),
-                    ),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    AppFormat.egp(context, item.amountPiasters),
+                    style: theme.textTheme.titleSmall,
                   ),
-              ],
+                  const SizedBox(height: 4),
+                  if (item.mismatch)
+                    StatusPill(
+                      label: l10n.abAmountMismatch,
+                      tone: PillTone.danger,
+                      icon: Icons.warning_amber_rounded,
+                    )
+                  else
+                    LtrText(
+                      l10n.abInvoiceTotalShort(
+                        AppFormat.egp(context, item.invoiceTotalPiasters),
+                      ),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                ],
+              ),
             ),
             const SizedBox(width: 4),
             Icon(

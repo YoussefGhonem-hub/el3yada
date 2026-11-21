@@ -24,7 +24,12 @@ class FilePickerScreenshotPicker implements ScreenshotPicker {
       final bytes = await file.readAsBytes();
       // Smaller uploads on a slow connection, and no EXIF or GPS in the file.
       final small = await Isolate.run(() => FilePrep.compressImage(bytes));
-      out.add(ScreenshotFile(name: small == null ? file.name : _jpgName(file.name), bytes: small ?? bytes));
+      out.add(
+        ScreenshotFile(
+          name: small == null ? file.name : _jpgName(file.name),
+          bytes: small ?? bytes,
+        ),
+      );
     }
     return out;
   }

@@ -425,7 +425,7 @@ class _Part extends StatelessWidget {
             child: const SizedBox.square(dimension: 10),
           ),
           const SizedBox(width: 6),
-          Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color)),
+          Flexible(child: Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color))),
         ],
       );
 }

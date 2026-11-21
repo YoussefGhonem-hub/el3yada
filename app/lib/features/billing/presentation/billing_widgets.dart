@@ -128,17 +128,19 @@ class InvoiceRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                if (!noCharge)
-                  LtrText(
-                    AppFormat.egp(context, invoice.totalDuePiasters),
-                    style: theme.textTheme.titleSmall,
-                  ),
-                const SizedBox(height: 4),
-                InvoiceStatusPill(invoice.status),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (!noCharge)
+                    LtrText(
+                      AppFormat.egp(context, invoice.totalDuePiasters),
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  const SizedBox(height: 4),
+                  InvoiceStatusPill(invoice.status),
+                ],
+              ),
             ),
             if (onTap != null) ...[
               const SizedBox(width: 4),

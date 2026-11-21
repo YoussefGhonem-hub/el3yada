@@ -1,9 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/network/api_exception.dart';
+import '../../../../core/platform/app_platform.dart';
 import '../../../../core/theme/motion.dart';
 import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../l10n/gen/app_localizations.dart';
@@ -120,7 +122,18 @@ class _FileTile extends ConsumerStatefulWidget {
 class _FileTileState extends ConsumerState<_FileTile> {
   bool _opening = false;
 
+  /// A PDF opens in the app on every platform (zoom, scroll); anything else
+  /// goes to the system viewer.
   Future<void> _open() async {
+    if (widget.file.isPdf) {
+      await openLicensePdfViewer(context, widget.file, widget.doctorName);
+      return;
+    }
+    await _openInSystem();
+  }
+
+  /// Desktop: the system's own viewer, for printing or saving a copy.
+  Future<void> _openInSystem() async {
     final l10n = AppLocalizations.of(context);
     setState(() => _opening = true);
     var opened = false;
@@ -175,29 +188,134 @@ class _FileTileState extends ConsumerState<_FileTile> {
                 ),
               ),
               const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.file.isPdf ? l10n.adminLicensePdf : l10n.adminLicenseFile,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    l10n.adminFileSizeKb(kb),
-                    style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-                  ),
-                ],
+              // Wraps on narrow phones.
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.file.isPdf ? l10n.adminLicensePdf : l10n.adminLicenseFile,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.adminFileSizeKb(kb),
+                      style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          FilledButton.tonalIcon(
-            onPressed: _opening ? null : _open,
-            icon: const Icon(Icons.open_in_new),
-            label: Text(l10n.adminLicenseOpen),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.tonalIcon(
+                onPressed: _opening ? null : _open,
+                icon: Icon(widget.file.isPdf ? Icons.picture_as_pdf_outlined : Icons.open_in_new),
+                label: Text(l10n.adminLicenseOpen),
+              ),
+              if (widget.file.isPdf && ref.watch(appPlatformProvider).isDesktop)
+                TextButton.icon(
+                  onPressed: _opening ? null : _openInSystem,
+                  icon: const Icon(Icons.open_in_new),
+                  label: Text(l10n.adminLicenseOpenOtherApp),
+                ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Draws a license PDF's pages (pdfrx). Tests replace it: drawing pages
+/// needs the platform's PDF renderer.
+final licensePdfViewProvider = Provider<Widget Function(Uint8List pdf, String name)>(
+  (ref) => (pdf, name) => PdfViewer.data(pdf, sourceName: name),
+);
+
+/// The license PDF full screen, over the whole window: a dark surround in
+/// both themes like the image viewer (spec section 12), the pages in their
+/// own colours, pinch and scroll to zoom. Escape or ✕ closes it.
+Future<void> openLicensePdfViewer(BuildContext context, LicenseFile file, String doctorName) =>
+    Navigator.of(context, rootNavigator: true).push(
+      PageRouteBuilder<void>(
+        opaque: true,
+        transitionDuration: Motion.normal,
+        reverseTransitionDuration: Motion.normalExit,
+        pageBuilder: (context, _, _) => LicensePdfViewer(file: file, title: doctorName),
+        transitionsBuilder: (context, animation, _, child) => FadeTransition(
+          opacity: CurvedAnimation(parent: animation, curve: Motion.enterCurve, reverseCurve: Motion.exitCurveReversed),
+          child: child,
+        ),
+      ),
+    );
+
+class LicensePdfViewer extends ConsumerWidget {
+  const LicensePdfViewer({super.key, required this.file, required this.title});
+
+  final LicenseFile file;
+  final String title;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final view = ref.watch(licensePdfViewProvider);
+    return CallbackShortcuts(
+      bindings: {const SingleActivator(LogicalKeyboardKey.escape): () => Navigator.of(context).pop()},
+      child: Focus(
+        autofocus: true,
+        child: Scaffold(
+          backgroundColor: scheme.scrim,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: scheme.surfaceContainerHighest,
+                          foregroundColor: scheme.onSurface,
+                          minimumSize: const Size(48, 48),
+                        ),
+                        tooltip: l10n.adminClose,
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: DecoratedBox(
+                          decoration: ShapeDecoration(color: scheme.surfaceContainerHighest, shape: const StadiumBorder()),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            child: Text(
+                              l10n.adminLicenseImageOf(title),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Semantics(
+                    label: l10n.adminLicenseImageOf(title),
+                    child: view(file.bytes, '${l10n.adminLicenseFileName}-$title.pdf'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

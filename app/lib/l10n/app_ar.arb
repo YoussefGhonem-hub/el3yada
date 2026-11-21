@@ -2651,5 +2651,6 @@
   "waitingRoomScreen": "شاشة غرفة الانتظار",
   "waitingRoomNext": "التالي",
   "waitingRoomExit": "الخروج من ملء الشاشة",
-  "catalogSetupSpace": "محتاج {size} مساحة فاضية"
+  "catalogSetupSpace": "محتاج {size} مساحة فاضية",
+  "adminLicenseOpenOtherApp": "افتحه في برنامج تاني"
 }

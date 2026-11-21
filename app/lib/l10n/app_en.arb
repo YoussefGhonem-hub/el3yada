@@ -5478,5 +5478,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "adminLicenseOpenOtherApp": "Open in another app"
 }

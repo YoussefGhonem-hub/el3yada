@@ -16023,6 +16023,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Needs {size} of free space'**
   String catalogSetupSpace(String size);
+
+  /// No description provided for @adminLicenseOpenOtherApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in another app'**
+  String get adminLicenseOpenOtherApp;
 }
 
 class _AppLocalizationsDelegate

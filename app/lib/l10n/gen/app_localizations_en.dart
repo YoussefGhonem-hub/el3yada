@@ -9382,4 +9382,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String catalogSetupSpace(String size) {
     return 'Needs $size of free space';
   }
+
+  @override
+  String get adminLicenseOpenOtherApp => 'Open in another app';
 }

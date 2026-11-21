@@ -9422,4 +9422,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String catalogSetupSpace(String size) {
     return 'محتاج $size مساحة فاضية';
   }
+
+  @override
+  String get adminLicenseOpenOtherApp => 'افتحه في برنامج تاني';
 }

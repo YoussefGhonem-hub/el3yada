@@ -101,6 +101,7 @@ class _NotificationTile extends StatelessWidget {
         'checkedIn' || 'nextInLine' || 'turnComing' => Icons.confirmation_number_outlined,
         final t when t.startsWith('booking') || t == 'doctorDelayed' || t == 'staffBookingActivity' => Icons.event_note_outlined,
         final t when t.startsWith('invoice') || t.startsWith('payment') => Icons.payments_outlined,
+        'trialEndingSoon' || 'trialLastDay' => Icons.hourglass_bottom_rounded,
         _ => Icons.notifications_outlined,
       };
 }

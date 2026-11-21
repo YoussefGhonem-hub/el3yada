@@ -119,6 +119,16 @@ Errors:
 | `TRIAL_ENDED` | 403 | every clinic endpoint except `clinic/me` | The clinic's free trial has ended. Reload the account; the app shows A15. |
 | `SERVICE_ALREADY_ACTIVE` | 409 | `extendDoctorTrial` | The doctor's service is already active; there is no trial to extend. |
 
-## Not in this change
+## Reminders before the end (`trialReminders`, BR-T6 [S])
 
-Reminders before the trial ends (3 days before, and on the last day) need the scheduled jobs and push (Phase 5). Until then, the app shows the countdown banner itself (BR-T6).
+A daily job in `BillingJobsHost` (10:00 Cairo, so the push arrives in the day) notifies the doctor and their active assistants. It counts days like `trial.daysLeft` and the banner:
+
+| Type | When | To the doctor | To each active assistant |
+|---|---|---|---|
+| `trialEndingSoon` | 3 days left or fewer (`daysLeft` 2 or 3) | «باقي 3 أيام على نهاية الفترة التجريبية المجانية. تواصل معنا لتفعيل الخدمة ومواصلة استخدام العيادة.» | «باقي … على نهاية الفترة التجريبية لعيادة د. …. اطلب من الطبيب التواصل معنا لتفعيل الخدمة.» |
+| `trialLastDay` | less than a day left | «تنتهي الفترة التجريبية المجانية خلال 24 ساعة. تواصل معنا …» | «تنتهي الفترة التجريبية لعيادة د. … خلال 24 ساعة. اطلب من الطبيب …» |
+
+- Both languages are stored; the push goes in the recipient's language. They are not gated by the reminders switch: like a suspension, they are about the service itself.
+- `route`: `/doctor/settings` or `/assistant/settings`, which have the support contact. After the end, the app sends doctors and assistants to A15 from any route. `data`: `{ doctorId, trialEndsAt, daysLeft }`.
+- Idempotent without a new table: a recipient who already has a notification of that type since the window opened (3 days, or 1 day, before the trial's current end) is skipped, so a restart or a second run the same day sends nothing. An extended trial (BR-T5) moves the windows, so it gets its reminders again. Each doctor is handled under a lock on their row.
+- Only doctors who are `active` or `suspended` with an active account; ended trials get nothing (A15 takes over).

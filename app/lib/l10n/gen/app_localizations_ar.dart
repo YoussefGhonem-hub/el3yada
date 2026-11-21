@@ -9114,4 +9114,113 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get waitingRoomExit => 'الخروج من ملء الشاشة';
+
+  @override
+  String get visitsFilterBranch => 'الفرع';
+
+  @override
+  String get visitsNoneInBranch => 'لا توجد زيارات في هذا الفرع.';
+
+  @override
+  String get filesAnyDate => 'أي تاريخ';
+
+  @override
+  String get filesDateRange => 'تصفية بالتاريخ';
+
+  @override
+  String get filesClearDates => 'مسح التاريخ';
+
+  @override
+  String get filesNoneInRange => 'لا توجد ملفات في هذه الفترة.';
+
+  @override
+  String get chatButton => 'محادثة';
+
+  @override
+  String get patientExportCsv => 'تصدير CSV';
+
+  @override
+  String get patientExportDone => 'تم تصدير قائمة المرضى.';
+
+  @override
+  String get patientExportTooLarge =>
+      'عدد المرضى كبير على ملف واحد. ضيّق الفلاتر وحاول مرة أخرى.';
+
+  @override
+  String get patientColumnUnread => 'غير مقروءة';
+
+  @override
+  String patientUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رسالة غير مقروءة',
+      few: '$count رسائل غير مقروءة',
+      two: 'رسالتان غير مقروءتين',
+      one: 'رسالة واحدة غير مقروءة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientCardNextBooking(String date) {
+    return 'الحجز القادم $date';
+  }
+
+  @override
+  String patientCardNoShows(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'غياب $count مرة',
+      few: 'غياب $count مرات',
+      two: 'غياب مرتين',
+      one: 'غياب مرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientCardFiles(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ملف',
+      few: '$count ملفات',
+      two: 'ملفان',
+      one: 'ملف واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientTabAppointments => 'الحجوزات';
+
+  @override
+  String get patientAppointmentsEmptyTitle => 'لا توجد حجوزات بعد';
+
+  @override
+  String get patientAppointmentsEmptyBody => 'احجز زيارة للمريض من هنا.';
+
+  @override
+  String get patientAppointmentsUpcoming => 'القادمة';
+
+  @override
+  String get patientAppointmentsPast => 'السابقة';
+
+  @override
+  String activityPatientsExported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'صدّر قائمة المرضى ($count مريض)',
+      few: 'صدّر قائمة المرضى ($count مرضى)',
+      two: 'صدّر قائمة المرضى (مريضان)',
+      one: 'صدّر قائمة المرضى (مريض واحد)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityActionPatientsExported => 'تصدير قائمة المرضى';
 }

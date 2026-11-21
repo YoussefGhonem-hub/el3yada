@@ -87,7 +87,8 @@ public sealed record MedicalProfileView(
 
 /// <summary>
 /// One D4 row. <c>totalPaidPiasters</c> is null without <c>revenueView</c>; <c>hasAllergies</c> and
-/// <c>chronicDiseases</c> are null without <c>clinicalView</c>.
+/// <c>chronicDiseases</c> are null without <c>clinicalView</c>; <c>unreadChatCount</c> (the caller's own
+/// unread messages from this patient, D4's badge) is null without <c>chat</c>.
 /// </summary>
 public sealed record PatientRegisterRow(
     Guid PatientId,
@@ -103,6 +104,7 @@ public sealed record PatientRegisterRow(
     NextBookingView? NextBooking,
     int NoShowCount,
     int FilesCount,
+    int? UnreadChatCount,
     bool? HasAllergies,
     IReadOnlyList<string>? ChronicDiseases,
     bool Archived,

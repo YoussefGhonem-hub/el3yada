@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,6 +42,10 @@ abstract interface class PatientsRepository {
 
   /// D4, AS2.
   Future<Paged<PatientRegisterRow>> register(RegisterQuery query, {int page = 1, int pageSize = 25});
+
+  /// D4 [S] "Export CSV" (doctor only): every row [query] selects, as a CSV file in [language]
+  /// (`ar` or `en`). 400 `EXPORT_TOO_LARGE` past 20,000 patients.
+  Future<Uint8List> exportRegister(RegisterQuery query, {required String language});
 }
 
 class ApiPatientsRepository implements PatientsRepository {
@@ -89,6 +95,16 @@ class ApiPatientsRepository implements PatientsRepository {
             await _get('/patients/register', {...query.toQuery(), 'page': page, 'pageSize': pageSize}),
             PatientRegisterRow.fromJson,
           ));
+
+  @override
+  Future<Uint8List> exportRegister(RegisterQuery query, {required String language}) => _call(() async {
+        final response = await _dio.get<List<int>>(
+          '/patients/register/export',
+          queryParameters: {...query.toQuery(), 'lang': language},
+          options: Options(responseType: ResponseType.bytes),
+        );
+        return Uint8List.fromList(response.data ?? const []);
+      });
 
   Future<Map<String, dynamic>> _get(String path, [Map<String, dynamic>? query]) async {
     final response = await _dio.get<Map<String, dynamic>>(path, queryParameters: query);

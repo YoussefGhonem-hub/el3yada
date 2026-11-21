@@ -11,8 +11,10 @@ public sealed class PatientAuthorizationTests(FeaturesApiFactory api) : IClassFi
         "/api/patient/home",
         "/api/patient/doctors",
         "/api/patient/visits",
+        "/api/patient/visits/branches",
         "/api/patient/prescriptions",
         "/api/patient/records",
+        "/api/patient/records/counts",
         "/api/patient/medical-profile",
         "/api/patient/account",
     };

@@ -9082,4 +9082,106 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitingRoomExit => 'Exit full screen';
+
+  @override
+  String get visitsFilterBranch => 'Branch';
+
+  @override
+  String get visitsNoneInBranch => 'No visits in this branch.';
+
+  @override
+  String get filesAnyDate => 'Any date';
+
+  @override
+  String get filesDateRange => 'Filter by date';
+
+  @override
+  String get filesClearDates => 'Clear dates';
+
+  @override
+  String get filesNoneInRange => 'No files in these dates.';
+
+  @override
+  String get chatButton => 'Chat';
+
+  @override
+  String get patientExportCsv => 'Export CSV';
+
+  @override
+  String get patientExportDone => 'The patient list is exported.';
+
+  @override
+  String get patientExportTooLarge =>
+      'Too many patients for one file. Narrow the filters and try again.';
+
+  @override
+  String get patientColumnUnread => 'Unread';
+
+  @override
+  String patientUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread messages',
+      one: '1 unread message',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientCardNextBooking(String date) {
+    return 'Next booking $date';
+  }
+
+  @override
+  String patientCardNoShows(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count no-shows',
+      one: '1 no-show',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientCardFiles(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '1 file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientTabAppointments => 'Appointments';
+
+  @override
+  String get patientAppointmentsEmptyTitle => 'No bookings yet';
+
+  @override
+  String get patientAppointmentsEmptyBody =>
+      'Book a visit for this patient from here.';
+
+  @override
+  String get patientAppointmentsUpcoming => 'Upcoming';
+
+  @override
+  String get patientAppointmentsPast => 'Past';
+
+  @override
+  String activityPatientsExported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Exported the patient list ($count patients)',
+      one: 'Exported the patient list (1 patient)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityActionPatientsExported => 'Patient list exported';
 }

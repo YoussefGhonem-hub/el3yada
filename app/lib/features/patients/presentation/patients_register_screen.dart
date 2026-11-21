@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/data/paged_controller.dart';
 import '../../../core/format/app_format.dart';
+import '../../../core/network/api_error_text.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../core/theme/motion.dart';
 import '../../../core/widgets/container_transform.dart';
 import '../../../core/widgets/empty_state.dart';
@@ -16,8 +18,11 @@ import '../../../core/widgets/state_switcher.dart';
 import '../../../l10n/gen/app_localizations.dart';
 import '../../clinic/domain/clinic_context.dart';
 import '../../clinic/domain/clinic_permissions.dart';
+import '../../records/data/file_actions.dart';
+import '../../sessions/domain/session_models.dart' show dayKey;
 import '../application/patients_providers.dart';
 import '../clinic_paths.dart';
+import '../data/patients_repository.dart';
 import '../domain/patient_models.dart';
 import 'patient_profile_screen.dart';
 import 'widgets/clinic_ui.dart';
@@ -118,6 +123,30 @@ class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen>
 
   Future<void> _refresh() => ref.read(registerControllerProvider.notifier).refresh();
 
+  bool _exporting = false;
+
+  /// D4 [S] "Export CSV" (doctor only): the rows the filters and sort select, in the app's language.
+  /// A save dialog on desktop, the share sheet on phones.
+  Future<void> _export() async {
+    final l10n = AppLocalizations.of(context);
+    final language = Localizations.localeOf(context).languageCode;
+    setState(() => _exporting = true);
+    try {
+      final bytes = await ref.read(patientsRepositoryProvider).exportRegister(_query, language: language);
+      final saved = await ref.read(fileActionsProvider).save(
+            bytes,
+            fileName: 'patients-${dayKey(DateTime.now())}.csv',
+            mimeType: 'text/csv',
+          );
+      if (saved && mounted) showAdminSnack(context, l10n.patientExportDone);
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      showAdminSnack(context, error.code == 'EXPORT_TOO_LARGE' ? l10n.patientExportTooLarge : l10n.apiError(error), error: true);
+    } finally {
+      if (mounted) setState(() => _exporting = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(registerSearchRequestProvider, (_, pending) {
@@ -188,6 +217,15 @@ class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen>
                 icon: const Icon(Icons.person_add_alt_1_outlined),
                 label: Text(l10n.patientAdd),
               );
+    // The whole list with phone numbers: the doctor's alone (the API refuses assistants).
+    final exportIcon = _exporting
+        ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
+        : const Icon(Icons.file_download_outlined);
+    final export = !clinic.isDoctor
+        ? null
+        : compact || width < 600
+            ? IconButton(tooltip: l10n.patientExportCsv, onPressed: _exporting ? null : _export, icon: exportIcon)
+            : OutlinedButton.icon(onPressed: _exporting ? null : _export, icon: exportIcon, label: Text(l10n.patientExportCsv));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -197,7 +235,7 @@ class _PatientsRegisterScreenState extends ConsumerState<PatientsRegisterScreen>
           child: ClinicHeader(
             title: l10n.navPatients,
             subtitle: state.loading ? l10n.loading : l10n.patientRegisterCount(state.totalCount),
-            actions: [?add],
+            actions: [?export, ?add],
           ),
         ),
         Padding(
@@ -541,9 +579,13 @@ List<RegisterSort> availableSorts(ClinicContext clinic) => [
       RegisterSort.age,
       RegisterSort.firstVisit,
       RegisterSort.visits,
+      RegisterSort.nextBooking,
+      RegisterSort.noShows,
+      RegisterSort.files,
       RegisterSort.linkedAt,
       if (clinic.can(ClinicPermission.revenueView)) RegisterSort.totalPaid,
       if (clinic.can(ClinicPermission.clinicalView)) RegisterSort.allergies,
+      if (clinic.can(ClinicPermission.chat)) RegisterSort.unreadChat,
     ];
 
 class _SortMenu extends StatelessWidget {
@@ -672,6 +714,8 @@ class _PatientCard extends StatelessWidget {
                               ),
                             ),
                             if (row.hasAllergies ?? false) ...[const SizedBox(width: 8), const AllergyFlag(compact: true)],
+                            if ((row.unreadChatCount ?? 0) > 0) const SizedBox(width: 8),
+                            UnreadChatBadge(count: row.unreadChatCount ?? 0),
                           ],
                         ),
                         const SizedBox(height: 6),
@@ -726,6 +770,24 @@ class _PatientCard extends StatelessWidget {
                 Text(
                   visitsSummary(l10n, row.visits),
                   style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                ),
+              ],
+              if (row.nextBooking != null || row.noShowCount > 0 || row.filesCount > 0) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 4,
+                  children: [
+                    if (row.nextBooking case final next?)
+                      MetaLine(
+                        icon: Icons.event_available_outlined,
+                        text: l10n.patientCardNextBooking(ClinicFormat.dayAuto(context, next.date)),
+                        color: scheme.primary,
+                      ),
+                    if (row.noShowCount > 0)
+                      MetaLine(icon: Icons.event_busy_outlined, text: l10n.patientCardNoShows(row.noShowCount), color: scheme.error),
+                    if (row.filesCount > 0) MetaLine(icon: Icons.folder_outlined, text: l10n.patientCardFiles(row.filesCount)),
+                  ],
                 ),
               ],
             ],
@@ -809,6 +871,8 @@ class _CompactRow extends StatelessWidget {
                             maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.titleSmall),
                       ),
                       if (row.hasAllergies ?? false) ...[const SizedBox(width: 6), const AllergyFlag(compact: true)],
+                      if ((row.unreadChatCount ?? 0) > 0) const SizedBox(width: 6),
+                      UnreadChatBadge(count: row.unreadChatCount ?? 0),
                     ],
                   ),
                   const SizedBox(height: 4),
@@ -904,7 +968,8 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
         ],
       ),
     ),
-    if (width >= 1100)
+    // The narrower the table, the fewer columns: the name and the last visit keep their room.
+    if (width >= 1250)
       _Column(
         label: l10n.patientColumnFirstVisit,
         width: 104,
@@ -944,6 +1009,7 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
       _Column(
         label: l10n.patientColumnNextBooking,
         width: 112,
+        sort: RegisterSort.nextBooking,
         cell: (context, row) => row.nextBooking == null
             ? Text('—', style: muted)
             : Text(ClinicFormat.dayAuto(context, row.nextBooking!.date), style: theme.textTheme.bodyMedium),
@@ -952,8 +1018,17 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
       _Column(
         label: l10n.patientColumnNoShows,
         width: 80,
+        sort: RegisterSort.noShows,
         numeric: true,
         cell: (context, row) => row.noShowCount == 0 ? Text('—', style: muted) : Text('${row.noShowCount}', style: theme.textTheme.bodyMedium),
+      ),
+    if (width >= 1300)
+      _Column(
+        label: l10n.patientSortFiles,
+        width: 72,
+        sort: RegisterSort.files,
+        numeric: true,
+        cell: (context, row) => row.filesCount == 0 ? Text('—', style: muted) : Text('${row.filesCount}', style: theme.textTheme.bodyMedium),
       ),
     if (clinic.can(ClinicPermission.revenueView))
       _Column(
@@ -970,7 +1045,60 @@ List<_Column> _columns(BuildContext context, ClinicContext clinic, double width)
         sort: RegisterSort.allergies,
         cell: (context, row) => (row.hasAllergies ?? false) ? const AllergyFlag(compact: true) : const SizedBox.shrink(),
       ),
+    if (clinic.can(ClinicPermission.chat))
+      _Column(
+        label: l10n.patientColumnUnread,
+        width: 72,
+        sort: RegisterSort.unreadChat,
+        cell: (context, row) => UnreadChatBadge(count: row.unreadChatCount ?? 0),
+      ),
   ];
+}
+
+/// D4's unread chat badge: the caller's own unread messages from the patient, popping in when
+/// the count changes. Nothing while there are none.
+class UnreadChatBadge extends StatelessWidget {
+  const UnreadChatBadge({super.key, required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final reduced = Motion.of(context).reduced;
+    return AnimatedSwitcher(
+      duration: reduced ? Duration.zero : Motion.normal,
+      reverseDuration: reduced ? Duration.zero : Motion.normalExit,
+      switchInCurve: Motion.spring,
+      switchOutCurve: Motion.exitCurveReversed,
+      transitionBuilder: (child, animation) => ScaleTransition(scale: animation, child: child),
+      child: count == 0
+          ? const SizedBox.shrink(key: ValueKey(0))
+          : Semantics(
+              key: ValueKey(count),
+              label: l10n.patientUnreadSemantics(count),
+              excludeSemantics: true,
+              child: DecoratedBox(
+                decoration: ShapeDecoration(color: scheme.primary, shape: const StadiumBorder()),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.chat_bubble_rounded, size: 13, color: scheme.onPrimary),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$count',
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onPrimary, fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
 }
 
 Widget _cellBox(_Column column, Widget child) {

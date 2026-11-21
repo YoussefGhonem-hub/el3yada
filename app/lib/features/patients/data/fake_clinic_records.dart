@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -195,6 +197,9 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
 
   /// A branch's own prices; a type it doesn't set uses the doctor's.
   final Map<String, Map<SessionType, int?>> branchPrices;
+
+  /// Unread chat messages per patient, the same for every caller with `chat` (D4's badge).
+  final Map<String, int> unreadChats = {};
 
   /// The offline doctor's user ID on recorded sessions.
   static const doctorUserId = 'dev-doctor-user';
@@ -402,6 +407,9 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     if (query.sort == RegisterSort.totalPaid && !who.can(ClinicPermission.revenueView)) {
       _denied(ClinicPermission.revenueView);
     }
+    if (query.sort == RegisterSort.unreadChat && !who.can(ClinicPermission.chat)) {
+      _denied(ClinicPermission.chat);
+    }
     if (query.search.length > 60) _invalid({'search': 'TOO_LONG'});
 
     final today = _today();
@@ -453,11 +461,12 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
           RegisterSort.visits => a.visits.sessions.length.compareTo(b.visits.sessions.length),
           RegisterSort.examinations => a.visits.examinations.compareTo(b.visits.examinations),
           RegisterSort.consultations => a.visits.consultations.compareTo(b.visits.consultations),
-          RegisterSort.files => 0,
+          RegisterSort.files || RegisterSort.nextBooking || RegisterSort.noShows => 0,
           RegisterSort.linkedAt => a.link.linkedAt.compareTo(b.link.linkedAt),
           RegisterSort.totalPaid => a.visits.paid.compareTo(b.visits.paid),
           RegisterSort.allergies =>
             a.link.lists[ProfileList.allergies]!.length.compareTo(b.link.lists[ProfileList.allergies]!.length),
+          RegisterSort.unreadChat => (unreadChats[a.account.id] ?? 0).compareTo(unreadChats[b.account.id] ?? 0),
         };
 
     final byVisit = query.sort == RegisterSort.lastVisit || query.sort == RegisterSort.firstVisit;
@@ -491,6 +500,7 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
             'nextBooking': null,
             'noShowCount': 0,
             'filesCount': 0,
+            'unreadChatCount': who.can(ClinicPermission.chat) ? unreadChats[row.account.id] ?? 0 : null,
             'hasAllergies': who.can(ClinicPermission.clinicalView) ? row.link.lists[ProfileList.allergies]!.isNotEmpty : null,
             'chronicDiseases': who.can(ClinicPermission.clinicalView)
                 ? [for (final item in row.link.lists[ProfileList.chronicDiseases]!) item.text]
@@ -504,6 +514,67 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
       'totalCount': rows.length,
       'totalPages': (rows.length / pageSize).ceil(),
     }, PatientRegisterRow.fromJson);
+  }
+
+  /// The same file as the API (PatientsRegisterCsv): UTF-8 with a BOM, CRLF rows, money and clinical
+  /// columns by permission. Doctor only.
+  @override
+  Future<Uint8List> exportRegister(RegisterQuery query, {required String language}) async {
+    final who = _caller();
+    if (!who.isDoctor) _denied('doctorOnly');
+    final rows = (await register(query, pageSize: 100000)).items;
+    final ar = language != 'en';
+    String t(String arabic, String english) => ar ? arabic : english;
+    String day(DateTime d) => dayKey(d);
+    String cell(String value) {
+      var v = value;
+      if (v.isNotEmpty && '=+-@\t\r'.contains(v[0])) v = "'$v";
+      return v.contains(RegExp('[,"\r\n]')) ? '"${v.replaceAll('"', '""')}"' : v;
+    }
+
+    final revenue = who.can(ClinicPermission.revenueView);
+    final clinical = who.can(ClinicPermission.clinicalView);
+    final lines = <List<String>>[
+      [
+        t('رقم الملف', 'File number'), t('الاسم', 'Name'), t('الموبايل', 'Mobile'), t('النوع', 'Gender'), t('السن', 'Age'),
+        t('أول زيارة', 'First visit'), t('آخر زيارة', 'Last visit'), t('نوع آخر زيارة', 'Last visit type'),
+        t('فرع آخر زيارة', 'Last visit branch'), t('الزيارات', 'Visits'), t('كشف', 'Examinations'), t('استشارة', 'Consultations'),
+        t('الحجز القادم', 'Next booking'), t('مرات الغياب', 'No-shows'), t('الملفات', 'Files'),
+        if (revenue) t('إجمالي المدفوع (ج.م)', 'Total paid (EGP)'),
+        if (clinical) ...[t('حساسية', 'Allergies'), t('أمراض مزمنة', 'Chronic diseases')],
+        t('تاريخ الإضافة', 'Added on'),
+      ],
+      for (final r in rows)
+        [
+          '${r.fileNumber}',
+          r.fullName,
+          AppFormat.phone(r.phone),
+          r.gender == Gender.female ? t('أنثى', 'Female') : t('ذكر', 'Male'),
+          '${r.ageYears}',
+          r.visits.firstVisitAt == null ? '' : day(_cairoDay(r.visits.firstVisitAt!)),
+          r.visits.lastVisit == null ? '' : day(r.visits.lastVisit!.day),
+          switch (r.visits.lastVisit?.type) {
+            null => '',
+            SessionType.consultation => t('استشارة', 'Consultation'),
+            _ => t('كشف', 'Examination'),
+          },
+          r.visits.lastVisit?.branchName(ar ? 'ar' : 'en') ?? '',
+          '${r.visits.total}',
+          '${r.visits.examinations}',
+          '${r.visits.consultations}',
+          r.nextBooking == null ? '' : day(r.nextBooking!.date),
+          '${r.noShowCount}',
+          '${r.filesCount}',
+          if (revenue) ((r.totalPaidPiasters ?? 0) / 100).toStringAsFixed(2),
+          if (clinical) ...[
+            (r.hasAllergies ?? false) ? t('نعم', 'Yes') : t('لا', 'No'),
+            (r.chronicDiseases ?? const []).join(ar ? '، ' : '; '),
+          ],
+          day(_cairoDay(r.linkedAt)),
+        ],
+    ];
+    final text = lines.map((line) => line.map(cell).join(',')).join('\r\n');
+    return Uint8List.fromList([0xEF, 0xBB, 0xBF, ...utf8.encode('$text\r\n')]);
   }
 
   // ---------------------------------------------------------------------------
@@ -1502,6 +1573,10 @@ class FakeClinicRecords implements PatientsRepository, SessionsRepository {
     // 15. Archived (BR-P7).
     final amr = patient('عمرو شريف نبيل', '+201267676767', Gender.male, born(1999, 2, 2), linkedDaysAgo: 420, archived: true);
     visit(amr, 400, SessionType.examination, complaint: 'حساسية جلدية', diagnosis: 'إكزيما');
+
+    // Messages the clinic hasn't read yet (D4's unread badge).
+    unreadChats[mona] = 2;
+    unreadChats[karim] = 1;
 
     // Accounts of other clinics, to link (BR-P3).
     for (final (i, phone) in elsewherePhones.indexed) {

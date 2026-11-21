@@ -22,6 +22,7 @@ public sealed class AppointmentSearchService(AppDbContext db, AppointmentService
         if (q.VisitType is { } type) query = query.Where(a => a.VisitType == type);
         if (q.Source is { } source) query = query.Where(a => a.Source == source);
         if (q.BookedBy is { } by) query = query.Where(a => a.BookedBy == by);
+        if (q.PatientId is { } patientId) query = query.Where(a => a.PatientId == patientId);
         if (q.GuestsOnly) query = query.Where(a => a.PatientId == null);
         if (q.RescheduledOnly) query = query.Where(a => a.RescheduleCount > 0);
         if (q.OverbookedOnly) query = query.Where(a => a.Overbooked);
@@ -50,6 +51,7 @@ public sealed class AppointmentSearchService(AppDbContext db, AppointmentService
         query = q.Sort switch
         {
             "status" => query.OrderBy(a => a.Status).ThenBy(a => a.StartUtc),
+            "dateDesc" => query.OrderByDescending(a => a.LocalDate).ThenByDescending(a => a.StartUtc).ThenByDescending(a => a.QueueNumber),
             "patient" => query.OrderBy(a => a.GuestName ?? db.DoctorPatients.Where(l => l.DoctorId == a.DoctorId && l.PatientId == a.PatientId).Select(l => l.PatientName).FirstOrDefault()),
             _ => query.OrderBy(a => a.LocalDate).ThenBy(a => a.StartUtc).ThenBy(a => a.QueueNumber),
         };

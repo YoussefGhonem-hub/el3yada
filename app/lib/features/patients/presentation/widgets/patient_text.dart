@@ -49,8 +49,11 @@ String registerSortLabel(AppLocalizations l10n, RegisterSort sort) => switch (so
       RegisterSort.consultations => l10n.patientSortConsultations,
       RegisterSort.files => l10n.patientSortFiles,
       RegisterSort.linkedAt => l10n.patientSortLinkedAt,
+      RegisterSort.nextBooking => l10n.patientColumnNextBooking,
+      RegisterSort.noShows => l10n.patientColumnNoShows,
       RegisterSort.totalPaid => l10n.patientTotalPaid,
       RegisterSort.allergies => l10n.patientColumnAllergies,
+      RegisterSort.unreadChat => l10n.patientColumnUnread,
     };
 
 /// What a screen reader hears for a register row.
@@ -63,6 +66,7 @@ String patientRowSemantics(BuildContext context, PatientRegisterRow row) {
     patientAgeGender(l10n, row.ageYears, row.gender, estimated: row.dateOfBirthEstimated),
     AppFormat.phone(row.phone),
     if (row.hasAllergies ?? false) l10n.patientHasAllergies,
+    if ((row.unreadChatCount ?? 0) > 0) l10n.patientUnreadSemantics(row.unreadChatCount!),
     if (last == null)
       l10n.patientNoVisits
     else

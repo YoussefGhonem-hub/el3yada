@@ -4,6 +4,7 @@ import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/realtime/realtime_service.dart';
 import 'package:el3yada/features/patient/data/fake_patient_repository.dart';
 import 'package:el3yada/features/patient/data/patient_repository.dart';
+import 'package:el3yada/features/startup/public_settings.dart';
 import '../support/app_overrides.dart';
 import 'package:material_ui/material_ui.dart';
 import '../support/app_flow.dart' show settle;
@@ -24,6 +25,8 @@ Future<TestRig> pumpSignedIn(
   AppPlatform platform = AppPlatform.mobile,
   Size size = const Size(400, 860),
   String locale = 'en',
+  PublicSettings settings = const PublicSettings(),
+  PatientRepository? patients,
   List<Override> overrides = const [],
 }) async {
   tester.view.physicalSize = size;
@@ -37,9 +40,10 @@ Future<TestRig> pumpSignedIn(
         ...await appOverrides(
           platform: platform,
           prefs: {'settings.locale': locale},
+          settings: settings,
         ),
         patientRepositoryProvider.overrideWithValue(
-          FakePatientRepository(delay: Duration.zero),
+          patients ?? FakePatientRepository(delay: Duration.zero),
         ),
         realtimeServiceProvider.overrideWithValue(rig.realtime),
         localNotifierProvider.overrideWithValue(rig.notifier),

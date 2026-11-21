@@ -59,7 +59,9 @@ public sealed record BranchInfoDto(
     IReadOnlyList<WorkingPeriodDto> WorkingHours,
     VisitPricesDto Prices,
     IReadOnlyList<string> PaymentMethods,
-    IReadOnlyList<string> Amenities);
+    IReadOnlyList<string> Amenities,
+    // D29 branch photos [S], in order; read each with GET /api/patient/doctors/{doctorId}/branches/{id}/photos/{photoId}.
+    IReadOnlyList<Guid> PhotoIds);
 
 // P4 / P5: visits
 public sealed record VisitListItemDto(

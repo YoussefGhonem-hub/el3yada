@@ -23,6 +23,8 @@ This is what the Flutter app builds against for D22, D24–D29, D37, AS12, AS17 
 |---|---|---|---|
 | `GET /api/branches`, `GET /api/branches/{branchId}` | ✔ | ✔ any permission | none: every branch is readable |
 | `POST /api/branches/createBranch`, `updateBranch`, `setBranchStatus`, `setDefaultBranch` | ✔ | ✘ doctor only | |
+| `POST /api/branches/uploadBranchPhoto`, `reorderBranchPhotos`, `deleteBranchPhoto` | ✔ | ✘ doctor only (AS17 shows the Info tab read-only) | |
+| `GET /api/branches/{branchId}/photos/{photoId}` | ✔ | ✔ any permission | none |
 | `PUT /api/staff/branches/{branchId}/schedule` (`updateBranchSchedule`, [api-phase-6-schedule.md](api-phase-6-schedule.md)) | ✔ | `scheduleManage` | their branches |
 | `GET /api/prices` | ✔ | `pricesManage` | none: every branch is listed |
 | `POST /api/prices/updatePrices` | ✔ | `pricesManage` | their branches (doctor-level prices: any) |
@@ -107,11 +109,13 @@ Every branch of the doctor: the default first, then oldest first, archived ones 
     "paymentMethods": ["cash", "instapay"],
     "amenities": ["elevator"]
   },
-  "createdAt": "2026-11-15T10:04:00.000Z", "updatedAt": "2026-11-15T10:04:00.000Z"
+  "createdAt": "2026-11-15T10:04:00.000Z", "updatedAt": "2026-11-15T10:04:00.000Z",
+  "photos": [ { "id": "…", "sortOrder": 0 }, { "id": "…", "sortOrder": 1 } ]
 }
 ```
 
 - `workingHours.periods`: by weekday (1–7), then start time. `bookingMode` (`queue` or `timed`) and `defaultCapacity` are read-only here; they change with the booking settings in `updateBranchSchedule`. Show each period's capacity in queue mode, with `defaultCapacity` as the placeholder for `null`.
+- `photos` [S]: in their order (the first is the cover), at most 5. See [branch photos](#branch-photos-d29-info-tab-s).
 - `clinicInfo.prices`: see [visit prices](#visit-prices-d37-as19). They are changed with `updatePrices`, not `updateBranch`.
 - `paymentMethods`: from `cash`, `card`, `instapay`, `wallet`. `amenities` [S]: from `elevator`, `parking`, `wheelchair`, `kidsArea`. Both come in this order.
 - Booking settings, special dates and closures are not in this view: `GET /api/staff/branches/{branchId}/schedule` has them ([api-phase-6-schedule.md](api-phase-6-schedule.md)).
@@ -226,6 +230,23 @@ Refused (nothing changes):
 | 409 `BRANCH_NOT_ACTIVE` | the branch is temporarily closed or archived |
 
 The default branch can be temporarily closed (while another branch is active), but never archived.
+
+### Branch photos (D29 Info tab) [S]
+
+Up to 5 photos a branch (BR-BR2). The doctor adds, orders and deletes them; every clinic caller of the doctor reads them, and so do the doctor's linked patients (P3). Files are never public URLs.
+
+- `POST /api/branches/uploadBranchPhoto`: `multipart/form-data` with `branchId` and `file` (JPEG, PNG or WebP, ≤ 10 MB, checked by its first bytes). Stored as a JPEG of at most 1600 px on the long edge, upright, without metadata (EXIF, GPS), with a thumbnail. **201** with the [branch details](#branch-details-d29); the new photo is last.
+- `POST /api/branches/reorderBranchPhotos`: `{ "branchId": "…", "photoIds": ["…", "…"] }`, every photo of the branch once, in the new order. **200** with the branch details.
+- `POST /api/branches/deleteBranchPhoto`: `{ "branchId": "…", "photoId": "…" }`. The files are deleted too. **200** with the branch details.
+- `GET /api/branches/{branchId}/photos/{photoId}`: the JPEG; `?thumb=true` for the thumbnail (at most 320 px). `Cache-Control: private, max-age=86400`: a photo never changes (a new one gets a new ID).
+- Patients: `GET /api/patient/doctors/{doctorId}` lists each branch's `photoIds` in order; `GET /api/patient/doctors/{doctorId}/branches/{branchId}/photos/{photoId}` (`?thumb=true`) reads one, for a linked patient only (404 otherwise, and for archived branches).
+
+| Errors | |
+|---|---|
+| 400 | `branchId`: `REQUIRED`; `file`: `REQUIRED`, `FILE_TOO_LARGE`, `FILE_TYPE_NOT_ALLOWED`, `FILE_CONTENT_INVALID` (not a readable image); `photoIds`: `REQUIRED`, `INVALID_VALUE` (not each photo once) |
+| 404 `NOT_FOUND` | not one of the doctor's branches or photos |
+| 409 `BRANCH_PHOTO_LIMIT` | the branch already has 5 photos |
+| 413 `REQUEST_TOO_LARGE`, 415 `UNSUPPORTED_MEDIA_TYPE` | not a multipart form, or too large to read |
 
 ## Visit prices (D37, AS19)
 
@@ -544,6 +565,7 @@ Every write below adds one row in the clinic's log (`doctorId` = the clinic, the
 | `branchUpdated` | `branch` | `groups`: the groups sent (`info`, `address`, `contact`, `clinicInfo`) |
 | `branchScheduleUpdated` | `branch` | `updateBranchSchedule` ([api-phase-6-schedule.md](api-phase-6-schedule.md)): `periods`, `overrides`, `closures` (how many), `mode`, and the affected bookings `kept`, `moved`, `cancelled` |
 | `branchHoursUpdated` | `branch` | `periods`: how many. Written by the retired `updateBranchHours`; old rows still show in D27 |
+| `branchPhotosUpdated` | `branch` | `added` (photo ID), `count`, `sizeBytes`; or `reordered` (how many); or `removed` (photo ID) |
 | `branchStatusChanged` | `branch` | `before`, `after`, `reopenDate` |
 | `defaultBranchChanged` | `branch` (the new default) | `before`, `after` (branch IDs) |
 | `pricesUpdated` | `doctor` (doctor prices) or `branch` | `branchId`, `before`, `after` (`{ examinationPricePiasters, consultationPricePiasters }`) |
@@ -568,6 +590,7 @@ New in this part of Phase 2. The other codes are in [api-phase-1.md](api-phase-1
 | `LAST_ACTIVE_BRANCH` | 409 | The clinic needs at least one active branch |
 | `BRANCH_HAS_BOOKINGS` | 409 | Move or cancel the listed bookings first (`bookings`, `totalCount`) |
 | `BRANCH_NOT_ACTIVE` | 409 | Only an active branch can be the default |
+| `BRANCH_PHOTO_LIMIT` | 409 | The branch has 5 photos; delete one first |
 | `ASSISTANT_LIMIT_REACHED` | 409 | «وصلت للحد الأقصى لعدد المساعدين» |
 | `ASSISTANT_PHONE_TAKEN` | 409 | This number is already an assistant (of this or another clinic) |
 | `ASSISTANT_REMOVED` | 409 | The assistant was removed; add them again as a new assistant |
@@ -597,5 +620,4 @@ Also used here: `BRANCH_NOT_ALLOWED`, `PERMISSION_DENIED` (api-phase-2), and `RE
 
 ## Not built yet
 
-- Branch photos [S] (BranchPhotos, up to 5).
 - The admin's side of `setAssistantStatus` (AD5, with the admin doctor screens).

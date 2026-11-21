@@ -11,6 +11,9 @@ public static partial class AuditActions
     /// </summary>
     public const string BranchScheduleUpdated = "branchScheduleUpdated";
 
+    /// <summary>D29 Info tab photos [S]: added, reordered or deleted.</summary>
+    public const string BranchPhotosUpdated = "branchPhotosUpdated";
+
     public const string BranchStatusChanged = "branchStatusChanged";
     public const string DefaultBranchChanged = "defaultBranchChanged";
     public const string PricesUpdated = "pricesUpdated";

@@ -137,6 +137,7 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
                 b.ConsultationPricePiasters,
                 b.PaymentMethodsJson,
                 b.AmenitiesJson,
+                PhotoIds = b.BranchPhotos.OrderBy(p => p.SortOrder).Select(p => p.Id).ToList(),
             })
             .AsSplitQuery()
             .ToListAsync(ct);
@@ -151,7 +152,8 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
                     b.ExaminationPricePiasters ?? doctor.ExaminationPricePiasters,
                     b.ConsultationPricePiasters ?? doctor.ConsultationPricePiasters),
                 ParseStringList(b.PaymentMethodsJson),
-                ParseStringList(b.AmenitiesJson))).ToList());
+                ParseStringList(b.AmenitiesJson),
+                b.PhotoIds)).ToList());
     }
 
     // ---- P1: home ----------------------------------------------------------------------------

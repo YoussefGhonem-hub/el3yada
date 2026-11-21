@@ -343,30 +343,52 @@ abstract final class AppTheme {
   static final ThemeData _desktopLight = _build(lightScheme, El3yadaColors.light, desktop: true);
   static final ThemeData _desktopDark = _build(desktopDarkScheme, El3yadaColors.desktopDark, desktop: true);
 
-  /// The desktop type scale: about a major second (x1.125) per step around
-  /// 15 px body text, wider steps between the headline sizes. Alexandria is
-  /// wide, so 15 reads like 16 in most faces.
+  /// Desktop text uses the system UI font, as Microsoft Teams and Zoom do: Segoe UI on Windows, which covers Arabic.
+  /// On macOS, where it isn't installed, Flutter falls back to the system font. Phones and tablets keep Alexandria.
+  static const desktopFontFamily = 'Segoe UI';
+
+  /// The desktop type ramp of Fluent 2, Microsoft Teams' design system: 14 px body text (Body 1), 12 px captions,
+  /// semibold (600) for titles, buttons and labels, and regular (400) for everything else.
   static const TextTheme desktopTextTheme = TextTheme(
-    displayLarge: TextStyle(fontSize: 54, fontWeight: FontWeight.w600),
-    displayMedium: TextStyle(fontSize: 44, fontWeight: FontWeight.w600),
-    displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
-    headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
-    headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
-    headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-    titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-    titleMedium: TextStyle(fontSize: 16.5, fontWeight: FontWeight.w500),
-    titleSmall: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-    bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-    bodyMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-    bodySmall: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-    labelLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-    labelMedium: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-    labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+    displayLarge: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+    displayMedium: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+    displaySmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+    headlineLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
+    headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+    headlineSmall: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+    titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+    titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+    titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    bodyLarge: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+    bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+    bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+    labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+    labelMedium: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+    labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w400),
   );
+
+  /// Desktop: the page's canvas, the rounded surface every page sits on, over the app background (as in Teams).
+  static Color desktopCanvas(ColorScheme scheme) =>
+      scheme.brightness == Brightness.light ? scheme.surfaceContainerLowest : scheme.surfaceContainerLow;
+
+  /// Desktop: a panel that groups cards on the canvas, such as a board column or a filters bar.
+  static Color desktopPanel(ColorScheme scheme) => scheme.brightness == Brightness.light
+      ? Color.lerp(scheme.surfaceContainerLowest, scheme.surface, 0.6)!
+      : scheme.surfaceContainerHigh;
+
+  /// Desktop cards: one step above the canvas, with a hairline border (Fluent cards).
+  static Color desktopCard(ColorScheme scheme) =>
+      scheme.brightness == Brightness.light ? scheme.surfaceContainerLowest : scheme.surfaceContainerHighest;
 
   static ThemeData _build(ColorScheme scheme, El3yadaColors colors, {bool desktop = false}) {
     const pill = StadiumBorder();
-    final field = BorderRadius.circular(14);
+    // Desktop follows Fluent 2's medium size (Teams, Zoom): 32 px buttons and fields with 6 px corners, made for a
+    // mouse. Phones keep 44 dp pills for touch.
+    final family = desktop ? desktopFontFamily : fontFamily;
+    final field = BorderRadius.circular(desktop ? 6 : 14);
+    final OutlinedBorder buttonShape = desktop ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)) : pill;
+    final buttonHeight = desktop ? 32.0 : 44.0;
+    final tapTarget = desktop ? MaterialTapTargetSize.shrinkWrap : null;
     // Menus, dialogs and sheets sit above the page: in dark mode on desktop
     // they are a lighter graphite, not a darker one.
     final raised = desktop && scheme.brightness == Brightness.dark
@@ -395,18 +417,19 @@ abstract final class AppTheme {
     );
     final textTheme = desktop ? desktopTextTheme : phoneTextTheme;
     // Compact buttons, as in Facebook and LinkedIn: 44 dp pills with 14 sp
-    // semibold text (taps still get a 48 dp target). Desktop: 15 sp.
-    final buttonText = TextStyle(fontFamily: fontFamily, fontSize: desktop ? 15 : 14, fontWeight: FontWeight.w600);
-    final buttonPadding = EdgeInsets.symmetric(horizontal: desktop ? 22 : 20);
+    // semibold text (taps still get a 48 dp target). Desktop: 32 px, 14 px.
+    final buttonText = TextStyle(fontFamily: family, fontSize: 14, fontWeight: FontWeight.w600);
+    final buttonPadding = EdgeInsets.symmetric(horizontal: desktop ? 12 : 20);
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
-      fontFamily: fontFamily,
+      fontFamily: family,
       textTheme: textTheme,
-      // Flutter makes desktop compact by default; the larger type needs the
-      // standard spacing, and tests then see what Windows shows.
+      // Sizes are set per component below, so the density stays standard and
+      // tests see what Windows shows.
       visualDensity: desktop ? VisualDensity.standard : null,
+      materialTapTargetSize: tapTarget,
       extensions: [colors],
       // Flat top bars that sit on the page colour, also when content scrolls
       // under them. Titles are bold and start-aligned.
@@ -418,8 +441,8 @@ abstract final class AppTheme {
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: TextStyle(
-          fontFamily: fontFamily,
-          fontSize: desktop ? 20 : 18,
+          fontFamily: family,
+          fontSize: 18,
           height: 1.3,
           fontWeight: FontWeight.w600,
           color: scheme.onSurface,
@@ -430,46 +453,97 @@ abstract final class AppTheme {
       actionIconTheme: ActionIconThemeData(
         backButtonIconBuilder: (context) => const Icon(Icons.arrow_back_rounded),
       ),
+      // Desktop cards sit on the page canvas: one step above it, with a hairline border, as Fluent cards do.
       cardTheme: CardThemeData(
-        color: scheme.surfaceContainerLow,
+        color: desktop ? desktopCard(scheme) : scheme.surfaceContainerLow,
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: desktop
+            ? RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: scheme.outlineVariant),
+              )
+            : RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size(64, 44),
+          minimumSize: Size(64, buttonHeight),
           padding: buttonPadding,
-          shape: pill,
+          shape: buttonShape,
           textStyle: buttonText,
-          iconSize: 18,
+          iconSize: desktop ? 16 : 18,
+          tapTargetSize: tapTarget,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size(64, 44),
+          minimumSize: Size(64, buttonHeight),
           padding: buttonPadding,
-          shape: pill,
-          side: BorderSide(color: scheme.primary, width: 1.2),
+          shape: buttonShape,
+          side: desktop ? BorderSide(color: scheme.outline) : BorderSide(color: scheme.primary, width: 1.2),
+          foregroundColor: desktop ? scheme.onSurface : null,
           textStyle: buttonText,
-          iconSize: 18,
+          iconSize: desktop ? 16 : 18,
+          tapTargetSize: tapTarget,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          minimumSize: const Size(48, 40),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          shape: pill,
-          textStyle: buttonText.copyWith(fontWeight: FontWeight.w500),
-          iconSize: 18,
+          minimumSize: Size(48, desktop ? 32 : 40),
+          padding: EdgeInsets.symmetric(horizontal: desktop ? 8 : 12),
+          shape: buttonShape,
+          textStyle: buttonText.copyWith(fontWeight: desktop ? FontWeight.w600 : FontWeight.w500),
+          iconSize: desktop ? 16 : 18,
+          tapTargetSize: tapTarget,
         ),
       ),
+      // Desktop icon buttons: 32 px squares with 20 px icons, as in Teams' toolbars.
+      iconButtonTheme: desktop
+          ? IconButtonThemeData(
+              style: IconButton.styleFrom(
+                minimumSize: const Size(32, 32),
+                padding: const EdgeInsets.all(6),
+                iconSize: 20,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            )
+          : null,
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: SegmentedButton.styleFrom(
-          minimumSize: const Size(48, 40),
-          textStyle: buttonText.copyWith(fontWeight: FontWeight.w500),
+          minimumSize: Size(48, desktop ? 32 : 40),
+          textStyle: buttonText.copyWith(fontWeight: desktop ? FontWeight.w400 : FontWeight.w500),
+          tapTargetSize: tapTarget,
+          shape: desktop ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)) : null,
         ),
       ),
+      // Desktop lists, tabs, chips and check boxes: Fluent's denser rows.
+      listTileTheme: desktop
+          ? const ListTileThemeData(
+              visualDensity: VisualDensity.compact,
+              contentPadding: EdgeInsets.symmetric(horizontal: 12),
+              minLeadingWidth: 24,
+              horizontalTitleGap: 12,
+            )
+          : null,
+      tabBarTheme: desktop
+          ? TabBarThemeData(
+              labelStyle: TextStyle(fontFamily: family, fontSize: 14, fontWeight: FontWeight.w600),
+              unselectedLabelStyle: TextStyle(fontFamily: family, fontSize: 14, fontWeight: FontWeight.w400),
+            )
+          : null,
+      checkboxTheme: desktop
+          ? const CheckboxThemeData(
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            )
+          : null,
+      radioTheme: desktop
+          ? const RadioThemeData(
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            )
+          : null,
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: scheme.primary,
         foregroundColor: scheme.onPrimary,
@@ -477,15 +551,21 @@ abstract final class AppTheme {
         highlightElevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
+      // Desktop fields are about 36 px tall (Fluent's medium field with a floating label).
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: scheme.surfaceContainerLowest,
         isDense: true,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: desktop ? 16 : 14),
+        contentPadding: desktop
+            ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10)
+            : const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        // Icons in desktop fields don't force the 48 px touch size, so a field with a search icon stays 36 px.
+        prefixIconConstraints: desktop ? const BoxConstraints(minWidth: 36, minHeight: 32) : null,
+        suffixIconConstraints: desktop ? const BoxConstraints(minWidth: 36, minHeight: 32) : null,
         border: OutlineInputBorder(borderRadius: field),
         enabledBorder: OutlineInputBorder(
           borderRadius: field,
-          borderSide: BorderSide(color: scheme.outline, width: 1.2),
+          borderSide: BorderSide(color: scheme.outline, width: desktop ? 1 : 1.2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: field,
@@ -506,12 +586,32 @@ abstract final class AppTheme {
           ),
         ),
       ),
-      chipTheme: ChipThemeData(shape: const StadiumBorder(), side: BorderSide.none),
+      chipTheme: desktop
+          ? ChipThemeData(
+              // A hairline border, so action chips read as buttons on the canvas (Fluent).
+              shape: const StadiumBorder(),
+              side: BorderSide(color: scheme.outlineVariant),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              // A label style replaces the chip's default, so it carries its colour for every state.
+              labelStyle: TextStyle(
+                fontFamily: family,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                color: WidgetStateColor.resolveWith(
+                  (states) => states.contains(WidgetState.disabled)
+                      ? scheme.onSurface.withValues(alpha: 0.38)
+                      : states.contains(WidgetState.selected)
+                          ? scheme.onSecondaryContainer
+                          : scheme.onSurface,
+                ),
+              ),
+            )
+          : ChipThemeData(shape: const StadiumBorder(), side: BorderSide.none),
       dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: scheme.inverseSurface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(desktop ? 8 : 16)),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: raised,
@@ -521,12 +621,13 @@ abstract final class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: raised,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(desktop ? 12 : 28)),
       ),
       popupMenuTheme: PopupMenuThemeData(
         color: raised,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(desktop ? 8 : 16)),
+        textStyle: desktop ? TextStyle(fontFamily: family, fontSize: 14, color: scheme.onSurface) : null,
       ),
       // Drop-down menus (the branch picker) on desktop: rounded, like the
       // popup menus.
@@ -535,14 +636,14 @@ abstract final class AppTheme {
               style: MenuStyle(
                 backgroundColor: WidgetStatePropertyAll(raised),
                 surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-                shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
                 padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 8)),
               ),
             )
           : null,
       tooltipTheme: TooltipThemeData(
-        decoration: BoxDecoration(color: scheme.inverseSurface, borderRadius: BorderRadius.circular(10)),
-        textStyle: TextStyle(fontFamily: fontFamily, color: scheme.onInverseSurface, fontSize: desktop ? 13 : 12),
+        decoration: BoxDecoration(color: scheme.inverseSurface, borderRadius: BorderRadius.circular(desktop ? 6 : 10)),
+        textStyle: TextStyle(fontFamily: family, color: scheme.onInverseSurface, fontSize: 12),
         // With a mouse, tooltips wait for the pointer to rest.
         waitDuration: desktop ? const Duration(milliseconds: 400) : null,
       ),

@@ -152,20 +152,26 @@ void main() {
       expect(container.read(appSettingsProvider).themeMode, ThemeMode.dark);
     });
 
-    test('desktop: larger type, built once, graphite dark surfaces', () {
+    test('desktop: Fluent 2 sizes (Teams), built once, graphite dark surfaces', () {
       expect(AppTheme.desktopLight(), same(AppTheme.desktopLight()));
       expect(AppTheme.desktopDark(), same(AppTheme.desktopDark()));
-      final phone = AppTheme.light().textTheme;
-      final desktop = AppTheme.desktopLight().textTheme;
-      expect(
-        desktop.bodyMedium!.fontSize,
-        greaterThan(phone.bodyMedium!.fontSize!),
-      );
-      expect(
-        desktop.headlineSmall!.fontSize,
-        greaterThan(phone.headlineSmall!.fontSize!),
-      );
-      expect(AppTheme.desktopLight().visualDensity, VisualDensity.standard);
+      final theme = AppTheme.desktopLight();
+      final desktop = theme.textTheme;
+      // The system UI font, 14 px regular body text, semibold titles, nothing bolder.
+      expect(desktop.bodyMedium!.fontFamily, AppTheme.desktopFontFamily);
+      expect(AppTheme.light().textTheme.bodyMedium!.fontFamily, AppTheme.fontFamily);
+      expect(desktop.bodyMedium!.fontSize, 14);
+      expect(desktop.bodyMedium!.fontWeight, FontWeight.w400);
+      expect(desktop.titleMedium!.fontWeight, FontWeight.w600);
+      for (final style in [desktop.displayLarge, desktop.headlineSmall, desktop.titleLarge, desktop.labelLarge]) {
+        expect(style!.fontWeight!.value, lessThanOrEqualTo(600));
+      }
+      // 32 px buttons and icon buttons, made for a mouse.
+      expect(theme.filledButtonTheme.style!.minimumSize!.resolve({})!.height, 32);
+      expect(theme.outlinedButtonTheme.style!.minimumSize!.resolve({})!.height, 32);
+      expect(theme.iconButtonTheme.style!.minimumSize!.resolve({})!.height, 32);
+      expect(AppTheme.light().filledButtonTheme.style!.minimumSize!.resolve({})!.height, 44);
+      expect(theme.visualDensity, VisualDensity.standard);
 
       // Phones' dark mode is tinted green; desktop's is a near-neutral grey,
       // and green stays for the menu, the selection and actions.

@@ -39,18 +39,18 @@ void main() {
     (tester) async {
       await signInDoctorDesktop(tester);
 
-      expect(find.text('Expected (2)'), findsOneWidget);
-      expect(find.text('Waiting (1)'), findsOneWidget);
+      expect(_column('Expected (2)'), findsOneWidget);
+      expect(_column('Waiting (1)'), findsOneWidget);
       expect(find.text('محمد إبراهيم'), findsOneWidget);
 
       // The first expected card is confirmed: its main action is Check in.
       await tester.tap(find.widgetWithText(FilledButton, 'Check in').first);
       await tester.pumpAndSettle();
-      expect(find.text('Waiting (2)'), findsOneWidget);
+      expect(_column('Waiting (2)'), findsOneWidget);
 
       await tester.tap(find.widgetWithText(FilledButton, 'Call in').first);
       await tester.pumpAndSettle();
-      expect(find.text('With the doctor (1)'), findsOneWidget);
+      expect(_column('With the doctor (1)'), findsOneWidget);
       expect(find.text('Now serving'), findsOneWidget);
     },
   );
@@ -69,7 +69,7 @@ void main() {
     expect(find.widgetWithText(FilledButton, 'Mark no-show'), findsOneWidget);
     await tester.tap(find.widgetWithText(FilledButton, 'Mark no-show'));
     await tester.pumpAndSettle();
-    expect(find.text('Missed (1)'), findsOneWidget);
+    expect(_column('Missed (1)'), findsOneWidget);
   });
 
   testWidgets('a guest walk-in is checked in at once', (tester) async {
@@ -89,7 +89,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Check in').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Waiting (2)'), findsOneWidget);
+    expect(_column('Waiting (2)'), findsOneWidget);
     expect(find.text('زائر سريع'), findsOneWidget);
   });
 
@@ -221,3 +221,7 @@ void main() {
     },
   );
 }
+
+/// A board column's header, read as one label such as "Waiting (3)": its name and the count badge.
+Finder _column(String label) =>
+    find.byWidgetPredicate((widget) => widget is Semantics && widget.properties.label == label);

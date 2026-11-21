@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/motion.dart';
 import '../../core/widgets/app_logo.dart';
+import '../../core/widgets/desktop_surfaces.dart';
 import '../../core/widgets/navigation/app_back_button.dart';
 import '../../core/widgets/navigation/app_bottom_bar.dart';
 import '../../core/widgets/navigation/desktop_page_header.dart';
@@ -294,7 +295,8 @@ class _RoleScaffoldState extends ConsumerState<RoleScaffold> {
                         const DesktopQuickSettings(),
                       ],
                     ),
-                    Expanded(child: content),
+                    // Every page sits on a rounded canvas, as in Teams (core/widgets/desktop_surfaces.dart).
+                    Expanded(child: DesktopCanvas(child: content)),
                   ],
                 ),
               ),
@@ -460,7 +462,7 @@ class _PillButtons extends StatelessWidget {
           minimumSize: const Size(48, 36),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           shape: StadiumBorder(side: BorderSide(color: scheme.outlineVariant)),
-          textStyle: const TextStyle(fontFamily: AppTheme.fontFamily, fontSize: 13, fontWeight: FontWeight.w500),
+          textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 13, fontWeight: FontWeight.w500),
         ),
       ),
       child: child,

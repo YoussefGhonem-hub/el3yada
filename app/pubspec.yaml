@@ -69,6 +69,8 @@ dev_dependencies:
   json_serializable: ^6.15.2
   drift_dev: ^2.34.0
   flutter_launcher_icons: ^0.14.4
+  # Phase 8: the launch screen before Flutter starts (`dart run flutter_native_splash:create`).
+  flutter_native_splash: ^2.4.8
 
 flutter:
   uses-material-design: true
@@ -114,3 +116,23 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: ../brand/el3yada-icon.png
+
+# Phase 8: the native launch screen, shown before Flutter draws A1. Same
+# colours as A1's backdrop (BrandBackdrop: pine in light mode, its deep pine
+# in dark mode) with the white logo in the middle, so A1 takes over without a
+# flash. Images come from brand/el3yada-logo-white.png (assets/splash/; the
+# Android 12 one keeps the logo inside the system's round mask). Run
+# `dart run flutter_native_splash:create` after changing this.
+flutter_native_splash:
+  color: "#0F4C45"
+  image: assets/splash/splash_logo.png
+  color_dark: "#0B2622"
+  image_dark: assets/splash/splash_logo.png
+  android_12:
+    color: "#0F4C45"
+    image: assets/splash/splash_android12.png
+    color_dark: "#0B2622"
+    image_dark: assets/splash/splash_android12.png
+  android: true
+  ios: true
+  web: false

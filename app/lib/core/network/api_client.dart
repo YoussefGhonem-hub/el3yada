@@ -34,6 +34,10 @@ final plainDioProvider = Provider<Dio>((ref) {
 /// run this whole stack against a local API.
 final apiBaseUrlProvider = Provider<String>((ref) => Env.apiBaseUrl);
 
+/// The base URL ends in `/api`, so request paths are written under it: `/branches`,
+/// `/staff/board`, `/patient/home`. Dio appends the path to the base as text, so a
+/// path that started with `/api/` would ask for `/api/api/...`
+/// (test/core/api_paths_test.dart guards this).
 Dio _newDio(String baseUrl) => Dio(
       BaseOptions(
         baseUrl: '$baseUrl/api',
@@ -41,20 +45,7 @@ Dio _newDio(String baseUrl) => Dio(
         receiveTimeout: const Duration(seconds: 30),
         headers: {'Accept': 'application/json'},
       ),
-    )..interceptors.add(const ApiPathPrefix());
-
-/// Lets a repository write the API's full path (`/api/staff/branches/…`, as the Phase 4–6
-/// repositories do) as well as the path under `/api` (`/branches`): Dio appends the path to
-/// `baseUrl`, which already ends in `/api`, so `/api/staff` would become `/api/api/staff`.
-class ApiPathPrefix extends Interceptor {
-  const ApiPathPrefix();
-
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (options.path.startsWith('/api/')) options.path = options.path.substring(4);
-    handler.next(options);
-  }
-}
+    );
 
 /// Adds the access token and the language to every request, and keeps the
 /// session alive:

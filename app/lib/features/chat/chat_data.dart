@@ -189,7 +189,7 @@ class ApiChatRepository implements ChatRepository {
   @override
   bool get isStaff => staff;
 
-  String get _base => staff ? '/api/staff/chats' : '/api/patient/chats';
+  String get _base => staff ? '/staff/chats' : '/patient/chats';
 
   Future<T> _wrap<T>(Future<T> Function() call) async {
     try {

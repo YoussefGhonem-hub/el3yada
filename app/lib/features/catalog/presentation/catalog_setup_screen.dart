@@ -123,6 +123,15 @@ class CatalogSetupScreen extends ConsumerWidget {
                                       l10n.catalogSize(version.sizeBytes),
                                     ),
                                   ),
+                                // The space it needs: the download, kept until the
+                                // database is unpacked next to it.
+                                if (!finished && version?.uncompressedSizeBytes != null)
+                                  _Chip(
+                                    icon: Icons.sd_storage_outlined,
+                                    label: l10n.catalogSetupSpace(
+                                      l10n.catalogSize(version!.sizeBytes + version.uncompressedSizeBytes!),
+                                    ),
+                                  ),
                                 if (!finished) _Chip(icon: Icons.wifi, label: l10n.catalogSetupWifi),
                               ],
                             ),
@@ -298,7 +307,8 @@ class _Chip extends StatelessWidget {
           children: [
             Icon(icon, size: 16, color: scheme.onSurfaceVariant),
             const SizedBox(width: 6),
-            Text(label, style: theme.textTheme.labelMedium),
+            // Wraps on narrow screens and with large text.
+            Flexible(child: Text(label, style: theme.textTheme.labelMedium)),
           ],
         ),
       ),

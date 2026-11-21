@@ -5470,5 +5470,13 @@
   "boardNoSessionBody": "Record the session, or mark the patient as left without being seen.",
   "waitingRoomScreen": "Waiting-room screen",
   "waitingRoomNext": "Next",
-  "waitingRoomExit": "Exit full screen"
+  "waitingRoomExit": "Exit full screen",
+  "catalogSetupSpace": "Needs {size} of free space",
+  "@catalogSetupSpace": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  }
 }

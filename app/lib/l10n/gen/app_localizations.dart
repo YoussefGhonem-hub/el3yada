@@ -16017,6 +16017,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exit full screen'**
   String get waitingRoomExit;
+
+  /// No description provided for @catalogSetupSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs {size} of free space'**
+  String catalogSetupSpace(String size);
 }
 
 class _AppLocalizationsDelegate

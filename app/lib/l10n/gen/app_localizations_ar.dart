@@ -9417,4 +9417,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get waitingRoomExit => 'الخروج من ملء الشاشة';
+
+  @override
+  String catalogSetupSpace(String size) {
+    return 'محتاج $size مساحة فاضية';
+  }
 }

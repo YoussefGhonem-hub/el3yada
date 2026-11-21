@@ -2650,5 +2650,6 @@
   "boardNoSessionBody": "سجّل الجلسة، أو سجّل أن المريض غادر قبل الكشف.",
   "waitingRoomScreen": "شاشة غرفة الانتظار",
   "waitingRoomNext": "التالي",
-  "waitingRoomExit": "الخروج من ملء الشاشة"
+  "waitingRoomExit": "الخروج من ملء الشاشة",
+  "catalogSetupSpace": "محتاج {size} مساحة فاضية"
 }

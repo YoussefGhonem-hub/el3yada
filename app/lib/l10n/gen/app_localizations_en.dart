@@ -9377,4 +9377,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitingRoomExit => 'Exit full screen';
+
+  @override
+  String catalogSetupSpace(String size) {
+    return 'Needs $size of free space';
+  }
 }

@@ -23,16 +23,12 @@ public sealed class BranchesTests(IntegrationHost host)
         var weekday = WeeklyHours.IsoWeekday(today);
         var tomorrow = WeeklyHours.IsoWeekday(today.AddDays(1));
         using var client = await Factory.SignedInClientAsync(doctor);
-        await client.PostAsync("/api/branches/updateBranchHours", new
-        {
-            branchId = main,
-            periods = new object[]
-            {
-                new { weekday, startLocal = "18:00", endLocal = "22:00", label = "مسائي" },
-                new { weekday, startLocal = "10:00", endLocal = "14:00", label = "صباحي", capacity = 20 },
-                new { weekday = tomorrow, startLocal = "10:00", endLocal = "14:00" },
-            },
-        });
+        await client.PutScheduleAsync(main, TestData.ScheduleBody(
+        [
+            TestData.Period(weekday, "18:00", "22:00", label: "مسائي"),
+            TestData.Period(weekday, "10:00", "14:00", label: "صباحي", capacity: 20),
+            TestData.Period(tomorrow, "10:00", "14:00"),
+        ]));
         await TestData.AddBookingAsync(Factory, doctor.Id, main, today.AddDays(3));
         await TestData.AddBookingAsync(Factory, doctor.Id, main, today.AddDays(4), status: "cancelled");
         await TestData.AddBookingAsync(Factory, doctor.Id, main, today.AddDays(-1));
@@ -258,120 +254,6 @@ public sealed class BranchesTests(IntegrationHost host)
         });
         Assert.Equal(HttpStatusCode.BadRequest, status);
         Assert.Equal(ErrorCodes.InvalidMapLink, body.FieldCode("address.mapUrl"));
-    }
-
-    [Fact]
-    public async Task Hours_replace_the_week_and_a_period_can_end_after_midnight()
-    {
-        var doctor = await TestData.CreateDoctorAsync(Factory);
-        var branch = await TestData.DefaultBranchAsync(Factory, doctor.Id);
-        using var client = await Factory.SignedInClientAsync(doctor);
-        await client.PostAsync("/api/branches/updateBranchHours", new
-        {
-            branchId = branch, periods = new[] { new { weekday = 1, startLocal = "09:00", endLocal = "12:00" } },
-        });
-
-        var (status, body) = await client.PostAsync("/api/branches/updateBranchHours", new
-        {
-            branchId = branch,
-            periods = new object[]
-            {
-                new { weekday = 6, startLocal = "20:00", endLocal = "01:00", endsNextDay = true, label = "مسائي" },
-                new { weekday = 7, startLocal = "01:00", endLocal = "03:00" },
-                new { weekday = 6, startLocal = "10:00", endLocal = "14:00", label = "صباحي", capacity = 25 },
-            },
-        });
-
-        Assert.Equal(HttpStatusCode.OK, status);
-        var periods = body.GetProperty("workingHours").GetProperty("periods").EnumerateArray().ToList();
-        Assert.Equal(3, periods.Count);
-        Assert.Equal((6, "10:00", "14:00"), (periods[0].GetProperty("weekday").GetInt32(), periods[0].Str("startLocal"), periods[0].Str("endLocal")));
-        Assert.Equal(25, periods[0].GetProperty("capacity").GetInt32());
-        Assert.True(periods[1].GetProperty("endsNextDay").GetBoolean());
-        Assert.Equal("مسائي", periods[1].Str("label"));
-        Assert.Equal(7, periods[2].GetProperty("weekday").GetInt32());
-        Assert.Single(await TestData.ClinicAuditAsync(Factory, doctor.Id, AuditActions.BranchHoursUpdated), a => a.DetailsJson!.Contains("3"));
-
-        (status, body) = await client.PostAsync("/api/branches/updateBranchHours", new { branchId = branch, periods = Array.Empty<object>() });
-        Assert.Equal(HttpStatusCode.OK, status);
-        Assert.Empty(body.GetProperty("workingHours").GetProperty("periods").EnumerateArray());
-    }
-
-    [Fact]
-    public async Task Hours_are_checked_for_order_length_and_overlaps()
-    {
-        var doctor = await TestData.CreateDoctorAsync(Factory);
-        var branch = await TestData.DefaultBranchAsync(Factory, doctor.Id);
-        using var client = await Factory.SignedInClientAsync(doctor);
-
-        var (status, body) = await client.PostAsync("/api/branches/updateBranchHours", new
-        {
-            branchId = branch,
-            periods = new object[]
-            {
-                new { weekday = 6, startLocal = "10:00", endLocal = "14:00" },
-                new { weekday = 6, startLocal = "13:00", endLocal = "16:00" },
-                new { weekday = 1, startLocal = "18:00", endLocal = "10:00" },
-                new { weekday = 2, startLocal = "10:00", endLocal = "10:10" },
-                new { weekday = 8, startLocal = "25:00", endLocal = "10:00", capacity = 0 },
-                new { weekday = 5, startLocal = "22:00", endLocal = "02:00", endsNextDay = true },
-                new { weekday = 6, startLocal = "01:00", endLocal = "03:00" },
-                new { weekday = 0, startLocal = "10:00", endLocal = "11:00", label = new string('ص', 31) },
-                new { startLocal = "10:00", endLocal = "11:00" },
-            },
-        });
-
-        Assert.Equal(HttpStatusCode.BadRequest, status);
-        Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("periods[4].weekday"));
-        Assert.Equal(ErrorCodes.InvalidValue, body.FieldCode("periods[4].startLocal"));
-        Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("periods[4].capacity"));
-        Assert.Equal(ErrorCodes.OutOfRange, body.FieldCode("periods[7].weekday"));
-        Assert.Equal(ErrorCodes.TooLong, body.FieldCode("periods[7].label"));
-        Assert.Equal(ErrorCodes.Required, body.FieldCode("periods[8].weekday"));
-
-        // Once every field is readable, the whole week is checked.
-        (status, body) = await client.PostAsync("/api/branches/updateBranchHours", new
-        {
-            branchId = branch,
-            periods = new object[]
-            {
-                new { weekday = 6, startLocal = "10:00", endLocal = "14:00" },
-                new { weekday = 6, startLocal = "13:00", endLocal = "16:00" },
-                new { weekday = 1, startLocal = "18:00", endLocal = "10:00" },
-                new { weekday = 2, startLocal = "10:00", endLocal = "10:10" },
-                new { weekday = 5, startLocal = "22:00", endLocal = "02:00", endsNextDay = true },
-                new { weekday = 6, startLocal = "01:00", endLocal = "03:00" },
-            },
-        });
-        Assert.Equal(HttpStatusCode.BadRequest, status);
-        Assert.Equal(ErrorCodes.PeriodsOverlap, body.FieldCode("periods[1]"));
-        Assert.Equal(ErrorCodes.PeriodEndBeforeStart, body.FieldCode("periods[2].endLocal"));
-        Assert.Equal(ErrorCodes.PeriodLengthOutOfRange, body.FieldCode("periods[3].endLocal"));
-        Assert.Equal(ErrorCodes.PeriodsOverlap, body.FieldCode("periods[5]"));
-        var periods = await TestData.WithDbAsync(Factory, db => db.BranchPeriods.CountAsync(p => p.BranchId == branch));
-        Assert.Equal(0, periods);
-    }
-
-    [Fact]
-    public async Task An_assistant_with_scheduleManage_changes_hours_only_in_their_branches()
-    {
-        var doctor = await TestData.CreateDoctorAsync(Factory);
-        var branchA = await TestData.DefaultBranchAsync(Factory, doctor.Id);
-        var branchB = await TestData.AddBranchAsync(Factory, doctor.Id);
-        var assistant = await TestData.CreateAssistantAsync(
-            Factory, doctor.Id, permissions: ClinicPermissions.WithDependencies([ClinicPermissions.ScheduleManage]), branchIds: [branchA]);
-        using var client = await Factory.SignedInClientAsync(assistant);
-        var week = new[] { new { weekday = 6, startLocal = "10:00", endLocal = "14:00" } };
-
-        var (statusA, _) = await client.PostAsync("/api/branches/updateBranchHours", new { branchId = branchA, periods = week });
-        var (statusB, bodyB) = await client.PostAsync("/api/branches/updateBranchHours", new { branchId = branchB, periods = week });
-
-        Assert.Equal(HttpStatusCode.OK, statusA);
-        Assert.Equal(HttpStatusCode.Forbidden, statusB);
-        Assert.Equal(ErrorCodes.BranchNotAllowed, bodyB.Code());
-        var audit = Assert.Single(await TestData.ClinicAuditAsync(Factory, doctor.Id, AuditActions.BranchHoursUpdated));
-        Assert.Equal(assistant.Id, audit.ActorUserId);
-        Assert.Equal("assistant", audit.ActorRole);
     }
 
     [Fact]

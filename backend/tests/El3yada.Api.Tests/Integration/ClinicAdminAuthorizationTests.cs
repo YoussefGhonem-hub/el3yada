@@ -44,11 +44,6 @@ public sealed class ClinicAdminAuthorizationTests(IntegrationHost host)
         new("createBranch", Access.DoctorOnly, null, false, false, (_, _) => Post("/api/branches/createBranch", TestData.NewBranchBody())),
         new("updateBranch", Access.DoctorOnly, null, true, false,
             (_, t) => Post("/api/branches/updateBranch", new { branchId = t.BranchId, info = new { nameAr = "فرع المعادي" } })),
-        new("updateBranchHours", Access.Permission, ClinicPermissions.ScheduleManage, true, true,
-            (_, t) => Post("/api/branches/updateBranchHours", new
-            {
-                branchId = t.BranchId, periods = new[] { new { weekday = 6, startLocal = "10:00", endLocal = "14:00" } },
-            })),
         new("setBranchStatus", Access.DoctorOnly, null, true, false,
             (_, t) => Post("/api/branches/setBranchStatus", new { branchId = t.BranchId, status = "active" })),
         new("setDefaultBranch", Access.DoctorOnly, null, true, false,

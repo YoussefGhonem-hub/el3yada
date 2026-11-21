@@ -36,7 +36,11 @@ class _ReviewStepState extends RegistrationStepState<ReviewStep> {
       maxWidth: wide ? 960 : kRegistrationFormWidth,
       children: [
         Text(
-          form.resubmit ? l10n.regReviewIntroResubmit : l10n.regReviewIntro,
+          form.byAdmin
+              ? l10n.adminAddDoctorReviewIntro
+              : form.resubmit
+                  ? l10n.regReviewIntroResubmit
+                  : l10n.regReviewIntro,
           style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurfaceVariant),
         ),
         RegistrationSummary(
@@ -44,7 +48,7 @@ class _ReviewStepState extends RegistrationStepState<ReviewStep> {
           onEdit: widget.enabled ? widget.onEdit : null,
           columns: wide ? 2 : 1,
         ),
-        if (!form.resubmit)
+        if (form.hasPassword)
           anchor(
             RegField.acceptTerms,
             Card(

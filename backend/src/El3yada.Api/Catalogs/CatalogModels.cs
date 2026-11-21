@@ -221,9 +221,13 @@ public sealed class CopyProfileRequestValidator : AbstractValidator<CopyProfileR
 
 public sealed record CatalogCountsView(int Drugs, int Labs, int Radiology);
 
+/// <summary>
+/// A catalog version. <c>sizeBytes</c> is the download (gzip); <c>uncompressedSizeBytes</c> the space it takes once unpacked
+/// (D0), or null when the stored file can't be read.
+/// </summary>
 public sealed record CatalogVersionView(
     int Version, int SchemaVersion, string Sha256, long SizeBytes, CatalogCountsView Counts, DateOnly? DrugSourceDate,
-    string? LoincRelease, DateTime PublishedAt, string DownloadPath);
+    string? LoincRelease, DateTime PublishedAt, string DownloadPath, long? UncompressedSizeBytes = null);
 
 public sealed record CustomItemView(
     Guid CustomItemId, string Type, string NameEn, string? NameAr, string? ActiveIngredient, string? DrugGroupId, string? Route,

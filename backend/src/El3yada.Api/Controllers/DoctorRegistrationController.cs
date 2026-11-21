@@ -42,9 +42,9 @@ public sealed class DoctorRegistrationController(
     ILogger<DoctorRegistrationController> logger) : ControllerBase
 {
     /// <summary>The syndicate card or license: one image or PDF of at most 10 MB.</summary>
-    public const long LicenseMaxBytes = 10L * 1024 * 1024;
+    public const long LicenseMaxBytes = DoctorForm.LicenseMaxBytes;
 
-    private const long RequestMaxBytes = LicenseMaxBytes + (1024 * 1024);
+    private const long RequestMaxBytes = DoctorForm.RequestMaxBytes;
 
     private DateTime Now => time.GetUtcNow().UtcDateTime;
 
@@ -326,144 +326,21 @@ public sealed class DoctorRegistrationController(
         List<Specialty>? ExtraSpecialties,
         IActionResult? Problem);
 
-    /// <summary>Reads the multipart form, checks the data, the license type and the specialties.</summary>
+    /// <summary>Reads the multipart form, checks the data, the license type and the specialties (<see cref="DoctorForm"/>).</summary>
     private async Task<Input> ReadInputAsync(bool resubmit, CancellationToken cancellationToken)
     {
-        if (!Request.HasFormContentType)
-        {
-            return Fail(this.Problem(StatusCodes.Status415UnsupportedMediaType, ErrorCodes.UnsupportedMediaType, "Send multipart/form-data."));
-        }
-
-        IFormCollection form;
-        try
-        {
-            form = await Request.ReadFormAsync(cancellationToken);
-        }
-        catch (Exception ex) when (ex is InvalidDataException or BadHttpRequestException)
-        {
-            return Fail(this.Problem(StatusCodes.Status413PayloadTooLarge, ErrorCodes.RequestTooLarge, "The request is too large."));
-        }
-
-        if (form["data"].ToString() is not { Length: > 0 } json)
-        {
-            return Fail(ValidationProblems.Field(HttpContext, "data", ErrorCodes.Required, "The data part is required."));
-        }
-
-        DoctorRegistrationData? data;
-        try
-        {
-            data = JsonSerializer.Deserialize<DoctorRegistrationData>(json, jsonOptions.Value.JsonSerializerOptions);
-        }
-        catch (JsonException)
-        {
-            data = null;
-        }
-
-        if (data is null)
-        {
-            return Fail(ValidationProblems.Field(HttpContext, "data", ErrorCodes.InvalidRequest, "The data part is not valid JSON."));
-        }
-
-        var result = await new DoctorRegistrationValidator(resubmit).ValidateAsync(data, cancellationToken);
-        if (!result.IsValid)
-        {
-            return Fail(this.ValidationProblem(result));
-        }
-
-        var license = form.Files.GetFile("license");
-        string? licenseType = null;
-        if (license is not null)
-        {
-            if (license.Length > LicenseMaxBytes)
-            {
-                return Fail(ValidationProblems.Field(HttpContext, "license", ErrorCodes.FileTooLarge, "The file is larger than 10 MB."));
-            }
-
-            var header = new byte[FileTypes.SignatureLength];
-            await using (var stream = license.OpenReadStream())
-            {
-                var read = await stream.ReadAtLeastAsync(header, header.Length, throwOnEndOfStream: false, cancellationToken);
-                licenseType = FileTypes.Detect(header.AsSpan(0, read));
-            }
-
-            if (licenseType is null)
-            {
-                return Fail(ValidationProblems.Field(HttpContext, "license", ErrorCodes.FileTypeNotAllowed, "Use a JPEG, PNG, WebP or PDF file."));
-            }
-        }
-
-        var ids = (data.ExtraSpecialtyIds ?? []).Append(data.SpecialtyId!.Value).ToList();
-        var specialties = await db.Specialties.Where(s => ids.Contains(s.Id) && s.Active).ToListAsync(cancellationToken);
-        var primary = specialties.SingleOrDefault(s => s.Id == data.SpecialtyId);
-        if (primary is null)
-        {
-            return Fail(ValidationProblems.Field(HttpContext, "specialtyId", ErrorCodes.InvalidSpecialty, "Choose a specialty from the list."));
-        }
-
-        var extras = specialties.Where(s => s.Id != primary.Id).ToList();
-        if (extras.Count != (data.ExtraSpecialtyIds?.Count ?? 0))
-        {
-            return Fail(ValidationProblems.Field(HttpContext, "extraSpecialtyIds", ErrorCodes.InvalidSpecialty, "Choose specialties from the list."));
-        }
-
-        return new Input(data, license, licenseType, primary, extras, null);
-
-        static Input Fail(IActionResult problem) => new(null, null, null, null, null, problem);
+        var (read, problem) = await DoctorForm.ReadAsync(this, db, jsonOptions.Value.JsonSerializerOptions, withPassword: !resubmit, cancellationToken);
+        return read is null
+            ? new Input(null, null, null, null, null, problem)
+            : new Input(read.Data, read.License, read.LicenseType, read.Specialty, read.ExtraSpecialties, null);
     }
 
-    /// <summary>Saves the license file; returns a problem when the store refuses it.</summary>
-    private async Task<IActionResult?> SaveLicenseAsync(StoragePath path, IFormFile license, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await using var stream = license.OpenReadStream();
-            await storage.SaveAsync(path, stream, path.ContentType, LicenseMaxBytes, cancellationToken);
-            return null;
-        }
-        catch (FileStorageException ex)
-        {
-            return ValidationProblems.Field(HttpContext, "license", ex.Code, ex.Message);
-        }
-    }
+    private Task<IActionResult?> SaveLicenseAsync(StoragePath path, IFormFile license, CancellationToken cancellationToken) =>
+        DoctorForm.SaveLicenseAsync(this, storage, path, license, cancellationToken);
 
-    private static void ApplyProfessional(Doctor doctor, DoctorRegistrationData data)
-    {
-        doctor.FullName = Text.CollapseSpaces(data.FullName!);
-        doctor.FullNameEn = Text.TrimToNull(data.FullNameEn);
-        doctor.Title = data.Title!.Trim();
-        doctor.TitleEn = Text.TrimToNull(data.TitleEn);
-        doctor.DegreesAr = Text.TrimToNull(data.DegreesAr);
-        doctor.DegreesEn = Text.TrimToNull(data.DegreesEn);
-        doctor.LicenseNumber = LicenseNumbers.Normalize(data.LicenseNumber)!;
-        doctor.ExaminationPricePiasters = data.ExaminationPricePiasters;
-        doctor.ConsultationPricePiasters = data.ConsultationPricePiasters;
-    }
+    private static void ApplyProfessional(Doctor doctor, DoctorRegistrationData data) => DoctorForm.ApplyProfessional(doctor, data);
 
-    private static void ApplyBranch(Branch branch, BranchData data)
-    {
-        branch.NameAr = data.NameAr!.Trim();
-        branch.NameEn = Text.TrimToNull(data.NameEn);
-        branch.Governorate = data.Governorate!.Trim();
-        branch.City = data.City!.Trim();
-        branch.Area = Text.TrimToNull(data.Area);
-        branch.AddressDetails = data.AddressDetails!.Trim();
-        branch.Landmark = Text.TrimToNull(data.Landmark);
-        branch.MapUrl = Text.TrimToNull(data.MapUrl);
-        branch.Email = Text.TrimToNull(data.Email) is { } email ? Text.NormalizeEmail(email) : null;
-        var order = 0;
-        foreach (var phone in data.Phones!)
-        {
-            branch.BranchPhones.Add(new BranchPhone
-            {
-                Id = Guid.NewGuid(),
-                BranchId = branch.Id,
-                Number = EgyptianPhone.Normalize(phone.Number)!,
-                Label = phone.Label ?? "reception",
-                IsWhatsapp = phone.IsWhatsapp ?? false,
-                SortOrder = order++,
-            });
-        }
-    }
+    private static void ApplyBranch(Branch branch, BranchData data) => DoctorForm.ApplyBranch(branch, data);
 
     private async Task NotifyAdminsAsync(NotificationText text, Guid doctorId, CancellationToken cancellationToken)
     {

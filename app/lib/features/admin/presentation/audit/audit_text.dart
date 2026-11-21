@@ -18,6 +18,8 @@ extension AuditText on AppLocalizations {
       'doctorLicenseViewed' => adminAuditLicenseViewed,
       'doctorServiceActivated' => adminAuditServiceActivated,
       'doctorTrialExtended' => adminAuditTrialExtended((details['days'] as num?)?.toInt() ?? 0),
+      'doctorCreated' => adminAuditDoctorCreated,
+      'broadcastSent' => adminAuditBroadcastSent,
       'adminSeeded' => adminAuditAdminSeeded,
       'adminCreated' => adminAuditAdminCreated(role(details['adminRole'])),
       'adminRoleChanged' => adminAuditAdminRoleChanged(role(details['before']), role(details['after'])),
@@ -46,6 +48,8 @@ extension AuditText on AppLocalizations {
         'doctorLicenseViewed' => adminActionLicenseViewed,
         'doctorServiceActivated' => adminActionServiceActivated,
         'doctorTrialExtended' => adminActionTrialExtended,
+        'doctorCreated' => adminActionDoctorCreated,
+        'broadcastSent' => adminActionBroadcastSent,
         'adminSeeded' => adminActionAdminSeeded,
         'adminCreated' => adminActionAdminCreated,
         'adminRoleChanged' => adminActionAdminRoleChanged,
@@ -75,6 +79,7 @@ extension AuditText on AppLocalizations {
         'doctor' => adminTargetDoctor,
         'user' => adminTargetUser,
         'settings' => adminTargetSettings,
+        'broadcast' => adminTargetBroadcast,
         _ => type,
       };
 

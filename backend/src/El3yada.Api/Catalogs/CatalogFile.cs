@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.Globalization;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -5,10 +6,13 @@ using Microsoft.Data.Sqlite;
 
 namespace El3yada.Api.Catalogs;
 
-/// <summary>What a published catalog file holds (spec 9.5 <c>meta</c> and row counts).</summary>
+/// <summary>
+/// What a published catalog file holds (spec 9.5 <c>meta</c> and row counts). <see cref="UncompressedBytes"/> is the
+/// size of the unpacked database, measured (the builder's manifest has it as <c>uncompressed_size_bytes</c>).
+/// </summary>
 public sealed record CatalogFileInfo(
     int SchemaVersion, string? CatalogVersion, string? BuiltAt, DateOnly? DrugSourceDate, string? LoincRelease,
-    int Drugs, int Labs, int Radiology);
+    int Drugs, int Labs, int Radiology, long UncompressedBytes);
 
 /// <summary>Opens a <c>catalog-v{n}.sqlite.gz</c> from the catalog builder (tools/catalog-builder) to check it before publishing.</summary>
 public static class CatalogFile
@@ -17,6 +21,30 @@ public static class CatalogFile
     {
         await using var stream = File.OpenRead(path);
         return Convert.ToHexStringLower(await SHA256.HashDataAsync(stream, cancellationToken));
+    }
+
+    /// <summary>
+    /// The unpacked size from the gzip trailer (ISIZE, RFC 1952: the size modulo 2^32), exact for the builder's
+    /// single-member files under 4 GiB. Null when the stream can't seek or isn't gzip.
+    /// </summary>
+    public static async Task<long?> UncompressedSizeAsync(Stream gzip, CancellationToken cancellationToken)
+    {
+        if (!gzip.CanSeek || gzip.Length < 18)
+        {
+            return null;
+        }
+
+        var buffer = new byte[4];
+        gzip.Seek(0, SeekOrigin.Begin);
+        await gzip.ReadExactlyAsync(buffer.AsMemory(0, 2), cancellationToken);
+        if (buffer[0] != 0x1f || buffer[1] != 0x8b)
+        {
+            return null;
+        }
+
+        gzip.Seek(-4, SeekOrigin.End);
+        await gzip.ReadExactlyAsync(buffer, cancellationToken);
+        return BinaryPrimitives.ReadUInt32LittleEndian(buffer);
     }
 
     /// <summary>
@@ -64,7 +92,8 @@ public static class CatalogFile
                     meta.GetValueOrDefault("loinc_release"),
                     await CountAsync(connection, "drugs", cancellationToken),
                     await CountAsync(connection, "lab_tests", cancellationToken),
-                    await CountAsync(connection, "radiology", cancellationToken));
+                    await CountAsync(connection, "radiology", cancellationToken),
+                    new FileInfo(database).Length);
             }
             catch (SqliteException)
             {

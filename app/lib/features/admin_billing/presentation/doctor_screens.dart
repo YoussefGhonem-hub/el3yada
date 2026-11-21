@@ -9,6 +9,7 @@ import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/skeleton_loading.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../admin/admin_routes.dart';
 import '../../admin/presentation/widgets/admin_widgets.dart';
 import '../../billing/presentation/billing_widgets.dart';
 import '../../patients/presentation/widgets/clinic_ui.dart'
@@ -68,6 +69,14 @@ class _AdminDoctorsScreenState extends ConsumerState<AdminDoctorsScreen> {
               child: AdminHeader(
                 title: l10n.abDoctorsTitle,
                 subtitle: l10n.abDoctorsSubtitle(state.totalCount),
+                actions: [
+                  // AD6.
+                  FilledButton.icon(
+                    onPressed: () => context.go(AdminRoutes.doctorsAddDoctor),
+                    icon: const Icon(Icons.person_add_alt_1_outlined),
+                    label: Text(l10n.adminAddDoctor),
+                  ),
+                ],
               ),
             ),
             Padding(

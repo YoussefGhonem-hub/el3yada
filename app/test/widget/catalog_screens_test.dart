@@ -95,6 +95,7 @@ void main() {
           schemaVersion: 1,
           sha256: '',
           sizeBytes: 7242557,
+          uncompressedSizeBytes: 20332544,
         );
         controller.set(
           const CatalogState(
@@ -114,6 +115,8 @@ void main() {
         expect(find.text('Downloading… 42%'), findsOneWidget);
         expect(find.text('Version 3 · 6.9 MB'), findsOneWidget);
         expect(find.text('Wi-Fi recommended'), findsOneWidget);
+        // The download and the unpacked database side by side (spec D0).
+        expect(find.text('Needs 26.3 MB of free space'), findsOneWidget);
         expect(find.text('3 MB of 6.9 MB'), findsOneWidget);
 
         controller.set(

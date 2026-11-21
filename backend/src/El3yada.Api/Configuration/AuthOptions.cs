@@ -26,6 +26,13 @@ public sealed class AuthOptions
     [Range(1, 720)]
     public int EmailVerificationTokenHours { get; set; } = 48;
 
+    /// <summary>
+    /// Lifetime of the "set your password" link sent to a doctor an admin added (AD6), in hours. It is a
+    /// password-reset token, so the A8 reset screen opens it; AD5 "Send password reset email" sends a new one.
+    /// </summary>
+    [Range(1, 720)]
+    public int DoctorInviteTokenHours { get; set; } = 72;
+
     /// <summary>Wait between two verification emails (A5: 60-second cooldown), in seconds.</summary>
     [Range(0, 3600)]
     public int VerificationEmailCooldownSeconds { get; set; } = 60;

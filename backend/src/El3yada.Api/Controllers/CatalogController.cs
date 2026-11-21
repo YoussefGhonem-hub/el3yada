@@ -21,7 +21,8 @@ namespace El3yada.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/catalog")]
-public sealed class CatalogController(AppDbContext db, IFileStorage storage, NotificationWriter notifications, TimeProvider time) : ControllerBase
+public sealed class CatalogController(
+    AppDbContext db, IFileStorage storage, NotificationWriter notifications, CatalogSizes sizes, TimeProvider time) : ControllerBase
 {
     /// <summary>A sync page: devices ask again with <c>since = nextSince</c> while <c>hasMore</c>.</summary>
     public const int SyncPageSize = 1000;
@@ -38,7 +39,7 @@ public sealed class CatalogController(AppDbContext db, IFileStorage storage, Not
         var current = await CurrentVersionAsync(db, cancellationToken);
         return current is null
             ? this.Problem(StatusCodes.Status404NotFound, ErrorCodes.CatalogNotPublished, "No catalog has been published yet.")
-            : Ok(ViewOf(current));
+            : Ok(ViewOf(current, await sizes.GetAsync(storage, current, cancellationToken)));
     }
 
     /// <summary>The <c>.sqlite.gz</c> file, with HTTP range support so D0 resumes an interrupted download.</summary>
@@ -134,9 +135,9 @@ public sealed class CatalogController(AppDbContext db, IFileStorage storage, Not
             .Select(s => s.CurrentCatalogVersion)
             .SingleOrDefaultAsync(cancellationToken);
 
-    public static CatalogVersionView ViewOf(CatalogVersion v) => new(
+    public static CatalogVersionView ViewOf(CatalogVersion v, long? uncompressedSizeBytes = null) => new(
         v.VersionNumber, v.SchemaVersion, v.Sha256.Trim(), v.SizeBytes, new CatalogCountsView(v.DrugCount, v.LabCount, v.RadiologyCount),
-        v.DrugDatasetDate, v.LoincRelease, v.PublishedAt, $"/api/catalog/file/{v.VersionNumber}");
+        v.DrugDatasetDate, v.LoincRelease, v.PublishedAt, $"/api/catalog/file/{v.VersionNumber}", uncompressedSizeBytes);
 
     public static CustomItemView ViewOf(CatalogCustomItem i) => new(
         i.Id, i.Type, i.NameEn, i.NameAr, i.ActiveIngredient, i.DrugGroupId, i.Route, i.LoincCode,

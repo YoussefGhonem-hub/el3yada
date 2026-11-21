@@ -309,6 +309,29 @@ The free trial's admin actions (`activateDoctorService`, `extendDoctorTrial`), t
 - Notifies the doctor and their active assistants (`doctorSuspended` / `doctorReactivated`, below) and writes a `doctorSuspended` or `doctorReactivated` audit row with `doctorId`, so AD15 can filter by doctor. These rows don't show in the clinic's activity log (D27).
 - There is no "disable" yet. A disabled doctor (`Doctors.Status = disabled`) already can't sign in (`ACCOUNT_DISABLED`) and their assistants get `CLINIC_NOT_ACTIVE`, but disabling must also cancel every future booking and tell the patients (spec 6.12.7, case 23), which needs the Phase 6 bookings, and the spec doesn't yet say how a disabled doctor comes back. It comes with AD5 in Phase 7.
 
+### Add doctor (AD6), any admin
+
+`POST /api/admin/createDoctor` creates a doctor account directly. Any admin may call it (`admin` or `superAdmin`); doctors, assistants and patients get 403.
+
+`multipart/form-data`, like A4:
+
+| Part | Content |
+|---|---|
+| `data` | The A4 form (see `completeDoctorRegistration`) **without** `password`, `acceptTerms` and `device`; a `password` sent anyway is ignored. Same field rules and error codes. `locale` (`ar` default, or `en`) is the language of the email and the notifications. |
+| `license` | Required: the syndicate card or license, JPEG, PNG, WebP or PDF, ≤ 10 MB. |
+
+On success:
+- the user (`role = doctor`, `status = active`) has **no password** until the doctor chooses one, so nobody can sign in with it before that;
+- the doctor is `active` with the service on and **no free trial** (`trialEndsAt` null, `approvedBy` = the admin): sessions carry the platform fees from the start;
+- the first branch is the default branch, as in A4;
+- the doctor gets the `doctorInvite` email (Arabic and English, the doctor's language first) with a link to `Email:ResetPasswordUrl?token=…` and the same token as a code. It is a `passwordReset` token (`UserTokens`), valid `Auth:DoctorInviteTokenHours` (72 by default), so the A8 screen and `POST /api/auth/resetPassword` set the password; that also marks the email verified. If the link expires, AD5 "Send password reset email" (`POST /api/admin/doctors/sendPasswordReset`) sends a new one;
+- a `doctorWelcome` notification waits for the doctor (no trial length);
+- the audit log gets `doctorCreated` with `{ specialtyId, branchId, serviceActive: true }` and `doctorId`.
+
+**201** returns the registration view (`status: "active"`, `trial: null`).
+
+Errors: the A4 field errors (400), 400 `license` `REQUIRED` / `FILE_TOO_LARGE` / `FILE_TYPE_NOT_ALLOWED`, 409 `EMAIL_ALREADY_REGISTERED` (nothing is created or sent), 413 `REQUEST_TOO_LARGE`, 415 `UNSUPPORTED_MEDIA_TYPE`.
+
 ### Admin users (AD14), super admin only
 
 | Method and route | Request | Success | Errors |
@@ -384,10 +407,11 @@ Rows in `Notifications` (both languages). The notification list, read state and 
 | `assistantPasswordResetRequested` | the assistant's doctor | same | `المساعد {name} طلب إعادة تعيين كلمة المرور` | `/assistants/{assistantId}` | `{ assistantId }` |
 | `doctorSuspended` | the doctor, and each active assistant | تم إيقاف الخدمة / Your clinic is suspended (assistants: The clinic is suspended) | Doctor: `السبب: {reason}`. Assistants: `تم إيقاف خدمة عيادة د. {name}: …`, without the reason | `/home` | `{ doctorId }` |
 | `doctorReactivated` | the doctor, and each active assistant | تم إعادة تفعيل الخدمة / Your clinic is active again | | `/home` | `{ doctorId }` |
+| `doctorWelcome` | a doctor an admin added (AD6) | أهلاً بك في «العيادة» / Welcome to el3yada | `حسابك جاهز ويمكنك استخدام العيادة الآن.` (no trial length) | `/home` | `{ doctorId }` |
 
 ## Audit actions
 
-`doctorRegistrationSubmitted`, `doctorRegistrationResubmitted`, `doctorRegistrationApproved`, `doctorRegistrationRejected` (details: `reason`), `doctorLicenseViewed`, `doctorSuspended` and `doctorReactivated` (`before`, `after`, `reason`), `adminSeeded`, `adminCreated` (details: `adminRole`), `adminRoleChanged` (`before`, `after`), `adminDisabled`, `adminEnabled`, `adminProfileUpdated`, `settingsUpdated` (`fields`), `passwordSet`, `passwordChanged`, `passwordResetRequested` (`channel`: `email` or `doctor`), `passwordReset`, `accountLockedOut`, `refreshTokenReuseDetected`, `emailVerified`.
+`doctorRegistrationSubmitted`, `doctorRegistrationResubmitted`, `doctorRegistrationApproved`, `doctorRegistrationRejected` (details: `reason`), `doctorLicenseViewed`, `doctorSuspended` and `doctorReactivated` (`before`, `after`, `reason`), `doctorCreated` (AD6: `specialtyId`, `branchId`, `serviceActive`), `adminSeeded`, `adminCreated` (details: `adminRole`), `adminRoleChanged` (`before`, `after`), `adminDisabled`, `adminEnabled`, `adminProfileUpdated`, `settingsUpdated` (`fields`), `passwordSet`, `passwordChanged`, `passwordResetRequested` (`channel`: `email` or `doctor`), `passwordReset`, `accountLockedOut`, `refreshTokenReuseDetected`, `emailVerified`.
 
 Audit rows never hold passwords, tokens or medical text. As a safety net, any detail whose name contains "password", "token" or "secret" is dropped.
 

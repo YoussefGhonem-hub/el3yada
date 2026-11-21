@@ -15861,6 +15861,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write what\'s missing or wrong.'**
   String get catalogReportErrorText;
+
+  /// No description provided for @queueByArrival.
+  ///
+  /// In en, this message translates to:
+  /// **'Turns go in order of arrival at the clinic'**
+  String get queueByArrival;
+
+  /// No description provided for @queueCheckInOnArrival.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in at reception when you arrive'**
+  String get queueCheckInOnArrival;
+
+  /// No description provided for @queueByArrivalCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turns go in order of arrival: check in at reception when you arrive'**
+  String get queueByArrivalCheckIn;
+
+  /// No description provided for @queueYourNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Your number'**
+  String get queueYourNumber;
+
+  /// No description provided for @queuePatientsAhead.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{You\'re next} =1{1 patient ahead of you} other{{count} patients ahead of you}}'**
+  String queuePatientsAhead(int count);
+
+  /// No description provided for @queueWaitAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes, plural, =1{Estimated wait about 1 minute} other{Estimated wait about {minutes} minutes}}'**
+  String queueWaitAbout(int minutes);
+
+  /// No description provided for @queueWithDoctorNow.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re with the doctor now'**
+  String get queueWithDoctorNow;
+
+  /// No description provided for @periodMorningFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning period from {time}'**
+  String periodMorningFrom(String time);
+
+  /// No description provided for @periodEveningFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening period from {time}'**
+  String periodEveningFrom(String time);
+
+  /// No description provided for @homeNextAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Next appointment'**
+  String get homeNextAppointment;
+
+  /// No description provided for @homeNoUpcomingAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming appointment'**
+  String get homeNoUpcomingAppointment;
+
+  /// No description provided for @boardBooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked'**
+  String get boardBooked;
+
+  /// No description provided for @boardNextPatient.
+  ///
+  /// In en, this message translates to:
+  /// **'Next patient'**
+  String get boardNextPatient;
+
+  /// No description provided for @boardNoOneWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'No one is waiting'**
+  String get boardNoOneWaiting;
+
+  /// No description provided for @boardStartSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Start session'**
+  String get boardStartSession;
+
+  /// No description provided for @boardFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get boardFinish;
+
+  /// No description provided for @boardDragHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to the next or previous column'**
+  String get boardDragHint;
+
+  /// No description provided for @boardPendingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 waiting for confirmation} other{{count} waiting for confirmation}}'**
+  String boardPendingCount(int count);
+
+  /// No description provided for @boardNoSessionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 checked in, no session} other{{count} checked in, no session}}'**
+  String boardNoSessionCount(int count);
+
+  /// No description provided for @boardAwaitingDoctorCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 session waiting for you} other{{count} sessions waiting for you}}'**
+  String boardAwaitingDoctorCount(int count);
+
+  /// No description provided for @boardUnreadChatsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unread chat} other{{count} unread chats}}'**
+  String boardUnreadChatsCount(int count);
+
+  /// No description provided for @boardNoSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in, no session'**
+  String get boardNoSessionTitle;
+
+  /// No description provided for @boardNoSessionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Record the session, or mark the patient as left without being seen.'**
+  String get boardNoSessionBody;
+
+  /// No description provided for @waitingRoomScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting-room screen'**
+  String get waitingRoomScreen;
+
+  /// No description provided for @waitingRoomNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get waitingRoomNext;
+
+  /// No description provided for @waitingRoomExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit full screen'**
+  String get waitingRoomExit;
 }
 
 class _AppLocalizationsDelegate

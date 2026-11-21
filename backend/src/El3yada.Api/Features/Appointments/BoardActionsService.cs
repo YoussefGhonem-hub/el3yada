@@ -34,14 +34,15 @@ public sealed class BoardActionsService(
 
     // ---- Stage changes ------------------------------------------------------------------------
 
-    /// <summary>Patient arrived. Check-in works only today (6.13). A guest whose phone belongs to one of
-    /// the doctor's patients is linked automatically (6.12.3).</summary>
+    /// <summary>
+    /// Patient arrived (BR-AP10). Check-in works only today (6.13). In queue mode the patient gets the period's
+    /// next number, so turns go in order of arrival (BR-AP3), and is told the number, how many are ahead and the
+    /// estimated wait (BR-AP16). A guest whose phone belongs to one of the doctor's patients is linked
+    /// automatically (6.12.3).
+    /// </summary>
     public Task<AppointmentDto> CheckInAsync(BookingActor actor, Guid id, CancellationToken ct) =>
-        TransitionAsync(actor, id, [AppointmentStatuses.Confirmed, AppointmentStatuses.Pending], "checkedIn", async a =>
+        ArriveAsync(actor, id, [AppointmentStatuses.Confirmed, AppointmentStatuses.Pending], "checkedIn", async a =>
         {
-            if (a.LocalDate != Today) throw ApiException.Conflict(ErrorCodes.InvalidTransition);
-            a.Status = AppointmentStatuses.CheckedIn;
-            a.CheckedInAt = Now;
             if (a.PatientId is null && a.GuestPhone is not null)
             {
                 var match = await db.DoctorPatients.Where(l => l.DoctorId == a.DoctorId && l.PatientPhone == a.GuestPhone)
@@ -50,12 +51,17 @@ public sealed class BoardActionsService(
             }
         }, ct);
 
+    /// <summary>Into the doctor. [S] The next checked-in patient of the period hears «دورك التالي» (BR-AP16).</summary>
     public Task<AppointmentDto> CallInAsync(BookingActor actor, Guid id, CancellationToken ct) =>
         TransitionAsync(actor, id, [AppointmentStatuses.CheckedIn], "calledIn", async a =>
         {
             a.Status = AppointmentStatuses.WithDoctor;
             a.CalledAt = Now;
-            if (a.QueueNumber is { } n) await SetNowServingAsync(a.BranchId, a.LocalDate, a.PeriodStartLocal, n, ct);
+            if (a.QueueNumber is { } n)
+            {
+                await SetNowServingAsync(a.BranchId, a.LocalDate, a.PeriodStartLocal, n, ct);
+                await NotifyNextInLineAsync(a, ct);
+            }
         }, ct);
 
     public Task<AppointmentDto> SendBackAsync(BookingActor actor, Guid id, CancellationToken ct) =>
@@ -84,13 +90,10 @@ public sealed class BoardActionsService(
             return Task.CompletedTask;
         }, ct);
 
-    /// <summary>BR-AP8: undo a no-show the same day; the patient is checked in.</summary>
+    /// <summary>BR-AP8: undo a no-show the same day; the patient is checked in again, with a new number in queue mode (BR-AP3).</summary>
     public Task<AppointmentDto> UndoNoShowAsync(BookingActor actor, Guid id, CancellationToken ct) =>
-        TransitionAsync(actor, id, [AppointmentStatuses.NoShow], "noShowUndone", a =>
+        ArriveAsync(actor, id, [AppointmentStatuses.NoShow], "noShowUndone", a =>
         {
-            if (a.LocalDate != Today) throw ApiException.Conflict(ErrorCodes.InvalidTransition);
-            a.Status = AppointmentStatuses.CheckedIn;
-            a.CheckedInAt = Now;
             a.NoShowAt = null;
             return Task.CompletedTask;
         }, ct);
@@ -153,7 +156,8 @@ public sealed class BoardActionsService(
                      ?? day.Periods.LastOrDefault();
 
         var isQueue = schedule.Settings.IsQueue;
-        var periodStart = period?.Start ?? nowLocal;
+        // A day without hours still keeps one line for its walk-ins.
+        var periodStart = period?.Start ?? (isQueue ? TimeOnly.MinValue : nowLocal);
         var walkIn = new Appointment
         {
             Id = NewId.Next(),
@@ -168,7 +172,8 @@ public sealed class BoardActionsService(
             PeriodStartLocal = periodStart,
             StartUtc = isQueue && period is not null ? period.StartUtc : Now,
             EndUtc = isQueue ? period?.EndUtc : Now.AddMinutes(schedule.Settings.SlotMinutes),
-            QueueNumber = isQueue ? await appointments.NextQueueNumberAsync(r.BranchId, today, periodStart, ct) : null,
+            // Checked in at once: the period's next number, the same way as a check-in (BR-AP3).
+            QueueNumber = isQueue ? await QueueNumbers.TakeAsync(db, r.BranchId, today, periodStart, Now, ct) : null,
             Status = AppointmentStatuses.CheckedIn,
             CheckedInAt = Now,
             Source = "walkIn",
@@ -183,6 +188,7 @@ public sealed class BoardActionsService(
         walkIn.BoardOrder = walkIn.QueueNumber ?? (int)nowLocal.ToTimeSpan().TotalMinutes;
         db.Appointments.Add(walkIn);
         appointments.AddHistory(walkIn, actor, "walkIn", null, null, null);
+        await NotifyCheckedInAsync(walkIn, ct);
         await appointments.SaveBookingAsync(ct);
         await tx.CommitAsync(ct);
         await publisher.PublishAsync(r.BranchId, today, ct);
@@ -351,6 +357,73 @@ public sealed class BoardActionsService(
         await appointments.SaveBookingAsync(ct);
         await publisher.PublishAsync(a.BranchId, a.LocalDate, ct);
         return await appointments.GetAsync(actor, id, ct);
+    }
+
+    /// <summary>
+    /// Check-in and undoing a no-show (BR-AP3, BR-AP8, BR-AP10). One transaction: in queue mode the period is
+    /// locked first, then the booking is read again (the first check-in wins, BR-LB4) and gets the period's next
+    /// number. Timed mode keeps its order by time.
+    /// </summary>
+    private async Task<AppointmentDto> ArriveAsync(
+        BookingActor actor, Guid id, IReadOnlyCollection<string> from, string action, Func<Appointment, Task> apply, CancellationToken ct)
+    {
+        var a = await appointments.LoadForActorAsync(actor, id, ct, tracking: true);
+        if (!from.Contains(a.Status)) throw appointments.AlreadyHandled(a, ErrorCodes.InvalidTransition);
+        if (a.LocalDate != Today) throw ApiException.Conflict(ErrorCodes.InvalidTransition);
+
+        var queue = a.Mode == "queue";
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        if (queue) await QueueNumbers.LockPeriodAsync(db, a.BranchId, a.LocalDate, a.PeriodStartLocal, Now, ct);
+        await db.Entry(a).ReloadAsync(ct);
+        if (!from.Contains(a.Status)) throw appointments.AlreadyHandled(a, ErrorCodes.InvalidTransition);
+
+        var before = a.Status;
+        a.Status = AppointmentStatuses.CheckedIn;
+        a.CheckedInAt = Now;
+        await apply(a);
+        if (queue)
+        {
+            a.QueueNumber = await QueueNumbers.NextAsync(db, a.BranchId, a.LocalDate, a.PeriodStartLocal, ct);
+            // A priority move made before arrival keeps its place (BR-AP3).
+            if (!a.IsPriority) a.BoardOrder = a.QueueNumber.Value;
+        }
+        a.UpdatedAt = Now;
+        appointments.AddHistory(a, actor, action, before, a.Status, null);
+        await NotifyCheckedInAsync(a, ct);
+        await appointments.SaveBookingAsync(ct);
+        await tx.CommitAsync(ct);
+        await publisher.PublishAsync(a.BranchId, a.LocalDate, ct);
+        return await appointments.GetAsync(actor, id, ct);
+    }
+
+    /// <summary>
+    /// BR-AP16, queue mode: «تم تسجيل حضورك — دورك رقم 7، وقبلك 3 مرضى» with the estimated wait (patients ahead ×
+    /// the branch's average visit time, spec 6.12.2). It goes to the patient's app; a guest is told at the desk.
+    /// </summary>
+    private async Task NotifyCheckedInAsync(Appointment a, CancellationToken ct)
+    {
+        if (a.PatientId is not { } patientId || a.QueueNumber is not { } number) return;
+        var ahead = await appointments.AheadAsync(a.Id, a.BranchId, a.LocalDate, a.PeriodStartLocal, a.IsPriority, a.BoardOrder, ct);
+        var average = await db.Branches.Where(b => b.Id == a.BranchId).Select(b => b.AvgVisitMinutes).FirstAsync(ct);
+        notifications.Add(await appointments.PatientUserIdAsync(patientId, ct), NotificationTemplates.CheckedIn(number, ahead, ahead * average, a.Id));
+    }
+
+    /// <summary>
+    /// [S] BR-AP16: when a patient goes in, the next checked-in patient of the same period (priority first, then
+    /// by number) hears «دورك التالي», once per booking.
+    /// </summary>
+    private async Task NotifyNextInLineAsync(Appointment calledIn, CancellationToken ct)
+    {
+        var next = await db.Appointments.AsNoTracking()
+            .Where(x => x.BranchId == calledIn.BranchId && x.LocalDate == calledIn.LocalDate && x.PeriodStartLocal == calledIn.PeriodStartLocal
+                        && x.Status == AppointmentStatuses.CheckedIn && x.Id != calledIn.Id && x.QueueNumber != null)
+            .OrderByDescending(x => x.IsPriority).ThenBy(x => x.BoardOrder)
+            .Select(x => new { x.Id, Number = x.QueueNumber!.Value, UserId = x.Patient == null ? (Guid?)null : x.Patient.UserId })
+            .FirstOrDefaultAsync(ct);
+        if (next?.UserId is not { } userId) return;
+        var message = NotificationTemplates.NextInLine(next.Number, next.Id);
+        if (await db.Notifications.AnyAsync(n => n.RecipientUserId == userId && n.Type == message.Type && n.Route == message.Route, ct)) return;
+        notifications.Add(userId, message);
     }
 
     private async Task SetNowServingAsync(Guid branchId, DateOnly date, TimeOnly period, int number, CancellationToken ct)

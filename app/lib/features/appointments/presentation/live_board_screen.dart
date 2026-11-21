@@ -5,9 +5,16 @@ import 'package:go_router/go_router.dart';
 import '../../../core/network/api_error.dart';
 import '../../../core/platform/contact_launcher.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/motion.dart';
+import '../../chat/chat_providers.dart';
+import '../../clinic/application/clinic_providers.dart' show clinicContextProvider;
+import '../../clinic/domain/clinic_permissions.dart';
 import '../../patient/presentation/patient_format.dart';
 import '../../patient/presentation/widgets/patient_widgets.dart';
+import '../../patients/clinic_paths.dart';
+import '../../sessions/application/sessions_providers.dart';
 import '../application/appointment_providers.dart';
+import '../data/appointments_repository.dart';
 import '../domain/appointment_models.dart';
 import 'appointment_format.dart';
 import 'branch_picker.dart';
@@ -15,7 +22,12 @@ import 'walk_in_dialog.dart';
 
 /// D34 / AS1 / AS16: today's patients at the current branch by stage. Every action is an API
 /// call (BR-LB1); changes from other devices arrive live (BR-LB2). Done is reached only by
-/// saving a session (BR-LB3): Finish opens the session form, which is Phase 2 (D8).
+/// saving a session (BR-LB3): Finish, Start session and a card dropped on Done open D8 for the
+/// booking, and saving it completes the booking (BR-AP10).
+///
+/// Queue mode (BR-AP3): Expected cards show «محجوز» and are ordered by booking time; a card gets
+/// its number at check-in, and Waiting is ordered by number (priority first). The server sends
+/// the cards in that order.
 class LiveBoardScreen extends ConsumerWidget {
   const LiveBoardScreen({super.key, required this.basePath});
 
@@ -39,6 +51,19 @@ class LiveBoardScreen extends ConsumerWidget {
   }
 }
 
+/// What dropping a card on a column does (6.13): the same action as that column's button, with the same
+/// checks. Only to the next or the previous column; Done only through the session form (BR-LB3).
+String? boardDropAction(BoardEntry entry, String to) => switch ((entry.stage, to)) {
+      (BoardStage.expected, BoardStage.waiting) => 'check-in',
+      (BoardStage.waiting, BoardStage.withDoctor) => 'call-in',
+      (BoardStage.withDoctor, BoardStage.waiting) => 'send-back',
+      (BoardStage.withDoctor, BoardStage.done) => 'finish',
+      _ => null,
+    };
+
+/// Finish and Start session open D8; assistants need `sessionsCreate` for them (AS1).
+bool _canRecord(WidgetRef ref) => ref.watch(clinicContextProvider).value?.can(ClinicPermission.sessionsCreate) ?? false;
+
 class _Board extends ConsumerWidget {
   const _Board({required this.branchId, required this.basePath});
 
@@ -56,7 +81,7 @@ class _Board extends ConsumerWidget {
       onRetry: () => ref.invalidate(boardProvider(branchId)),
       data: (state) {
         final snapshot = state.snapshot;
-        return Column(
+        final header = Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (state.offline)
@@ -68,12 +93,27 @@ class _Board extends ConsumerWidget {
               ),
             _TopBar(branchId: branchId, basePath: basePath, snapshot: snapshot, offline: state.offline),
             _Counters(snapshot: snapshot),
-            Expanded(
-              child: width >= Breakpoints.tablet
-                  ? _Columns(branchId: branchId, basePath: basePath, snapshot: snapshot, offline: state.offline)
-                  : _Tabs(branchId: branchId, basePath: basePath, snapshot: snapshot, offline: state.offline),
-            ),
+            if (basePath == '/doctor') _DoctorExtras(branchId: branchId, basePath: basePath, snapshot: snapshot, offline: state.offline),
           ],
+        );
+        return LayoutBuilder(
+          builder: (context, constraints) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // On a small phone with large text the bars take at most half the height and scroll; the
+              // columns (or tabs) keep the rest.
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: constraints.maxHeight / 2),
+                child: SingleChildScrollView(child: header),
+              ),
+              Expanded(
+                child: width >= Breakpoints.tablet
+                    ? _Columns(branchId: branchId, basePath: basePath, snapshot: snapshot, offline: state.offline,
+                        draggable: width >= Breakpoints.desktop && !state.offline)
+                    : _Tabs(branchId: branchId, basePath: basePath, snapshot: snapshot, offline: state.offline),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -93,7 +133,9 @@ class _TopBar extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final controller = ref.read(boardProvider(branchId).notifier);
     try {
-      if (action == 'delay') {
+      if (action == 'waitingRoom') {
+        await context.push(Uri(path: '$basePath/waiting-room', queryParameters: {'branch': branchId}).toString());
+      } else if (action == 'delay') {
         final minutes = await showDialog<int>(
           context: context,
           builder: (context) => SimpleDialog(
@@ -131,6 +173,9 @@ class _TopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    // D36 [C] opens on desktop and tablet, for a TV in the waiting room (BR-LB7). It works without the network
+    // actions, so it stays in the menu while offline.
+    final waitingRoom = snapshot.mode == 'queue' && MediaQuery.sizeOf(context).width >= Breakpoints.tablet;
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Wrap(
@@ -150,12 +195,13 @@ class _TopBar extends ConsumerWidget {
             label: Text(l10n.walkIn),
           ),
           PopupMenuButton<String>(
-            enabled: !offline,
+            enabled: !offline || waitingRoom,
             tooltip: l10n.more,
             onSelected: (v) => _menu(context, ref, v),
             itemBuilder: (context) => [
-              PopupMenuItem(value: 'delay', child: Text(l10n.doctorDelayed)),
-              PopupMenuItem(value: 'cancelRest', child: Text(l10n.cancelRestOfDay)),
+              if (waitingRoom) PopupMenuItem(value: 'waitingRoom', child: Text(l10n.waitingRoomScreen)),
+              PopupMenuItem(value: 'delay', enabled: !offline, child: Text(l10n.doctorDelayed)),
+              PopupMenuItem(value: 'cancelRest', enabled: !offline, child: Text(l10n.cancelRestOfDay)),
             ],
           ),
         ],
@@ -211,13 +257,158 @@ class _Counters extends StatelessWidget {
   }
 }
 
-class _Columns extends StatelessWidget {
-  const _Columns({required this.branchId, required this.basePath, required this.snapshot, required this.offline});
+/// BR-LB6, the doctor's view adds: the **Next patient** card with Call in and Start session; bookings waiting
+/// for confirmation; "checked in, no session" (BR-AP11); sessions recorded by assistants «بانتظار الطبيب»
+/// (BR-AS7); unread chats. Drafts sent for review [S] have no list in the API yet.
+class _DoctorExtras extends ConsumerWidget {
+  const _DoctorExtras({required this.branchId, required this.basePath, required this.snapshot, required this.offline});
 
   final String branchId;
   final String basePath;
   final BoardSnapshot snapshot;
   final bool offline;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final paths = ref.watch(clinicPathsProvider);
+    final next = snapshot.stage(BoardStage.waiting).firstOrNull;
+    final pending = snapshot.entries.where((e) => e.pending).toList();
+    final noSession = ref.watch(searchProvider(SearchFilter(checkedInNoSession: true, branchId: branchId))).value?.items ?? const <Appointment>[];
+    final DayQuery today = (day: null, branchId: branchId, type: null, recordedBy: null);
+    final awaiting = ref.watch(daySessionsProvider(today)).value?.items.where((s) => s.awaitingDoctor).length ?? 0;
+    final unread = ref.watch(chatUnreadTotalProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          _NextPatientCard(branchId: branchId, entry: next, offline: offline),
+          if (pending.isNotEmpty)
+            ActionChip(
+              avatar: const Icon(Icons.hourglass_top, size: 18),
+              label: Text(l10n.boardPendingCount(pending.length)),
+              onPressed: () => showPatientPanel(context, branchId: branchId, basePath: basePath, entry: pending.first, offline: offline),
+            ),
+          if (noSession.isNotEmpty)
+            ActionChip(
+              avatar: const Icon(Icons.assignment_late_outlined, size: 18),
+              label: Text(l10n.boardNoSessionCount(noSession.length)),
+              onPressed: () => _showNoSession(context, noSession),
+            ),
+          if (awaiting > 0)
+            ActionChip(
+              avatar: const Icon(Icons.rate_review_outlined, size: 18),
+              label: Text(l10n.boardAwaitingDoctorCount(awaiting)),
+              onPressed: () => context.go(paths.today()),
+            ),
+          if (unread > 0)
+            ActionChip(
+              avatar: const Icon(Icons.chat_bubble_outline, size: 18),
+              label: Text(l10n.boardUnreadChatsCount(unread)),
+              onPressed: () => context.go('$basePath/chats'),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// BR-AP11: the doctor fixes each one from its booking (record the session, or "left without being seen").
+  Future<void> _showNoSession(BuildContext context, List<Appointment> list) => showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        builder: (sheet) => SafeArea(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              ListTile(title: Text(sheet.l10n.boardNoSessionTitle), subtitle: Text(sheet.l10n.boardNoSessionBody)),
+              for (final a in list)
+                ListTile(
+                  leading: CircleAvatar(child: Text(a.queueNumber != null ? '${a.queueNumber}' : a.time)),
+                  title: Text(a.displayName),
+                  subtitle: Text('${sheet.date(a.date)} · ${sheet.appointmentWhen(a)}'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(sheet).pop();
+                    context.push('$basePath/appointments/${a.id}');
+                  },
+                ),
+            ],
+          ),
+        ),
+      );
+}
+
+/// The first card of Waiting, the one who goes in next (BR-LB6).
+class _NextPatientCard extends ConsumerWidget {
+  const _NextPatientCard({required this.branchId, required this.entry, required this.offline});
+
+  final String branchId;
+  final BoardEntry? entry;
+  final bool offline;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final e = entry;
+    return Card(
+      margin: EdgeInsets.zero,
+      color: scheme.secondaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        // A wrap, so the buttons go under the name on a phone.
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.boardNextPatient, style: theme.textTheme.labelSmall?.copyWith(color: scheme.onSecondaryContainer)),
+                  Text(
+                    e == null ? l10n.boardNoOneWaiting : [if (e.queueNumber != null) '${e.queueNumber}', e.displayName].join(' · '),
+                    style: theme.textTheme.titleMedium?.copyWith(color: scheme.onSecondaryContainer),
+                  ),
+                ],
+              ),
+            ),
+            if (e != null) ...[
+              FilledButton.tonal(
+                onPressed: offline ? null : () => runBoardAction(context, ref, branchId, e, 'call-in'),
+                child: Text(l10n.callIn),
+              ),
+              if (_canRecord(ref))
+                OutlinedButton(
+                  onPressed: offline ? null : () => runBoardAction(context, ref, branchId, e, 'start-session'),
+                  child: Text(l10n.boardStartSession),
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Columns extends StatelessWidget {
+  const _Columns({required this.branchId, required this.basePath, required this.snapshot, required this.offline, required this.draggable});
+
+  final String branchId;
+  final String basePath;
+  final BoardSnapshot snapshot;
+  final bool offline;
+
+  /// [S] Desktop: cards are dragged to the next or the previous column (6.13).
+  final bool draggable;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -233,7 +424,8 @@ class _Columns extends StatelessWidget {
                   SizedBox(
                     width: columnWidth,
                     height: constraints.maxHeight,
-                    child: _StageList(branchId: branchId, basePath: basePath, stage: stage, entries: snapshot.stage(stage), offline: offline, showHeader: true),
+                    child: _StageList(branchId: branchId, basePath: basePath, stage: stage, entries: snapshot.stage(stage), offline: offline,
+                        showHeader: true, mode: snapshot.mode, dragWidth: draggable ? columnWidth : null),
                   ),
               ],
             ),
@@ -264,7 +456,8 @@ class _Tabs extends StatelessWidget {
               child: TabBarView(
                 children: [
                   for (final s in BoardStage.all)
-                    _StageList(branchId: branchId, basePath: basePath, stage: s, entries: snapshot.stage(s), offline: offline, showHeader: false),
+                    _StageList(branchId: branchId, basePath: basePath, stage: s, entries: snapshot.stage(s), offline: offline,
+                        showHeader: false, mode: snapshot.mode),
                 ],
               ),
             ),
@@ -273,8 +466,17 @@ class _Tabs extends StatelessWidget {
       );
 }
 
-class _StageList extends StatelessWidget {
-  const _StageList({required this.branchId, required this.basePath, required this.stage, required this.entries, required this.offline, required this.showHeader});
+class _StageList extends ConsumerWidget {
+  const _StageList({
+    required this.branchId,
+    required this.basePath,
+    required this.stage,
+    required this.entries,
+    required this.offline,
+    required this.showHeader,
+    required this.mode,
+    this.dragWidth,
+  });
 
   final String branchId;
   final String basePath;
@@ -282,57 +484,118 @@ class _StageList extends StatelessWidget {
   final List<BoardEntry> entries;
   final bool offline;
   final bool showHeader;
+  final String mode;
+
+  /// Set on desktop: the cards can be dragged (as wide as a column) and dropped here.
+  final double? dragWidth;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (showHeader)
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text('${context.boardStage(stage)} (${entries.length})', style: theme.textTheme.titleSmall),
+    final canRecord = _canRecord(ref);
+    Widget column(bool highlighted) => AnimatedContainer(
+          duration: Motion.of(context).reduced ? Duration.zero : Motion.fast,
+          curve: Motion.standardCurve,
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: highlighted ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5) : null,
+            border: Border.all(color: highlighted ? theme.colorScheme.primary : theme.colorScheme.surface.withValues(alpha: 0)),
+            borderRadius: BorderRadius.circular(12),
           ),
-        Expanded(
-          child: entries.isEmpty
-              ? Center(child: Text(context.l10n.boardEmptyStage, style: TextStyle(color: theme.colorScheme.outline)))
-              : ListView.builder(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (showHeader)
+                Padding(
                   padding: const EdgeInsets.all(8),
-                  itemCount: entries.length,
-                  itemBuilder: (context, i) => BoardCard(branchId: branchId, basePath: basePath, entry: entries[i], offline: offline),
+                  child: Text('${context.boardStage(stage)} (${entries.length})', style: theme.textTheme.titleSmall),
                 ),
-        ),
-      ],
+              Expanded(
+                child: entries.isEmpty
+                    ? Center(child: Text(context.l10n.boardEmptyStage, style: TextStyle(color: theme.colorScheme.outline)))
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(8),
+                        itemCount: entries.length,
+                        itemBuilder: (context, i) {
+                          final card = BoardCard(branchId: branchId, basePath: basePath, entry: entries[i], offline: offline, mode: mode);
+                          return dragWidth == null ? card : _DraggableCard(entry: entries[i], width: dragWidth!, child: card);
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+
+    if (dragWidth == null) return column(false);
+    return DragTarget<BoardEntry>(
+      onWillAcceptWithDetails: (d) {
+        final action = boardDropAction(d.data, stage);
+        return action != null && (action != 'finish' || canRecord);
+      },
+      onAcceptWithDetails: (d) => runBoardAction(context, ref, branchId, d.data, boardDropAction(d.data, stage)!),
+      builder: (context, candidates, rejected) => column(candidates.isNotEmpty),
     );
   }
 }
 
+/// [S] A card that can be dragged to the next or the previous column on desktop (6.13).
+class _DraggableCard extends StatelessWidget {
+  const _DraggableCard({required this.entry, required this.width, required this.child});
+
+  final BoardEntry entry;
+  final double width;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        hint: context.l10n.boardDragHint,
+        child: Draggable<BoardEntry>(
+          data: entry,
+          feedback: Material(
+            elevation: 8,
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(width: width - 16, child: child),
+          ),
+          childWhenDragging: Opacity(opacity: 0.4, child: child),
+          child: MouseRegion(cursor: SystemMouseCursors.grab, child: child),
+        ),
+      );
+}
+
 /// One patient on the board. The main action matches the stage (6.13).
 class BoardCard extends ConsumerWidget {
-  const BoardCard({super.key, required this.branchId, required this.basePath, required this.entry, required this.offline});
+  const BoardCard({super.key, required this.branchId, required this.basePath, required this.entry, required this.offline, this.mode = 'queue'});
 
   final String branchId;
   final String basePath;
   final BoardEntry entry;
   final bool offline;
 
-  static (String, String)? mainAction(BuildContext context, BoardEntry e) => switch (e.stage) {
+  /// The board's mode: in queue mode a card without a number is «محجوز» (BR-AP3).
+  final String mode;
+
+  static (String, String)? mainAction(BuildContext context, BoardEntry e, {bool canRecord = true}) => switch (e.stage) {
         BoardStage.expected => e.pending ? ('confirm', context.l10n.confirmBooking) : ('check-in', context.l10n.checkIn),
         BoardStage.waiting => ('call-in', context.l10n.callIn),
+        BoardStage.withDoctor when canRecord => ('finish', context.l10n.boardFinish),
         BoardStage.missed when e.status == 'noShow' => ('undo-no-show', context.l10n.undoNoShow),
         _ => null,
       };
+
+  /// The card's big label: the queue number from check-in on, «محجوز» before it (queue mode), or the time.
+  static String label(BuildContext context, BoardEntry e, String mode) =>
+      e.queueNumber != null ? '${e.queueNumber}' : mode == 'queue' ? context.l10n.boardBooked : e.timeLocal ?? '';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final colors = context.el3yadaColors;
-    final action = mainAction(context, entry);
+    final action = mainAction(context, entry, canRecord: _canRecord(ref));
     final waitedMinutes = entry.checkedInAt == null || entry.stage != BoardStage.waiting ? null : DateTime.now().difference(entry.checkedInAt!).inMinutes;
     final waitColor = waitedMinutes == null ? null : waitedMinutes >= 40 ? theme.colorScheme.error : waitedMinutes >= 20 ? theme.colorScheme.tertiary : theme.colorScheme.outline;
     final isNew = DateTime.now().difference(entry.createdAt).inMinutes < 1 && entry.stage == BoardStage.expected;
+    final numbered = entry.queueNumber != null;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -346,8 +609,13 @@ class BoardCard extends ConsumerWidget {
             children: [
               Row(
                 children: [
-                  Text(entry.queueNumber != null ? '${entry.queueNumber}' : entry.timeLocal ?? '',
-                      style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+                  Text(
+                    label(context, entry, mode),
+                    style: (numbered ? theme.textTheme.headlineSmall : theme.textTheme.titleSmall)?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: numbered || mode != 'queue' ? null : theme.colorScheme.outline,
+                    ),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(child: Text(entry.displayName, style: theme.textTheme.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis)),
                   if (isNew) const NewBadge(),
@@ -375,6 +643,7 @@ class BoardCard extends ConsumerWidget {
                     Text(l10n.lastVisitOn(context.date(entry.lastVisitDate!), context.visitTypeCode(entry.lastVisitType ?? 'examination')),
                         style: theme.textTheme.labelSmall),
                   if (entry.priority) _Flag(icon: Icons.priority_high, label: l10n.priority),
+                  if (entry.walkIn) _Flag(icon: Icons.directions_walk, label: l10n.walkIn),
                   if (entry.late) _Flag(icon: Icons.schedule, label: l10n.late),
                   if (entry.consultationNotAllowed) _Flag(icon: Icons.warning_amber, label: l10n.consultationNotAllowed),
                   if (entry.guest) _Flag(icon: Icons.person_add_alt, label: l10n.guest),
@@ -388,7 +657,7 @@ class BoardCard extends ConsumerWidget {
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: FilledButton.tonal(
-                    onPressed: offline ? null : () => runBoardAction(context, ref, branchId, entry.appointmentId, action.$1),
+                    onPressed: offline ? null : () => runBoardAction(context, ref, branchId, entry, action.$1),
                     child: Text(action.$2),
                   ),
                 ),
@@ -420,17 +689,33 @@ class _Flag extends StatelessWidget {
   }
 }
 
-/// Runs a board action. When someone acted first, says who (BR-LB4).
-Future<void> runBoardAction(BuildContext context, WidgetRef ref, String branchId, String appointmentId, String action, {String? reason}) async {
+/// Runs a board action. When someone acted first, says who (BR-LB4). `finish` and `start-session`
+/// open the session form for the booking (BR-LB3, BR-AP10).
+Future<void> runBoardAction(BuildContext context, WidgetRef ref, String branchId, BoardEntry entry, String action, {String? reason}) async {
+  if (action == 'finish' || action == 'start-session') return openBoardSession(context, ref, branchId, entry);
   final messenger = ScaffoldMessenger.of(context);
   final message = context.bookingError;
   final l10n = context.l10n;
   try {
-    await ref.read(boardProvider(branchId).notifier).act(appointmentId, action, reason: reason);
+    await ref.read(boardProvider(branchId).notifier).act(entry.appointmentId, action, reason: reason);
   } catch (error) {
     final api = ApiError.from(error);
     messenger.showSnackBar(SnackBar(content: Text(api.code == 'ALREADY_HANDLED' ? l10n.errAlreadyHandled : message(error))));
   }
+}
+
+/// D8 for a checked-in or called-in card: the patient, the booking's branch and the booking, which saving the
+/// session completes. Closing D8 without saving leaves the card where it was (BR-LB3). A guest is converted first.
+Future<void> openBoardSession(BuildContext context, WidgetRef ref, String branchId, BoardEntry entry) async {
+  final patientId = entry.patientId;
+  if (patientId == null) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.errGuestNeedsAccount)));
+    return;
+  }
+  final controller = ref.read(boardProvider(branchId).notifier);
+  final path = ref.read(clinicPathsProvider).boardSession(patientId: patientId, appointmentId: entry.appointmentId, branchId: branchId);
+  await context.push(path);
+  await controller.refresh();
 }
 
 /// The patient side panel (6.13): a bottom sheet on phones, a side sheet on wide screens.
@@ -467,10 +752,11 @@ class _PatientPanel extends ConsumerWidget {
     final theme = Theme.of(context);
     final colors = context.el3yadaColors;
     final summary = ref.watch(boardSummaryProvider(entry.appointmentId));
+    final canRecord = _canRecord(ref);
 
     Future<void> act(String action, {String? reason}) async {
       Navigator.of(context).pop();
-      await runBoardAction(context, ref, branchId, entry.appointmentId, action, reason: reason);
+      await runBoardAction(context, ref, branchId, entry, action, reason: reason);
     }
 
     final actions = <(String, String)>[
@@ -479,8 +765,16 @@ class _PatientPanel extends ConsumerWidget {
         ('check-in', l10n.checkIn),
         ('no-show', l10n.markNoShow),
       ],
-      if (entry.stage == BoardStage.waiting) ...[('call-in', l10n.callIn), ('left-without-seen', l10n.leftWithoutSeen)],
-      if (entry.stage == BoardStage.withDoctor) ...[('send-back', l10n.sendBack), ('left-without-seen', l10n.leftWithoutSeen)],
+      if (entry.stage == BoardStage.waiting) ...[
+        ('call-in', l10n.callIn),
+        if (canRecord) ('start-session', l10n.boardStartSession),
+        ('left-without-seen', l10n.leftWithoutSeen),
+      ],
+      if (entry.stage == BoardStage.withDoctor) ...[
+        if (canRecord) ('finish', l10n.boardFinish),
+        ('send-back', l10n.sendBack),
+        ('left-without-seen', l10n.leftWithoutSeen),
+      ],
       if (entry.status == 'noShow') ('undo-no-show', l10n.undoNoShow),
     ];
 

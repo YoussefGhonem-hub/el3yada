@@ -142,7 +142,8 @@ public sealed class AppointmentTests(BookingFixture fx) : IClassFixture<BookingF
         {
             var ok = await StaffBook(doctor, fx.QueueBranch, date, BookingFixture.Morning, Guest($"زائر رقم{i}", $"0122000000{i}"));
             ok.EnsureSuccessStatusCode();
-            Assert.Equal(i + 1, (await ok.Content.ReadFromJsonAsync<AppointmentDto>())!.QueueNumber);
+            // A place on the period's list: the number comes at check-in (BR-AP3).
+            Assert.Null((await ok.Content.ReadFromJsonAsync<AppointmentDto>())!.QueueNumber);
         }
 
         var warning = await StaffBook(doctor, fx.QueueBranch, date, BookingFixture.Morning, Guest("زائر رابع", "01220000009"));
@@ -170,7 +171,7 @@ public sealed class AppointmentTests(BookingFixture fx) : IClassFixture<BookingF
         Assert.Single(timed, r => r.IsSuccessStatusCode);
         foreach (var r in timed.Where(r => !r.IsSuccessStatusCode)) Assert.Equal("SLOT_TAKEN", await CodeOf(r));
 
-        // Queue: capacity 3, ten at once: exactly three places, numbers 1–3 (BR-AP2, BR-AP3).
+        // Queue: capacity 3, ten at once: exactly three places, none numbered yet (BR-AP2, BR-AP3).
         var doctorA = await Api.ClientForAsync(Api.Demo.DoctorAUserId);
         await doctorA.PutAsJsonAsync($"/api/staff/branches/{fx.QueueBranch}/schedule", BookingFixture.Schedule("queue", staffOverbooking: false));
         try
@@ -179,9 +180,7 @@ public sealed class AppointmentTests(BookingFixture fx) : IClassFixture<BookingF
                 StaffBook(doctorA, fx.QueueBranch, date, BookingFixture.Evening, Guest($"سباق دور{i}", $"012760000{i:00}"))));
             var winners = queue.Where(r => r.IsSuccessStatusCode).ToList();
             Assert.Equal(3, winners.Count);
-            var numbers = new List<int>();
-            foreach (var w in winners) numbers.Add((await w.Content.ReadFromJsonAsync<AppointmentDto>())!.QueueNumber!.Value);
-            Assert.Equal([1, 2, 3], numbers.Order());
+            foreach (var w in winners) Assert.Null((await w.Content.ReadFromJsonAsync<AppointmentDto>())!.QueueNumber);
             foreach (var r in queue.Where(r => !r.IsSuccessStatusCode)) Assert.Equal("PERIOD_FULL", await CodeOf(r));
         }
         finally

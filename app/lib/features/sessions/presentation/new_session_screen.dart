@@ -55,11 +55,16 @@ enum SessionOrigin { patient, home, dashboard }
 /// Save asks the BR-S6 confirmation, then morphs into progress and a check,
 /// and the after-save sheet opens (the screen's one signature moment).
 class NewSessionScreen extends ConsumerWidget {
-  const NewSessionScreen({super.key, this.patientId, this.origin = SessionOrigin.patient});
+  const NewSessionScreen({super.key, this.patientId, this.origin = SessionOrigin.patient, this.appointmentId, this.branchId});
 
   /// Null: pick the patient first (from the home or D2).
   final String? patientId;
   final SessionOrigin origin;
+
+  /// From the live board (Start session, Finish, a card dropped on Done): saving the session completes this
+  /// checked-in booking (BR-AP10, BR-LB3). [branchId] is the booking's branch.
+  final String? appointmentId;
+  final String? branchId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,6 +90,8 @@ class NewSessionScreen extends ConsumerWidget {
             initialPatientId: patientId,
             origin: origin,
             fallback: fallback,
+            appointmentId: appointmentId,
+            initialBranchId: branchId,
           );
         },
       ),
@@ -99,12 +106,16 @@ class _NewSessionFlow extends ConsumerStatefulWidget {
     required this.initialPatientId,
     required this.origin,
     required this.fallback,
+    this.appointmentId,
+    this.initialBranchId,
   });
 
   final ClinicContext clinic;
   final String? initialPatientId;
   final SessionOrigin origin;
   final String fallback;
+  final String? appointmentId;
+  final String? initialBranchId;
 
   @override
   ConsumerState<_NewSessionFlow> createState() => _NewSessionFlowState();
@@ -149,7 +160,10 @@ class _NewSessionFlowState extends ConsumerState<_NewSessionFlow> {
     _patientId = widget.initialPatientId;
     final current = ref.read(currentBranchProvider);
     final work = widget.clinic.workBranches;
-    _branchId = (current != null && work.any((b) => b.id == current.id) ? current.id : work.firstOrNull?.id) ?? '';
+    final booked = widget.initialBranchId;
+    _branchId = booked != null && work.any((b) => b.id == booked)
+        ? booked
+        : (current != null && work.any((b) => b.id == current.id) ? current.id : work.firstOrNull?.id) ?? '';
   }
 
   @override
@@ -250,6 +264,7 @@ class _NewSessionFlowState extends ConsumerState<_NewSessionFlow> {
               followUpDate: _isDoctor ? _followUp : null,
               amountChargedPiasters: amount.piasters,
               paymentMethod: _method,
+              appointmentId: widget.appointmentId,
             ),
           );
       if (!mounted) return;

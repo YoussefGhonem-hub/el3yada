@@ -166,18 +166,38 @@ final scheduleProvider = FutureProvider.autoDispose.family<BranchScheduleData, S
 
 // ---- Patient reads -----------------------------------------------------------------------------
 
+/// Notifications that change a patient's booking: the clinic confirming, moving or cancelling it, and in
+/// queue mode the check-in with the number (BR-AP16) and [S] "your turn is next".
+bool isBookingNotification(Object? type) {
+  final t = type as String? ?? '';
+  return t.startsWith('booking') || t == 'checkedIn' || t == 'nextInLine' || t == 'turnComing';
+}
+
 final myAppointmentsProvider = FutureProvider.autoDispose.family<List<Appointment>, String>((ref, tab) {
-  // Booking changes from the clinic (confirm, reschedule, cancel) arrive as notifications.
+  // Booking changes from the clinic (confirm, reschedule, cancel, check-in) arrive as notifications.
   final sub = ref.watch(realtimeServiceProvider).events.where((e) => e.name == RealtimeEvents.notification).listen((e) {
-    if ((e.data['type'] as String? ?? '').startsWith('booking')) ref.invalidateSelf();
+    if (isBookingNotification(e.data['type'])) ref.invalidateSelf();
   });
   ref.onDispose(sub.cancel);
   return ref.watch(appointmentsRepositoryProvider).myAppointments(tab);
 });
 
-final myAppointmentProvider = FutureProvider.autoDispose.family<Appointment, String>(
-  (ref, id) => ref.watch(appointmentsRepositoryProvider).myAppointment(id),
-);
+/// P17. In queue mode on the day it follows the branch's queue live (BR-AP15, [S]): every `queueChanged`
+/// ("now serving" moved, someone was called in) reloads the number, the patients ahead and the wait.
+final myAppointmentProvider = FutureProvider.autoDispose.family<Appointment, String>((ref, id) async {
+  final realtime = ref.watch(realtimeServiceProvider);
+  final appointment = await ref.watch(appointmentsRepositoryProvider).myAppointment(id);
+  final live = appointment.isQueue && (appointment.awaitsCheckIn || appointment.status == AppointmentStatus.checkedIn ||
+      appointment.status == AppointmentStatus.withDoctor);
+  if (live) unawaited(realtime.joinQueue(appointment.branch.id));
+  final sub = realtime.events.listen((e) {
+    final queueMoved = live && e.name == RealtimeEvents.queueChanged && e.data['branchId'] == appointment.branch.id;
+    final bookingChanged = e.name == RealtimeEvents.notification && isBookingNotification(e.data['type']);
+    if (queueMoved || bookingChanged) ref.invalidateSelf();
+  });
+  ref.onDispose(sub.cancel);
+  return appointment;
+});
 
 final bookingOptionsProvider = FutureProvider.autoDispose.family<BookingOptions, String>(
   (ref, doctorId) => ref.watch(appointmentsRepositoryProvider).bookingOptions(doctorId),

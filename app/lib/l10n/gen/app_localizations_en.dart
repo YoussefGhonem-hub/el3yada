@@ -9244,4 +9244,137 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catalogReportErrorText => 'Write what\'s missing or wrong.';
+
+  @override
+  String get queueByArrival => 'Turns go in order of arrival at the clinic';
+
+  @override
+  String get queueCheckInOnArrival => 'Check in at reception when you arrive';
+
+  @override
+  String get queueByArrivalCheckIn =>
+      'Turns go in order of arrival: check in at reception when you arrive';
+
+  @override
+  String get queueYourNumber => 'Your number';
+
+  @override
+  String queuePatientsAhead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count patients ahead of you',
+      one: '1 patient ahead of you',
+      zero: 'You\'re next',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String queueWaitAbout(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'Estimated wait about $minutes minutes',
+      one: 'Estimated wait about 1 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueWithDoctorNow => 'You\'re with the doctor now';
+
+  @override
+  String periodMorningFrom(String time) {
+    return 'Morning period from $time';
+  }
+
+  @override
+  String periodEveningFrom(String time) {
+    return 'Evening period from $time';
+  }
+
+  @override
+  String get homeNextAppointment => 'Next appointment';
+
+  @override
+  String get homeNoUpcomingAppointment => 'No upcoming appointment';
+
+  @override
+  String get boardBooked => 'Booked';
+
+  @override
+  String get boardNextPatient => 'Next patient';
+
+  @override
+  String get boardNoOneWaiting => 'No one is waiting';
+
+  @override
+  String get boardStartSession => 'Start session';
+
+  @override
+  String get boardFinish => 'Finish';
+
+  @override
+  String get boardDragHint => 'Drag to the next or previous column';
+
+  @override
+  String boardPendingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count waiting for confirmation',
+      one: '1 waiting for confirmation',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boardNoSessionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count checked in, no session',
+      one: '1 checked in, no session',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boardAwaitingDoctorCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sessions waiting for you',
+      one: '1 session waiting for you',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boardUnreadChatsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread chats',
+      one: '1 unread chat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get boardNoSessionTitle => 'Checked in, no session';
+
+  @override
+  String get boardNoSessionBody =>
+      'Record the session, or mark the patient as left without being seen.';
+
+  @override
+  String get waitingRoomScreen => 'Waiting-room screen';
+
+  @override
+  String get waitingRoomNext => 'Next';
+
+  @override
+  String get waitingRoomExit => 'Exit full screen';
 }

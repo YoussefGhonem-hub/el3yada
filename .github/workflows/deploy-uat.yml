@@ -32,8 +32,9 @@ env:
   DOTNET_NOLOGO: "true"
   DOTNET_CLI_TELEMETRY_OPTOUT: "true"
   # The server does not need the .NET 10 runtime installed: the publish carries its own.
-  # If the site shows HTTP 500.32, set the site4now app pool to 64-bit, or change this to win-x86.
-  RUNTIME_ID: win-x64
+  # The site4now app pool is 32-bit: a win-x64 build fails there with HTTP 500.32.
+  # If the pool is switched to 64-bit in the control panel, this can go back to win-x64.
+  RUNTIME_ID: win-x86
   SITE_NAME: amrsherif-002-site5
   DEPLOY_URL: https://win6054.site4now.net:8172/msdeploy.axd?site=amrsherif-002-site5
   DEPLOY_USER: amrsherif-002

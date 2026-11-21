@@ -2652,5 +2652,11 @@
   "waitingRoomNext": "التالي",
   "waitingRoomExit": "الخروج من ملء الشاشة",
   "catalogSetupSpace": "محتاج {size} مساحة فاضية",
-  "adminLicenseOpenOtherApp": "افتحه في برنامج تاني"
+  "adminLicenseOpenOtherApp": "افتحه في برنامج تاني",
+  "trayOpen": "افتح {app}",
+  "trayStartWithWindows": "يشتغل مع بداية ويندوز",
+  "trayQuit": "خروج",
+  "trayTooltipUnread": "{app} · {count, plural, =1{إشعار واحد جديد} =2{إشعاران جديدان} few{{count} إشعارات جديدة} other{{count} إشعار جديد}}",
+  "trayStillRunningTitle": "{app} لسه شغال",
+  "trayStillRunningBody": "الرسايل والحجوزات الجديدة هتفضل توصلك هنا. عشان تقفله خالص، اختار «خروج» من أيقونته جنب الساعة."
 }

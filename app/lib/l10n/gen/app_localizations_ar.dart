@@ -9425,4 +9425,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminLicenseOpenOtherApp => 'افتحه في برنامج تاني';
+
+  @override
+  String trayOpen(String app) {
+    return 'افتح $app';
+  }
+
+  @override
+  String get trayStartWithWindows => 'يشتغل مع بداية ويندوز';
+
+  @override
+  String get trayQuit => 'خروج';
+
+  @override
+  String trayTooltipUnread(String app, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count إشعار جديد',
+      few: '$count إشعارات جديدة',
+      two: 'إشعاران جديدان',
+      one: 'إشعار واحد جديد',
+    );
+    return '$app · $_temp0';
+  }
+
+  @override
+  String trayStillRunningTitle(String app) {
+    return '$app لسه شغال';
+  }
+
+  @override
+  String get trayStillRunningBody =>
+      'الرسايل والحجوزات الجديدة هتفضل توصلك هنا. عشان تقفله خالص، اختار «خروج» من أيقونته جنب الساعة.';
 }

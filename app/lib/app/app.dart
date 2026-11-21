@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/notifications/local_notifier.dart';
 import '../core/platform/app_platform.dart';
+import '../core/platform/desktop_tray.dart';
 import '../core/settings/app_settings.dart';
 import '../core/theme/app_theme.dart';
 import '../features/catalog/presentation/catalog_setup_host.dart';
+import '../features/notifications/desktop_tray_setup.dart';
 import '../features/notifications/notifications.dart';
 import '../l10n/app_localization_delegates.dart';
 import '../l10n/gen/app_localizations.dart';
@@ -22,8 +24,10 @@ class _El3yadaAppState extends ConsumerState<El3yadaApp> {
   @override
   void initState() {
     super.initState();
-    // Toasts (Windows) and foreground banners; tapping one opens its screen.
+    // Toasts (Windows) and foreground banners; tapping one brings the window
+    // back from the tray and opens its screen.
     ref.read(localNotifierProvider).init(onTap: (route) {
+      ref.read(desktopTrayProvider).showWindow();
       if (route != null) ref.read(routerProvider).push(route);
     });
   }
@@ -36,6 +40,8 @@ class _El3yadaAppState extends ConsumerState<El3yadaApp> {
     final desktop = ref.watch(appPlatformProvider).isDesktop;
     // Device registration, and live notifications turned into toasts (Phase 5).
     ref.watch(notificationSetupProvider);
+    // Windows: the system tray, so closing the window keeps the toasts coming.
+    ref.watch(desktopTraySetupProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,

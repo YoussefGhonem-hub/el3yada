@@ -9385,4 +9385,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminLicenseOpenOtherApp => 'Open in another app';
+
+  @override
+  String trayOpen(String app) {
+    return 'Open $app';
+  }
+
+  @override
+  String get trayStartWithWindows => 'Start with Windows';
+
+  @override
+  String get trayQuit => 'Quit';
+
+  @override
+  String trayTooltipUnread(String app, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread',
+      one: '1 unread',
+    );
+    return '$app · $_temp0';
+  }
+
+  @override
+  String trayStillRunningTitle(String app) {
+    return '$app is still running';
+  }
+
+  @override
+  String get trayStillRunningBody =>
+      'New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock.';
 }

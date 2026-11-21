@@ -16029,6 +16029,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open in another app'**
   String get adminLicenseOpenOtherApp;
+
+  /// No description provided for @trayOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {app}'**
+  String trayOpen(String app);
+
+  /// No description provided for @trayStartWithWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with Windows'**
+  String get trayStartWithWindows;
+
+  /// No description provided for @trayQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get trayQuit;
+
+  /// No description provided for @trayTooltipUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} · {count, plural, =1{1 unread} other{{count} unread}}'**
+  String trayTooltipUnread(String app, int count);
+
+  /// No description provided for @trayStillRunningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} is still running'**
+  String trayStillRunningTitle(String app);
+
+  /// No description provided for @trayStillRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock.'**
+  String get trayStillRunningBody;
 }
 
 class _AppLocalizationsDelegate

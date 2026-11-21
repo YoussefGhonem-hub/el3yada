@@ -5479,5 +5479,35 @@
       }
     }
   },
-  "adminLicenseOpenOtherApp": "Open in another app"
+  "adminLicenseOpenOtherApp": "Open in another app",
+  "trayOpen": "Open {app}",
+  "@trayOpen": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "trayStartWithWindows": "Start with Windows",
+  "trayQuit": "Quit",
+  "trayTooltipUnread": "{app} · {count, plural, =1{1 unread} other{{count} unread}}",
+  "@trayTooltipUnread": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trayStillRunningTitle": "{app} is still running",
+  "@trayStillRunningTitle": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "trayStillRunningBody": "New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock."
 }

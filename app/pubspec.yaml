@@ -60,6 +60,12 @@ dependencies:
   material_ui: ^1.11.1
   # Cupertino localizations for Material widgets (lib/l10n/app_localization_delegates.dart).
   cupertino_ui: ^1.0.2
+  # Windows system tray (spec 10.2 [S]): the tray icon, hiding the window on
+  # close, and "Start with Windows" (nativeapi's LaunchAtLogin). All three
+  # share the nativeapi core, built from source by a build hook.
+  tray_manager: ^0.9.0
+  window_manager: ^0.7.0
+  nativeapi: ^0.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -81,6 +87,8 @@ flutter:
   # assets/lottie/SOURCES.txt.
   assets:
     - assets/lottie/
+    # The Windows tray icon, plain and with the unread dot.
+    - assets/tray/
     # Arabic text in prescription PDFs (spec 6.4.1); the app's own text uses Alexandria.
     - assets/fonts/NotoSansArabic-Regular.ttf
     - assets/fonts/NotoSansArabic-Bold.ttf

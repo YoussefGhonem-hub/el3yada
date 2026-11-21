@@ -102,7 +102,7 @@ public sealed class AccountDeletionJob(
             {
                 await storage.DeleteAsync(file, cancellationToken);
             }
-            catch (IOException error)
+            catch (Exception error) when (error is not OperationCanceledException)
             {
                 // The rows no longer point at the file; a leftover is harmless and is logged for cleanup.
                 logger.LogWarning(error, "Could not delete a file of erased account {UserId}", request.UserId);

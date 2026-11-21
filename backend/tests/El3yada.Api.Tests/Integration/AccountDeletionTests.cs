@@ -7,6 +7,10 @@ using El3yada.Api.Common;
 using El3yada.Api.Features.AccountDeletion;
 using El3yada.Data;
 using El3yada.Data.Entities;
+using El3yada.Api.Infrastructure.Realtime;
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -690,7 +694,52 @@ public sealed class AccountDeletionTests(IntegrationHost host)
         }
     }
 
+    [Fact]
+    public async Task No_live_board_over_the_hub_once_the_account_or_its_doctor_is_pending_deletion()
+    {
+        var doctor = await TestData.CreateDoctorAsync(Factory);
+        var branchId = await TestData.DefaultBranchAsync(Factory, doctor.Id);
+        var assistant = await TestData.CreateAssistantAsync(Factory, doctor.Id, permissions: [ClinicPermissions.AppointmentsView]);
+        await using var assistantHub = await ConnectHubAsync((await Factory.LoginAsync(assistant.Identifier, assistant.Password)).Str("accessToken"));
+        await assistantHub.InvokeAsync("JoinBoard", branchId);
+
+        var (status, _) = await (await Factory.SignedInClientAsync(doctor)).PostAsync("/api/me/requestAccountDeletion", new { currentPassword = doctor.Password });
+        Assert.Equal(HttpStatusCode.OK, status);
+
+        // Hub calls skip the MVC filters and the open connection keeps its old token; the hub reads the account again.
+        var blocked = await Assert.ThrowsAsync<HubException>(() => assistantHub.InvokeAsync("JoinBoard", branchId));
+        Assert.Contains(ErrorCodes.ClinicNotActive, blocked.Message);
+
+        // The doctor's restore-only session may connect (its own notifications) but watches no board.
+        await using var doctorHub = await ConnectHubAsync((await Factory.LoginAsync(doctor.Identifier, doctor.Password)).Str("accessToken"));
+        var pending = await Assert.ThrowsAsync<HubException>(() => doctorHub.InvokeAsync("JoinBoard", branchId));
+        Assert.Contains(ErrorCodes.AccountPendingDeletion, pending.Message);
+    }
+
     // ---- Helpers --------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// A WebSocket connection, as the app opens: the token is checked once, when it connects (long polling would
+    /// check it again on every request).
+    /// </summary>
+    private async Task<HubConnection> ConnectHubAsync(string accessToken)
+    {
+        var connection = new HubConnectionBuilder()
+            .WithUrl(new Uri(Factory.Server.BaseAddress, AppHub.Path), options =>
+            {
+                options.Transports = HttpTransportType.WebSockets;
+                options.SkipNegotiation = true;
+                options.WebSocketFactory = async (context, cancellationToken) =>
+                {
+                    var client = Factory.Server.CreateWebSocketClient();
+                    client.ConfigureRequest = request => request.Headers.Authorization = $"Bearer {accessToken}";
+                    return await client.ConnectAsync(context.Uri, cancellationToken);
+                };
+            })
+            .Build();
+        await connection.StartAsync();
+        return connection;
+    }
 
     private async Task<Guid> AddBookingAsync(Guid doctorId, Guid patientId, DateOnly day)
     {

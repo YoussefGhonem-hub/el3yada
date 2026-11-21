@@ -4976,24 +4976,6 @@ abstract class AppLocalizations {
   /// **'{name} (guest)'**
   String branchBookingGuest(String name);
 
-  /// No description provided for @branchLaterTabs.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming later'**
-  String get branchLaterTabs;
-
-  /// No description provided for @branchLaterTabsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Booking settings and special dates'**
-  String get branchLaterTabsTitle;
-
-  /// No description provided for @branchLaterTabsBody.
-  ///
-  /// In en, this message translates to:
-  /// **'They arrive with appointments.'**
-  String get branchLaterTabsBody;
-
   /// No description provided for @branchAddedMessage.
   ///
   /// In en, this message translates to:
@@ -15441,6 +15423,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No-shows'**
   String get patientColumnNoShows;
+
+  /// No description provided for @scheduleSpecialHoursTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Special hours'**
+  String get scheduleSpecialHoursTitle;
+
+  /// No description provided for @scheduleSpecialHoursBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours for one date replace that weekday\'s hours. A date with no hours is closed.'**
+  String get scheduleSpecialHoursBody;
+
+  /// No description provided for @scheduleAddSpecialDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a date'**
+  String get scheduleAddSpecialDay;
+
+  /// No description provided for @scheduleNoSpecialDays.
+  ///
+  /// In en, this message translates to:
+  /// **'No special dates coming up.'**
+  String get scheduleNoSpecialDays;
+
+  /// No description provided for @scheduleDayClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed all day'**
+  String get scheduleDayClosed;
+
+  /// No description provided for @scheduleDayClosedToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed that day'**
+  String get scheduleDayClosedToggle;
+
+  /// No description provided for @scheduleDayHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours that day'**
+  String get scheduleDayHours;
+
+  /// No description provided for @scheduleClosuresBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Close a day, a few days or part of a day, for this branch or for every branch (a vacation).'**
+  String get scheduleClosuresBody;
+
+  /// No description provided for @scheduleNoClosures.
+  ///
+  /// In en, this message translates to:
+  /// **'No closures coming up.'**
+  String get scheduleNoClosures;
+
+  /// No description provided for @scheduleClosureWholeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole days'**
+  String get scheduleClosureWholeDays;
+
+  /// No description provided for @scheduleClosurePartDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Part of a day'**
+  String get scheduleClosurePartDay;
+
+  /// No description provided for @schedulePickDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the days'**
+  String get schedulePickDates;
+
+  /// No description provided for @schedulePickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the day'**
+  String get schedulePickDate;
+
+  /// No description provided for @scheduleClosureEndBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'It ends before it starts.'**
+  String get scheduleClosureEndBeforeStart;
+
+  /// No description provided for @scheduleClosureReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get scheduleClosureReason;
+
+  /// No description provided for @scheduleClosureReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: vacation, a conference'**
+  String get scheduleClosureReasonHint;
+
+  /// No description provided for @scheduleNothingSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was saved.'**
+  String get scheduleNothingSaved;
+
+  /// No description provided for @scheduleMoveFull.
+  ///
+  /// In en, this message translates to:
+  /// **'That place is full. Choose another one for the booking.'**
+  String get scheduleMoveFull;
+
+  /// No description provided for @scheduleMovedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 booking moved} other{{count} bookings moved}}'**
+  String scheduleMovedCount(int count);
+
+  /// No description provided for @scheduleCancelledCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 booking cancelled} other{{count} bookings cancelled}}'**
+  String scheduleCancelledCount(int count);
+
+  /// No description provided for @conflictsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'These bookings don\'t fit the new schedule. Choose what happens to each one. Nothing is saved until you apply.'**
+  String get conflictsBody;
+
+  /// No description provided for @conflictsForAll.
+  ///
+  /// In en, this message translates to:
+  /// **'For all'**
+  String get conflictsForAll;
+
+  /// No description provided for @moveAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Move all'**
+  String get moveAll;
+
+  /// No description provided for @conflictMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get conflictMove;
+
+  /// No description provided for @conflictMoveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Moves to {place}'**
+  String conflictMoveTo(String place);
+
+  /// No description provided for @conflictChangePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get conflictChangePlace;
+
+  /// No description provided for @conflictPickPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a place'**
+  String get conflictPickPlace;
+
+  /// No description provided for @conflictPickNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Free places from the schedule as it is saved now. The new hours are checked when you apply.'**
+  String get conflictPickNote;
+
+  /// No description provided for @conflictKeepNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays at its time, as an exception'**
+  String get conflictKeepNote;
+
+  /// No description provided for @conflictKeepNoPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'No free place in the next two weeks. Keep it, cancel it, or choose a place.'**
+  String get conflictKeepNoPlace;
+
+  /// No description provided for @conflictCancelNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient is told, with a link to book again'**
+  String get conflictCancelNote;
+
+  /// No description provided for @bookingModeQueueBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients book a place in a period. Turns go by arrival at the clinic.'**
+  String get bookingModeQueueBody;
+
+  /// No description provided for @bookingModeTimedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each patient books an exact time.'**
+  String get bookingModeTimedBody;
+
+  /// No description provided for @bookingModeChangeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the mode affects every upcoming booking here. When you save, you choose what happens to each one.'**
+  String get bookingModeChangeNote;
+
+  /// No description provided for @bookingCapacityBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each period can set its own number in Working hours.'**
+  String get bookingCapacityBody;
+
+  /// No description provided for @bookingAvgVisitBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Used for the waiting time patients see after check-in.'**
+  String get bookingAvgVisitBody;
+
+  /// No description provided for @bookingExamSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Slots for an examination'**
+  String get bookingExamSlots;
+
+  /// No description provided for @bookingConsultationSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Slots for a consultation'**
+  String get bookingConsultationSlots;
+
+  /// No description provided for @bookingGroupApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking from the app'**
+  String get bookingGroupApp;
+
+  /// No description provided for @bookingAutoConfirmOffBody.
+  ///
+  /// In en, this message translates to:
+  /// **'App bookings wait for the clinic to confirm them.'**
+  String get bookingAutoConfirmOffBody;
+
+  /// No description provided for @bookingGroupNoShows.
+  ///
+  /// In en, this message translates to:
+  /// **'No-shows and reminders'**
+  String get bookingGroupNoShows;
+
+  /// No description provided for @bookingNoShowCount.
+  ///
+  /// In en, this message translates to:
+  /// **'No-shows that stop app booking'**
+  String get bookingNoShowCount;
+
+  /// No description provided for @bookingNoShowDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted over'**
+  String get bookingNoShowDays;
+
+  /// No description provided for @bookingNoShowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} no-shows in {days} days turn off app booking for that patient'**
+  String bookingNoShowBody(int count, int days);
+
+  /// No description provided for @bookingReminderDayBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder a day before'**
+  String get bookingReminderDayBefore;
+
+  /// No description provided for @bookingReminderSameDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder 2 hours before, on the day'**
+  String get bookingReminderSameDay;
+
+  /// No description provided for @bookingGroupClinic.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic bookings'**
+  String get bookingGroupClinic;
+
+  /// No description provided for @bookingNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get bookingNone;
+
+  /// No description provided for @bookingMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String bookingMinutes(int count);
+
+  /// No description provided for @bookingHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour} other{{count} hours}}'**
+  String bookingHours(int count);
+
+  /// No description provided for @bookingDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String bookingDays(int count);
+
+  /// No description provided for @branchDoctorOnlyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the doctor can change this.'**
+  String get branchDoctorOnlyNote;
+
+  /// No description provided for @activityBranchScheduleUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the schedule of {branch}'**
+  String activityBranchScheduleUpdated(String branch);
+
+  /// No description provided for @activityActionBranchScheduleUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule changed'**
+  String get activityActionBranchScheduleUpdated;
+
+  /// No description provided for @branchNoWorkBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'No branch yet'**
+  String get branchNoWorkBranch;
+
+  /// No description provided for @branchNoWorkBranchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not assigned to a branch. Ask the doctor to add you to one.'**
+  String get branchNoWorkBranchBody;
+
+  /// No description provided for @conflictsDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to editing'**
+  String get conflictsDismiss;
 }
 
 class _AppLocalizationsDelegate

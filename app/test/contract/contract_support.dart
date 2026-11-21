@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:el3yada/core/network/api_client.dart' show ApiPathPrefix;
 import 'package:el3yada/core/network/api_exception.dart';
+import 'package:el3yada/features/appointments/data/appointments_repository.dart';
 import 'package:el3yada/features/admin/data/admin_repository.dart';
 import 'package:el3yada/features/auth/data/auth_repository.dart';
 import 'package:el3yada/features/auth/domain/auth_session.dart';
@@ -41,7 +43,7 @@ Map<String, dynamic> contractDevice(String who, String run) => {
 
 Dio contractClient(String? baseUrl) => Dio(
   BaseOptions(baseUrl: '$baseUrl/api', headers: {'Accept': 'application/json'}),
-);
+)..interceptors.add(const ApiPathPrefix());
 
 /// One signed-in person: their own client, token and repositories.
 class ContractAccount {
@@ -66,6 +68,7 @@ class ContractAccount {
   late final admin = ApiAdminRepository(dio);
   late final clinic = ApiClinicRepository(dio);
   late final clinicAdmin = ApiClinicAdminRepository(dio);
+  late final appointments = ApiAppointmentsRepository(dio);
   late final patients = ApiPatientsRepository(dio);
   late final sessions = ApiSessionsRepository(dio);
   late final registration = ApiRegistrationRepository(dio, plain);

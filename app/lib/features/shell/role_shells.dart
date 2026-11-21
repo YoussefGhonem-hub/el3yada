@@ -121,7 +121,6 @@ class RoleShell {
       NavDestinationSpec(path: '/doctor/appointments', icon: Icons.event_note_outlined, selectedIcon: Icons.event_note, label: (l) => l.navAppointments, screenId: 'D30'),
       NavDestinationSpec(path: '/doctor/revenue', icon: Icons.trending_up, selectedIcon: Icons.trending_up, label: (l) => l.navRevenue, screenId: 'D35'),
       NavDestinationSpec(path: '/doctor/billing', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navBilling, screenId: 'D18'),
-      NavDestinationSpec(path: '/doctor/schedule', icon: Icons.schedule_outlined, selectedIcon: Icons.schedule, label: (l) => l.navSchedule, screenId: 'D29'),
       NavDestinationSpec(path: '/doctor/branches', icon: Icons.store_mall_directory_outlined, selectedIcon: Icons.store_mall_directory, label: (l) => l.navBranches, screenId: 'D28'),
       NavDestinationSpec(path: '/doctor/assistants', icon: Icons.badge_outlined, selectedIcon: Icons.badge, label: (l) => l.navAssistants, screenId: 'D25'),
       NavDestinationSpec(path: '/doctor/activity', icon: Icons.manage_history_outlined, selectedIcon: Icons.manage_history, label: (l) => l.navActivityLog, screenId: 'D27'),

@@ -190,20 +190,6 @@ void main() {
     expect(find.text('زائر جديد تماماً'), findsOneWidget);
   });
 
-  testWidgets('schedule editor saves after copying Saturday to every day', (
-    tester,
-  ) async {
-    await signInDoctorDesktop(tester);
-    await tester.tap(find.text('Schedule'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Copy Saturday to all days'));
-    await tester.pumpAndSettle();
-    expect(find.text('Closed'), findsNothing);
-    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
-    await tester.pumpAndSettle();
-    expect(find.text('Schedule saved'), findsOneWidget);
-  });
-
   test(
     'the board goes offline when refreshing fails, and keeps the last data (BR-LB5)',
     () async {

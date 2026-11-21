@@ -35,6 +35,7 @@ extension ActivityText on AppLocalizations {
       'branchCreated' => activityBranchCreated(branch()),
       'branchUpdated' => activityBranchUpdated(branch()),
       'branchHoursUpdated' => activityBranchHoursUpdated(branch()),
+      'branchScheduleUpdated' => activityBranchScheduleUpdated(branch()),
       'branchStatusChanged' => activityBranchStatusChanged(branch(), status(d['before']), status(d['after'])),
       'defaultBranchChanged' => activityDefaultBranchChanged(branch()),
       'pricesUpdated' => d['branchId'] == null ? activityDoctorPricesUpdated : activityBranchPricesUpdated(branch(d['branchId'])),
@@ -92,6 +93,7 @@ extension ActivityText on AppLocalizations {
         'branchCreated' => activityActionBranchCreated,
         'branchUpdated' => activityActionBranchUpdated,
         'branchHoursUpdated' => activityActionBranchHoursUpdated,
+        'branchScheduleUpdated' => activityActionBranchScheduleUpdated,
         'branchStatusChanged' => activityActionBranchStatusChanged,
         'defaultBranchChanged' => activityActionDefaultBranchChanged,
         'pricesUpdated' => activityActionPricesUpdated,
@@ -164,6 +166,13 @@ extension ActivityText on AppLocalizations {
       case 'branchHoursUpdated':
         final periods = d['periods'];
         return periods is int ? activityPeriods(periods) : null;
+      case 'branchScheduleUpdated':
+        final periods = d['periods'];
+        return [
+          if (periods is int) activityPeriods(periods),
+          if (d['moved'] case final int moved when moved > 0) scheduleMovedCount(moved),
+          if (d['cancelled'] case final int cancelled when cancelled > 0) scheduleCancelledCount(cancelled),
+        ].join(adminListSeparator);
       case 'sessionAmountChanged':
         final before = d['before'];
         final after = d['after'];
@@ -218,7 +227,7 @@ String humanizeAction(String action) =>
 IconData activityIcon(String action) => switch (action) {
       'branchCreated' => Icons.add_business_outlined,
       'branchUpdated' || 'defaultBranchChanged' => Icons.store_mall_directory_outlined,
-      'branchHoursUpdated' => Icons.schedule_outlined,
+      'branchHoursUpdated' || 'branchScheduleUpdated' => Icons.schedule_outlined,
       'branchStatusChanged' => Icons.toggle_on_outlined,
       'pricesUpdated' => Icons.sell_outlined,
       'doctorProfileUpdated' || 'doctorSpecialtyChanged' => Icons.badge_outlined,

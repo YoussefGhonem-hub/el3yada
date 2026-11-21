@@ -20,6 +20,8 @@ import '../domain/branch_models.dart';
 import '../domain/price_models.dart';
 import '../domain/weekly_hours.dart';
 import 'clinic_admin_repository.dart';
+import '../../appointments/data/appointments_repository.dart' show OfflineBranchHours;
+import '../../appointments/domain/appointment_models.dart' show WeeklyPeriod;
 
 /// The offline clinic for `config/dev-offline.json` and tests. It answers
 /// like the API (backend/docs/api-phase-2-clinic.md), with the same
@@ -32,7 +34,7 @@ import 'clinic_admin_repository.dart';
 /// offline accounts: `+201000000001` reception in Maadi, `+201000000005`
 /// office manager in every branch, and a disabled custom assistant.
 /// Every write adds an activity row (D27).
-class FakeClinicAdminRepository implements ClinicAdminRepository {
+class FakeClinicAdminRepository implements ClinicAdminRepository, OfflineBranchHours {
   FakeClinicAdminRepository({this.currentSession, this.delay = const Duration(milliseconds: 300), DateTime? now})
       : _seededAt = (now ?? DateTime.now()).toUtc() {
     _seed();
@@ -62,9 +64,6 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
 
   /// The temporary password the last create or reset returned (for tests).
   String? lastTemporaryPassword;
-
-  /// The last periods sent to [updateBranchHours] (for tests).
-  List<BranchPeriod>? lastHours;
 
   int branchLimit = 5;
   int assistantLimit = 5;
@@ -376,34 +375,47 @@ class FakeClinicAdminRepository implements ClinicAdminRepository {
     return _details(branch);
   }
 
+  // ---------------------------------------------------------------------------
+  // The week, for the offline schedule (FakeAppointmentsRepository): working
+  // hours change only through `updateBranchSchedule`, which checks bookings
+  // first (BR-AP12). D28's cards and D29 read the week from here.
+
   @override
-  Future<BranchDetails> updateBranchHours(String branchId, List<BranchPeriod> periods) async {
-    await _enter('updateBranchHours', permission: ClinicPermission.scheduleManage);
-    lastHours = periods;
-    final problems = WeeklyHours.check(periods);
-    if (problems.isNotEmpty) {
-      throw _fields({
-        for (final p in problems)
-          p.index < 0 ? 'periods' : (p.field.isEmpty ? 'periods[${p.index}]' : 'periods[${p.index}].${p.field}'): p.code,
-      });
-    }
-    if (!_callerCanUse(branchId)) throw _error(403, ApiCodes.branchNotAllowed);
+  List<WeeklyPeriod>? weeklyOf(String branchId) {
+    final branch = _branches.where((b) => b.id == branchId).firstOrNull;
+    if (branch == null) return null;
+    return [
+      for (final p in [for (final day in WeeklyHours.weekOrder) ...WeeklyHours.ofDay(branch.periods, day)])
+        WeeklyPeriod(weekday: p.weekday, start: p.startLocal, end: p.endLocal, endsNextDay: p.endsNextDay, label: p.label, capacity: p.capacity),
+    ];
+  }
+
+  @override
+  void saveWeekly(String branchId, List<WeeklyPeriod> weekly) {
     final branch = _branch(branchId);
     branch
       ..periods = [
-        for (final p in periods)
+        for (final p in weekly)
           BranchPeriod(
             weekday: p.weekday,
-            startLocal: WeeklyHours.format(WeeklyHours.parse(p.startLocal)!),
-            endLocal: WeeklyHours.format(WeeklyHours.parse(p.endLocal)!),
+            startLocal: WeeklyHours.format(WeeklyHours.parse(p.start)!),
+            endLocal: WeeklyHours.format(WeeklyHours.parse(p.end)!),
             endsNextDay: p.endsNextDay,
             label: _trim(p.label),
             capacity: p.capacity,
           ),
       ]
       ..updatedAt = _now;
-    _log('branchHoursUpdated', 'branch', branchId, details: {'periods': periods.length});
-    return _details(branch);
+    _log('branchScheduleUpdated', 'branch', branchId, details: {'periods': weekly.length});
+  }
+
+  /// What `updateBranchSchedule` refuses for the signed-in caller: an
+  /// assistant without `scheduleManage`, or not in this branch.
+  @override
+  ApiException? scheduleRefusal(String branchId) {
+    if (!_callerPermissions.contains(ClinicPermission.scheduleManage)) return _error(403, ApiCodes.permissionDenied);
+    if (!_callerCanUse(branchId)) return _error(403, ApiCodes.permissionDenied);
+    return null;
   }
 
   @override

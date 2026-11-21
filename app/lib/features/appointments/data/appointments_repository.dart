@@ -4,6 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/env.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_error.dart';
+import '../../../core/network/api_exception.dart';
+import '../../clinic_admin/data/clinic_admin_repository.dart';
+import '../../clinic_admin/domain/branch_models.dart' show BranchPeriod;
+import '../../clinic_admin/domain/weekly_hours.dart';
 import '../../patient/domain/patient_models.dart';
 import '../domain/appointment_models.dart';
 
@@ -110,10 +114,26 @@ abstract interface class AppointmentsRepository {
   Future<Appointment> walkIn({required String branchId, String? patientId, String? guestName, String? guestPhone, required String visitType});
   Future<int> cancelRestOfDay(String branchId, {String? reason});
   Future<int> sendDelay(String branchId, int minutes);
+  /// D29's schedule tabs (`GET /api/staff/branches/{id}/schedule`). Throws [ApiException], like the
+  /// other D29 tabs.
   Future<BranchScheduleData> schedule(String branchId);
 
-  /// Returns the affected bookings. With [dryRun] nothing changes.
-  Future<({bool applied, List<ScheduleConflict> conflicts})> saveSchedule(BranchScheduleData data, {required bool dryRun, Map<String, String> decisions});
+  /// `updateBranchSchedule` (backend/docs/api-phase-6-schedule.md): the whole schedule. Returns the
+  /// affected bookings (BR-AP12); with [dryRun] nothing changes. Without a decision for each
+  /// affected booking nothing is applied (`applied` false, the bookings left). Throws
+  /// [ApiException], with field codes such as `weekly[2].end`.
+  Future<({bool applied, List<ScheduleConflict> conflicts})> saveSchedule(BranchScheduleData data,
+      {required bool dryRun, Map<String, ConflictDecision> decisions});
+}
+
+/// The offline clinic's branches, which keep the weekly hours D28 and D29's other tabs show. The
+/// fake schedule reads and writes the week there, so both agree like the API's one table.
+abstract interface class OfflineBranchHours {
+  List<WeeklyPeriod>? weeklyOf(String branchId);
+  void saveWeekly(String branchId, List<WeeklyPeriod> weekly);
+
+  /// What the API refuses for the signed-in caller (no `scheduleManage`, another branch), or null.
+  ApiException? scheduleRefusal(String branchId);
 }
 
 class ApiAppointmentsRepository implements AppointmentsRepository {
@@ -212,33 +232,37 @@ class ApiAppointmentsRepository implements AppointmentsRepository {
       _wrap(() async => (await _post('/api/staff/board/delay', {'branchId': branchId, 'minutes': minutes}))['notified'] as int);
 
   @override
-  Future<BranchScheduleData> schedule(String branchId) =>
-      _wrap(() async => BranchScheduleData.fromJson(await _get('/api/staff/branches/$branchId/schedule')));
+  Future<BranchScheduleData> schedule(String branchId) async {
+    try {
+      return BranchScheduleData.fromJson(await _get('/api/staff/branches/$branchId/schedule'));
+    } on DioException catch (error) {
+      throw ApiException.fromDio(error);
+    }
+  }
 
   @override
   Future<({bool applied, List<ScheduleConflict> conflicts})> saveSchedule(BranchScheduleData data,
-          {required bool dryRun, Map<String, String> decisions = const {}}) =>
-      _wrap(() async {
-        try {
-          final r = (await _dio.put<Json>('/api/staff/branches/${data.branchId}/schedule', data: {
-            'weekly': [for (final p in data.weekly) p.toJson()],
-            'dateOverrides': [for (final o in data.overrides) o.toJson()],
-            'closures': [for (final c in data.closures) c.toJson()],
-            'settings': data.settings.toJson(),
-            'dryRun': dryRun,
-            'decisions': [for (final e in decisions.entries) {'appointmentId': e.key, 'action': e.value}],
-          }))
-              .data!;
-          return (applied: r['applied'] as bool, conflicts: [for (final c in r['conflicts'] as List) ScheduleConflict.fromJson(c as Json)]);
-        } on DioException catch (error) {
-          final data = error.response?.data;
-          if (data is Map && data['code'] == 'SCHEDULE_CONFLICTS') {
-            final list = (data['details'] as Map)['conflicts'] as List;
-            return (applied: false, conflicts: [for (final c in list) ScheduleConflict.fromJson(Map<String, dynamic>.from(c as Map))]);
-          }
-          rethrow;
-        }
-      });
+      {required bool dryRun, Map<String, ConflictDecision> decisions = const {}}) async {
+    try {
+      final r = (await _dio.put<Json>('/api/staff/branches/${data.branchId}/schedule', data: {
+        'weekly': [for (final p in data.weekly) p.toJson()],
+        'dateOverrides': [for (final o in data.overrides) o.toJson()],
+        'closures': [for (final c in data.closures) c.toJson()],
+        'settings': data.settings.toJson(),
+        'dryRun': dryRun,
+        'decisions': [for (final e in decisions.entries) e.value.toJson(e.key)],
+      }))
+          .data!;
+      return (applied: r['applied'] as bool, conflicts: [for (final c in r['conflicts'] as List) ScheduleConflict.fromJson(c as Json)]);
+    } on DioException catch (error) {
+      final body = error.response?.data;
+      if (body is Map && body['code'] == 'SCHEDULE_CONFLICTS') {
+        final list = (body['details'] as Map)['conflicts'] as List;
+        return (applied: false, conflicts: [for (final c in list) ScheduleConflict.fromJson(Map<String, dynamic>.from(c as Map))]);
+      }
+      throw ApiException.fromDio(error);
+    }
+  }
 }
 
 /// A small in-memory clinic for dev builds and widget tests: one doctor, one queue branch with a
@@ -449,24 +473,197 @@ class FakeAppointmentsRepository implements AppointmentsRepository {
   @override
   Future<int> sendDelay(String branchId, int minutes) async => _list.where((a) => a.isUpcoming).length;
 
-  BranchScheduleData _schedule = const BranchScheduleData(branchId: 'br-a1', weekly: [
+  // ---- Schedule (D29, AS17): the rules of the API's ScheduleService ------------------------------
+
+  /// The offline clinic's branches, which hold the weekly hours D28 shows (set by the provider in
+  /// dev builds; null keeps the week here).
+  OfflineBranchHours? hours;
+
+  /// What the last [saveSchedule] sent, applied or not, and its decisions (for tests).
+  BranchScheduleData? lastSchedule;
+  Map<String, ConflictDecision> lastDecisions = const {};
+  Object? _failNextSave;
+
+  /// Makes the next [saveSchedule] throw [error] (for tests).
+  void failNextSave(Object error) => _failNextSave = error;
+
+  /// More bookings, for example in another branch or on another day (for tests).
+  void addBookings(Iterable<Appointment> bookings) => _list.addAll(bookings);
+
+  static const _seedWeekly = [
     WeeklyPeriod(weekday: 6, start: '10:00', end: '14:00', label: 'صباحي'),
     WeeklyPeriod(weekday: 6, start: '17:00', end: '22:00', label: 'مسائي', capacity: 30),
     WeeklyPeriod(weekday: 1, start: '17:00', end: '22:00', label: 'مسائي'),
-  ]);
+  ];
+
+  final _schedules = <String, BranchScheduleData>{};
+
+  BranchScheduleData _scheduleOf(String branchId) {
+    final saved = _schedules[branchId] ?? BranchScheduleData(branchId: branchId, weekly: branchId == _branch.id ? _seedWeekly : const []);
+    final weekly = hours?.weeklyOf(branchId);
+    return weekly == null ? saved : saved.copyWith(weekly: weekly);
+  }
 
   @override
-  Future<BranchScheduleData> schedule(String branchId) async => _schedule;
+  Future<BranchScheduleData> schedule(String branchId) async => _scheduleOf(branchId);
 
   @override
   Future<({bool applied, List<ScheduleConflict> conflicts})> saveSchedule(BranchScheduleData data,
-      {required bool dryRun, Map<String, String> decisions = const {}}) async {
-    if (!dryRun) _schedule = data;
-    return (applied: !dryRun, conflicts: const <ScheduleConflict>[]);
+      {required bool dryRun, Map<String, ConflictDecision> decisions = const {}}) async {
+    lastSchedule = data;
+    lastDecisions = decisions;
+    final failure = _failNextSave ?? hours?.scheduleRefusal(data.branchId);
+    _failNextSave = null;
+    if (failure != null) throw failure;
+    final problems = _scheduleProblems(data);
+    if (problems.isNotEmpty) {
+      throw ApiException(kind: ApiErrorKind.http, status: 400, code: ApiCodes.validationFailed, fieldCodes: problems);
+    }
+    final conflicts = _conflicts(data);
+    if (dryRun) return (applied: false, conflicts: conflicts);
+    final undecided = conflicts.where((c) => !decisions.containsKey(c.appointmentId)).toList();
+    if (undecided.isNotEmpty) return (applied: false, conflicts: undecided);
+
+    final before = [..._list];
+    try {
+      for (final c in conflicts) {
+        final decision = decisions[c.appointmentId]!;
+        if (decision.action == ConflictDecision.cancelAction) {
+          _set(c.appointmentId, (a) => _withStatus(a, AppointmentStatus.cancelled));
+        } else if (decision.action == ConflictDecision.moveAction) {
+          final to = decision.to!;
+          // Like the API's reschedule: the new place must be in the new hours and free (BR-AP2).
+          if (!_fits(data, to.date, to.time)) throw _conflict('OUTSIDE_HOURS');
+          if (!_hasRoom(data, to.date, to.time, ignore: c.appointmentId)) {
+            throw _conflict(data.settings.mode == 'queue' ? 'PERIOD_FULL' : 'SLOT_TAKEN');
+          }
+          _set(c.appointmentId, (a) => _movedTo(a, to.date, to.time));
+        }
+      }
+    } on ApiException {
+      _list = before; // One transaction: nothing changes.
+      rethrow;
+    }
+    _schedules[data.branchId] = data;
+    hours?.saveWeekly(data.branchId, data.weekly);
+    return (applied: true, conflicts: conflicts);
+  }
+
+  static ApiException _conflict(String code) => ApiException(kind: ApiErrorKind.http, status: 409, code: code);
+
+  Appointment _movedTo(Appointment a, DateTime date, String time) => Appointment(
+        id: a.id, doctor: a.doctor, branch: a.branch, patientId: a.patientId, displayName: a.displayName, phone: a.phone, isGuest: a.isGuest,
+        visitType: a.visitType, mode: a.mode, date: date, time: time, startUtc: _at(date, time).toUtc(), queueNumber: a.queueNumber,
+        status: a.status, source: a.source, canChange: a.canChange, branchPhones: a.branchPhones, reason: a.reason,
+        rescheduleCount: a.rescheduleCount + 1,
+      );
+
+  /// The D29 hours rules (the app's WeeklyHours, as the API checks them), on `weekly[i]…`.
+  static Map<String, String> _scheduleProblems(BranchScheduleData data) {
+    final week = [
+      for (final p in data.weekly)
+        BranchPeriod(weekday: p.weekday, startLocal: p.start, endLocal: p.end, endsNextDay: p.endsNextDay, label: p.label, capacity: p.capacity),
+    ];
+    String field(String name) => switch (name) { 'startLocal' => 'start', 'endLocal' => 'end', _ => name };
+    return {
+      for (final problem in WeeklyHours.check(week).reversed)
+        problem.index < 0
+            ? 'weekly'
+            : problem.field.isEmpty
+                ? 'weekly[${problem.index}]'
+                : 'weekly[${problem.index}].${field(problem.field)}': problem.code,
+    };
+  }
+
+  static DateTime _at(DateTime day, String hhmm) =>
+      DateTime(day.year, day.month, day.day, int.parse(hhmm.substring(0, 2)), int.parse(hhmm.substring(3, 5)));
+
+  static String _clock(DateTime t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+
+  static bool _sameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+
+  /// The day's periods under [data]: its special hours, else its weekday's.
+  static List<WeeklyPeriod> _periodsOn(BranchScheduleData data, DateTime day) {
+    final special = data.overrides.where((o) => _sameDay(o.date, day)).firstOrNull;
+    return special?.periods ?? [for (final p in data.weekly) if (p.weekday == day.weekday) p];
+  }
+
+  static bool _closed(BranchScheduleData data, DateTime from, DateTime to) =>
+      data.closures.any((c) => c.from.isBefore(to) && c.to.isAfter(from));
+
+  /// The places of a day under [data]: period starts (queue) or slot starts (timed) no closure covers.
+  static List<String> _places(BranchScheduleData data, DateTime day) {
+    final places = <String>[];
+    final slot = Duration(minutes: data.settings.slotMinutes);
+    for (final p in _periodsOn(data, day)) {
+      final start = _at(day, p.start);
+      final end = _at(day, p.end).add(Duration(days: p.endsNextDay ? 1 : 0));
+      if (data.settings.mode == 'queue') {
+        if (!_closed(data, start, end)) places.add(p.start);
+        continue;
+      }
+      for (var s = start; !s.add(slot).isAfter(end); s = s.add(slot)) {
+        if (!_closed(data, s, s.add(slot))) places.add(_clock(s));
+      }
+    }
+    return places;
+  }
+
+  static bool _fits(BranchScheduleData data, DateTime day, String time) => _places(data, day).contains(time);
+
+  static const _holding = [AppointmentStatus.pending, AppointmentStatus.confirmed, AppointmentStatus.checkedIn, AppointmentStatus.withDoctor];
+
+  Iterable<Appointment> _active(String branchId) => _list.where((a) => a.branch.id == branchId && _holding.contains(a.status));
+
+  int _capacityAt(BranchScheduleData data, DateTime day, String time) => data.settings.mode == 'timed'
+      ? 1
+      : (_periodsOn(data, day).where((p) => p.start == time).firstOrNull?.capacity ?? data.settings.defaultCapacity);
+
+  bool _hasRoom(BranchScheduleData data, DateTime day, String time, {String? ignore}) =>
+      _active(data.branchId).where((a) => a.id != ignore && _sameDay(a.date, day) && a.time == time).length <
+      _capacityAt(data, day, time);
+
+  /// Future pending and confirmed bookings of the branch that no longer have a place, each with the
+  /// nearest free place (the same day first, then up to 14 days, closest to its time).
+  List<ScheduleConflict> _conflicts(BranchScheduleData data) {
+    final now = DateTime.now();
+    int minutes(String hhmm) => int.parse(hhmm.substring(0, 2)) * 60 + int.parse(hhmm.substring(3, 5));
+    final upcoming = _active(data.branchId).where((a) => a.isUpcoming && _at(a.date, a.time).isAfter(now)).toList()
+      ..sort((a, b) => _at(a.date, a.time).compareTo(_at(b.date, b.time)));
+    final moving = {for (final a in upcoming) if (a.mode != data.settings.mode || !_fits(data, a.date, a.time)) a.id};
+    final taken = <(DateTime, String)>[];
+    final affected = <ScheduleConflict>[];
+    for (final a in upcoming.where((a) => moving.contains(a.id))) {
+      MovePlace? suggestion;
+      for (var day = a.date; suggestion == null && !day.isAfter(a.date.add(const Duration(days: 14))); day = day.add(const Duration(days: 1))) {
+        final places = _places(data, day).where((t) => _at(day, t).isAfter(now)).toList()
+          ..sort((x, y) => (minutes(x) - minutes(a.time)).abs().compareTo((minutes(y) - minutes(a.time)).abs()));
+        for (final time in places) {
+          final used = _active(data.branchId).where((b) => !moving.contains(b.id) && _sameDay(b.date, day) && b.time == time).length +
+              taken.where((t) => _sameDay(t.$1, day) && t.$2 == time).length;
+          if (used < _capacityAt(data, day, time)) {
+            suggestion = MovePlace(branchId: data.branchId, date: day, time: time);
+            taken.add((day, time));
+            break;
+          }
+        }
+      }
+      affected.add(ScheduleConflict(
+        appointmentId: a.id, displayName: a.displayName, date: a.date, time: a.time, queueNumber: a.queueNumber,
+        status: a.status, branchId: a.branch.id, visitType: a.visitType, suggestion: suggestion,
+      ));
+    }
+    return affected;
   }
 }
 
 final appointmentsRepositoryProvider = Provider<AppointmentsRepository>((ref) {
-  if (Env.useFakeAuth) return FakeAppointmentsRepository();
+  if (Env.useFakeAuth) {
+    // The offline clinic's branches keep the week, so D28 and D29 show what the schedule saved.
+    final clinic = ref.read(clinicAdminRepositoryProvider);
+    final fake = FakeAppointmentsRepository();
+    if (clinic is OfflineBranchHours) fake.hours = clinic as OfflineBranchHours;
+    return fake;
+  }
   return ApiAppointmentsRepository(ref.watch(dioProvider));
 });

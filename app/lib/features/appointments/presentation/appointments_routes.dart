@@ -1,23 +1,39 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../clinic/application/clinic_providers.dart' as clinic;
+import '../../clinic_admin/clinic_admin_routes.dart';
+import '../../clinic_admin/presentation/branches/assistant_schedule_screen.dart';
+import '../../clinic_admin/presentation/branches/branch_editor_screen.dart';
 import 'live_board_screen.dart';
 import 'patient_appointment_screens.dart';
-import 'schedule_editor_screen.dart';
 import 'staff_appointment_screens.dart';
 
-/// Phase 6 pages: the live board, calendar, booking, search, schedule (staff) and P15–P17 (patient).
+/// Phase 6 pages: the live board, calendar, booking, search and P15–P17 (patient). A branch's
+/// hours, special dates and booking settings are edited in one place, D29's schedule tabs:
+/// AS17 is the assistant's view of it, and `/doctor/schedule` (the old Schedule page) leads there.
 abstract final class AppointmentsRoutes {
   static final Map<String, GoRouterWidgetBuilder> shellPages = {
     '/doctor/live': (context, state) => const LiveBoardScreen(basePath: '/doctor'),
     '/assistant/live': (context, state) => const LiveBoardScreen(basePath: '/assistant'),
     '/doctor/appointments': (context, state) => const AppointmentsCalendarScreen(basePath: '/doctor'),
     '/assistant/appointments': (context, state) => const AppointmentsCalendarScreen(basePath: '/assistant'),
-    '/doctor/schedule': (context, state) => const ScheduleEditorScreen(),
-    '/assistant/schedule': (context, state) => const ScheduleEditorScreen(),
+    // AS17: D29 of the current branch, on a schedule tab (`?tab=dates` …).
+    '/assistant/schedule': (context, state) =>
+        AssistantScheduleScreen(initialTab: BranchEditorScreen.tabNamed(state.uri.queryParameters['tab'])),
     '/patient/appointments': (context, state) => const MyAppointmentsScreen(),
   };
 
   static final List<GoRoute> detailRoutes = [
+    // The doctor's old Schedule page: D29 of the current branch, on the tab asked for (Working hours by default).
+    GoRoute(
+      path: '/doctor/schedule',
+      redirect: (context, state) {
+        final branch = ProviderScope.containerOf(context, listen: false).read(clinic.currentBranchProvider);
+        final tab = BranchEditorScreen.tabNamed(state.uri.queryParameters['tab']) ?? BranchTab.hours;
+        return branch == null ? ClinicAdminRoutes.branches : ClinicAdminRoutes.branch(branch.id, tab: tab.name);
+      },
+    ),
     // Fixed paths before the `:id` ones.
     GoRoute(
       path: '/patient/appointments/book',

@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/network/api_error.dart';
 import '../../../../core/network/api_error_text.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -13,6 +15,12 @@ import '../../../../core/widgets/skeleton_loading.dart';
 import '../../../../core/widgets/state_switcher.dart';
 import '../../../../core/widgets/submit_button.dart';
 import '../../../../l10n/gen/app_localizations.dart';
+import '../../../appointments/application/appointment_providers.dart';
+import '../../../appointments/data/appointments_repository.dart';
+import '../../../appointments/domain/appointment_models.dart';
+import '../../../appointments/presentation/appointment_format.dart';
+import '../../../clinic/application/clinic_providers.dart';
+import '../../../clinic/domain/clinic_permissions.dart';
 import '../../application/clinic_admin_controllers.dart';
 import '../../clinic_admin_routes.dart';
 import '../../data/clinic_admin_repository.dart';
@@ -23,54 +31,88 @@ import '../prices/price_editor.dart';
 import '../widgets/clinic_admin_widgets.dart';
 import 'branch_drafts.dart';
 import 'branch_fields.dart';
+import 'branch_read_only.dart';
 import 'branch_text.dart';
+import 'schedule_conflicts_sheet.dart';
+import 'schedule_drafts.dart';
+import 'schedule_tabs.dart';
 
-/// The D29 tabs, by their `?tab=` name. Booking settings and special dates
-/// come in Phase 6.
-enum BranchTab { info, address, contact, hours, clinic }
+/// The D29 tabs, by their `?tab=` name.
+enum BranchTab { info, address, contact, hours, dates, booking, clinic }
+
+/// The tabs that save through `updateBranchSchedule`, with the conflicts sheet.
+const scheduleTabs = {BranchTab.hours, BranchTab.dates, BranchTab.booking};
 
 /// D29: one branch in tabs (Info, Address and map, Contact, Working hours,
-/// Clinic info for patients). Each tab saves its own group; a tab with
-/// unsaved changes carries a dot, and leaving with changes asks first. The
-/// Info tab also holds the status: temporarily close, reopen, archive, make
-/// default, with the API's refusals explained (BR-BR1, BR-BR9).
+/// Special dates, Booking settings, Clinic info for patients). Each tab saves
+/// its own group; a tab with unsaved changes carries a dot, and leaving with
+/// changes asks first. The Info tab also holds the status: temporarily close,
+/// reopen, archive, make default, with the API's refusals explained (BR-BR1,
+/// BR-BR9). The schedule tabs are the one place hours change: saving one
+/// lists the bookings it would strand first (the conflicts sheet, BR-AP12).
+///
+/// AS17 is the same screen for an assistant with `scheduleManage`: the
+/// schedule tabs are editable, Info, Address and Contact read-only, and
+/// Clinic info isn't there. [embedded] is AS17's own menu page (no Back to D28).
 class BranchEditorScreen extends ConsumerWidget {
-  const BranchEditorScreen({super.key, required this.branchId, this.initialTab});
+  const BranchEditorScreen({super.key, required this.branchId, this.initialTab, this.embedded = false});
 
   final String branchId;
   final BranchTab? initialTab;
+  final bool embedded;
 
   static BranchTab? tabNamed(String? name) => BranchTab.values.where((t) => t.name == name).firstOrNull;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final branch = ref.watch(branchDetailProvider(branchId));
+    final clinic = ref.watch(clinicContextProvider).value;
+    final doctor = clinic?.isDoctor ?? false;
+    final canSchedule = clinic?.can(ClinicPermission.scheduleManage) ?? false;
+    final back = embedded ? const SizedBox.shrink() : const ClinicBackButton(fallback: ClinicAdminRoutes.branches);
     return Scaffold(
       body: AsyncStateSwitcher<BranchDetails>(
         value: branch,
         loading: (context) => const _EditorSkeleton(),
         error: (context, error) => Column(
           children: [
-            const Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Padding(padding: EdgeInsets.all(8), child: ClinicBackButton(fallback: ClinicAdminRoutes.branches)),
-            ),
+            Align(alignment: AlignmentDirectional.centerStart, child: Padding(padding: const EdgeInsets.all(8), child: back)),
             Expanded(
               child: AdminErrorView(error: error, onRetry: () => ref.read(branchDetailProvider(branchId).notifier).reload()),
             ),
           ],
         ),
-        data: (context, details) => _BranchEditor(details: details, initialTab: initialTab ?? BranchTab.info),
+        data: (context, details) => _BranchEditor(
+          // The tabs depend on who is signed in, once the clinic has loaded.
+          key: ValueKey((details.id, doctor, canSchedule)),
+          details: details,
+          initialTab: initialTab ?? (doctor ? BranchTab.info : BranchTab.hours),
+          doctor: doctor,
+          canSchedule: canSchedule,
+          back: back,
+        ),
       ),
     );
   }
 }
 
 class _BranchEditor extends ConsumerStatefulWidget {
-  const _BranchEditor({required this.details, required this.initialTab});
+  const _BranchEditor({
+    super.key,
+    required this.details,
+    required this.initialTab,
+    required this.doctor,
+    required this.canSchedule,
+    required this.back,
+  });
 
   final BranchDetails details;
   final BranchTab initialTab;
+
+  /// The doctor edits every tab; an assistant only the schedule tabs (AS17).
+  final bool doctor;
+  final bool canSchedule;
+  final Widget back;
 
   @override
   ConsumerState<_BranchEditor> createState() => _BranchEditorState();
@@ -85,24 +127,52 @@ class _TabState {
   String? error;
 }
 
+/// The conflicts sheet was closed without applying: nothing was saved.
+class _NotApplied implements Exception {
+  const _NotApplied();
+}
+
 class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerProviderStateMixin {
-  late final TabController _tabs = TabController(length: BranchTab.values.length, vsync: this, initialIndex: widget.initialTab.index);
+  late final List<BranchTab> _visible = [
+    for (final tab in BranchTab.values)
+      if (widget.doctor || tab != BranchTab.clinic) tab,
+  ];
+  late final TabController _tabs = TabController(length: _visible.length, vsync: this, initialIndex: _indexOf(widget.initialTab));
   late final _info = InfoDraft(widget.details.info);
   late final _address = AddressDraft(widget.details.address);
   late final _contact = ContactDraft(widget.details.contact);
   late final _hours = HoursDraft(widget.details.workingHours.periods);
+  late final _dates = DatesDraft();
+  late final _booking = BookingSettingsDraft();
   late final _checklist = ChecklistDraft(widget.details.clinicInfo);
   final _state = {for (final tab in BranchTab.values) tab: _TabState()};
 
+  /// The schedule as saved on the server: what a schedule tab sends for the parts it doesn't edit.
+  BranchScheduleData? _saved;
+  ProviderSubscription<AsyncValue<BranchScheduleData>>? _scheduleSubscription;
+
+  /// initState is done: setState may run.
+  bool _started = false;
+
   BranchDetailController get _controller => ref.read(branchDetailProvider(widget.details.id).notifier);
 
-  List<BranchDraft> get _drafts => [_info, _address, _contact, _hours, _checklist];
+  bool get _canEditBranch => widget.doctor;
+  bool get _canEditSchedule => widget.doctor || widget.canSchedule;
+
+  List<BranchDraft> get _drafts => [_info, _address, _contact, _hours, _dates, _booking, _checklist];
+
+  int _indexOf(BranchTab tab) {
+    final index = _visible.indexOf(tab);
+    return index < 0 ? _visible.indexOf(BranchTab.hours) : index;
+  }
 
   BranchDraft _draftOf(BranchTab tab) => switch (tab) {
         BranchTab.info => _info,
         BranchTab.address => _address,
         BranchTab.contact => _contact,
         BranchTab.hours => _hours,
+        BranchTab.dates => _dates,
+        BranchTab.booking => _booking,
         BranchTab.clinic => _checklist,
       };
 
@@ -112,24 +182,37 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
     _tabs.addListener(() {
       if (!_tabs.indexIsChanging) setState(() {});
     });
+    _scheduleSubscription = ref.listenManual(scheduleProvider(widget.details.id), (previous, next) {
+      final data = next.value;
+      if (data == null || identical(data, _saved)) return;
+      _adopt(data);
+    }, fireImmediately: true);
+    _started = true;
+  }
+
+  /// A schedule from the server: each schedule tab without unsaved changes starts from it.
+  void _adopt(BranchScheduleData data) {
+    final first = _saved == null;
+    _saved = data;
+    if (first || _hours.changes == 0) _hours.fill([for (final p in data.weekly) p.toBranchPeriod()]);
+    if (first || _dates.changes == 0) _dates.fill(data);
+    if (first || _booking.changes == 0) _booking.fill(data.settings);
+    if (_started) setState(() {});
   }
 
   @override
   void didUpdateWidget(_BranchEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Opened again by a link to another tab.
-    if (oldWidget.initialTab != widget.initialTab) _tabs.animateTo(widget.initialTab.index);
+    if (oldWidget.initialTab != widget.initialTab) _tabs.animateTo(_indexOf(widget.initialTab));
     // A saved group comes back from the server: start the tab from it. The
-    // other tabs keep their changes.
+    // other tabs keep their changes. (The schedule tabs follow the schedule.)
     final before = oldWidget.details;
     final after = widget.details;
     String json(Object? value) => jsonEncode(value);
     if (json(before.info.toJson()) != json(after.info.toJson())) _info.fill(after.info);
     if (json(before.address.toJson()) != json(after.address.toJson())) _address.fill(after.address);
     if (json(before.contact.toJson()) != json(after.contact.toJson())) _contact.fill(after.contact);
-    if (json([for (final p in before.workingHours.periods) p.toJson()]) != json([for (final p in after.workingHours.periods) p.toJson()])) {
-      _hours.fill(after.workingHours.periods);
-    }
     if (json([before.clinicInfo.paymentMethods, before.clinicInfo.amenities]) !=
         json([after.clinicInfo.paymentMethods, after.clinicInfo.amenities])) {
       _checklist.fill(after.clinicInfo);
@@ -138,6 +221,7 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
 
   @override
   void dispose() {
+    _scheduleSubscription?.close();
     _tabs.dispose();
     for (final draft in _drafts) {
       draft.dispose();
@@ -147,13 +231,31 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
 
   int get _dirty => _drafts.fold(0, (sum, d) => sum + d.changes);
 
-  void _discardAll() {
+  void _fill(BranchTab tab) {
     final d = widget.details;
-    _info.fill(d.info);
-    _address.fill(d.address);
-    _contact.fill(d.contact);
-    _hours.fill(d.workingHours.periods);
-    _checklist.fill(d.clinicInfo);
+    final saved = _saved;
+    switch (tab) {
+      case BranchTab.info:
+        _info.fill(d.info);
+      case BranchTab.address:
+        _address.fill(d.address);
+      case BranchTab.contact:
+        _contact.fill(d.contact);
+      case BranchTab.hours:
+        _hours.fill(saved == null ? d.workingHours.periods : [for (final p in saved.weekly) p.toBranchPeriod()]);
+      case BranchTab.dates:
+        if (saved != null) _dates.fill(saved);
+      case BranchTab.booking:
+        if (saved != null) _booking.fill(saved.settings);
+      case BranchTab.clinic:
+        _checklist.fill(d.clinicInfo);
+    }
+  }
+
+  void _discardAll() {
+    for (final tab in BranchTab.values) {
+      _fill(tab);
+    }
     setState(() {
       for (final s in _state.values) {
         s
@@ -165,19 +267,7 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
   }
 
   void _discard(BranchTab tab) {
-    final d = widget.details;
-    switch (tab) {
-      case BranchTab.info:
-        _info.fill(d.info);
-      case BranchTab.address:
-        _address.fill(d.address);
-      case BranchTab.contact:
-        _contact.fill(d.contact);
-      case BranchTab.hours:
-        _hours.fill(d.workingHours.periods);
-      case BranchTab.clinic:
-        _checklist.fill(d.clinicInfo);
-    }
+    _fill(tab);
     setState(() {
       _state[tab]!
         ..server = const {}
@@ -192,8 +282,9 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
   }
 
   /// Runs one tab's save with the common states: the app's check first,
-  /// then the API, with its field errors next to their fields.
-  Future<void> _save(BranchTab tab, {required bool valid, required Future<void> Function() write}) async {
+  /// then the API, with its field errors next to their fields. [write]
+  /// returns the message to show.
+  Future<void> _save(BranchTab tab, {required bool valid, required Future<String?> Function() write}) async {
     final l10n = AppLocalizations.of(context);
     final reduced = Motion.of(context).reduced;
     final s = _state[tab]!;
@@ -213,16 +304,20 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
     }
     setState(() => s.status = SubmitStatus.loading);
     try {
-      await write();
+      final message = await write();
       if (!mounted) return;
       setState(() {
         s
           ..status = SubmitStatus.success
           ..showClient = false;
       });
-      showAdminSnack(context, l10n.branchSaved);
+      showAdminSnack(context, message ?? l10n.branchSaved);
       await Future<void>.delayed(reduced ? Duration.zero : Motion.slow);
       if (mounted) setState(() => s.status = SubmitStatus.idle);
+    } on _NotApplied {
+      if (!mounted) return;
+      setState(() => s.status = SubmitStatus.idle);
+      showAdminSnack(context, l10n.scheduleNothingSaved);
     } on ApiException catch (error) {
       if (!mounted) return;
       setState(() {
@@ -230,28 +325,88 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
           ..status = SubmitStatus.idle
           ..server = error.fieldCodes
           ..failures += 1
-          ..error = error.fieldCodes.isEmpty ? l10n.apiError(error) : l10n.adminFixErrors;
+          ..error = error.fieldCodes.isEmpty ? _errorText(l10n, error) : l10n.adminFixErrors;
       });
     }
   }
 
+  /// A refused move names the booking problem (6.12.6); other errors as usual.
+  String _errorText(AppLocalizations l10n, ApiException error) => switch (error.code) {
+        'SLOT_TAKEN' || 'PERIOD_FULL' || 'OUTSIDE_HOURS' || 'BRANCH_CLOSED' || 'TOO_SOON' || 'ALREADY_HANDLED' || 'INVALID_TRANSITION' =>
+          context.bookingError(ApiError(error.code!)),
+        'OVERBOOKING_WARNING' => l10n.scheduleMoveFull,
+        _ => l10n.apiError(error),
+      };
+
+  Future<String?> _saveBranch(Future<void> write) async {
+    await write;
+    return null;
+  }
+
   Future<void> _saveInfo() =>
-      _save(BranchTab.info, valid: _info.check().isEmpty, write: () => _controller.saveInfo(_info.build()));
+      _save(BranchTab.info, valid: _info.check().isEmpty, write: () => _saveBranch(_controller.saveInfo(_info.build())));
 
   Future<void> _saveAddress() =>
-      _save(BranchTab.address, valid: _address.check().isEmpty, write: () => _controller.saveAddress(_address.build()));
+      _save(BranchTab.address, valid: _address.check().isEmpty, write: () => _saveBranch(_controller.saveAddress(_address.build())));
 
   Future<void> _saveContact() =>
-      _save(BranchTab.contact, valid: _contact.check().isEmpty, write: () => _controller.saveContact(_contact.build()));
+      _save(BranchTab.contact, valid: _contact.check().isEmpty, write: () => _saveBranch(_controller.saveContact(_contact.build())));
 
   Future<void> _saveChecklists() =>
-      _save(BranchTab.clinic, valid: true, write: () => _controller.saveChecklists(_checklist.build()));
+      _save(BranchTab.clinic, valid: true, write: () => _saveBranch(_controller.saveChecklists(_checklist.build())));
 
-  Future<void> _saveHours() =>
-      _save(BranchTab.hours, valid: WeeklyHours.check(_hours.build()).isEmpty, write: () => _controller.saveHours(_hours.build()));
+  /// A schedule tab sends its own part and the others as saved.
+  BranchScheduleData _scheduleFor(BranchTab tab, BranchScheduleData saved) => switch (tab) {
+        BranchTab.hours => saved.copyWith(weekly: [for (final p in _hours.build()) p.toWeekly()]),
+        BranchTab.dates => saved.copyWith(overrides: _dates.overrides, closures: _dates.closures),
+        _ => saved.copyWith(settings: _booking.value),
+      };
+
+  Future<void> _saveSchedule(BranchTab tab) async {
+    final saved = _saved;
+    if (saved == null) return;
+    final valid = tab != BranchTab.hours || WeeklyHours.check(_hours.build()).isEmpty;
+    await _save(tab, valid: valid, write: () => _writeSchedule(tab, _scheduleFor(tab, saved)));
+  }
+
+  /// BR-AP12: a dry run first; bookings left without a place open the
+  /// conflicts sheet, and the change is applied with a decision for each. If
+  /// more bookings were affected meanwhile, the sheet opens again for them.
+  Future<String?> _writeSchedule(BranchTab tab, BranchScheduleData data) async {
+    final l10n = AppLocalizations.of(context);
+    final repository = ref.read(appointmentsRepositoryProvider);
+    final decisions = <String, ConflictDecision>{};
+    var pending = (await repository.saveSchedule(data, dryRun: true)).conflicts;
+    while (true) {
+      if (pending.isNotEmpty) {
+        if (!mounted) throw const _NotApplied();
+        // The save waits for the doctor's decisions, not for the network.
+        setState(() => _state[tab]!.status = SubmitStatus.idle);
+        final chosen = await showScheduleConflictsSheet(context, conflicts: pending, branchId: data.branchId);
+        if (chosen == null || !mounted) throw const _NotApplied();
+        setState(() => _state[tab]!.status = SubmitStatus.loading);
+        decisions.addAll(chosen);
+      }
+      final result = await repository.saveSchedule(data, dryRun: false, decisions: decisions);
+      if (result.applied) break;
+      pending = result.conflicts;
+    }
+
+    _saved = data;
+    _fill(tab);
+    ref.invalidate(availabilityProvider);
+    unawaited(_controller.refresh());
+    final moved = decisions.values.where((d) => d.action == ConflictDecision.moveAction).length;
+    final cancelled = decisions.values.where((d) => d.action == ConflictDecision.cancelAction).length;
+    return [
+      l10n.scheduleSaved,
+      if (moved > 0) l10n.scheduleMovedCount(moved),
+      if (cancelled > 0) l10n.scheduleCancelledCount(cancelled),
+    ].join(l10n.regListSeparator);
+  }
 
   /// Hours problems by the period's index in what is sent: the API's when
-  /// it answered, else the app's own check once Save was tapped.
+  /// it answered (`weekly[i]…`), else the app's own check once Save was tapped.
   (Map<int, List<String>>, String?) _hoursErrors(AppLocalizations l10n) {
     final s = _state[BranchTab.hours]!;
     final byPeriod = <int, List<String>>{};
@@ -266,7 +421,7 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
     }
 
     if (s.server.isNotEmpty) {
-      final path = RegExp(r'^periods(?:\[(\d+)\])?');
+      final path = RegExp(r'^weekly(?:\[(\d+)\])?');
       for (final MapEntry(:key, :value) in s.server.entries) {
         final match = path.firstMatch(key);
         if (match == null) continue;
@@ -311,7 +466,8 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
     return LayoutBuilder(
       builder: (context, constraints) {
         final gutter = adminGutter(constraints.maxWidth);
-        Tab tab(BranchTab t, String label, IconData icon) {
+        Tab tab(BranchTab t) {
+          final (label, icon) = _labelOf(l10n, t);
           final dirty = _draftOf(t).changes > 0;
           return Tab(
             height: 52,
@@ -347,7 +503,7 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
             Padding(
               padding: EdgeInsets.fromLTRB(gutter, 16, gutter, 8),
               child: AdminHeader(
-                leading: const ClinicBackButton(fallback: ClinicAdminRoutes.branches),
+                leading: widget.back,
                 title: details.name(language),
                 subtitle: [details.address.city, details.address.governorate].where((s) => s.isNotEmpty).join(l10n.regListSeparator),
                 actions: [
@@ -362,31 +518,67 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
               tabAlignment: TabAlignment.start,
               padding: EdgeInsets.symmetric(horizontal: gutter - 8),
               labelStyle: theme.textTheme.titleSmall,
-              tabs: [
-                tab(BranchTab.info, l10n.branchTabInfo, Icons.info_outline),
-                tab(BranchTab.address, l10n.branchTabAddress, Icons.map_outlined),
-                tab(BranchTab.contact, l10n.branchTabContact, Icons.call_outlined),
-                tab(BranchTab.hours, l10n.branchTabHours, Icons.schedule_outlined),
-                tab(BranchTab.clinic, l10n.branchTabClinic, Icons.storefront_outlined),
-              ],
+              tabs: [for (final t in _visible) tab(t)],
             ),
             const Divider(height: 1),
             Expanded(
               child: TabBarView(
                 controller: _tabs,
-                children: [
-                  _tab(BranchTab.info, gutter, _infoTab(context), _saveInfo),
-                  _tab(BranchTab.address, gutter, _addressTab(context), _saveAddress),
-                  _tab(BranchTab.contact, gutter, _contactTab(context), _saveContact),
-                  _tab(BranchTab.hours, gutter, _hoursTab(context), _saveHours),
-                  _tab(BranchTab.clinic, gutter, _clinicTab(context), _saveChecklists),
-                ],
+                children: [for (final t in _visible) _page(t, gutter)],
               ),
             ),
           ],
         );
       },
     );
+  }
+
+  (String, IconData) _labelOf(AppLocalizations l10n, BranchTab tab) => switch (tab) {
+        BranchTab.info => (l10n.branchTabInfo, Icons.info_outline),
+        BranchTab.address => (l10n.branchTabAddress, Icons.map_outlined),
+        BranchTab.contact => (l10n.branchTabContact, Icons.call_outlined),
+        BranchTab.hours => (l10n.branchTabHours, Icons.schedule_outlined),
+        BranchTab.dates => (l10n.specialDates, Icons.event_note_outlined),
+        BranchTab.booking => (l10n.bookingSettings, Icons.tune_outlined),
+        BranchTab.clinic => (l10n.branchTabClinic, Icons.storefront_outlined),
+      };
+
+  Widget _page(BranchTab tab, double gutter) {
+    if (!_canEditBranch && !scheduleTabs.contains(tab)) {
+      return _KeepAlive(
+        child: ClinicPage(
+          maxWidth: 820,
+          builder: (context, width) => [
+            const DoctorOnlyNote(),
+            const SizedBox(height: 16),
+            switch (tab) {
+              BranchTab.address => BranchAddressReadOnly(address: widget.details.address),
+              BranchTab.contact => BranchContactReadOnly(contact: widget.details.contact),
+              _ => BranchInfoReadOnly(details: widget.details),
+            },
+          ],
+        ),
+      );
+    }
+    if (scheduleTabs.contains(tab) && _saved == null) return _KeepAlive(child: _scheduleLoading());
+    return switch (tab) {
+      BranchTab.info => _tab(tab, gutter, _infoTab(context), _saveInfo),
+      BranchTab.address => _tab(tab, gutter, _addressTab(context), _saveAddress),
+      BranchTab.contact => _tab(tab, gutter, _contactTab(context), _saveContact),
+      BranchTab.hours => _tab(tab, gutter, _hoursTab(context), () => _saveSchedule(BranchTab.hours)),
+      BranchTab.dates => _tab(tab, gutter, _datesTab(context), () => _saveSchedule(BranchTab.dates)),
+      BranchTab.booking => _tab(tab, gutter, _bookingTab(context), () => _saveSchedule(BranchTab.booking)),
+      BranchTab.clinic => _tab(tab, gutter, _clinicTab(context), _saveChecklists),
+    };
+  }
+
+  /// The schedule tabs until `GET …/schedule` answers.
+  Widget _scheduleLoading() {
+    final schedule = ref.watch(scheduleProvider(widget.details.id));
+    if (schedule.hasError) {
+      return AdminErrorView(error: schedule.error!, onRetry: () => ref.invalidate(scheduleProvider(widget.details.id)));
+    }
+    return const _EditorSkeleton();
   }
 
   Widget _tab(BranchTab tab, double gutter, List<Widget> children, VoidCallback onSave) {
@@ -435,17 +627,6 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
         child: InfoFields(draft: _info, errors: _errors(BranchTab.info, _info.check()), enabled: !_busy(BranchTab.info)),
       ),
       _StatusCard(details: widget.details),
-      SettingsGroup(
-        title: l10n.branchLaterTabs,
-        children: [
-          SettingsTile(
-            icon: Icons.event_note_outlined,
-            title: l10n.branchLaterTabsTitle,
-            subtitle: l10n.branchLaterTabsBody,
-            trailing: StatusPill(label: l10n.settingsLaterPhase),
-          ),
-        ],
-      ),
     ];
   }
 
@@ -471,31 +652,36 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
     ];
   }
 
+  /// The saved booking settings: the hours and dates tabs show capacity in queue mode.
+  BookingSettings get _settings => _saved?.settings ?? const BookingSettings();
+
   List<Widget> _hoursTab(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final hours = widget.details.workingHours;
+    final settings = _settings;
+    final queueMode = settings.mode == 'queue';
     final (periodErrors, weekError) = _hoursErrors(l10n);
     final hasSaturday = _hours.ofDay(DateTime.saturday).isNotEmpty;
+    final enabled = _canEditSchedule && !_busy(BranchTab.hours);
     return [
       InfoBanner(
         icon: Icons.confirmation_number_outlined,
-        message: hours.queueMode ? l10n.branchHoursQueueNote(hours.defaultCapacity) : l10n.branchHoursTimedNote,
+        message: queueMode ? l10n.branchHoursQueueNote(settings.defaultCapacity) : l10n.branchHoursTimedNote,
       ),
       Align(
         alignment: AlignmentDirectional.centerStart,
         child: OutlinedButton.icon(
-          onPressed: hasSaturday && !_busy(BranchTab.hours) ? _copySaturday : null,
+          onPressed: hasSaturday && enabled ? _copySaturday : null,
           icon: const Icon(Icons.content_copy_outlined),
           label: Text(l10n.branchCopySaturday),
         ),
       ),
       HoursEditor(
         draft: _hours,
-        queueMode: hours.queueMode,
-        defaultCapacity: hours.defaultCapacity,
+        queueMode: queueMode,
+        defaultCapacity: settings.defaultCapacity,
         periodErrors: periodErrors,
         weekError: weekError,
-        enabled: !_busy(BranchTab.hours),
+        enabled: enabled,
       ),
     ];
   }
@@ -514,6 +700,22 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
     }
     _hours.copySaturdayToAll();
   }
+
+  List<Widget> _datesTab(BuildContext context) {
+    final settings = _settings;
+    return [
+      SpecialDatesEditor(
+        draft: _dates,
+        queueMode: settings.mode == 'queue',
+        defaultCapacity: settings.defaultCapacity,
+        enabled: _canEditSchedule && !_busy(BranchTab.dates),
+      ),
+    ];
+  }
+
+  List<Widget> _bookingTab(BuildContext context) => [
+        BookingSettingsEditor(draft: _booking, enabled: _canEditSchedule && !_busy(BranchTab.booking)),
+      ];
 
   List<Widget> _clinicTab(BuildContext context) {
     final l10n = AppLocalizations.of(context);

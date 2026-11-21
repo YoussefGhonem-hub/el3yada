@@ -463,9 +463,47 @@ class HoursEditor extends StatelessWidget {
   }
 }
 
+/// One day's periods on their own: the hours of one special date (D29 Special
+/// dates). [title] replaces the weekday's name.
+class DayHoursEditor extends StatelessWidget {
+  const DayHoursEditor({
+    super.key,
+    required this.draft,
+    required this.weekday,
+    required this.title,
+    required this.queueMode,
+    required this.defaultCapacity,
+    this.periodErrors = const {},
+    this.enabled = true,
+  });
+
+  final HoursDraft draft;
+  final int weekday;
+  final String title;
+  final bool queueMode;
+  final int defaultCapacity;
+  final Map<int, List<String>> periodErrors;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final ordered = draft.ordered;
+    return _DayCard(
+      weekday: weekday,
+      title: title,
+      draft: draft,
+      queueMode: queueMode,
+      defaultCapacity: defaultCapacity,
+      enabled: enabled,
+      errors: {for (final p in draft.ofDay(weekday)) p: periodErrors[ordered.indexOf(p)] ?? const []},
+    );
+  }
+}
+
 class _DayCard extends StatelessWidget {
   const _DayCard({
     required this.weekday,
+    this.title,
     required this.draft,
     required this.queueMode,
     required this.defaultCapacity,
@@ -474,6 +512,7 @@ class _DayCard extends StatelessWidget {
   });
 
   final int weekday;
+  final String? title;
   final HoursDraft draft;
   final bool queueMode;
   final int defaultCapacity;
@@ -486,7 +525,7 @@ class _DayCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final periods = draft.ofDay(weekday);
-    final name = weekdayName(context, weekday);
+    final name = title ?? weekdayName(context, weekday);
     return Card(
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 8, 12),

@@ -65,9 +65,6 @@ abstract interface class ClinicAdminRepository {
     BranchChecklistInput? clinicInfo,
   });
 
-  /// Replaces the whole week.
-  Future<BranchDetails> updateBranchHours(String branchId, List<BranchPeriod> periods);
-
   /// Throws [BranchHasBookingsException] for `BRANCH_HAS_BOOKINGS`.
   Future<BranchDetails> setBranchStatus(String branchId, String status, {String? closedMessage, DateTime? reopenDate});
 
@@ -162,13 +159,6 @@ class ApiClinicAdminRepository implements ClinicAdminRepository {
             'address': ?address?.toJson(),
             'contact': ?contact?.toJson(),
             'clinicInfo': ?clinicInfo?.toJson(),
-          })));
-
-  @override
-  Future<BranchDetails> updateBranchHours(String branchId, List<BranchPeriod> periods) =>
-      _call(() async => BranchDetails.fromJson(await _post('/branches/updateBranchHours', {
-            'branchId': branchId,
-            'periods': [for (final period in periods) period.toJson()],
           })));
 
   @override

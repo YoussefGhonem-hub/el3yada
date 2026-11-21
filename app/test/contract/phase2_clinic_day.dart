@@ -10,6 +10,7 @@ import 'package:el3yada/features/clinic_admin/data/clinic_admin_repository.dart'
 import 'package:el3yada/features/clinic_admin/domain/activity_models.dart';
 import 'package:el3yada/features/clinic_admin/domain/assistant_models.dart';
 import 'package:el3yada/features/clinic_admin/domain/branch_models.dart';
+import 'package:el3yada/features/clinic_admin/presentation/branches/schedule_drafts.dart';
 import 'package:el3yada/features/clinic_admin/domain/json_read.dart';
 import 'package:el3yada/features/doctor_registration/data/registration_repository.dart';
 import 'package:el3yada/features/patients/domain/patient_models.dart';
@@ -334,7 +335,15 @@ ClinicDay phase2ClinicDay({
         const BranchPeriod(weekday: 7, startLocal: '10:00', endLocal: '14:00'),
         todayPeriod,
       ];
-      final withHours = await repository.updateBranchHours(dokkiId, periods);
+      // Hours change only through updateBranchSchedule (D29's schedule tabs,
+      // backend/docs/api-phase-6-schedule.md); a new branch has no bookings.
+      final schedule = await doctor.appointments.schedule(dokkiId);
+      final saved = await doctor.appointments.saveSchedule(
+        schedule.copyWith(weekly: [for (final p in periods) p.toWeekly()]),
+        dryRun: false,
+      );
+      expect(saved.applied, isTrue);
+      final withHours = await repository.branch(dokkiId);
       final sorted = [...periods]
         ..sort(
           (a, b) => a.weekday != b.weekday
@@ -1254,7 +1263,7 @@ ClinicDay phase2ClinicDay({
       expect(activity.page.totalCount, rows.length);
       for (final action in [
         'branchCreated',
-        'branchHoursUpdated',
+        'branchScheduleUpdated',
         'pricesUpdated',
         'patientCreated',
         'patientMedicalProfileUpdated',
@@ -1288,7 +1297,7 @@ ClinicDay phase2ClinicDay({
       expect(byAssistant.patient!.fileNumber, 2);
       expect(byAssistant.details['fileNumber'], 2);
 
-      final hours = rows.singleWhere((r) => r.action == 'branchHoursUpdated');
+      final hours = rows.singleWhere((r) => r.action == 'branchScheduleUpdated');
       expect(hours.actor.userId, doctorUserId);
       expect(hours.actor.role, 'doctor');
       expect(hours.targetType, 'branch');

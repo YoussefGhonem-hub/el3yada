@@ -94,7 +94,14 @@ class BranchDetailController extends AsyncNotifier<BranchDetails> {
   Future<BranchDetails> saveChecklists(BranchChecklistInput clinicInfo) =>
       _keep(_repository.updateBranch(branchId, clinicInfo: clinicInfo));
 
-  Future<BranchDetails> saveHours(List<BranchPeriod> periods) => _keep(_repository.updateBranchHours(branchId, periods));
+  /// After the schedule tabs saved (`updateBranchSchedule`): the week shows here and on the D28
+  /// cards. Keeps the page on screen while it loads.
+  Future<void> refresh() async {
+    final next = await AsyncValue.guard(() => _repository.branch(branchId));
+    if (!ref.mounted || next.hasError) return;
+    state = next;
+    ref.invalidate(branchesProvider);
+  }
 
   /// Throws `BranchHasBookingsException` when bookings stand in the way (BR-BR9).
   Future<BranchDetails> setStatus(String status, {String? closedMessage, DateTime? reopenDate}) => _keep(

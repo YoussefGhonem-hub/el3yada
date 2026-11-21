@@ -1,4 +1,5 @@
 import 'package:el3yada/features/auth/application/auth_controller.dart';
+import 'package:el3yada/features/appointments/data/appointments_repository.dart';
 import 'package:el3yada/features/clinic_admin/data/clinic_admin_repository.dart';
 import 'package:el3yada/features/clinic_admin/data/fake_clinic_admin_repository.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -19,6 +20,10 @@ Override fakeClinicAdminOverride({
   configure?.call(fake);
   return fake;
 });
+
+/// The offline schedule and bookings behind the running app (D29's schedule tabs).
+FakeAppointmentsRepository appointmentsFake(WidgetTester tester) =>
+    appContainer(tester).read(appointmentsRepositoryProvider) as FakeAppointmentsRepository;
 
 /// The fake behind the running app.
 FakeClinicAdminRepository clinicAdminFake(WidgetTester tester) =>

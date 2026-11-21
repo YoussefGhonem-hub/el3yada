@@ -1606,9 +1606,6 @@
       }
     }
   },
-  "branchLaterTabs": "Coming later",
-  "branchLaterTabsTitle": "Booking settings and special dates",
-  "branchLaterTabsBody": "They arrive with appointments.",
   "branchAddedMessage": "Branch added. Now set its working hours.",
   "branchNewNextSteps": "Working hours and prices come next, after you add the branch.",
   "assistantsSubtitle": "People who work with you, and what each one can do.",
@@ -5234,5 +5231,121 @@
   "patientFilterUpcoming": "Has a booking",
   "patientFilterNoShows": "Has no-shows",
   "patientColumnNextBooking": "Next booking",
-  "patientColumnNoShows": "No-shows"
+  "patientColumnNoShows": "No-shows",
+"scheduleSpecialHoursTitle": "Special hours",
+  "scheduleSpecialHoursBody": "Hours for one date replace that weekday's hours. A date with no hours is closed.",
+  "scheduleAddSpecialDay": "Add a date",
+  "scheduleNoSpecialDays": "No special dates coming up.",
+  "scheduleDayClosed": "Closed all day",
+  "scheduleDayClosedToggle": "Closed that day",
+  "scheduleDayHours": "Hours that day",
+  "scheduleClosuresBody": "Close a day, a few days or part of a day, for this branch or for every branch (a vacation).",
+  "scheduleNoClosures": "No closures coming up.",
+  "scheduleClosureWholeDays": "Whole days",
+  "scheduleClosurePartDay": "Part of a day",
+  "schedulePickDates": "Choose the days",
+  "schedulePickDate": "Choose the day",
+  "scheduleClosureEndBeforeStart": "It ends before it starts.",
+  "scheduleClosureReason": "Reason (optional)",
+  "scheduleClosureReasonHint": "For example: vacation, a conference",
+  "scheduleNothingSaved": "Nothing was saved.",
+  "scheduleMoveFull": "That place is full. Choose another one for the booking.",
+  "scheduleMovedCount": "{count, plural, =1{1 booking moved} other{{count} bookings moved}}",
+  "@scheduleMovedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scheduleCancelledCount": "{count, plural, =1{1 booking cancelled} other{{count} bookings cancelled}}",
+  "@scheduleCancelledCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "conflictsBody": "These bookings don't fit the new schedule. Choose what happens to each one. Nothing is saved until you apply.",
+  "conflictsForAll": "For all",
+  "moveAll": "Move all",
+  "conflictMove": "Move",
+  "conflictMoveTo": "Moves to {place}",
+  "@conflictMoveTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "conflictChangePlace": "Change",
+  "conflictPickPlace": "Choose a place",
+  "conflictPickNote": "Free places from the schedule as it is saved now. The new hours are checked when you apply.",
+  "conflictKeepNote": "Stays at its time, as an exception",
+  "conflictKeepNoPlace": "No free place in the next two weeks. Keep it, cancel it, or choose a place.",
+  "conflictCancelNote": "The patient is told, with a link to book again",
+  "bookingModeQueueBody": "Patients book a place in a period. Turns go by arrival at the clinic.",
+  "bookingModeTimedBody": "Each patient books an exact time.",
+  "bookingModeChangeNote": "Changing the mode affects every upcoming booking here. When you save, you choose what happens to each one.",
+  "bookingCapacityBody": "Each period can set its own number in Working hours.",
+  "bookingAvgVisitBody": "Used for the waiting time patients see after check-in.",
+  "bookingExamSlots": "Slots for an examination",
+  "bookingConsultationSlots": "Slots for a consultation",
+  "bookingGroupApp": "Booking from the app",
+  "bookingAutoConfirmOffBody": "App bookings wait for the clinic to confirm them.",
+  "bookingGroupNoShows": "No-shows and reminders",
+  "bookingNoShowCount": "No-shows that stop app booking",
+  "bookingNoShowDays": "Counted over",
+  "bookingNoShowBody": "{count} no-shows in {days} days turn off app booking for that patient",
+  "@bookingNoShowBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingReminderDayBefore": "Reminder a day before",
+  "bookingReminderSameDay": "Reminder 2 hours before, on the day",
+  "bookingGroupClinic": "Clinic bookings",
+  "bookingNone": "None",
+  "bookingMinutes": "{count} min",
+  "@bookingMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingHours": "{count, plural, =1{1 hour} other{{count} hours}}",
+  "@bookingHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bookingDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@bookingDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "branchDoctorOnlyNote": "Only the doctor can change this.",
+  "activityBranchScheduleUpdated": "Changed the schedule of {branch}",
+  "@activityBranchScheduleUpdated": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
+  "activityActionBranchScheduleUpdated": "Schedule changed",
+"branchNoWorkBranch": "No branch yet",
+  "branchNoWorkBranchBody": "You are not assigned to a branch. Ask the doctor to add you to one.",
+"conflictsDismiss": "Back to editing"
 }

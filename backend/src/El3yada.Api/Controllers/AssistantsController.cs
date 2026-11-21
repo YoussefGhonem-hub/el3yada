@@ -34,7 +34,7 @@ public sealed class AssistantsController(
         var rows = await db.Assistants.AsNoTracking()
             .Where(a => a.DoctorId == caller.DoctorId && (query.IncludeRemoved || a.Status != AssistantStatuses.Removed))
             .OrderBy(a => a.Status == AssistantStatuses.Removed).ThenBy(a => a.CreatedAt)
-            .Select(a => new { Assistant = a, Branches = a.Branches.ToList(), a.User.MustChangePassword })
+            .Select(a => new { Assistant = a, Branches = a.Branches.ToList(), a.User.MustChangePassword, AccountStatus = a.User.Status })
             .ToListAsync(cancellationToken);
         var count = await CountTowardLimitAsync(caller.DoctorId, cancellationToken);
         var limit = await LimitAsync(cancellationToken);
@@ -42,7 +42,7 @@ public sealed class AssistantsController(
             rows.Select(r =>
             {
                 r.Assistant.Branches = r.Branches;
-                return AssistantView.Of(r.Assistant, r.MustChangePassword);
+                return AssistantView.Of(r.Assistant, r.MustChangePassword, r.AccountStatus);
             }).ToList(),
             count, limit, count < limit));
     }
@@ -350,7 +350,7 @@ public sealed class AssistantsController(
     {
         var row = await db.Assistants.AsNoTracking()
             .Where(a => a.UserId == assistantId && a.DoctorId == caller.DoctorId)
-            .Select(a => new { Assistant = a, Branches = a.Branches.ToList(), a.User.MustChangePassword })
+            .Select(a => new { Assistant = a, Branches = a.Branches.ToList(), a.User.MustChangePassword, AccountStatus = a.User.Status })
             .SingleOrDefaultAsync(cancellationToken);
         if (row is null)
         {
@@ -358,7 +358,7 @@ public sealed class AssistantsController(
         }
 
         row.Assistant.Branches = row.Branches;
-        return AssistantView.Of(row.Assistant, row.MustChangePassword);
+        return AssistantView.Of(row.Assistant, row.MustChangePassword, row.AccountStatus);
     }
 
     /// <summary>The doctor's non-archived branches with these IDs, or null when any ID is not one of them.</summary>

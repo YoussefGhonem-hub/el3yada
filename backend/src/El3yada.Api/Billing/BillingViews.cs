@@ -18,7 +18,8 @@ public sealed record InvoiceListItem(
     DateOnly DueDate,
     string Status,
     bool CanPay,
-    DateTime? PaidAt);
+    DateTime? PaidAt,
+    bool IsFinal = false);
 
 /// <summary>
 /// D18 / D1 card. <c>attention</c> is the invoice to pay first, <c>underReview</c> the one with a payment waiting,
@@ -40,7 +41,11 @@ public sealed record PaymentSubmittedView(Guid PaymentId, Guid InvoiceId, string
 
 public sealed record InvoiceBranchLine(Guid BranchId, string NameAr, string? NameEn, int ExamCount, int ConsultationCount, int AmountPiasters);
 
-public sealed record InvoiceAdjustmentLine(Guid Id, int AmountPiasters, string Reason, DateTime CreatedAt);
+/// <summary>
+/// An adjustment line. <c>carriedMonthKey</c> is set on a line the system added for sessions saved after a final invoice of
+/// that month (BR-DEL10); the app shows its own text for it.
+/// </summary>
+public sealed record InvoiceAdjustmentLine(Guid Id, int AmountPiasters, string Reason, DateTime CreatedAt, string? CarriedMonthKey = null);
 
 public sealed record InvoiceTimelineLine(string Status, string? Note, DateTime ChangedAt, string? ChangedByRole);
 
@@ -82,7 +87,8 @@ public sealed record InvoiceDetailView(
     IReadOnlyList<InvoiceAdjustmentLine> Adjustments,
     IReadOnlyList<InvoiceTimelineLine> Timeline,
     IReadOnlyList<PaymentLine> Payments,
-    InvoiceDoctorRef? Doctor);
+    InvoiceDoctorRef? Doctor,
+    bool IsFinal = false);
 
 public sealed record InvoiceDoctorRef(Guid Id, string Name, string? NameEn, string Status);
 
@@ -96,6 +102,7 @@ public static class InvoiceViews
             {
                 i.Id, i.MonthKey, i.PeriodStart, i.PeriodEnd, i.ExamCount, i.ConsultationCount, i.ExamAmountPiasters,
                 i.ConsultationAmountPiasters, i.AdjustmentsPiasters, i.TotalDuePiasters, i.DueDate, i.Status, i.PaidAt, i.PaidMethod,
+                i.IsFinal,
                 Doctor = new InvoiceDoctorRef(i.DoctorId, i.Doctor.FullName, i.Doctor.FullNameEn, i.Doctor.Status),
             })
             .SingleAsync(cancellationToken);
@@ -108,7 +115,7 @@ public static class InvoiceViews
         var adjustments = await db.InvoiceAdjustments.AsNoTracking()
             .Where(a => a.InvoiceId == invoiceId)
             .OrderBy(a => a.CreatedAt)
-            .Select(a => new InvoiceAdjustmentLine(a.Id, a.AmountPiasters, a.Reason, a.CreatedAt))
+            .Select(a => new InvoiceAdjustmentLine(a.Id, a.AmountPiasters, a.Reason, a.CreatedAt, a.CarriedMonthKey))
             .ToListAsync(cancellationToken);
         var timeline = await db.InvoiceStatusHistories.AsNoTracking()
             .Where(h => h.InvoiceId == invoiceId)
@@ -127,6 +134,6 @@ public static class InvoiceViews
             invoice.Id, invoice.MonthKey, invoice.PeriodStart, invoice.PeriodEnd, invoice.ExamCount, invoice.ConsultationCount,
             invoice.ExamAmountPiasters, invoice.ConsultationAmountPiasters, invoice.AdjustmentsPiasters, invoice.TotalDuePiasters,
             invoice.DueDate, invoice.Status, InvoiceStatuses.Payable(invoice.Status), invoice.PaidAt, invoice.PaidMethod,
-            branches, adjustments, timeline, payments, forAdmin ? invoice.Doctor : null);
+            branches, adjustments, timeline, payments, forAdmin ? invoice.Doctor : null, invoice.IsFinal);
     }
 }

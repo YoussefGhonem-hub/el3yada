@@ -107,6 +107,8 @@ public static class SettingFields
         Int("gracePeriodDays", 0, 31, s => s.GracePeriodDays, (s, v) => s.GracePeriodDays = v),
         // spec 6.16 BR-T1, BR-T2: applies to doctors approved after the change.
         Int("trialDays", 1, 90, s => s.TrialDays, (s, v) => s.TrialDays = v),
+        // spec 6.17 BR-DEL2: days from a deletion request to the erasure; applies to deletions started after the change.
+        Int("accountDeletionGraceDays", 7, 90, s => s.AccountDeletionGraceDays, (s, v) => s.AccountDeletionGraceDays = v),
         Int("maxConsecutiveConsultations", 1, 5, s => s.MaxConsecutiveConsultations, (s, v) => s.MaxConsecutiveConsultations = v),
         Int("maxUploadMb", 1, 200, s => s.MaxUploadMb, (s, v) => s.MaxUploadMb = v),
         Int("maxAssistantsPerDoctor", 0, 50, s => s.MaxAssistantsPerDoctor, (s, v) => s.MaxAssistantsPerDoctor = v),

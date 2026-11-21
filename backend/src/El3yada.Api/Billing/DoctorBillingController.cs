@@ -16,6 +16,8 @@ namespace El3yada.Api.Billing;
 [ApiController]
 [Route("api/billing")]
 [Clinic(ClinicPermissions.BillingView)]
+// A doctor in their account's grace period pays the invoices that hold its erasure back (BR-DEL9, A16).
+[AllowWhilePendingDeletion]
 public sealed class DoctorBillingController(
     AppDbContext db,
     IFileStorage storage,
@@ -39,7 +41,8 @@ public sealed class DoctorBillingController(
                 i.Id, i.MonthKey, i.PeriodStart, i.PeriodEnd, i.ExamCount, i.ConsultationCount, i.ExamAmountPiasters,
                 i.ConsultationAmountPiasters, i.AdjustmentsPiasters, i.TotalDuePiasters, i.DueDate, i.Status,
                 i.Status == InvoiceStatuses.Unpaid || i.Status == InvoiceStatuses.Rejected || i.Status == InvoiceStatuses.Overdue,
-                i.PaidAt))
+                i.PaidAt,
+                i.IsFinal))
             .ToListAsync(cancellationToken);
         return Ok(new InvoiceListView(
             rows,

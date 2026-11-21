@@ -171,6 +171,14 @@ public sealed class AdminUsersController(
             return Ok(View(admin));
         }
 
+        // An admin being deleted is restored or erased through AD12 (spec 6.17), never switched here.
+        if (admin.Status is AccountStatuses.PendingDeletion or AccountStatuses.Deleted)
+        {
+            return this.ConflictProblem(
+                admin.Status == AccountStatuses.Deleted ? ErrorCodes.AccountDeleted : ErrorCodes.AccountDeletionScheduled,
+                "This admin account is being deleted.");
+        }
+
         var disable = request.Status == AccountStatuses.Disabled;
         if (disable && admin.AdminRole == AdminRoles.SuperAdmin && !superAdmins.Any(id => id != admin.Id))
         {

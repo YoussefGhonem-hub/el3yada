@@ -4,9 +4,7 @@ public static partial class ErrorCodes
 {
     public const string Unauthorized = "UNAUTHORIZED";
     public const string Internal = "INTERNAL_ERROR";
-    // Phase 4: patient app and account support.
-    public const string DeletionAlreadyRequested = "DELETION_ALREADY_REQUESTED";
-    public const string DeletionAlreadyReviewed = "DELETION_ALREADY_REVIEWED";
+    // Phase 4: patient app and account support. Account deletion codes are in Features/AccountDeletion.
     public const string AccountDeleted = "ACCOUNT_DELETED";
     public const string AccountRoleNotSupported = "ACCOUNT_ROLE_NOT_SUPPORTED";
     public const string FileMissing = "FILE_MISSING";

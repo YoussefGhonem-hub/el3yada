@@ -66,6 +66,7 @@ internal static class ZeroDefaults
         ("DoctorPatients", "SelfBookingBlocked"),
         ("Doctors", "RxPreprinted"),
         ("Invoices", "AdjustmentsPiasters"),
+        ("Invoices", "IsFinal"),
         ("MedicalRecordAttachments", "SortOrder"),
         ("MedicalRecords", "Deleted"),
         ("MonthlyStats", "ExamCount"),

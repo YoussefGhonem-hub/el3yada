@@ -163,6 +163,44 @@ public sealed class CatalogsTests(IntegrationHost host)
     }
 
     [Fact]
+    public async Task Every_version_view_gives_the_unpacked_size_for_D0()
+    {
+        var admin = await TestData.CreateAdminAsync(Factory);
+        using var asAdmin = await Factory.SignedInClientAsync(admin);
+        var (_, doctor, _) = await TestData.SignedInDoctorWithBranchAsync(Factory);
+        // Smaller than every other test's catalog, so publishing after it never needs confirmDrop.
+        var file = BuildCatalog(100, 50, 25);
+        long unpacked;
+        using (var gzip = new GZipStream(new MemoryStream(file), CompressionMode.Decompress))
+        using (var copy = new MemoryStream())
+        {
+            await gzip.CopyToAsync(copy);
+            unpacked = copy.Length;
+        }
+
+        var (status, published) = await PublishAsync(asAdmin, file, Manifest(file), confirmDrop: true);
+
+        Assert.Equal(HttpStatusCode.Created, status);
+        Assert.True(unpacked > file.Length);
+        Assert.Equal(unpacked, published.GetProperty("uncompressedSizeBytes").GetInt64());
+        Assert.Equal(file.Length, published.GetProperty("sizeBytes").GetInt64());
+        var (_, current) = await doctor.GetJsonAsync("/api/catalog/current");
+        Assert.Equal(unpacked, current.GetProperty("uncompressedSizeBytes").GetInt64());
+        var (_, settings) = await Factory.Client().GetJsonAsync("/api/settings/public");
+        Assert.Equal(unpacked, settings.GetProperty("catalog").GetProperty("uncompressedSizeBytes").GetInt64());
+        var (_, versions) = await asAdmin.GetJsonAsync("/api/admin/catalogVersions");
+        Assert.Equal(unpacked, versions[0].GetProperty("version").GetProperty("uncompressedSizeBytes").GetInt64());
+        var audit = await TestData.WithDbAsync(Factory, db => db.AuditLogs
+            .Where(a => a.Action == "catalogPublished").OrderByDescending(a => a.Id).Select(a => a.DetailsJson).FirstAsync());
+        Assert.Contains($"\"uncompressedSizeBytes\":{unpacked}", audit);
+
+        // Without the size measured at publish time (another API instance, a restart), it comes from the stored file.
+        await using var restarted = Factory.WithWebHostBuilder(_ => { });
+        var (_, again) = await restarted.CreateClient().GetJsonAsync("/api/settings/public");
+        Assert.Equal(unpacked, again.GetProperty("catalog").GetProperty("uncompressedSizeBytes").GetInt64());
+    }
+
+    [Fact]
     public async Task Doctors_admins_and_drafting_assistants_download_the_file_with_ranges_and_patients_never()
     {
         var admin = await TestData.CreateAdminAsync(Factory);

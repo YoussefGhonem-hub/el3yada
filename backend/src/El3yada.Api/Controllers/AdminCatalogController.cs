@@ -21,7 +21,8 @@ namespace El3yada.Api.Controllers;
 [ApiController]
 [Route("api/admin")]
 [Authorize(Policy = Policies.Admin)]
-public sealed class AdminCatalogController(AppDbContext db, IFileStorage storage, Auditor auditor, TimeProvider time) : ControllerBase
+public sealed class AdminCatalogController(AppDbContext db, IFileStorage storage, Auditor auditor, CatalogSizes sizes, TimeProvider time)
+    : ControllerBase
 {
     private const long PublishRequestMaxBytes = CatalogSchema.MaxFileBytes + (1024 * 1024);
 
@@ -161,7 +162,11 @@ public sealed class AdminCatalogController(AppDbContext db, IFileStorage storage
                 settings.CurrentCatalogVersionId = version.Id;
                 auditor.Add(
                     AuditActions.CatalogPublished, AuditTargets.CatalogVersion, version.Id,
-                    new { version = number, schemaVersion = info.SchemaVersion, drugs = info.Drugs, labs = info.Labs, radiology = info.Radiology, sizeBytes = size, confirmedDrop = confirmDrop });
+                    new
+                    {
+                        version = number, schemaVersion = info.SchemaVersion, drugs = info.Drugs, labs = info.Labs, radiology = info.Radiology,
+                        sizeBytes = size, uncompressedSizeBytes = info.UncompressedBytes, confirmedDrop = confirmDrop,
+                    });
                 await db.SaveChangesAsync(cancellationToken);
             }
             catch
@@ -170,7 +175,9 @@ public sealed class AdminCatalogController(AppDbContext db, IFileStorage storage
                 throw;
             }
 
-            return StatusCode(StatusCodes.Status201Created, CatalogController.ViewOf(version));
+            // Measured while checking the file: the space D0 needs on the device once it is unpacked.
+            sizes.Remember(number, info.UncompressedBytes);
+            return StatusCode(StatusCodes.Status201Created, CatalogController.ViewOf(version, info.UncompressedBytes));
         }
         finally
         {
@@ -193,9 +200,15 @@ public sealed class AdminCatalogController(AppDbContext db, IFileStorage storage
             .OrderByDescending(v => v.VersionNumber)
             .Select(v => new { Version = v, PublishedByName = v.PublishedByNavigation.DisplayName })
             .ToListAsync(cancellationToken);
-        return Ok(rows.Select(r => new
+        var views = new List<CatalogVersionView>(rows.Count);
+        foreach (var row in rows)
         {
-            version = CatalogController.ViewOf(r.Version),
+            views.Add(CatalogController.ViewOf(row.Version, await sizes.GetAsync(storage, row.Version, cancellationToken)));
+        }
+
+        return Ok(rows.Select((r, i) => new
+        {
+            version = views[i],
             current = r.Version.Id == currentId,
             publishedBy = new { userId = r.Version.PublishedBy, displayName = r.PublishedByName },
         }));

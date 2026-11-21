@@ -189,7 +189,8 @@ public sealed class AdminSettingsController(AppDbContext db, Auditor auditor, Ti
 [ApiController]
 [Route("api/settings")]
 [AllowAnonymous]
-public sealed class PublicSettingsController(AppDbContext db) : ControllerBase
+public sealed class PublicSettingsController(AppDbContext db, El3yada.Api.Storage.IFileStorage storage, El3yada.Api.Catalogs.CatalogSizes sizes)
+    : ControllerBase
 {
     [HttpGet("public")]
     public async Task<IActionResult> GetPublic(CancellationToken cancellationToken)
@@ -211,7 +212,9 @@ public sealed class PublicSettingsController(AppDbContext db) : ControllerBase
             terms = Legal(s.TermsAr, s.TermsEn, Latest(changes, "termsAr", "termsEn")),
             privacy = Legal(s.PrivacyAr, s.PrivacyEn, Latest(changes, "privacyAr", "privacyEn")),
             // Spec 8 settings/public.catalog: the version doctors' and admins' apps download (D0, BR-CAT12). Null until the first publish.
-            catalog = s.CurrentCatalogVersion is { } catalog ? CatalogController.ViewOf(catalog) : null,
+            catalog = s.CurrentCatalogVersion is { } catalog
+                ? CatalogController.ViewOf(catalog, await sizes.GetAsync(storage, catalog, cancellationToken))
+                : null,
         });
     }
 

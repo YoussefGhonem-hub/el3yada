@@ -59,6 +59,8 @@ try
 
     builder.Services.AddSingleton<El3yada.Api.Storage.IFileStorage, LocalFileStorage>();
     builder.Services.AddSingleton<El3yada.Api.Infrastructure.Files.IFileStorage, El3yada.Api.Infrastructure.Files.FileStorageAdapter>();
+    // The unpacked size of each published catalog (D0), read once per version.
+    builder.Services.AddSingleton<El3yada.Api.Catalogs.CatalogSizes>();
 
     // JWT access tokens checked against the database on every request, refresh-token rotation, policies.
     builder.Services.AddAppAuth();

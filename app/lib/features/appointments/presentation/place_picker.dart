@@ -89,14 +89,25 @@ class _PlacePickerState extends ConsumerState<PlacePicker> {
               EmptyState(icon: Icons.event_busy, message: l10n.noOpenDays)
             else if (day.reason != null)
               EmptyState(icon: Icons.event_busy, message: context.bookingError(day.reason!))
-            else if (a.mode == 'queue')
+            else if (a.mode == 'queue') ...[
+              // P15: a place on the period's list; the turn is given at the clinic, in order of arrival (BR-AP3).
+              if (!widget.staff)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(children: [
+                    Icon(Icons.groups_outlined, size: 18, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(l10n.queueByArrival, style: Theme.of(context).textTheme.bodyMedium)),
+                  ]),
+                ),
               for (final p in day.periods)
                 _PeriodTile(
                   period: p,
                   selected: widget.value == PlaceChoice(day.date, p.start),
                   staff: widget.staff,
                   onTap: () => widget.onChanged(PlaceChoice(day.date, p.start, full: !p.available)),
-                )
+                ),
+            ]
             else
               Wrap(
                 spacing: 8,
@@ -141,9 +152,8 @@ class _PeriodTile extends StatelessWidget {
         onTap: enabled ? onTap : null,
         leading: Icon(selected ? Icons.radio_button_checked : Icons.radio_button_unchecked),
         title: Text([?period.label, l10n.timeRange(context.clock(period.start), context.clock(period.end))].join(' · ')),
-        subtitle: Text(period.unavailable != null
-            ? context.bookingError(period.unavailable!)
-            : '${l10n.placesLeft(period.remaining)} · ${l10n.estimatedTime(context.clock(period.estimatedTime ?? period.start))}'),
+        // No number and no estimate before arrival: the order is the order of arrival (BR-AP3).
+        subtitle: Text(period.unavailable != null ? context.bookingError(period.unavailable!) : l10n.placesLeft(period.remaining)),
       ),
     );
   }

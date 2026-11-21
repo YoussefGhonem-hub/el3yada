@@ -399,7 +399,7 @@ namespace El3yada.Data.Migrations
 
                             t.HasCheckConstraint("CK_Appointments_Mode", "([Mode]='timed' OR [Mode]='queue')");
 
-                            t.HasCheckConstraint("CK_Appointments_Queue", "([Mode]='timed' OR [QueueNumber] IS NOT NULL OR ([Status]='cancelled' OR [Status]='rejected' OR [Status]='pending'))");
+                            t.HasCheckConstraint("CK_Appointments_Queue", "([Mode]='timed' OR [QueueNumber] IS NOT NULL OR ([Status]='noShow' OR [Status]='confirmed' OR [Status]='cancelled' OR [Status]='rejected' OR [Status]='pending'))");
 
                             t.HasCheckConstraint("CK_Appointments_Reminders", "(isjson([RemindersSentJson])=(1))");
 

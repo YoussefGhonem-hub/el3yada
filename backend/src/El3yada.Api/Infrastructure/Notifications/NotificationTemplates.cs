@@ -31,6 +31,8 @@ public static class NotificationTypes
     public const string BookingCancelled = "bookingCancelled";
     public const string DoctorDelayed = "doctorDelayed";
     public const string TurnComing = "turnComing";
+    public const string CheckedIn = "checkedIn";
+    public const string NextInLine = "nextInLine";
     public const string SelfBookingOff = "selfBookingOff";
     public const string StaffBookingActivity = "staffBookingActivity";
     public const string NewSignup = "newSignup";
@@ -114,9 +116,32 @@ public static class NotificationTemplates
 
     // ---- Bookings (Phase 6) -------------------------------------------------------------------
 
-    public static NotificationMessage BookingConfirmed(string whenAr, string whenEn, Guid appointmentId) => new(
-        NotificationTypes.BookingConfirmed, "تم تأكيد حجزك", "Booking confirmed", whenAr, whenEn,
+    /// <param name="queue">Queue mode: no number yet, turns go in order of arrival (BR-AP3).</param>
+    public static NotificationMessage BookingConfirmed(string whenAr, string whenEn, Guid appointmentId, bool queue = false) => new(
+        NotificationTypes.BookingConfirmed, "تم تأكيد حجزك", "Booking confirmed",
+        queue ? $"{whenAr} — الدور بأسبقية الحضور" : whenAr, queue ? $"{whenEn}. Turns go in order of arrival" : whenEn,
         $"/patient/appointments/{appointmentId}", new { appointmentId });
+
+    /// <summary>
+    /// BR-AP16, queue mode, at check-in: «تم تسجيل حضورك — دورك رقم 7، وقبلك 3 مرضى», with the estimated wait
+    /// (patients ahead × the branch's average visit time).
+    /// </summary>
+    public static NotificationMessage CheckedIn(int number, int ahead, int waitMinutes, Guid appointmentId)
+    {
+        var aheadText = Features.Appointments.AppointmentTexts.Ahead(ahead);
+        var wait = Features.Appointments.AppointmentTexts.Minutes(waitMinutes);
+        return new(
+            NotificationTypes.CheckedIn, "تم تسجيل حضورك", "You're checked in",
+            ahead == 0 ? $"دورك رقم {number}، {aheadText.Ar}" : $"دورك رقم {number}، {aheadText.Ar}. الانتظار المتوقع {wait.Ar}",
+            ahead == 0 ? $"Your number is {number}, and {aheadText.En}" : $"Your number is {number}, and {aheadText.En}. Estimated wait {wait.En}",
+            $"/patient/appointments/{appointmentId}", new { appointmentId, queueNumber = number, ahead, waitMinutes });
+    }
+
+    /// <summary>[S] BR-AP16: the patient before them went in to the doctor.</summary>
+    public static NotificationMessage NextInLine(int number, Guid appointmentId) => new(
+        NotificationTypes.NextInLine, "دورك التالي", "You're next",
+        $"دورك رقم {number}: استعد للدخول للطبيب", $"Number {number}: get ready to go in to the doctor",
+        $"/patient/appointments/{appointmentId}", new { appointmentId, queueNumber = number });
 
     public static NotificationMessage BookingPending(Guid appointmentId) => new(
         NotificationTypes.BookingPending, "حجزك في انتظار تأكيد العيادة", "Waiting for the clinic to confirm",

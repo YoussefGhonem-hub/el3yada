@@ -34,7 +34,17 @@ final Map<String, WidgetBuilder> clinicDestinationScreens = {
 final Map<String, List<RouteBase>> clinicDestinationRoutes = {
   for (final paths in ClinicPaths.all) ...{
     paths.home: [
-      GoRoute(path: 'sessions/new', builder: (context, state) => const NewSessionScreen(origin: SessionOrigin.home)),
+      // From the live board: `?patient=…&appointment=…&branch=…` (Start session, Finish), and saving completes
+      // that checked-in booking (BR-AP10, BR-LB3).
+      GoRoute(
+        path: 'sessions/new',
+        builder: (context, state) => NewSessionScreen(
+          origin: SessionOrigin.home,
+          patientId: state.uri.queryParameters['patient'],
+          appointmentId: state.uri.queryParameters['appointment'],
+          branchId: state.uri.queryParameters['branch'],
+        ),
+      ),
       GoRoute(
         path: 'sessions/:sessionId',
         builder: (context, state) => SessionDetailsPage(sessionId: state.pathParameters['sessionId']!),

@@ -5234,5 +5234,87 @@
   "patientFilterUpcoming": "Has a booking",
   "patientFilterNoShows": "Has no-shows",
   "patientColumnNextBooking": "Next booking",
-  "patientColumnNoShows": "No-shows"
+  "patientColumnNoShows": "No-shows",
+  "queueByArrival": "Turns go in order of arrival at the clinic",
+  "queueCheckInOnArrival": "Check in at reception when you arrive",
+  "queueByArrivalCheckIn": "Turns go in order of arrival: check in at reception when you arrive",
+  "queueYourNumber": "Your number",
+  "queuePatientsAhead": "{count, plural, =0{You're next} =1{1 patient ahead of you} other{{count} patients ahead of you}}",
+  "@queuePatientsAhead": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "queueWaitAbout": "{minutes, plural, =1{Estimated wait about 1 minute} other{Estimated wait about {minutes} minutes}}",
+  "@queueWaitAbout": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "queueWithDoctorNow": "You're with the doctor now",
+  "periodMorningFrom": "Morning period from {time}",
+  "@periodMorningFrom": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "periodEveningFrom": "Evening period from {time}",
+  "@periodEveningFrom": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "homeNextAppointment": "Next appointment",
+  "homeNoUpcomingAppointment": "No upcoming appointment",
+  "boardBooked": "Booked",
+  "boardNextPatient": "Next patient",
+  "boardNoOneWaiting": "No one is waiting",
+  "boardStartSession": "Start session",
+  "boardFinish": "Finish",
+  "boardDragHint": "Drag to the next or previous column",
+  "boardPendingCount": "{count, plural, =1{1 waiting for confirmation} other{{count} waiting for confirmation}}",
+  "@boardPendingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boardNoSessionCount": "{count, plural, =1{1 checked in, no session} other{{count} checked in, no session}}",
+  "@boardNoSessionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boardAwaitingDoctorCount": "{count, plural, =1{1 session waiting for you} other{{count} sessions waiting for you}}",
+  "@boardAwaitingDoctorCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boardUnreadChatsCount": "{count, plural, =1{1 unread chat} other{{count} unread chats}}",
+  "@boardUnreadChatsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boardNoSessionTitle": "Checked in, no session",
+  "boardNoSessionBody": "Record the session, or mark the patient as left without being seen.",
+  "waitingRoomScreen": "Waiting-room screen",
+  "waitingRoomNext": "Next",
+  "waitingRoomExit": "Exit full screen"
 }

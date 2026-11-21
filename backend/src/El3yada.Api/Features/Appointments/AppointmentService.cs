@@ -1,5 +1,4 @@
 using System.Data;
-using System.Globalization;
 using El3yada.Api.Features.PatientPortal;
 using El3yada.Api.Infrastructure.Auditing;
 using El3yada.Api.Infrastructure.Auth;
@@ -140,7 +139,8 @@ public sealed class AppointmentService(
             PeriodStartLocal = place.PeriodStart,
             StartUtc = place.StartUtc,
             EndUtc = place.EndUtc,
-            QueueNumber = settings.IsQueue ? await NextQueueNumberAsync(r.BranchId, r.Date, place.PeriodStart, ct) : null,
+            // Queue mode: a place on the period's list, no number until check-in (BR-AP3).
+            QueueNumber = null,
             Status = status,
             Source = actor.IsPatient ? "patientApp" : "staff",
             BookedBy = actor.UserId,
@@ -148,24 +148,26 @@ public sealed class AppointmentService(
             Reason = Clean(r.Reason),
             StaffNotes = actor.IsPatient ? null : Clean(r.StaffNotes),
             Overbooked = place.Overbooked,
+            RemindersSentJson = RemindersAlreadyDue(place.StartUtc, settings.ReminderMinutes),
             CreatedAt = Now,
             UpdatedAt = Now,
         };
-        appointment.BoardOrder = appointment.QueueNumber ?? (int)TimeOnly.FromDateTime(CairoTime.ToCairo(place.StartUtc)).ToTimeSpan().TotalMinutes;
+        appointment.BoardOrder = BookedOrder(appointment);
         db.Appointments.Add(appointment);
         AddHistory(appointment, actor, "created", null, Describe(appointment), null);
 
-        var when = WhenText(appointment);
+        var when = AppointmentTexts.When(appointment);
         if (actor.IsPatient)
         {
             notifications.Add(actor.UserId, status == AppointmentStatuses.Pending
                 ? NotificationTemplates.BookingPending(appointment.Id)
-                : NotificationTemplates.BookingConfirmed(when.Ar, when.En, appointment.Id));
+                : NotificationTemplates.BookingConfirmed(when.Ar, when.En, appointment.Id, settings.IsQueue));
             await NotifyStaffAsync(appointment, "حجز جديد", "New booking", ct);
         }
         else if (patientId is not null)
         {
-            notifications.Add(await PatientUserIdAsync(patientId.Value, ct), NotificationTemplates.BookingConfirmed(when.Ar, when.En, appointment.Id));
+            notifications.Add(await PatientUserIdAsync(patientId.Value, ct),
+                NotificationTemplates.BookingConfirmed(when.Ar, when.En, appointment.Id, settings.IsQueue));
         }
         if (!actor.IsPatient) audit.Add("appointment.created", nameof(Appointment), appointment.Id, appointment.DoctorId, patientId);
 
@@ -222,10 +224,12 @@ public sealed class AppointmentService(
         appointment.EndUtc = place.EndUtc;
         appointment.Mode = schedule.Settings.Mode;
         appointment.Overbooked = place.Overbooked;
-        if (schedule.Settings.IsQueue && (periodChanged || appointment.QueueNumber is null))
-            appointment.QueueNumber = await NextQueueNumberAsync(r.BranchId, r.Date, place.PeriodStart, ct);
-        if (!schedule.Settings.IsQueue) appointment.QueueNumber = null;
-        appointment.BoardOrder = appointment.QueueNumber ?? (int)TimeOnly.FromDateTime(CairoTime.ToCairo(place.StartUtc)).ToTimeSpan().TotalMinutes;
+        // Still only a place on the list (BR-AP3): the number comes at check-in.
+        appointment.QueueNumber = null;
+        appointment.BoardOrder = BookedOrder(appointment);
+        // The reminders start again for the new time, except those whose time has already passed (case 27).
+        if (periodChanged || appointment.StartUtc != current.StartUtc)
+            appointment.RemindersSentJson = RemindersAlreadyDue(appointment.StartUtc, schedule.Settings.ReminderMinutes);
         appointment.RescheduleCount++;
         appointment.UpdatedAt = Now;
         AddHistory(appointment, actor, "rescheduled", from, Describe(appointment), Clean(r.Reason));
@@ -236,7 +240,7 @@ public sealed class AppointmentService(
         }
         else if (appointment.PatientId is { } pid)
         {
-            var when = WhenText(appointment);
+            var when = AppointmentTexts.When(appointment);
             notifications.Add(await PatientUserIdAsync(pid, ct), NotificationTemplates.BookingRescheduledByClinic(when.Ar, when.En, appointment.Id));
             audit.Add("appointment.rescheduled", nameof(Appointment), appointment.Id, appointment.DoctorId, pid);
         }
@@ -291,8 +295,9 @@ public sealed class AppointmentService(
         AddHistory(appointment, actor, "confirmed", null, null, null);
         if (appointment.PatientId is { } pid)
         {
-            var when = WhenText(appointment);
-            notifications.Add(await PatientUserIdAsync(pid, ct), NotificationTemplates.BookingConfirmed(when.Ar, when.En, appointment.Id));
+            var when = AppointmentTexts.When(appointment);
+            notifications.Add(await PatientUserIdAsync(pid, ct),
+                NotificationTemplates.BookingConfirmed(when.Ar, when.En, appointment.Id, appointment.Mode == "queue"));
         }
         await SaveBookingAsync(ct);
         await board.PublishAsync(appointment.BranchId, appointment.LocalDate, ct);
@@ -433,10 +438,28 @@ public sealed class AppointmentService(
         if (link.ConsultationsSinceExam >= max) throw ApiException.Conflict(ErrorCodes.ConsultationRequiresExam);
     }
 
-    /// <summary>Numbers are given per period in booking order and never reused (BR-AP3).</summary>
-    internal async Task<int> NextQueueNumberAsync(Guid branchId, DateOnly date, TimeOnly period, CancellationToken ct) =>
-        (await db.Appointments.Where(a => a.BranchId == branchId && a.LocalDate == date && a.PeriodStartLocal == period)
-            .MaxAsync(a => a.QueueNumber, ct) ?? 0) + 1;
+    /// <summary>
+    /// The board order of a booking not yet checked in. Queue mode: 0, as Expected is ordered by booking time
+    /// and the card gets its number, and its place in Waiting, at check-in (BR-AP3). Timed mode: the minute of
+    /// the day, so the booked time sets the order.
+    /// </summary>
+    internal static int BookedOrder(Appointment a) => a.Mode == "queue"
+        ? 0
+        : (int)TimeOnly.FromDateTime(CairoTime.ToCairo(a.StartUtc)).ToTimeSpan().TotalMinutes;
+
+    /// <summary>Reminders whose time has already passed when the booking is made (or moved) are skipped (case 27).</summary>
+    internal string RemindersAlreadyDue(DateTime startUtc, IReadOnlyList<int> reminderMinutes) =>
+        System.Text.Json.JsonSerializer.Serialize(reminderMinutes.Where(m => startUtc.AddMinutes(-m) <= Now).Order().ToList());
+
+    /// <summary>
+    /// How many checked-in patients of the same period go in before this one (BR-AP16): priority patients
+    /// first, then by number, which is the order of arrival. Patients with the doctor are not counted.
+    /// </summary>
+    internal Task<int> AheadAsync(Guid id, Guid branchId, DateOnly date, TimeOnly period, bool isPriority, int boardOrder, CancellationToken ct) =>
+        db.Appointments.AsNoTracking().CountAsync(x =>
+            x.BranchId == branchId && x.LocalDate == date && x.PeriodStartLocal == period
+            && x.Status == AppointmentStatuses.CheckedIn && x.Id != id
+            && (isPriority ? x.IsPriority && x.BoardOrder < boardOrder : x.IsPriority || x.BoardOrder < boardOrder), ct);
 
     internal async Task SaveBookingAsync(CancellationToken ct)
     {
@@ -509,7 +532,7 @@ public sealed class AppointmentService(
         var name = a.PatientId is { } pid
             ? await db.DoctorPatients.Where(l => l.DoctorId == a.DoctorId && l.PatientId == pid).Select(l => l.PatientName).FirstAsync(ct)
             : a.GuestName!;
-        var when = WhenText(a);
+        var when = AppointmentTexts.When(a);
         foreach (var userId in to)
             notifications.Add(userId, NotificationTemplates.StaffBookingActivity(titleAr, titleEn, $"{name} — {when.Ar}", $"{name}: {when.En}", a.Id));
     }
@@ -522,15 +545,6 @@ public sealed class AppointmentService(
 
     internal static string Describe(Appointment a) =>
         $"{a.BranchId:N}|{a.LocalDate:yyyy-MM-dd}|{CairoTime.ToCairo(a.StartUtc):HH:mm}|{a.QueueNumber}";
-
-    /// <summary>"السبت 22 نوفمبر 18:00 — رقم 15" for notifications, in both languages.</summary>
-    internal static (string Ar, string En) WhenText(Appointment a)
-    {
-        var local = CairoTime.ToCairo(a.StartUtc);
-        var ar = local.ToString("dddd d MMMM HH:mm", CultureInfo.GetCultureInfo("ar-EG"));
-        var en = local.ToString("dddd d MMMM HH:mm", CultureInfo.GetCultureInfo("en-GB"));
-        return a.QueueNumber is { } n ? ($"{ar} — رقم {n}", $"{en}, number {n}") : (ar, en);
-    }
 
     private static string? Clean(string? text) => string.IsNullOrWhiteSpace(text) ? null : text.Trim();
 
@@ -548,7 +562,7 @@ public sealed class AppointmentService(
         forPatient ? null : a.StaffNotes,   // staff only (spec 8)
         a.Overbooked, a.RescheduleCount, a.CheckedInAt, a.CalledAt, a.SessionId, a.CancelReason ?? a.RejectReason, a.CancelledByRole,
         a.IsPriority, a.FlaggedNoSession, a.CreatedAt,
-        false, null, null, null, null);
+        false, null, null, null, null, null, null);
 
     private async Task<AppointmentDto> DecorateAsync(AppointmentDto dto, BookingActor actor, bool includeHistory, CancellationToken ct)
     {
@@ -562,16 +576,25 @@ public sealed class AppointmentService(
         var canChange = dto.Status is AppointmentStatuses.Pending or AppointmentStatuses.Confirmed
                         && (!actor.IsPatient || Now <= dto.StartUtc.AddMinutes(-branch.FreeCancelMinutes));
 
-        int? nowServing = null;
+        // Queue mode on the day (BR-AP15, BR-AP16): "now serving" for the period and, from check-in on, how many
+        // are ahead and the estimated wait (patients ahead × the branch's average visit time, spec 6.12.2).
+        // Before check-in there is no number and no estimate: the turn is given on arrival (BR-AP3).
+        int? nowServing = null, ahead = null, waitMinutes = null;
         TimeOnly? estimate = null;
-        if (dto.Mode == "queue" && dto.Date == CairoTime.Today(clock) && dto.QueueNumber is { } number)
+        if (dto.Mode == "queue" && dto.Date == CairoTime.Today(clock))
         {
             nowServing = await db.BranchDayStates.AsNoTracking()
                 .Where(s => s.BranchId == dto.BranchId && s.LocalDate == dto.Date && s.PeriodStartLocal == dto.Time)
                 .Select(s => s.NowServingNumber).FirstOrDefaultAsync(ct);
-            var ahead = Math.Max(0, number - (nowServing ?? 0) - 1);
-            var start = CairoTime.Now(clock) > dto.Date.ToDateTime(dto.Time) ? CairoTime.Now(clock) : dto.Date.ToDateTime(dto.Time);
-            estimate = TimeOnly.FromDateTime(start.AddMinutes(ahead * branch.AvgVisitMinutes));
+            if (dto.Status == AppointmentStatuses.CheckedIn && dto.QueueNumber is not null)
+            {
+                var order = await db.Appointments.AsNoTracking().Where(a => a.Id == dto.Id).Select(a => a.BoardOrder).FirstAsync(ct);
+                ahead = await AheadAsync(dto.Id, dto.BranchId, dto.Date, dto.Time, dto.IsPriority, order, ct);
+                waitMinutes = ahead * branch.AvgVisitMinutes;
+                var now = CairoTime.Now(clock);
+                var periodStart = dto.Date.ToDateTime(dto.Time);
+                estimate = TimeOnly.FromDateTime((now > periodStart ? now : periodStart).AddMinutes(waitMinutes.Value));
+            }
         }
 
         IReadOnlyList<AppointmentHistoryDto>? history = null;
@@ -583,6 +606,10 @@ public sealed class AppointmentService(
                     h.Action, actor.IsPatient ? null : h.FromValue, actor.IsPatient ? null : h.ToValue, h.Reason))
                 .ToListAsync(ct);
         }
-        return dto with { CanChange = canChange, NowServing = nowServing, EstimatedTime = estimate, History = history, BranchPhones = branch.Phones };
+        return dto with
+        {
+            CanChange = canChange, NowServing = nowServing, EstimatedTime = estimate, History = history, BranchPhones = branch.Phones,
+            Ahead = ahead, EstimatedWaitMinutes = waitMinutes,
+        };
     }
 }

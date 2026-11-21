@@ -31,9 +31,10 @@ Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
 
 try
 {
-    // `dotnet run -- seed-admin <email>`, `seed-specialty-profiles <csv>` (and, in Development only, `add-booking …`)
-    // run a one-time command instead of the web server.
-    var isCommand = SeedAdminCommand.IsInvocation(args) || SeedSpecialtyProfilesCommand.IsInvocation(args) || AddBookingCommand.IsInvocation(args);
+    // `dotnet run -- seed-admin <email>`, `seed-specialty-profiles <csv>`, `seed-review-accounts …` (and, in
+    // Development only, `add-booking …`) run a one-time command instead of the web server.
+    var isCommand = SeedAdminCommand.IsInvocation(args) || SeedSpecialtyProfilesCommand.IsInvocation(args)
+        || SeedReviewAccountsCommand.IsInvocation(args) || AddBookingCommand.IsInvocation(args);
     var builder = WebApplication.CreateBuilder(isCommand ? [] : args);
 
     // Serilog: console and a daily file, set in the "Serilog" section of appsettings*.json.
@@ -163,7 +164,9 @@ try
             ? await AddBookingCommand.RunAsync(app.Services, args, Console.Out)
             : SeedSpecialtyProfilesCommand.IsInvocation(args)
                 ? await SeedSpecialtyProfilesCommand.RunAsync(app.Services, args, Console.Out)
-                : await SeedAdminCommand.RunAsync(app.Services, args, Console.Out);
+                : SeedReviewAccountsCommand.IsInvocation(args)
+                    ? await SeedReviewAccountsCommand.RunAsync(app.Services, args, Console.Out)
+                    : await SeedAdminCommand.RunAsync(app.Services, args, Console.Out);
         return;
     }
 

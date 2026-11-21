@@ -550,6 +550,7 @@ abstract final class AuditActions {
     'doctorServiceActivated',
     'doctorTrialExtended',
     'doctorCreated',
+    'broadcastSent',
     'adminSeeded',
     'adminCreated',
     'adminRoleChanged',
@@ -567,7 +568,7 @@ abstract final class AuditActions {
   ];
 
   static const actorRoles = ['admin', 'doctor', 'assistant', 'patient', 'system'];
-  static const targetTypes = ['doctor', 'user', 'settings'];
+  static const targetTypes = ['doctor', 'user', 'settings', 'broadcast'];
 }
 
 /// AD15 filters. Every one is optional. [from] and [to] are UTC; [to] is

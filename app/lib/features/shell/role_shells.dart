@@ -177,6 +177,7 @@ class RoleShell {
       NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, selectedIcon: Icons.library_books, label: (l) => l.navCatalogs, screenId: 'AD20'),
       NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, selectedIcon: Icons.admin_panel_settings, label: (l) => l.navAdmins, screenId: 'AD14', visibleTo: (s) => s.isSuperAdmin),
       NavDestinationSpec(path: '/admin/audit', icon: Icons.history, selectedIcon: Icons.history, label: (l) => l.navAuditLog, screenId: 'AD15'),
+      NavDestinationSpec(path: '/admin/broadcast', icon: Icons.campaign_outlined, selectedIcon: Icons.campaign, label: (l) => l.navBroadcast, screenId: 'AD16'),
       NavDestinationSpec(path: '/admin/notifications', icon: Icons.notifications_outlined, selectedIcon: Icons.notifications, label: (l) => l.navNotifications, screenId: 'AD17'),
       NavDestinationSpec(path: '/admin/settings', icon: Icons.settings_outlined, selectedIcon: Icons.settings, label: (l) => l.navSettings, screenId: 'AD13'),
     ],

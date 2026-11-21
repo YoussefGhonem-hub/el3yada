@@ -15561,6 +15561,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get adminFiltersDone;
+
+  /// No description provided for @navBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast'**
+  String get navBroadcast;
+
+  /// No description provided for @broadcastSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A notification in the app and a push to doctors\' phones, in each doctor\'s language.'**
+  String get broadcastSubtitle;
+
+  /// No description provided for @broadcastAudienceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who gets it'**
+  String get broadcastAudienceTitle;
+
+  /// No description provided for @broadcastAudienceAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All doctors'**
+  String get broadcastAudienceAll;
+
+  /// No description provided for @broadcastAudienceSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Chosen doctors'**
+  String get broadcastAudienceSelected;
+
+  /// No description provided for @broadcastAudienceAllHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every doctor whose clinic is active or suspended. Doctors still waiting for review, rejected or disabled don\'t get it.'**
+  String get broadcastAudienceAllHint;
+
+  /// No description provided for @broadcastChooseDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose doctors'**
+  String get broadcastChooseDoctors;
+
+  /// No description provided for @broadcastChosenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 doctor chosen} other{{count} doctors chosen}}'**
+  String broadcastChosenCount(int count);
+
+  /// No description provided for @broadcastErrorNoDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one doctor.'**
+  String get broadcastErrorNoDoctors;
+
+  /// No description provided for @broadcastMessageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get broadcastMessageTitle;
+
+  /// No description provided for @broadcastMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write it in both languages, or in one: doctors who use the other language see the same text.'**
+  String get broadcastMessageHint;
+
+  /// No description provided for @broadcastTitleAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (Arabic)'**
+  String get broadcastTitleAr;
+
+  /// No description provided for @broadcastBodyAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Text (Arabic)'**
+  String get broadcastBodyAr;
+
+  /// No description provided for @broadcastTitleEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (English)'**
+  String get broadcastTitleEn;
+
+  /// No description provided for @broadcastBodyEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Text (English)'**
+  String get broadcastBodyEn;
+
+  /// No description provided for @broadcastErrorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the message in Arabic, English or both.'**
+  String get broadcastErrorEmpty;
+
+  /// No description provided for @broadcastErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the title too.'**
+  String get broadcastErrorTitle;
+
+  /// No description provided for @broadcastErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the text too.'**
+  String get broadcastErrorBody;
+
+  /// No description provided for @broadcastPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get broadcastPreview;
+
+  /// No description provided for @broadcastPreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message shows here as doctors will see it.'**
+  String get broadcastPreviewEmpty;
+
+  /// No description provided for @broadcastPreviewNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get broadcastPreviewNow;
+
+  /// No description provided for @broadcastSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get broadcastSend;
+
+  /// No description provided for @broadcastConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this broadcast?'**
+  String get broadcastConfirmTitle;
+
+  /// No description provided for @broadcastConfirmAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every doctor gets it at once, in the app and as a push. It can\'t be taken back.'**
+  String get broadcastConfirmAll;
+
+  /// No description provided for @broadcastConfirmSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{The chosen doctor gets it at once, in the app and as a push. It can\'t be taken back.} other{The {count} chosen doctors get it at once, in the app and as a push. It can\'t be taken back.}}'**
+  String broadcastConfirmSelected(int count);
+
+  /// No description provided for @broadcastSent.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Sent to 1 doctor} other{Sent to {count} doctors}}'**
+  String broadcastSent(int count);
+
+  /// No description provided for @broadcastErrorNoRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'None of these doctors can get it now: they\'re waiting for review, rejected or disabled.'**
+  String get broadcastErrorNoRecipients;
+
+  /// No description provided for @broadcastHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get broadcastHistoryTitle;
+
+  /// No description provided for @broadcastHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing sent yet'**
+  String get broadcastHistoryEmpty;
+
+  /// No description provided for @broadcastHistoryEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What you send shows here, with who got it.'**
+  String get broadcastHistoryEmptyBody;
+
+  /// No description provided for @broadcastHistoryMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get broadcastHistoryMore;
+
+  /// No description provided for @broadcastRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 doctor} other{{count} doctors}}'**
+  String broadcastRecipients(int count);
+
+  /// No description provided for @broadcastSentBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String broadcastSentBy(String name);
+
+  /// No description provided for @broadcastPickerSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get broadcastPickerSearch;
+
+  /// No description provided for @broadcastPickerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctors found'**
+  String get broadcastPickerEmpty;
+
+  /// No description provided for @broadcastPickerDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Done} other{Done ({count})}}'**
+  String broadcastPickerDone(int count);
+
+  /// No description provided for @adminAuditBroadcastSent.
+  ///
+  /// In en, this message translates to:
+  /// **'sent a broadcast to doctors'**
+  String get adminAuditBroadcastSent;
+
+  /// No description provided for @adminActionBroadcastSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast sent'**
+  String get adminActionBroadcastSent;
+
+  /// No description provided for @adminTargetBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast'**
+  String get adminTargetBroadcast;
 }
 
 class _AppLocalizationsDelegate

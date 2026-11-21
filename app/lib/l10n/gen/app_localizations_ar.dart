@@ -9061,4 +9061,179 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminFiltersDone => 'تم';
+
+  @override
+  String get navBroadcast => 'إشعار جماعي';
+
+  @override
+  String get broadcastSubtitle =>
+      'إشعار جوه التطبيق وعلى موبايلات الأطباء، بلغة كل طبيب.';
+
+  @override
+  String get broadcastAudienceTitle => 'مين يوصله';
+
+  @override
+  String get broadcastAudienceAll => 'كل الأطباء';
+
+  @override
+  String get broadcastAudienceSelected => 'أطباء محددين';
+
+  @override
+  String get broadcastAudienceAllHint =>
+      'كل طبيب عيادته شغالة أو موقوفة. الأطباء اللي طلبهم لسه بيتراجع أو مرفوض أو معطّلين مش هيوصلهم.';
+
+  @override
+  String get broadcastChooseDoctors => 'اختار الأطباء';
+
+  @override
+  String broadcastChosenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم اختيار $count طبيب',
+      few: 'تم اختيار $count أطباء',
+      two: 'تم اختيار طبيبين',
+      one: 'تم اختيار طبيب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get broadcastErrorNoDoctors => 'اختار طبيب واحد على الأقل.';
+
+  @override
+  String get broadcastMessageTitle => 'الرسالة';
+
+  @override
+  String get broadcastMessageHint =>
+      'اكتبها باللغتين، أو بلغة واحدة: الطبيب اللي بيستخدم اللغة التانية هيشوف نفس النص.';
+
+  @override
+  String get broadcastTitleAr => 'العنوان (عربي)';
+
+  @override
+  String get broadcastBodyAr => 'النص (عربي)';
+
+  @override
+  String get broadcastTitleEn => 'العنوان (إنجليزي)';
+
+  @override
+  String get broadcastBodyEn => 'النص (إنجليزي)';
+
+  @override
+  String get broadcastErrorEmpty =>
+      'اكتب الرسالة بالعربي أو بالإنجليزي أو الاتنين.';
+
+  @override
+  String get broadcastErrorTitle => 'اكتب العنوان كمان.';
+
+  @override
+  String get broadcastErrorBody => 'اكتب النص كمان.';
+
+  @override
+  String get broadcastPreview => 'معاينة';
+
+  @override
+  String get broadcastPreviewEmpty =>
+      'رسالتك هتظهر هنا زي ما الأطباء هيشوفوها.';
+
+  @override
+  String get broadcastPreviewNow => 'الآن';
+
+  @override
+  String get broadcastSend => 'إرسال';
+
+  @override
+  String get broadcastConfirmTitle => 'تبعت الإشعار ده؟';
+
+  @override
+  String get broadcastConfirmAll =>
+      'هيوصل لكل الأطباء فوراً جوه التطبيق وعلى الموبايل، ومينفعش يترجع.';
+
+  @override
+  String broadcastConfirmSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'هيوصل لـ $count أطباء اخترتهم فوراً جوه التطبيق وعلى الموبايل، ومينفعش يترجع.',
+      one:
+          'هيوصل للطبيب اللي اخترته فوراً جوه التطبيق وعلى الموبايل، ومينفعش يترجع.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String broadcastSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'اتبعت لـ $count طبيب',
+      few: 'اتبعت لـ $count أطباء',
+      two: 'اتبعت لطبيبين',
+      one: 'اتبعت لطبيب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get broadcastErrorNoRecipients =>
+      'مفيش حد من الأطباء دول يقدر يستلمه دلوقتي: طلبهم بيتراجع أو مرفوض أو معطّلين.';
+
+  @override
+  String get broadcastHistoryTitle => 'المرسلة';
+
+  @override
+  String get broadcastHistoryEmpty => 'لسه مفيش حاجة اتبعتت';
+
+  @override
+  String get broadcastHistoryEmptyBody =>
+      'اللي هتبعته هيظهر هنا، ومعاه مين استلمه.';
+
+  @override
+  String get broadcastHistoryMore => 'عرض المزيد';
+
+  @override
+  String broadcastRecipients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبيب',
+      few: '$count أطباء',
+      two: 'طبيبان',
+      one: 'طبيب واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String broadcastSentBy(String name) {
+    return 'من $name';
+  }
+
+  @override
+  String get broadcastPickerSearch => 'ابحث بالاسم';
+
+  @override
+  String get broadcastPickerEmpty => 'مفيش أطباء بالاسم ده';
+
+  @override
+  String broadcastPickerDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم ($count)',
+      zero: 'تم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminAuditBroadcastSent => 'بعت إشعار جماعي للأطباء';
+
+  @override
+  String get adminActionBroadcastSent => 'إرسال إشعار جماعي';
+
+  @override
+  String get adminTargetBroadcast => 'إشعار جماعي';
 }

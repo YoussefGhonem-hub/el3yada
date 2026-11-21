@@ -9037,4 +9037,173 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminFiltersDone => 'Done';
+
+  @override
+  String get navBroadcast => 'Broadcast';
+
+  @override
+  String get broadcastSubtitle =>
+      'A notification in the app and a push to doctors\' phones, in each doctor\'s language.';
+
+  @override
+  String get broadcastAudienceTitle => 'Who gets it';
+
+  @override
+  String get broadcastAudienceAll => 'All doctors';
+
+  @override
+  String get broadcastAudienceSelected => 'Chosen doctors';
+
+  @override
+  String get broadcastAudienceAllHint =>
+      'Every doctor whose clinic is active or suspended. Doctors still waiting for review, rejected or disabled don\'t get it.';
+
+  @override
+  String get broadcastChooseDoctors => 'Choose doctors';
+
+  @override
+  String broadcastChosenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors chosen',
+      one: '1 doctor chosen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get broadcastErrorNoDoctors => 'Choose at least one doctor.';
+
+  @override
+  String get broadcastMessageTitle => 'Message';
+
+  @override
+  String get broadcastMessageHint =>
+      'Write it in both languages, or in one: doctors who use the other language see the same text.';
+
+  @override
+  String get broadcastTitleAr => 'Title (Arabic)';
+
+  @override
+  String get broadcastBodyAr => 'Text (Arabic)';
+
+  @override
+  String get broadcastTitleEn => 'Title (English)';
+
+  @override
+  String get broadcastBodyEn => 'Text (English)';
+
+  @override
+  String get broadcastErrorEmpty =>
+      'Write the message in Arabic, English or both.';
+
+  @override
+  String get broadcastErrorTitle => 'Write the title too.';
+
+  @override
+  String get broadcastErrorBody => 'Write the text too.';
+
+  @override
+  String get broadcastPreview => 'Preview';
+
+  @override
+  String get broadcastPreviewEmpty =>
+      'Your message shows here as doctors will see it.';
+
+  @override
+  String get broadcastPreviewNow => 'now';
+
+  @override
+  String get broadcastSend => 'Send';
+
+  @override
+  String get broadcastConfirmTitle => 'Send this broadcast?';
+
+  @override
+  String get broadcastConfirmAll =>
+      'Every doctor gets it at once, in the app and as a push. It can\'t be taken back.';
+
+  @override
+  String broadcastConfirmSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'The $count chosen doctors get it at once, in the app and as a push. It can\'t be taken back.',
+      one:
+          'The chosen doctor gets it at once, in the app and as a push. It can\'t be taken back.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String broadcastSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sent to $count doctors',
+      one: 'Sent to 1 doctor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get broadcastErrorNoRecipients =>
+      'None of these doctors can get it now: they\'re waiting for review, rejected or disabled.';
+
+  @override
+  String get broadcastHistoryTitle => 'Sent';
+
+  @override
+  String get broadcastHistoryEmpty => 'Nothing sent yet';
+
+  @override
+  String get broadcastHistoryEmptyBody =>
+      'What you send shows here, with who got it.';
+
+  @override
+  String get broadcastHistoryMore => 'Show more';
+
+  @override
+  String broadcastRecipients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors',
+      one: '1 doctor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String broadcastSentBy(String name) {
+    return 'by $name';
+  }
+
+  @override
+  String get broadcastPickerSearch => 'Search by name';
+
+  @override
+  String get broadcastPickerEmpty => 'No doctors found';
+
+  @override
+  String broadcastPickerDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Done ($count)',
+      zero: 'Done',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminAuditBroadcastSent => 'sent a broadcast to doctors';
+
+  @override
+  String get adminActionBroadcastSent => 'Broadcast sent';
+
+  @override
+  String get adminTargetBroadcast => 'Broadcast';
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../features/admin/admin_routes.dart';
 import '../features/admin/presentation/admins/admin_users_screen.dart';
 import '../features/admin/presentation/audit/audit_log_screen.dart';
+import '../features/admin/presentation/broadcast/broadcast_screen.dart';
 import '../features/admin/presentation/doctors/add_doctor_screen.dart';
 import '../features/admin/presentation/profile/admin_profile_screen.dart';
 import '../features/admin/presentation/settings/admin_settings_screen.dart';
@@ -63,6 +64,8 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   AdminRoutes.settings: (_) => const AdminSettingsScreen(),
   AdminRoutes.admins: (_) => const AdminUsersScreen(),
   AdminRoutes.audit: (_) => const AuditLogScreen(),
+  // AD16 broadcast.
+  AdminRoutes.broadcast: (_) => const BroadcastScreen(),
   // AD19 specialty profiles, AD20 catalogs.
   AdminRoutes.specialties: (_) => const SpecialtiesScreen(),
   AdminRoutes.catalogs: (_) => const CatalogsScreen(),

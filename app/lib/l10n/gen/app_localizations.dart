@@ -16023,6 +16023,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photos changed'**
   String get activityActionBranchPhotosUpdated;
+
+  /// No description provided for @holidaysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public holidays'**
+  String get holidaysTitle;
+
+  /// No description provided for @holidaysBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested by el3yada. Close the branch on the ones you take off; nothing closes by itself.'**
+  String get holidaysBody;
+
+  /// No description provided for @holidayCloseDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this day'**
+  String get holidayCloseDay;
+
+  /// No description provided for @holidayClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get holidayClosed;
+
+  /// No description provided for @holidaysAdminBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinics see the coming ones as suggestions in their special dates. No branch closes by itself.'**
+  String get holidaysAdminBody;
+
+  /// No description provided for @holidayAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add holiday'**
+  String get holidayAdd;
+
+  /// No description provided for @holidayAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday added'**
+  String get holidayAdded;
+
+  /// No description provided for @holidayDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the date'**
+  String get holidayDate;
+
+  /// No description provided for @holidayNameAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Name in Arabic'**
+  String get holidayNameAr;
+
+  /// No description provided for @holidayNameEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Name in English'**
+  String get holidayNameEn;
+
+  /// No description provided for @holidaysEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No public holidays yet'**
+  String get holidaysEmpty;
+
+  /// No description provided for @holidaysEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the year\'s holidays so clinics can plan around them.'**
+  String get holidaysEmptyBody;
+
+  /// No description provided for @holidayDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String holidayDeleteTitle(String name);
+
+  /// No description provided for @holidayDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinics stop seeing it. Closures they already added stay.'**
+  String get holidayDeleteBody;
+
+  /// No description provided for @holidayExists.
+  ///
+  /// In en, this message translates to:
+  /// **'That date is already on the list.'**
+  String get holidayExists;
 }
 
 class _AppLocalizationsDelegate

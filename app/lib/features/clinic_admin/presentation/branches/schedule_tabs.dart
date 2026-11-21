@@ -646,3 +646,71 @@ class BookingSettingsEditor extends StatelessWidget {
     );
   }
 }
+
+// -----------------------------------------------------------------------------
+// Public holidays (AD13 [C], BR-AP13)
+
+/// The coming public holidays the admin lists, as suggestions: "Close this
+/// day" adds a whole-day closure for this branch (saved with the tab, so the
+/// conflicts sheet lists any bookings). A holiday closes nothing by itself.
+class HolidaySuggestions extends StatelessWidget {
+  const HolidaySuggestions({super.key, required this.holidays, required this.draft, this.enabled = true});
+
+  final List<HolidayRef> holidays;
+  final DatesDraft draft;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final arabic = Localizations.localeOf(context).languageCode == 'ar';
+    return SectionCard(
+      icon: Icons.celebration_outlined,
+      title: l10n.holidaysTitle,
+      subtitle: l10n.holidaysBody,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final holiday in holidays)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  RowIcon(Icons.event_outlined, muted: draft.closesWholeDay(holiday.date)),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(holiday.name(arabic: arabic), style: theme.textTheme.titleSmall),
+                        Text(scheduleDayText(context, holiday.date),
+                            style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                      ],
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: Motion.of(context).reduced ? Duration.zero : Motion.fast,
+                    child: draft.closesWholeDay(holiday.date)
+                        ? StatusPill(key: const ValueKey('closed'), label: l10n.holidayClosed, tone: PillTone.neutral)
+                        : TextButton.icon(
+                            key: const ValueKey('close'),
+                            onPressed: enabled
+                                ? () {
+                                    final day = DateTime(holiday.date.year, holiday.date.month, holiday.date.day);
+                                    draft.addClosure(Closure(from: day, to: day.add(const Duration(days: 1)), reason: holiday.nameAr));
+                                  }
+                                : null,
+                            icon: const Icon(Icons.event_busy_outlined),
+                            label: Text(l10n.holidayCloseDay),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}

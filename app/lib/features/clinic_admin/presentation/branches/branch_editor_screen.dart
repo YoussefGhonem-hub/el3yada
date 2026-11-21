@@ -706,12 +706,15 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
 
   List<Widget> _datesTab(BuildContext context) {
     final settings = _settings;
+    final enabled = _canEditSchedule && !_busy(BranchTab.dates);
+    final holidays = _saved?.holidays ?? const <HolidayRef>[];
     return [
       SpecialDatesEditor(
         draft: _dates,
         queueMode: settings.mode == 'queue',
         defaultCapacity: settings.defaultCapacity,
-        enabled: _canEditSchedule && !_busy(BranchTab.dates),
+        enabled: enabled,
+        extra: holidays.isEmpty ? null : HolidaySuggestions(holidays: holidays, draft: _dates, enabled: enabled),
       ),
     ];
   }

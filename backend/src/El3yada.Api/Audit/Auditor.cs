@@ -128,6 +128,11 @@ public static partial class AuditActions
     public const string AdminEnabled = "adminEnabled";
     public const string AdminProfileUpdated = "adminProfileUpdated";
     public const string SettingsUpdated = "settingsUpdated";
+
+    /// <summary>AD13 [C]: a public holiday added to or removed from the list clinics see as suggestions (BR-AP13).</summary>
+    public const string PublicHolidayCreated = "publicHolidayCreated";
+    public const string PublicHolidayDeleted = "publicHolidayDeleted";
+
     public const string PasswordSet = "passwordSet";
     public const string PasswordChanged = "passwordChanged";
     public const string PasswordResetRequested = "passwordResetRequested";

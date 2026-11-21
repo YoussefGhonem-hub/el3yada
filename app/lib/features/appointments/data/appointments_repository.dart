@@ -5,6 +5,7 @@ import '../../../core/config/env.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_error.dart';
 import '../../../core/network/api_exception.dart';
+import '../../admin/data/public_holidays_repository.dart';
 import '../../clinic_admin/data/clinic_admin_repository.dart';
 import '../../clinic_admin/domain/branch_models.dart' show BranchPeriod;
 import '../../clinic_admin/domain/weekly_hours.dart';
@@ -611,8 +612,17 @@ class FakeAppointmentsRepository implements AppointmentsRepository {
     return weekly == null ? saved : saved.copyWith(weekly: weekly);
   }
 
+  /// The admin's public holidays of the coming year (AD13 [C]), shown as suggestions.
+  List<HolidayRef> Function()? publicHolidays;
+
   @override
-  Future<BranchScheduleData> schedule(String branchId) async => _scheduleOf(branchId);
+  Future<BranchScheduleData> schedule(String branchId) async {
+    final s = _scheduleOf(branchId);
+    return BranchScheduleData(
+      branchId: s.branchId, weekly: s.weekly, overrides: s.overrides, closures: s.closures, settings: s.settings,
+      holidays: publicHolidays?.call() ?? const [],
+    );
+  }
 
   @override
   Future<({bool applied, List<ScheduleConflict> conflicts})> saveSchedule(BranchScheduleData data,
@@ -770,6 +780,11 @@ final appointmentsRepositoryProvider = Provider<AppointmentsRepository>((ref) {
     final clinic = ref.read(clinicAdminRepositoryProvider);
     final fake = FakeAppointmentsRepository();
     if (clinic is OfflineBranchHours) fake.hours = clinic as OfflineBranchHours;
+    // And the admin's offline public holidays (AD13), as the schedule lists them.
+    final holidays = ref.read(publicHolidaysRepositoryProvider);
+    if (holidays is FakePublicHolidaysRepository) {
+      fake.publicHolidays = () => [for (final h in holidays.upcoming()) HolidayRef(date: h.date, nameAr: h.nameAr, nameEn: h.nameEn)];
+    }
     return fake;
   }
   return ApiAppointmentsRepository(ref.watch(dioProvider));

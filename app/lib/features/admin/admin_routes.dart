@@ -31,6 +31,9 @@ abstract final class AdminRoutes {
   /// AD18: under Settings, opened from the top bar's profile button.
   static const profile = '/admin/settings/profile';
 
+  /// AD13 [C]: the public holidays clinics see as suggestions (BR-AP13).
+  static const publicHolidays = '/admin/settings/holidays';
+
   /// AD14 (super admins).
   static const admins = '/admin/admins';
 

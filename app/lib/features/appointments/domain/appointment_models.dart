@@ -822,8 +822,29 @@ class BookingSettings {
       );
 }
 
+/// A public holiday the admin lists (AD13 [C], BR-AP13): a suggestion to close on, never a closure by itself.
+class HolidayRef {
+  const HolidayRef({required this.date, required this.nameAr, required this.nameEn});
+
+  final DateTime date;
+  final String nameAr;
+  final String nameEn;
+
+  String name({required bool arabic}) => arabic ? nameAr : nameEn;
+
+  factory HolidayRef.fromJson(Json j) =>
+      HolidayRef(date: DateTime.parse(j['date'] as String), nameAr: j['nameAr'] as String, nameEn: j['nameEn'] as String);
+}
+
 class BranchScheduleData {
-  const BranchScheduleData({required this.branchId, this.weekly = const [], this.overrides = const [], this.closures = const [], this.settings = const BookingSettings()});
+  const BranchScheduleData({
+    required this.branchId,
+    this.weekly = const [],
+    this.overrides = const [],
+    this.closures = const [],
+    this.settings = const BookingSettings(),
+    this.holidays = const [],
+  });
 
   final String branchId;
   final List<WeeklyPeriod> weekly;
@@ -831,9 +852,12 @@ class BranchScheduleData {
   final List<Closure> closures;
   final BookingSettings settings;
 
+  /// The coming year's public holidays (read only; not sent back).
+  final List<HolidayRef> holidays;
+
   BranchScheduleData copyWith({List<WeeklyPeriod>? weekly, List<DateOverride>? overrides, List<Closure>? closures, BookingSettings? settings}) =>
       BranchScheduleData(branchId: branchId, weekly: weekly ?? this.weekly, overrides: overrides ?? this.overrides,
-          closures: closures ?? this.closures, settings: settings ?? this.settings);
+          closures: closures ?? this.closures, settings: settings ?? this.settings, holidays: holidays);
 
   factory BranchScheduleData.fromJson(Json j) => BranchScheduleData(
         branchId: j['branchId'] as String,
@@ -841,6 +865,7 @@ class BranchScheduleData {
         overrides: [for (final o in j['dateOverrides'] as List) DateOverride.fromJson(o as Json)],
         closures: [for (final c in j['closures'] as List) Closure.fromJson(c as Json)],
         settings: BookingSettings.fromJson(j['settings'] as Json),
+        holidays: [for (final h in (j['holidays'] as List?) ?? const []) HolidayRef.fromJson(h as Json)],
       );
 }
 

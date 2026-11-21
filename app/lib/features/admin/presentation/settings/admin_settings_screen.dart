@@ -307,6 +307,12 @@ class _AdminSettingsScreenState extends ConsumerState<AdminSettingsScreen> {
                                   icon: const Icon(Icons.history),
                                   label: Text(l10n.adminHistoryTitle),
                                 ),
+                                // [C] BR-AP13: the public holidays clinics see as suggestions.
+                                OutlinedButton.icon(
+                                  onPressed: () => context.go(AdminRoutes.publicHolidays),
+                                  icon: const Icon(Icons.celebration_outlined),
+                                  label: Text(l10n.holidaysTitle),
+                                ),
                                 OutlinedButton.icon(
                                   onPressed: () => context.go(AdminRoutes.profile),
                                   icon: const Icon(Icons.account_circle_outlined),

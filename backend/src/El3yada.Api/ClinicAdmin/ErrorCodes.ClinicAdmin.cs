@@ -32,6 +32,9 @@ public static partial class ErrorCodes
     /// <summary>409: the branch already has <c>BranchPhotosController.MaxPhotos</c> photos (BR-BR2 [S]); delete one first.</summary>
     public const string BranchPhotoLimit = "BRANCH_PHOTO_LIMIT";
 
+    /// <summary>409: AD13, the date is already on the public holidays list (one holiday a date).</summary>
+    public const string PublicHolidayExists = "PUBLIC_HOLIDAY_EXISTS";
+
     // ---- Working hours (spec section 11) -------------------------------------------------------------
 
     /// <summary>Field: a period ends before it starts and is not marked as ending the next day.</summary>

@@ -9405,4 +9405,55 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activityActionBranchPhotosUpdated => 'تغيير الصور';
+
+  @override
+  String get holidaysTitle => 'الإجازات الرسمية';
+
+  @override
+  String get holidaysBody =>
+      'مقترحة من إدارة التطبيق. اقفل الفرع في الأيام اللي هتاخدها إجازة، ومفيش يوم بيتقفل لوحده.';
+
+  @override
+  String get holidayCloseDay => 'إغلاق اليوم ده';
+
+  @override
+  String get holidayClosed => 'مقفول';
+
+  @override
+  String get holidaysAdminBody =>
+      'العيادات بتشوف الجاية منها كاقتراحات في الأيام الخاصة، ومفيش فرع بيتقفل لوحده.';
+
+  @override
+  String get holidayAdd => 'إضافة إجازة';
+
+  @override
+  String get holidayAdded => 'تمت إضافة الإجازة';
+
+  @override
+  String get holidayDate => 'اختر التاريخ';
+
+  @override
+  String get holidayNameAr => 'الاسم بالعربي';
+
+  @override
+  String get holidayNameEn => 'الاسم بالإنجليزي';
+
+  @override
+  String get holidaysEmpty => 'لا توجد إجازات رسمية بعد';
+
+  @override
+  String get holidaysEmptyBody =>
+      'أضف إجازات السنة علشان العيادات تقدر تخطط لها.';
+
+  @override
+  String holidayDeleteTitle(String name) {
+    return 'حذف $name؟';
+  }
+
+  @override
+  String get holidayDeleteBody =>
+      'العيادات مش هتشوفها تاني، والإغلاق اللي ضافوه هيفضل.';
+
+  @override
+  String get holidayExists => 'التاريخ ده موجود بالفعل في القائمة.';
 }

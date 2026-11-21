@@ -65,8 +65,11 @@ public sealed class ScheduleService(
             .Where(c => c.DoctorId == staff.DoctorId && (c.BranchId == branchId || c.BranchId == null) && c.ToLocal > nowLocal)
             .OrderBy(c => c.FromLocal)
             .Select(c => new ClosureInput(c.Id, c.FromLocal, c.ToLocal, c.Reason, c.BranchId == null)).ToListAsync(ct);
+        var lastDay = today.AddDays(365);
+        var holidays = await db.PublicHolidays.AsNoTracking().Where(h => h.Date >= today && h.Date <= lastDay)
+            .OrderBy(h => h.Date).Select(h => new HolidayDto(h.Date, h.NameAr, h.NameEn)).ToListAsync(ct);
 
-        return new ScheduleDto(branchId, weekly, overrides, closures, SettingsOf(branch));
+        return new ScheduleDto(branchId, weekly, overrides, closures, SettingsOf(branch), holidays);
     }
 
     public async Task<UpdateScheduleResult> UpdateAsync(Guid branchId, UpdateScheduleRequest r, CancellationToken ct)

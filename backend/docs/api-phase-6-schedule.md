@@ -9,6 +9,7 @@
 - [Affected bookings (BR-AP12)](#affected-bookings-br-ap12)
 - [Errors](#errors)
 - [Audit and notifications](#audit-and-notifications)
+- [Public holidays (AD13) [C]](#public-holidays-ad13-c)
 
 ## Who may call
 
@@ -42,7 +43,8 @@
     "selfBooking": true, "autoConfirm": true, "windowDays": 30, "minNoticeMinutes": 60, "sameDay": true, "freeCancelMinutes": 120,
     "maxReschedules": 2, "maxUpcomingPerPatient": 1, "noShowLimitCount": 3, "noShowLimitDays": 90, "reminderMinutes": [1440, 120],
     "staffOverbooking": true, "waitingOrderByArrival": false
-  }
+  },
+  "holidays": [ { "date": "2026-12-25", "nameAr": "عيد الميلاد المجيد", "nameEn": "Christmas" } ]
 }
 ```
 
@@ -50,6 +52,7 @@
 - `dateOverrides`: special hours from today on. They replace that date's weekly hours; no periods means closed that day.
 - `closures`: closures and blocked time that haven't ended, in Cairo local time (`toLocal` is exclusive). `allBranches` closures (a vacation) belong to the doctor and show on every branch's schedule.
 - `settings`: spec 6.12.2.
+- `holidays` [C]: the [public holidays](#public-holidays-ad13-c) of the coming year, earliest first. They are suggestions only; send a closure to close on one.
 
 ## `PUT /api/staff/branches/{branchId}/schedule`
 
@@ -136,3 +139,15 @@ A decision for each listed booking:
 - A moved booking: `bookingRescheduled` to the patient («تم تغيير موعدك»), and an `appointment.rescheduled` audit row.
 - A cancelled booking: `bookingCancelled` to the patient («تم إلغاء موعدك — احجز موعداً جديداً», route `/patient/appointments/book`).
 - The live board of every branch and day touched is published again.
+
+## Public holidays (AD13) [C]
+
+BR-AP13: "Suggested Egyptian public holidays from a list the admin manages." The admin keeps the list in AD13; D29's Special dates tab shows the coming ones (`holidays` above) with "Close this day", which adds a whole-day closure for the branch (or every branch) and saves it like any closure, with the conflicts check. A holiday on the list closes nothing by itself, and patients see nothing until a branch closes.
+
+| Endpoint | Who | |
+|---|---|---|
+| `GET /api/admin/publicHolidays` | admin | Every holiday from a month ago on, earliest first: `[{ id, date, nameAr, nameEn }]` |
+| `POST /api/admin/createPublicHoliday` | admin | `{ date, nameAr, nameEn }` (names required, ≤ 100). **201** with the holiday. One holiday a date: 409 `PUBLIC_HOLIDAY_EXISTS` |
+| `POST /api/admin/deletePublicHoliday` | admin | `{ id }`. **204**; 404 `NOT_FOUND`. Closures clinics already added stay |
+
+Audit: `publicHolidayCreated`, `publicHolidayDeleted` (target `settings`, with `date` and `nameAr`). Clinic callers, patients: 403.

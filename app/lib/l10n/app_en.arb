@@ -5484,5 +5484,27 @@
       }
     }
   },
-  "activityActionBranchPhotosUpdated": "Photos changed"
+  "activityActionBranchPhotosUpdated": "Photos changed",
+"holidaysTitle": "Public holidays",
+  "holidaysBody": "Suggested by el3yada. Close the branch on the ones you take off; nothing closes by itself.",
+  "holidayCloseDay": "Close this day",
+  "holidayClosed": "Closed",
+  "holidaysAdminBody": "Clinics see the coming ones as suggestions in their special dates. No branch closes by itself.",
+  "holidayAdd": "Add holiday",
+  "holidayAdded": "Holiday added",
+  "holidayDate": "Choose the date",
+  "holidayNameAr": "Name in Arabic",
+  "holidayNameEn": "Name in English",
+  "holidaysEmpty": "No public holidays yet",
+  "holidaysEmptyBody": "Add the year's holidays so clinics can plan around them.",
+  "holidayDeleteTitle": "Remove {name}?",
+  "@holidayDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "holidayDeleteBody": "Clinics stop seeing it. Closures they already added stay.",
+  "holidayExists": "That date is already on the list."
 }

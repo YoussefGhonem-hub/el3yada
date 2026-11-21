@@ -2651,5 +2651,20 @@
   "branchPhotoEarlier": "تقديم",
   "branchPhotoLater": "تأخير",
 "activityBranchPhotosUpdated": "غيّر صور {branch}",
-  "activityActionBranchPhotosUpdated": "تغيير الصور"
+  "activityActionBranchPhotosUpdated": "تغيير الصور",
+"holidaysTitle": "الإجازات الرسمية",
+  "holidaysBody": "مقترحة من إدارة التطبيق. اقفل الفرع في الأيام اللي هتاخدها إجازة، ومفيش يوم بيتقفل لوحده.",
+  "holidayCloseDay": "إغلاق اليوم ده",
+  "holidayClosed": "مقفول",
+  "holidaysAdminBody": "العيادات بتشوف الجاية منها كاقتراحات في الأيام الخاصة، ومفيش فرع بيتقفل لوحده.",
+  "holidayAdd": "إضافة إجازة",
+  "holidayAdded": "تمت إضافة الإجازة",
+  "holidayDate": "اختر التاريخ",
+  "holidayNameAr": "الاسم بالعربي",
+  "holidayNameEn": "الاسم بالإنجليزي",
+  "holidaysEmpty": "لا توجد إجازات رسمية بعد",
+  "holidaysEmptyBody": "أضف إجازات السنة علشان العيادات تقدر تخطط لها.",
+  "holidayDeleteTitle": "حذف {name}؟",
+  "holidayDeleteBody": "العيادات مش هتشوفها تاني، والإغلاق اللي ضافوه هيفضل.",
+  "holidayExists": "التاريخ ده موجود بالفعل في القائمة."
 }

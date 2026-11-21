@@ -9364,4 +9364,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityActionBranchPhotosUpdated => 'Photos changed';
+
+  @override
+  String get holidaysTitle => 'Public holidays';
+
+  @override
+  String get holidaysBody =>
+      'Suggested by el3yada. Close the branch on the ones you take off; nothing closes by itself.';
+
+  @override
+  String get holidayCloseDay => 'Close this day';
+
+  @override
+  String get holidayClosed => 'Closed';
+
+  @override
+  String get holidaysAdminBody =>
+      'Clinics see the coming ones as suggestions in their special dates. No branch closes by itself.';
+
+  @override
+  String get holidayAdd => 'Add holiday';
+
+  @override
+  String get holidayAdded => 'Holiday added';
+
+  @override
+  String get holidayDate => 'Choose the date';
+
+  @override
+  String get holidayNameAr => 'Name in Arabic';
+
+  @override
+  String get holidayNameEn => 'Name in English';
+
+  @override
+  String get holidaysEmpty => 'No public holidays yet';
+
+  @override
+  String get holidaysEmptyBody =>
+      'Add the year\'s holidays so clinics can plan around them.';
+
+  @override
+  String holidayDeleteTitle(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get holidayDeleteBody =>
+      'Clinics stop seeing it. Closures they already added stay.';
+
+  @override
+  String get holidayExists => 'That date is already on the list.';
 }

@@ -201,12 +201,17 @@ public sealed record UpdateScheduleRequest(
     bool DryRun,
     IReadOnlyList<ConflictDecision>? Decisions);
 
+/// <summary>AD13 [C]: a public holiday, suggested in D29 Special dates (BR-AP13).</summary>
+public sealed record HolidayDto(DateOnly Date, string NameAr, string NameEn);
+
+/// <param name="Holidays">The public holidays of the next year (AD13): suggestions to close on, never closures by themselves.</param>
 public sealed record ScheduleDto(
     Guid BranchId,
     IReadOnlyList<PeriodInput> Weekly,
     IReadOnlyList<DateOverrideInput> DateOverrides,
     IReadOnlyList<ClosureInput> Closures,
-    BookingSettingsInput Settings);
+    BookingSettingsInput Settings,
+    IReadOnlyList<HolidayDto> Holidays);
 
 /// <summary>
 /// A booking the new schedule leaves without a place (BR-AP12). <c>suggestion</c> is the nearest free place under

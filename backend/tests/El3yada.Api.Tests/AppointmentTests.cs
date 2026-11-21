@@ -438,6 +438,33 @@ public sealed class AppointmentTests(BookingFixture fx) : IClassFixture<BookingF
     }
 
     [Fact]
+    public async Task Search_by_patient_lists_only_that_patients_bookings_newest_first()
+    {
+        // D6 Appointments tab: searchAppointments?patientId=…&sort=dateDesc.
+        var doctorA = await Api.ClientForAsync(Api.Demo.DoctorAUserId);
+        var early = await StaffBook(doctorA, fx.QueueBranch, BookingFixture.Tomorrow.AddDays(21), BookingFixture.Morning, patientId: Api.Demo.PatientId, confirmWarnings: true);
+        var late = await StaffBook(doctorA, fx.QueueBranch, BookingFixture.Tomorrow.AddDays(23), BookingFixture.Morning, patientId: Api.Demo.PatientId, confirmWarnings: true);
+        var guest = await StaffBook(doctorA, fx.QueueBranch, BookingFixture.Tomorrow.AddDays(23), BookingFixture.Morning, Guest("زائر الملف", "01233333333"));
+        var earlyId = (await early.Content.ReadFromJsonAsync<AppointmentDto>())!.Id;
+        var lateId = (await late.Content.ReadFromJsonAsync<AppointmentDto>())!.Id;
+        var guestId = (await guest.Content.ReadFromJsonAsync<AppointmentDto>())!.Id;
+
+        var mine = await doctorA.GetFromJsonAsync<SearchResultDto>($"/api/staff/appointments?patientId={Api.Demo.PatientId}&sort=dateDesc&pageSize=100");
+        var ids = mine!.Page.Items.Select(a => a.Id).ToList();
+        Assert.All(mine.Page.Items, a => Assert.Equal(Api.Demo.PatientId, a.PatientId));
+        Assert.DoesNotContain(guestId, ids);
+        Assert.True(ids.IndexOf(lateId) >= 0 && ids.IndexOf(lateId) < ids.IndexOf(earlyId));
+
+        var other = await doctorA.GetFromJsonAsync<SearchResultDto>($"/api/staff/appointments?patientId={Api.Demo.OtherPatientId}");
+        Assert.DoesNotContain(other!.Page.Items, a => a.Id == earlyId || a.Id == lateId);
+
+        // Doctor B's clinic never sees doctor A's bookings of the shared patient.
+        var doctorB = await Api.ClientForAsync(Api.Demo.DoctorBUserId);
+        var fromB = await doctorB.GetFromJsonAsync<SearchResultDto>($"/api/staff/appointments?patientId={Api.Demo.PatientId}");
+        Assert.DoesNotContain(fromB!.Page.Items, a => a.Id == earlyId || a.Id == lateId);
+    }
+
+    [Fact]
     public async Task Suspended_doctor_takes_no_new_bookings()
     {
         await Api.WithDbAsync(db => db.Doctors.Where(d => d.UserId == Api.Demo.DoctorBUserId).ExecuteUpdateAsync(u => u.SetProperty(d => d.Status, "suspended")));

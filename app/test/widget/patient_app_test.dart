@@ -5,7 +5,7 @@ import '../support/app_flow.dart' show settle;
 import '../support/app_overrides.dart';
 import 'package:el3yada/core/widgets/navigation/app_bottom_bar.dart';
 import 'package:el3yada/core/widgets/navigation/nav_rail.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -56,12 +56,13 @@ class PlainAdminAuthRepository extends FakeAuthRepository {
     required String password,
     Map<String, dynamic>? device,
   }) async {
-    if (identifier != 'admin@el3yada.dev')
+    if (identifier != 'admin@el3yada.dev') {
       return super.login(
         identifier: identifier,
         password: password,
         device: device,
       );
+    }
     final AuthSession session = const FakeAccount(
       UserRole.admin,
       'مصطفى كامل',

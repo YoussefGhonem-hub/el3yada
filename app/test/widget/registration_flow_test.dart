@@ -12,7 +12,7 @@ import 'package:el3yada/features/doctor_registration/domain/doctor_registration.
 import 'package:el3yada/features/doctor_registration/domain/license_file.dart';
 import 'package:el3yada/features/doctor_registration/presentation/welcome_dialog.dart';
 import 'package:el3yada/features/doctor_registration/presentation/widgets/search_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

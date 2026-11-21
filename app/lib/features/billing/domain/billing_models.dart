@@ -399,8 +399,9 @@ class InvoiceDetail {
   /// The latest rejected payment's reason, shown on D19 above Pay.
   String? get lastRejectionReason {
     for (final payment in payments) {
-      if (payment.status == PaymentStatus.rejected)
+      if (payment.status == PaymentStatus.rejected) {
         return payment.rejectionReason;
+      }
     }
     return null;
   }

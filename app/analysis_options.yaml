@@ -1,6 +1,9 @@
 analyzer:
   exclude:
     - build/**
+    # Written by `flutter gen-l10n`. Flutter 3.50's template still uses the
+    # Material and Cupertino localization delegates it deprecated in 3.47.
+    - lib/l10n/gen/**
     - android/**
     - ios/**
     - windows/**

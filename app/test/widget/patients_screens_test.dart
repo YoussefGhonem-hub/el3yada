@@ -6,7 +6,7 @@ import 'package:el3yada/features/sessions/domain/session_models.dart';
 import 'package:el3yada/features/sessions/presentation/new_session_screen.dart'
     show TypeTicket;
 import 'package:el3yada/features/sessions/presentation/widgets/session_widgets.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/admin_support.dart' show goTo;

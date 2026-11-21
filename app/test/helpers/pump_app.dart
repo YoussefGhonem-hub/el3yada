@@ -5,7 +5,7 @@ import 'package:el3yada/core/realtime/realtime_service.dart';
 import 'package:el3yada/features/patient/data/fake_patient_repository.dart';
 import 'package:el3yada/features/patient/data/patient_repository.dart';
 import '../support/app_overrides.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../support/app_flow.dart' show settle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;

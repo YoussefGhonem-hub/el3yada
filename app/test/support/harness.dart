@@ -1,6 +1,7 @@
 import 'package:el3yada/core/theme/app_theme.dart';
+import 'package:el3yada/l10n/app_localization_delegates.dart';
 import 'package:el3yada/l10n/gen/app_localizations.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Pumps [home] in a themed, localised MaterialApp.
@@ -31,7 +32,7 @@ Widget harness(
   theme: dark ? AppTheme.dark() : AppTheme.light(),
   locale: Locale(rtl ? 'ar' : 'en'),
   supportedLocales: AppLocalizations.supportedLocales,
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  localizationsDelegates: appLocalizationsDelegates,
   builder: (context, child) => MediaQuery(
     data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
     child: child!,

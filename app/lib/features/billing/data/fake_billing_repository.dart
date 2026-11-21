@@ -158,8 +158,9 @@ class FakeBillingRepository implements BillingRepository {
     final index = _details.indexWhere((d) => d.invoice.id == invoiceId);
     if (index < 0) throw const ApiException.local('NOT_FOUND');
     final detail = _details[index];
-    if (!detail.invoice.status.payable)
+    if (!detail.invoice.status.payable) {
       throw const ApiException.local(BillingCodes.invoiceNotPayable);
+    }
     final payment = PaymentLine(
       id: 'pay-${detail.payments.length + 1}',
       amountPiasters: draft.amountPiasters,

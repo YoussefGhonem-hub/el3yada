@@ -8,7 +8,7 @@ import 'package:el3yada/features/doctor_registration/data/license_picker.dart';
 import 'package:el3yada/features/doctor_registration/data/registration_repository.dart';
 import 'package:el3yada/features/doctor_registration/presentation/widgets/search_picker.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

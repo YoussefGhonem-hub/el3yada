@@ -5,7 +5,7 @@ import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/features/admin/data/fake_admin_repository.dart';
 import 'package:el3yada/features/admin/domain/admin_models.dart';
 import 'package:el3yada/features/auth/data/auth_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

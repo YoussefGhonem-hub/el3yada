@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -617,8 +617,9 @@ class _ByBranch extends StatelessWidget {
   Widget build(BuildContext context) {
     final language = Localizations.localeOf(context).languageCode;
     final l10n = AppLocalizations.of(context);
-    if (report.byBranch.isEmpty)
+    if (report.byBranch.isEmpty) {
       return EmptyState(title: l10n.revEmptyTitle, message: l10n.revEmptyBody);
+    }
     return ListView(
       padding: EdgeInsets.fromLTRB(gutter, 12, gutter, 32),
       children: [
@@ -641,8 +642,9 @@ class _ByType extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    if (report.byType.isEmpty)
+    if (report.byType.isEmpty) {
       return EmptyState(title: l10n.revEmptyTitle, message: l10n.revEmptyBody);
+    }
     return ListView(
       padding: EdgeInsets.fromLTRB(gutter, 12, gutter, 32),
       children: [
@@ -668,8 +670,9 @@ class _ByPayment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    if (report.byPaymentMethod.isEmpty)
+    if (report.byPaymentMethod.isEmpty) {
       return EmptyState(title: l10n.revEmptyTitle, message: l10n.revEmptyBody);
+    }
     return ListView(
       padding: EdgeInsets.fromLTRB(gutter, 12, gutter, 32),
       children: [

@@ -8,7 +8,7 @@ import 'package:el3yada/features/shell/role_scaffold.dart';
 import 'package:el3yada/features/shell/role_shells.dart';
 import 'package:el3yada/features/patient/data/fake_patient_repository.dart';
 import 'package:el3yada/features/patient/data/patient_repository.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';

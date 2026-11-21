@@ -11,9 +11,10 @@ import 'package:el3yada/core/widgets/navigation/nav_item.dart';
 import 'package:el3yada/core/widgets/navigation/side_menu.dart';
 import 'package:el3yada/core/widgets/settings_actions.dart';
 import 'package:el3yada/features/clinic_admin/data/fake_clinic_admin_repository.dart';
+import 'package:el3yada/l10n/app_localization_delegates.dart';
 import 'package:el3yada/l10n/gen/app_localizations.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,7 +59,7 @@ Future<void> _pumpDesktop(
       theme: AppTheme.desktopLight(),
       locale: Locale(rtl ? 'ar' : 'en'),
       supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(disableAnimations: reduced),
         child: child!,

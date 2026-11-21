@@ -1,5 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/gen/app_localizations.dart';
@@ -242,8 +242,9 @@ FlTitlesData titles({
           if (value != index.toDouble() ||
               index < 0 ||
               index >= count ||
-              index % step != 0)
+              index % step != 0) {
             return const SizedBox.shrink();
+          }
           return SideTitleWidget(
             meta: meta,
             child: Text(bottom(index), style: style),
@@ -257,10 +258,12 @@ FlTitlesData titles({
 /// A short number: 1.2K, 3.4M (axis labels).
 String compact(double value) {
   final abs = value.abs();
-  if (abs >= 1000000)
+  if (abs >= 1000000) {
     return '${(value / 1000000).toStringAsFixed(abs >= 10000000 ? 0 : 1)}M';
-  if (abs >= 1000)
+  }
+  if (abs >= 1000) {
     return '${(value / 1000).toStringAsFixed(abs >= 10000 ? 0 : 1)}K';
+  }
   return value.round().toString();
 }
 

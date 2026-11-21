@@ -10,11 +10,10 @@ import 'analytics_repository.dart';
 class FakeAnalyticsRepository implements AnalyticsRepository {
   FakeAnalyticsRepository({
     DateTime? today,
-    bool revenue = true,
+    this._revenue = true,
     this.patients = true,
     this.billing = true,
-  }) : _today = today ?? _cairoToday(),
-       _revenue = revenue;
+  }) : _today = today ?? _cairoToday();
 
   final DateTime _today;
   final bool _revenue;

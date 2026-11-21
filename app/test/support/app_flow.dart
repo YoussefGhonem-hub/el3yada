@@ -2,7 +2,7 @@ import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/features/clinic/data/clinic_repository.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';

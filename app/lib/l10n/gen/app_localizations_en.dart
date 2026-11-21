@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -4001,8 +4002,7 @@ class AppLocalizationsEn extends AppLocalizations {
       locale: localeName,
       other:
           'This patient has had $max consultations in a row. Record an examination first.',
-      one:
-          'This patient has had 1 consultation in a row. Record an examination first.',
+      one: 'This patient has had 1 consultation in a row. Record an examination first.',
     );
     return '$_temp0';
   }

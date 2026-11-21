@@ -2,7 +2,7 @@ import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/widgets/navigation/app_bottom_bar.dart';
 import 'package:el3yada/core/widgets/navigation/side_menu.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/app_flow.dart';

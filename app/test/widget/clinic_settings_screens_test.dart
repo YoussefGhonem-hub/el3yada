@@ -4,7 +4,7 @@ import 'package:el3yada/features/clinic_admin/data/fake_clinic_admin_repository.
 import 'package:el3yada/features/clinic_admin/presentation/prices/visit_prices_screen.dart';
 import 'package:el3yada/features/clinic_admin/presentation/profile/doctor_profile_screen.dart';
 import 'package:el3yada/features/clinic_admin/presentation/settings/clinic_settings_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/admin_support.dart';

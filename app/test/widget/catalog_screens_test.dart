@@ -20,7 +20,7 @@ import 'package:el3yada/features/catalog/presentation/catalog_sources_screen.dar
 import 'package:el3yada/features/catalog/presentation/widgets/catalog_hits_view.dart';
 import 'package:el3yada/features/doctor_registration/presentation/registration_text.dart'
     show ltrIsolate;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

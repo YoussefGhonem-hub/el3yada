@@ -16,7 +16,7 @@ import 'package:el3yada/features/auth/presentation/trial_ended_screen.dart';
 import 'package:el3yada/features/clinic/presentation/clinic_shell_parts.dart';
 import 'package:el3yada/features/doctor_registration/presentation/verify_email_screen.dart';
 import 'package:el3yada/features/startup/public_settings.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -56,12 +56,13 @@ class _TrialAuth extends FakeAuthRepository {
     Map<String, dynamic>? device,
   }) async {
     final account = loginAs;
-    if (account == null)
+    if (account == null) {
       return super.login(
         identifier: identifier,
         password: password,
         device: device,
       );
+    }
     return SignedIn(current = account.session(identifier));
   }
 

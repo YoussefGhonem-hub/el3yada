@@ -1,6 +1,8 @@
 import 'package:el3yada/app/app.dart';
+import 'package:el3yada/features/patient/application/patient_providers.dart';
 import 'package:el3yada/features/patient/data/fake_patient_repository.dart';
 import 'package:el3yada/features/patient/data/patient_repository.dart';
+import 'package:el3yada/features/patient/presentation/medical_file_screen.dart';
 import '../support/app_flow.dart' show settle;
 import '../support/app_overrides.dart';
 import 'package:el3yada/core/widgets/navigation/app_bottom_bar.dart';
@@ -142,6 +144,61 @@ void main() {
       await settleSeen(tester);
     },
   );
+
+  testWidgets('visits filter by branch, and a doctor change drops a branch it lacks (P4)', (
+    tester,
+  ) async {
+    await pumpPatientApp(tester);
+    await tester.tap(find.byTooltip('Medical file'));
+    await tester.pumpAndSettle();
+
+    // All doctors: the branches with visits, most visited first.
+    expect(find.widgetWithText(ChoiceChip, 'All branches'), findsOneWidget);
+    expect(find.widgetWithText(ChoiceChip, 'Maadi branch'), findsOneWidget);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Zamalek clinic'));
+    await tester.pumpAndSettle();
+    expect(find.text('Dr. Mona Hassan · Zamalek clinic'), findsOneWidget);
+    expect(find.text('Dr. Ahmed Samy · Maadi branch'), findsNothing);
+
+    // Dr Ahmed has one branch: no filter row, and Zamalek no longer filters.
+    await tester.ensureVisible(find.widgetWithText(ChoiceChip, 'Dr. Ahmed Samy'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Dr. Ahmed Samy'));
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(ChoiceChip, 'All branches'), findsNothing);
+    expect(find.text('Dr. Ahmed Samy · Maadi branch'), findsOneWidget);
+  });
+
+  testWidgets('files filter by document date and the tab counts follow (P8)', (
+    tester,
+  ) async {
+    await pumpPatientApp(tester);
+    await tester.tap(find.byTooltip('Medical file'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Files'));
+    await tester.pumpAndSettle();
+
+    // The chip opens the range picker.
+    await tester.tap(find.widgetWithText(InputChip, 'Any date'));
+    await tester.pumpAndSettle();
+    expect(find.text('Filter by date'), findsWidgets);
+    await tester.tap(find.byTooltip('Close').evaluate().isNotEmpty ? find.byTooltip('Close') : find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    // The last five days: the report from yesterday, not the lab test from 9 days ago.
+    final container = ProviderScope.containerOf(tester.element(find.byType(FilesTab)));
+    final today = DateUtils.dateOnly(DateTime.now());
+    container.read(fileDateRangeProvider.notifier).set((from: today.subtract(const Duration(days: 5)), to: today));
+    await tester.pumpAndSettle();
+    expect(find.text('Lab tests (0)'), findsOneWidget);
+    expect(find.text('Other (1)'), findsOneWidget);
+    expect(find.text('No files in these dates.'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Clear dates'));
+    await tester.pumpAndSettle();
+    expect(find.text('Lab tests (1)'), findsOneWidget);
+    expect(find.widgetWithText(InputChip, 'Any date'), findsOneWidget);
+  });
 
   testWidgets('files tab shows category counts', (tester) async {
     await pumpPatientApp(tester);

@@ -5234,5 +5234,11 @@
   "patientFilterUpcoming": "Has a booking",
   "patientFilterNoShows": "Has no-shows",
   "patientColumnNextBooking": "Next booking",
-  "patientColumnNoShows": "No-shows"
+  "patientColumnNoShows": "No-shows",
+  "visitsFilterBranch": "Branch",
+  "visitsNoneInBranch": "No visits in this branch.",
+  "filesAnyDate": "Any date",
+  "filesDateRange": "Filter by date",
+  "filesClearDates": "Clear dates",
+  "filesNoneInRange": "No files in these dates."
 }

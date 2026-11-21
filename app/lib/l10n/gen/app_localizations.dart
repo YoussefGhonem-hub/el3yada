@@ -15441,6 +15441,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No-shows'**
   String get patientColumnNoShows;
+
+  /// No description provided for @visitsFilterBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get visitsFilterBranch;
+
+  /// No description provided for @visitsNoneInBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'No visits in this branch.'**
+  String get visitsNoneInBranch;
+
+  /// No description provided for @filesAnyDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Any date'**
+  String get filesAnyDate;
+
+  /// No description provided for @filesDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by date'**
+  String get filesDateRange;
+
+  /// No description provided for @filesClearDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear dates'**
+  String get filesClearDates;
+
+  /// No description provided for @filesNoneInRange.
+  ///
+  /// In en, this message translates to:
+  /// **'No files in these dates.'**
+  String get filesNoneInRange;
 }
 
 class _AppLocalizationsDelegate

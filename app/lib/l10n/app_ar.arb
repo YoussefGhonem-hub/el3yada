@@ -2554,5 +2554,11 @@
   "patientFilterUpcoming": "لديه حجز قادم",
   "patientFilterNoShows": "لديه غياب",
   "patientColumnNextBooking": "الحجز القادم",
-  "patientColumnNoShows": "غياب"
+  "patientColumnNoShows": "غياب",
+  "visitsFilterBranch": "الفرع",
+  "visitsNoneInBranch": "لا توجد زيارات في هذا الفرع.",
+  "filesAnyDate": "أي تاريخ",
+  "filesDateRange": "تصفية بالتاريخ",
+  "filesClearDates": "مسح التاريخ",
+  "filesNoneInRange": "لا توجد ملفات في هذه الفترة."
 }

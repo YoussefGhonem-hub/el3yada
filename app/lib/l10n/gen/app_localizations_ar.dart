@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -8971,4 +8970,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get patientColumnNoShows => 'غياب';
+
+  @override
+  String get visitsFilterBranch => 'الفرع';
+
+  @override
+  String get visitsNoneInBranch => 'لا توجد زيارات في هذا الفرع.';
+
+  @override
+  String get filesAnyDate => 'أي تاريخ';
+
+  @override
+  String get filesDateRange => 'تصفية بالتاريخ';
+
+  @override
+  String get filesClearDates => 'مسح التاريخ';
+
+  @override
+  String get filesNoneInRange => 'لا توجد ملفات في هذه الفترة.';
 }

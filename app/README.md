@@ -11,7 +11,7 @@ The rule lives in [`lib/core/platform/app_platform.dart`](lib/core/platform/app_
 
 ## Before the first run
 
-1. **Flutter 3.44+** (`flutter --version`).
+1. **Flutter 3.50+** (`flutter --version`; CI uses 3.50.1). Upgrade with `flutter upgrade`.
 2. **Windows desktop builds:** in the Visual Studio Installer, add the **"Desktop development with C++"** workload, including the MSVC build tools, C++ CMake tools and the Windows 10/11 SDK. Check with `flutter doctor`.
 3. **Windows Developer Mode** (needed for plugins): `start ms-settings:developers`, then turn on Developer Mode.
 4. **Android:** `flutter doctor --android-licenses` and accept them.

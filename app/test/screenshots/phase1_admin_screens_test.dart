@@ -2,7 +2,7 @@ import 'package:el3yada/core/widgets/navigation/app_back_button.dart';
 import 'package:el3yada/app/app.dart';
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/features/admin/presentation/signups/license_viewer.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -109,8 +109,9 @@ void main() {
           // Reject asks for a reason (at the end of the page on phones).
           await tester.ensureVisible(find.text('رفض').last);
           await tester.pumpAndSettle();
-          if (width == 'phone')
+          if (width == 'phone') {
             await capture(tester, 'ad3_review_actions_${width}_ar_$theme');
+          }
           await tester.tap(find.text('رفض').last);
           await settle(tester);
           await tester.tap(find.byType(ActionChip).first);

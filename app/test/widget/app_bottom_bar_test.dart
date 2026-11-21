@@ -5,7 +5,7 @@ import 'package:el3yada/core/widgets/navigation/nav_rail.dart';
 import 'package:el3yada/core/widgets/navigation/side_menu.dart';
 import 'package:el3yada/core/widgets/navigation/sliding_indicator.dart';
 import 'package:el3yada/core/theme/motion.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -98,8 +98,9 @@ void main() {
       dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            if (bearer != null)
+            if (bearer != null) {
               options.headers['Authorization'] = 'Bearer $bearer';
+            }
             handler.next(options);
           },
         ),

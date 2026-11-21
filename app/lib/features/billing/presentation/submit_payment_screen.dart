@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -163,10 +163,11 @@ class _PayFormState extends ConsumerState<_PayForm> {
       firstDate: today.subtract(const Duration(days: 120)),
       lastDate: today,
     );
-    if (chosen != null)
+    if (chosen != null) {
       setState(
         () => _date = DateTime.utc(chosen.year, chosen.month, chosen.day),
       );
+    }
   }
 
   Future<void> _submit() async {

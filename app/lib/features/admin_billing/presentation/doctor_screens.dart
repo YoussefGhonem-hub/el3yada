@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -277,9 +277,7 @@ class AdminDoctorScreen extends ConsumerWidget {
                 padding: EdgeInsets.fromLTRB(gutter, 16, gutter, 8),
                 child: AdminHeader(
                   title: profile.value?.name(language) ?? l10n.abDoctorTitle,
-                  subtitle: profile.value == null
-                      ? null
-                      : profile.value!.specialty(language),
+                  subtitle: profile.value?.specialty(language),
                   leading: const AdminBackButton(fallback: '/admin/doctors'),
                 ),
               ),

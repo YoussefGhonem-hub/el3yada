@@ -379,8 +379,9 @@ class AppStack {
   Future<void> until(bool Function() done) async {
     final deadline = DateTime.now().add(const Duration(seconds: 10));
     while (!done()) {
-      if (DateTime.now().isAfter(deadline))
+      if (DateTime.now().isAfter(deadline)) {
         fail('The app did not get there in 10 seconds. Calls: $calls');
+      }
       await Future<void>.delayed(const Duration(milliseconds: 20));
     }
   }

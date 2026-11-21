@@ -11,7 +11,7 @@ import 'package:el3yada/features/catalog/data/catalog_files.dart';
 import 'package:el3yada/features/catalog/data/fake_catalog_backend.dart';
 import 'package:el3yada/features/catalog/data/sample_catalog.dart';
 import 'package:el3yada/features/catalog/domain/catalog_models.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 

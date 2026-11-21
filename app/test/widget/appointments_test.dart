@@ -5,7 +5,7 @@ import 'package:el3yada/core/settings/app_settings.dart';
 import 'package:el3yada/features/appointments/application/appointment_providers.dart';
 import 'package:el3yada/features/appointments/data/appointments_repository.dart';
 import 'package:el3yada/features/appointments/domain/appointment_models.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -252,9 +252,7 @@ class _PaymentReviewScreenState extends ConsumerState<PaymentReviewScreen> {
               padding: EdgeInsets.fromLTRB(gutter, 16, gutter, 12),
               child: AdminHeader(
                 title: l10n.abReviewTitle,
-                subtitle: review.value == null
-                    ? null
-                    : review.value!.doctor.displayName(language),
+                subtitle: review.value?.doctor.displayName(language),
                 leading: const AdminBackButton(fallback: '/admin/payments'),
               ),
             ),
@@ -464,15 +462,17 @@ class _ScreenshotsState extends State<_Screenshots> {
                 child: FutureBuilder<Uint8List>(
                   future: _image,
                   builder: (context, snapshot) {
-                    if (snapshot.hasError)
+                    if (snapshot.hasError) {
                       return Center(
                         child: AdminErrorView(
                           error: snapshot.error!,
                           onRetry: () => _select(_current),
                         ),
                       );
-                    if (!snapshot.hasData)
+                    }
+                    if (!snapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
+                    }
                     return InteractiveViewer(
                       maxScale: 6,
                       child: Image.memory(snapshot.data!, fit: BoxFit.contain),

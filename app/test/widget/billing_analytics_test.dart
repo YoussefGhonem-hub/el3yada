@@ -8,12 +8,10 @@ import 'package:el3yada/features/admin_billing/domain/admin_billing_models.dart'
 import 'package:el3yada/features/analytics/application/analytics_providers.dart';
 import 'package:el3yada/features/analytics/data/analytics_repository.dart';
 import 'package:el3yada/features/analytics/data/fake_analytics_repository.dart';
-import 'package:el3yada/features/analytics/domain/analytics_models.dart';
 import 'package:el3yada/features/billing/application/screenshot_picker.dart';
 import 'package:el3yada/features/billing/data/billing_repository.dart';
 import 'package:el3yada/features/billing/data/fake_billing_repository.dart';
-import 'package:el3yada/features/billing/domain/billing_models.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../support/admin_support.dart';

@@ -356,8 +356,9 @@ class FakeAdminBillingRepository implements AdminBillingRepository {
     final index = _payments.indexWhere((p) => p.item.paymentId == paymentId);
     if (index < 0) throw const ApiException.local('NOT_FOUND');
     final p = _payments[index];
-    if (p.item.status != PaymentStatus.pendingReview)
+    if (p.item.status != PaymentStatus.pendingReview) {
       throw const ApiException.local(BillingCodes.paymentAlreadyReviewed);
+    }
     _payments[index] = (
       item: PaymentQueueItem(
         paymentId: p.item.paymentId,
@@ -475,8 +476,9 @@ class FakeAdminBillingRepository implements AdminBillingRepository {
     _guard(invoiceId);
     final invoice = _invoices[invoiceId]!.invoice;
     final total = invoice.totalDuePiasters + amountPiasters;
-    if (total <= 0)
+    if (total <= 0) {
       throw const ApiException.local(BillingCodes.adjustmentInvalid);
+    }
     _setInvoice(
       invoiceId,
       invoice.status,
@@ -517,8 +519,9 @@ class FakeAdminBillingRepository implements AdminBillingRepository {
   }) async {
     _guard(invoiceId);
     final invoice = _invoices[invoiceId]!.invoice;
-    if (!newDueDate.isAfter(invoice.dueDate))
+    if (!newDueDate.isAfter(invoice.dueDate)) {
       throw const ApiException.local(BillingCodes.dueDateInvalid);
+    }
     _setInvoice(
       invoiceId,
       invoice.status == InvoiceStatus.overdue && !newDueDate.isBefore(_today)

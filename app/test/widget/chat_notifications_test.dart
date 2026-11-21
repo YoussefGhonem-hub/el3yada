@@ -1,6 +1,6 @@
 import 'package:el3yada/core/platform/app_platform.dart';
 import 'package:el3yada/core/realtime/realtime_service.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/pump_app.dart';

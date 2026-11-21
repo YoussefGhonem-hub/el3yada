@@ -4,7 +4,7 @@ import 'package:el3yada/features/catalog/application/catalog_search_provider.dar
 import 'package:el3yada/features/catalog/domain/catalog_search.dart';
 import 'package:el3yada/features/prescriptions/application/rx_printer.dart';
 import 'package:el3yada/features/prescriptions/data/fake_prescriptions.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 

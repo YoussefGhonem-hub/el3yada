@@ -30,6 +30,20 @@ Future<void> loadRealFonts() async {
   }
   await alexandria.load();
 
+  // Desktop text uses Segoe UI (AppTheme.desktopFontFamily). It ships with Windows and can't be bundled, so the
+  // desktop screenshots load it from the system when it's there; elsewhere they show the test font.
+  final segoe = [
+    for (final name in ['segoeui', 'segoeuisl', 'seguisb', 'segoeuib'])
+      File('${Platform.environment['WINDIR'] ?? r'C:\Windows'}/Fonts/$name.ttf'),
+  ].where((file) => file.existsSync()).toList();
+  if (segoe.isNotEmpty) {
+    final loader = FontLoader('Segoe UI');
+    for (final file in segoe) {
+      loader.addFont(Future.value(ByteData.sublistView(file.readAsBytesSync())));
+    }
+    await loader.load();
+  }
+
   final flutterRoot =
       Platform.environment['FLUTTER_ROOT'] ?? _flutterRootFromPath();
   final iconFile = File(

@@ -6,6 +6,7 @@ import '../../../core/network/api_error.dart';
 import '../../../core/platform/contact_launcher.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/motion.dart';
+import '../../../core/widgets/desktop_surfaces.dart';
 import '../../chat/chat_providers.dart';
 import '../../clinic/application/clinic_providers.dart' show clinicContextProvider;
 import '../../clinic/domain/clinic_permissions.dart';
@@ -221,20 +222,21 @@ class _Counters extends StatelessWidget {
     final theme = Theme.of(context);
     final booked = snapshot.entries.where((e) => e.stage != BoardStage.missed).length;
     final arrived = snapshot.entries.where((e) => e.stage == BoardStage.waiting || e.stage == BoardStage.withDoctor || e.stage == BoardStage.done).length;
-    return Padding(
-      padding: const EdgeInsets.all(12),
+    return DesktopPanel(
+      margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Row(
         children: [
           if (snapshot.mode == 'queue')
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               margin: const EdgeInsetsDirectional.only(end: 12),
-              decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: theme.colorScheme.primaryContainer, borderRadius: BorderRadius.circular(8)),
               child: Column(
                 children: [
                   Text(l10n.nowServing, style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
                   Text('${snapshot.nowServing ?? '–'}',
-                      style: theme.textTheme.headlineMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer, fontWeight: FontWeight.w700)),
+                      style: theme.textTheme.headlineSmall?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
                 ],
               ),
             ),
@@ -413,7 +415,8 @@ class _Columns extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) {
-          final columnWidth = (constraints.maxWidth / 5).clamp(220.0, 320.0);
+          // Five columns fit the canvas from about 900 px; narrower windows scroll sideways.
+          final columnWidth = ((constraints.maxWidth - 16) / 5).clamp(176.0, 320.0);
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -493,28 +496,43 @@ class _StageList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final canRecord = _canRecord(ref);
+    final scheme = theme.colorScheme;
+    // Columns (tablet and desktop) are panels on the canvas, so the column names and "no one" never float on the page.
     Widget column(bool highlighted) => AnimatedContainer(
           duration: Motion.of(context).reduced ? Duration.zero : Motion.fast,
           curve: Motion.standardCurve,
-          margin: const EdgeInsets.all(2),
+          margin: showHeader ? const EdgeInsets.all(4) : EdgeInsets.zero,
           decoration: BoxDecoration(
-            color: highlighted ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5) : null,
-            border: Border.all(color: highlighted ? theme.colorScheme.primary : theme.colorScheme.surface.withValues(alpha: 0)),
-            borderRadius: BorderRadius.circular(12),
+            color: highlighted
+                ? scheme.primaryContainer.withValues(alpha: 0.5)
+                : (showHeader ? AppTheme.desktopPanel(scheme) : null),
+            border: Border.all(color: highlighted ? scheme.primary : Colors.transparent),
+            borderRadius: BorderRadius.circular(DesktopPanel.radius),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (showHeader)
                 Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text('${context.boardStage(stage)} (${entries.length})', style: theme.textTheme.titleSmall),
+                  padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 10, 2),
+                  // Read as one label, "Waiting (3)", by screen readers (and found by it in tests).
+                  child: Semantics(
+                    label: '${context.boardStage(stage)} (${entries.length})',
+                    header: true,
+                    excludeSemantics: true,
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(context.boardStage(stage), style: theme.textTheme.titleSmall)),
+                        _CountBadge(count: entries.length),
+                      ],
+                    ),
+                  ),
                 ),
               Expanded(
                 child: entries.isEmpty
-                    ? Center(child: Text(context.l10n.boardEmptyStage, style: TextStyle(color: theme.colorScheme.outline)))
+                    ? Center(child: Text(context.l10n.boardEmptyStage, style: theme.textTheme.bodySmall?.copyWith(color: scheme.outline)))
                     : ListView.builder(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.fromLTRB(8, 6, 8, 8),
                         itemCount: entries.length,
                         itemBuilder: (context, i) {
                           final card = BoardCard(branchId: branchId, basePath: basePath, entry: entries[i], offline: offline, mode: mode);
@@ -534,6 +552,34 @@ class _StageList extends ConsumerWidget {
       },
       onAcceptWithDetails: (d) => runBoardAction(context, ref, branchId, d.data, boardDropAction(d.data, stage)!),
       builder: (context, candidates, rejected) => column(candidates.isNotEmpty),
+    );
+  }
+}
+
+/// A column's count, as a small badge next to its name.
+class _CountBadge extends StatelessWidget {
+  const _CountBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Container(
+      constraints: const BoxConstraints(minWidth: 22),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+      decoration: BoxDecoration(
+        color: count == 0 ? scheme.surfaceContainerHighest : scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        '$count',
+        textAlign: TextAlign.center,
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: count == 0 ? scheme.onSurfaceVariant : scheme.onPrimaryContainer,
+        ),
+      ),
     );
   }
 }

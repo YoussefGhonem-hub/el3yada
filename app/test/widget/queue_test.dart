@@ -3,6 +3,7 @@ import 'package:el3yada/core/realtime/realtime_service.dart';
 import 'package:el3yada/features/appointments/data/appointments_repository.dart';
 import 'package:el3yada/features/appointments/presentation/patient_appointment_screens.dart' show QueueStatusCard;
 import 'package:el3yada/features/appointments/presentation/waiting_room_screen.dart';
+import 'package:el3yada/features/appointments/presentation/live_board_screen.dart';
 import 'package:el3yada/features/sessions/presentation/new_session_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -193,9 +194,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Booked'), findsNothing);
-      expect(find.text('Waiting (3)'), findsOneWidget);
-      expect(find.text('2'), findsOneWidget);
-      expect(find.text('3'), findsOneWidget);
+      expect(_column('Waiting (3)'), findsOneWidget);
+      expect(_onCard('2'), findsOneWidget);
+      expect(_onCard('3'), findsOneWidget);
       expect(_top(tester, 'خالد يوسف'), lessThan(_top(tester, 'زائر جديد')));
       expect(_top(tester, 'زائر جديد'), lessThan(_top(tester, 'محمد إبراهيم')));
 
@@ -203,7 +204,7 @@ void main() {
       await repository.act('ap-1', 'priority', reason: 'مسن');
       rig.realtime.emit(const RealtimeEvent(RealtimeEvents.boardChanged, {'branchId': 'br-a1'}));
       await tester.pumpAndSettle();
-      expect(find.text('3'), findsOneWidget);
+      expect(_onCard('3'), findsOneWidget);
       expect(_top(tester, 'محمد إبراهيم'), lessThan(_top(tester, 'خالد يوسف')));
       expect(find.text('Priority'), findsOneWidget);
     });
@@ -212,23 +213,23 @@ void main() {
       await _doctorDesktop(tester);
 
       // Two columns at once is not a move: nothing happens.
-      await _drag(tester, find.text('محمد إبراهيم'), find.text('With the doctor (0)'));
-      expect(find.text('Expected (2)'), findsOneWidget);
+      await _drag(tester, find.text('محمد إبراهيم'), _column('With the doctor (0)'));
+      expect(_column('Expected (2)'), findsOneWidget);
 
       // Expected → Waiting: check in, with the next number.
-      await _drag(tester, find.text('محمد إبراهيم'), find.text('Waiting (1)'));
-      expect(find.text('Waiting (2)'), findsOneWidget);
-      expect(find.text('2'), findsOneWidget);
+      await _drag(tester, find.text('محمد إبراهيم'), _column('Waiting (1)'));
+      expect(_column('Waiting (2)'), findsOneWidget);
+      expect(_onCard('2'), findsOneWidget);
 
       // Waiting → With the doctor: call in; and back.
-      await _drag(tester, find.text('خالد يوسف'), find.text('With the doctor (0)'));
-      expect(find.text('With the doctor (1)'), findsOneWidget);
-      await _drag(tester, find.text('خالد يوسف'), find.text('Waiting (1)'));
-      expect(find.text('Waiting (2)'), findsOneWidget);
-      await _drag(tester, find.text('خالد يوسف'), find.text('With the doctor (0)'));
+      await _drag(tester, find.text('خالد يوسف'), _column('With the doctor (0)'));
+      expect(_column('With the doctor (1)'), findsOneWidget);
+      await _drag(tester, find.text('خالد يوسف'), _column('Waiting (1)'));
+      expect(_column('Waiting (2)'), findsOneWidget);
+      await _drag(tester, find.text('خالد يوسف'), _column('With the doctor (0)'));
 
       // With the doctor → Done: the session form for the booking (BR-LB3).
-      await _drag(tester, find.text('خالد يوسف'), find.text('Done (0)'));
+      await _drag(tester, find.text('خالد يوسف'), _column('Done (0)'));
       expect(find.byType(NewSessionScreen), findsOneWidget);
       final form = tester.widget<NewSessionScreen>(find.byType(NewSessionScreen));
       expect(form.appointmentId, 'ap-2');
@@ -293,3 +294,10 @@ void main() {
     });
   });
 }
+
+/// A board column's header, read as one label such as "Waiting (3)": its name and the count badge.
+Finder _column(String label) =>
+    find.byWidgetPredicate((widget) => widget is Semantics && widget.properties.label == label);
+
+/// A queue number on a board card (the column headers' count badges show numbers too).
+Finder _onCard(String number) => find.descendant(of: find.byType(BoardCard), matching: find.text(number));

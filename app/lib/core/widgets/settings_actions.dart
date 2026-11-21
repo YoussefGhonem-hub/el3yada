@@ -13,8 +13,9 @@ import 'pressable.dart';
 class DesktopQuickSettings extends ConsumerWidget {
   const DesktopQuickSettings({super.key});
 
-  static const double height = 42;
-  static const double _segment = 36;
+  // 32 px, the size of the header's other controls (Fluent medium, as in Teams).
+  static const double height = 32;
+  static const double _segment = 28;
 
   static const _modes = [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
 

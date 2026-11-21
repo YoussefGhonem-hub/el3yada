@@ -4,7 +4,7 @@ The Web API and the SQL Server database for the el3yada app. The full product sp
 
 | Project | What it holds |
 |---|---|
-| `src/El3yada.Api` | ASP.NET Core Web API (.NET 10): controllers, `Program.cs`, settings (`Configuration/`), sign-in and tokens (`Auth/`), the audit log (`Audit/`), email (`Email/`), notification rows (`Notifications/`), doctor registration (`Doctors/`), AD13 settings fields (`Settings/`), the `seed-admin` and `add-booking` commands (`Commands/`), validation (`Validation/`), file storage (`Storage/`) |
+| `src/El3yada.Api` | ASP.NET Core Web API (.NET 10): controllers, `Program.cs`, settings (`Configuration/`), sign-in and tokens (`Auth/`), the audit log (`Audit/`), email (`Email/`), notification rows (`Notifications/`), doctor registration (`Doctors/`), AD13 settings fields (`Settings/`), the `seed-admin`, `seed-review-accounts` and `add-booking` commands (`Commands/`), validation (`Validation/`), file storage (`Storage/`) |
 | `src/El3yada.Data` | EF Core: `AppDbContext`, one entity class per table (`Entities/`), migrations |
 | `tests/El3yada.Api.Tests` | xUnit. Unit tests for validation, settings checks and file storage, and integration tests in `Integration/` that run the real API on a throwaway migrated database |
 | `tests/El3yada.Data.Tests` | xUnit tests that build a fresh database from the migrations and check it |
@@ -79,6 +79,20 @@ dotnet run --project src/El3yada.Api -- seed-admin <email> [--name "First Last"]
 - `--name` defaults to "Super Admin" and must be two words, letters only.
 - In production, run it once on the server with the production environment variables set.
 - It writes an `adminSeeded` audit row. The handler is `SeedAdminCommand.ExecuteAsync`, which `SeedAdminCommandTests` calls directly.
+
+## Store review accounts: `seed-review-accounts`
+
+```bash
+dotnet run --project src/El3yada.Api -- seed-review-accounts --patient-phone 01XXXXXXXXX [--doctor-email appreview@el3yada.app]
+```
+
+- It creates the two accounts that Apple's and Google's reviewers sign in with: the doctor «د. سارة محمود» (email, default `appreview@el3yada.app`) and her patient «أحمد علي حسن» (the mobile number you give). Both passwords are printed **once**. They never need changing (no `mustChangePassword`, Terms already accepted), so a reviewer can sign in again on the next version. Paste them into App Store Connect > App Review Information and the Play Console's App access.
+- The doctor's free trial runs for 10 years, so there are no platform fees, no "trial ends soon" banner and no A15, however long a review takes.
+- The clinic already has content: one branch open every day (10:00–14:00 and 17:00–22:00, queue mode), an examination two weeks ago and a consultation three days ago, the patient's allergies and chronic diseases, a private note, a chat, and a booking a week from now. The branch allows 3 upcoming bookings per patient, so a reviewer can still book as the patient.
+- The medication and lab prescriptions are **drafts**, because the app draws the PDF. After seeding, sign in as the doctor once and send both (the patient > Prescriptions > Send), so the patient sees them too.
+- Use a number the team owns. Whoever has that number signs in as this patient, and a doctor who later adds that number gets linked to this account (BR-P3).
+- It refuses an email or a number that already has an account, and changes nothing (exit code 1).
+- Run it once on the server the store build talks to, with that server's environment variables. The handler is `SeedReviewAccountsCommand.ExecuteAsync`, which `SeedReviewAccountsCommandTests` calls directly.
 
 ## A test booking: `add-booking` (Development only)
 

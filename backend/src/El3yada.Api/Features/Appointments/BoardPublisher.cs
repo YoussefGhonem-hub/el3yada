@@ -13,6 +13,9 @@ namespace El3yada.Api.Features.Appointments;
 /// </summary>
 public sealed class BoardPublisher(AppDbContext db, ILiveBoardMirror mirror, IRealtime realtime, TimeProvider clock)
 {
+    /// <summary>The columns, in board order (6.13).</summary>
+    public static readonly string[] Stages = ["expected", "waiting", "withDoctor", "done", "missed"];
+
     public static string StageOf(string status) => status switch
     {
         AppointmentStatuses.Pending or AppointmentStatuses.Confirmed => "expected",
@@ -34,7 +37,7 @@ public sealed class BoardPublisher(AppDbContext db, ILiveBoardMirror mirror, IRe
             .Where(a => a.BranchId == branchId && a.LocalDate == date)
             .Select(a => new
             {
-                a.Id, a.QueueNumber, a.StartUtc, a.Status, a.VisitType, a.Source, a.IsPriority, a.Overbooked,
+                a.Id, a.QueueNumber, a.StartUtc, a.Status, a.VisitType, a.Source, a.IsPriority, a.Overbooked, a.Mode, a.PeriodStartLocal,
                 a.PatientId, a.GuestName, a.Reason, a.StaffNotes, a.CheckedInAt, a.CalledAt, a.BoardOrder, a.SessionId, a.CreatedAt,
                 Link = db.DoctorPatients.Where(l => l.DoctorId == a.DoctorId && l.PatientId == a.PatientId)
                     .Select(l => new { l.PatientName, l.SessionCount, l.LastSessionAt, l.LastSessionType, l.ConsultationsSinceExam })
@@ -42,9 +45,37 @@ public sealed class BoardPublisher(AppDbContext db, ILiveBoardMirror mirror, IRe
             })
             .ToListAsync(ct);
 
-        var entries = rows.Select(r =>
+        // The order of each column (6.13):
+        // - Expected: queue mode by booking time, as those patients have no number until they arrive; timed mode by time.
+        // - Waiting: priority first, then by queue number, which is the order of arrival (BR-AP3); timed mode by time,
+        //   or [S] by arrival when the branch asks. Each period is its own line.
+        // - With the doctor by when they went in; the rest by their order.
+        // `Order` is the card's place on the whole board, for listeners of the Firestore mirror.
+        var sorted = rows.Select(r =>
         {
             var stage = StageOf(r.Status);
+            var queue = r.Mode == "queue";
+            var withinStage = stage switch
+            {
+                "expected" when queue => r.CreatedAt.Ticks,
+                "expected" => (long)r.BoardOrder * TimeSpan.TicksPerMinute,
+                "waiting" when branch.WaitingOrderByArrival => r.CheckedInAt?.Ticks ?? long.MaxValue,
+                "withDoctor" => r.CalledAt?.Ticks ?? long.MaxValue,
+                _ => r.BoardOrder,
+            };
+            return (Row: r, Stage: stage, Key: (
+                Stage: Array.IndexOf(Stages, stage),
+                Priority: stage == "waiting" && r.IsPriority ? 0 : 1,
+                Period: stage == "waiting" && queue ? r.PeriodStartLocal.Ticks : 0,
+                Within: withinStage,
+                Created: r.CreatedAt.Ticks));
+        })
+        .OrderBy(x => x.Key)
+        .ToList();
+
+        var entries = sorted.Select((x, index) =>
+        {
+            var (r, stage) = (x.Row, x.Stage);
             var isGuest = r.PatientId is null;
             var lateAfter = r.StartUtc.AddMinutes(15);
             return new BoardEntry(
@@ -68,31 +99,31 @@ public sealed class BoardPublisher(AppDbContext db, ILiveBoardMirror mirror, IRe
                     Pending: r.Status == AppointmentStatuses.Pending),
                 r.CheckedInAt,
                 r.CalledAt,
-                r.BoardOrder,
+                index,
                 r.Status,
                 r.PatientId,
                 r.SessionId,
                 r.CreatedAt);
         })
-        // Expected and Waiting by number (or time); priority first; [S] Waiting by arrival when the branch asks.
-        .OrderBy(e => e.Stage == "waiting" && e.Flags.Priority ? 0 : 1)
-        .ThenBy(e => e.Stage == "waiting" && branch.WaitingOrderByArrival ? e.CheckedInAt?.Ticks ?? long.MaxValue : e.Order)
         .ToList();
 
         var counts = new BoardCounts(
             entries.Count(e => e.Stage == "expected"), entries.Count(e => e.Stage == "waiting"),
             entries.Count(e => e.Stage == "withDoctor"), entries.Count(e => e.Stage == "done"), entries.Count(e => e.Stage == "missed"));
 
-        var state = await db.BranchDayStates.AsNoTracking()
+        // A period's row also exists once someone checks in to it (the check-in lock), so "now serving" and the
+        // delay each come from the latest row that has one.
+        var states = await db.BranchDayStates.AsNoTracking()
             .Where(s => s.BranchId == branchId && s.LocalDate == date)
-            .OrderByDescending(s => s.UpdatedAt)
-            .Select(s => new { s.NowServingNumber, s.DelayMinutes })
-            .FirstOrDefaultAsync(ct);
-        var nowServing = state?.NowServingNumber
+            .Select(s => new { s.NowServingNumber, s.DelayMinutes, s.UpdatedAt })
+            .ToListAsync(ct);
+        var nowServing = states.Where(s => s.NowServingNumber is not null).MaxBy(s => s.UpdatedAt)?.NowServingNumber
             ?? entries.Where(e => e.Stage == "withDoctor").Select(e => e.QueueNumber).FirstOrDefault();
+        var delay = states.Where(s => s.DelayMinutes is not null).MaxBy(s => s.UpdatedAt)?.DelayMinutes;
+        // The waiting-room screen (D36) shows these after "now serving": the Waiting column's numbers, in its order.
         var next = entries.Where(e => e.Stage == "waiting" && e.QueueNumber is not null).Select(e => e.QueueNumber!.Value).Take(5).ToList();
 
-        return new BoardSnapshot(branch.DoctorId, branchId, date, branch.BookingMode, nowServing, state?.DelayMinutes,
+        return new BoardSnapshot(branch.DoctorId, branchId, date, branch.BookingMode, nowServing, delay,
             counts, entries, next, nowUtc);
     }
 

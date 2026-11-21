@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/format/app_format.dart';
+import '../../../core/network/api_error.dart' show ApiErrorMessage;
 import '../../../core/network/api_error_text.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/theme/app_theme.dart';
@@ -15,6 +16,9 @@ import '../../../core/widgets/staggered_entrance.dart';
 import '../../../core/widgets/state_switcher.dart';
 import '../../../core/widgets/temporary_password_dialog.dart';
 import '../../../l10n/gen/app_localizations.dart';
+import '../../appointments/domain/appointment_models.dart' show Appointment, AppointmentStatus, PatientLookup;
+import '../../appointments/presentation/appointment_format.dart' show AppointmentFormat, StatusChip;
+import '../../chat/chat_data.dart' show chatRepositoryProvider;
 import '../../clinic/domain/clinic_context.dart';
 import '../../clinic/domain/clinic_permissions.dart';
 import '../../records/presentation/files_tab.dart';
@@ -23,6 +27,7 @@ import '../application/patients_providers.dart';
 import '../clinic_paths.dart';
 import '../data/patients_repository.dart';
 import '../domain/patient_models.dart';
+import '../../patient/domain/patient_models.dart' show BranchRef, DoctorRef;
 import 'widgets/clinic_ui.dart';
 import 'widgets/patient_text.dart';
 import '../../prescriptions/presentation/rx_sections.dart';
@@ -85,7 +90,7 @@ class PatientProfileView extends ConsumerWidget {
   }
 }
 
-enum _Tab { overview, sessions, files, prescriptions }
+enum _Tab { overview, sessions, files, prescriptions, appointments }
 
 class _ProfileContent extends ConsumerStatefulWidget {
   const _ProfileContent({super.key, required this.patient, required this.clinic, required this.showBack, this.onClose});
@@ -108,14 +113,56 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
   ClinicContext get _clinic => widget.clinic;
 
   /// AS4: the tabs by permission. Files needs `filesManage` (AS6);
-  /// Prescriptions `clinicalView` or `prescriptionsPrint` (AS8).
-  /// Appointments come in Phase 6.
+  /// Prescriptions `clinicalView` or `prescriptionsPrint` (AS8);
+  /// Appointments `appointmentsView`.
   List<_Tab> get _allowedTabs => [
         if (_clinic.can(ClinicPermission.clinicalView)) _Tab.overview,
         if (_clinic.can(ClinicPermission.sessionsCreate) || _clinic.can(ClinicPermission.clinicalView)) _Tab.sessions,
         if (_clinic.can(ClinicPermission.filesManage)) _Tab.files,
         if (_clinic.canReadRx) _Tab.prescriptions,
+        if (_clinic.can(ClinicPermission.appointmentsView)) _Tab.appointments,
       ];
+
+  /// D6 Book: D32 with this patient already picked (`appointmentsManage`; archived patients can't be
+  /// booked, BR-P7). The patient goes along as `extra`; the query lets a reload find them again.
+  bool get _canBook =>
+      _clinic.can(ClinicPermission.appointmentsManage) && !_clinic.isSuspended && !_patient.archived;
+
+  void _book() {
+    final patient = _patient;
+    final visits = patient.visits;
+    context.push(
+      Uri(
+        path: '${_paths.base}/appointments/book',
+        queryParameters: {'patient': patient.patientId, 'file': '${patient.fileNumber}'},
+      ).toString(),
+      extra: PatientLookup(
+        patientId: patient.patientId,
+        name: patient.fullName,
+        phone: patient.phone,
+        fileNumber: patient.fileNumber,
+        sessionCount: visits.total,
+        consultationAllowed: visits.total > 0 && visits.consultationsSinceExam < _clinic.fees.maxConsecutiveConsultations,
+        consultationsSinceExam: visits.consultationsSinceExam,
+        lastVisitAt: visits.lastVisit?.at,
+        upcomingAppointmentId: patient.nextBooking?.appointmentId,
+      ),
+    );
+  }
+
+  /// D6 Chat (`chat`): the link's conversation, made if it doesn't exist yet (D17).
+  Future<void> _openChat() async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _busy = true);
+    try {
+      final chat = await ref.read(chatRepositoryProvider).openForPatient(_patient.patientId);
+      if (mounted) await context.push('${_paths.base}/chats/${chat.id}');
+    } catch (error) {
+      if (mounted) showAdminSnack(context, l10n.apiErrorMessage(error), error: true);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   void initState() {
@@ -298,6 +345,33 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
           child: Text(patient.archived ? l10n.patientUnarchive : l10n.patientArchive),
         ),
     ];
+    final canChat = _clinic.can(ClinicPermission.chat);
+    final actions = <Widget>[
+      if (canSession)
+        FilledButton.icon(
+          onPressed: () => context.push(_paths.newSession(patient.patientId)),
+          icon: const Icon(Icons.add_circle_outline),
+          label: Text(l10n.sessionNew),
+        ),
+      if (_canBook)
+        FilledButton.tonalIcon(
+          onPressed: _book,
+          icon: const Icon(Icons.event_available_outlined),
+          label: Text(l10n.bookButton),
+        ),
+      if (canChat)
+        OutlinedButton.icon(
+          onPressed: _busy ? null : _openChat,
+          icon: const Icon(Icons.chat_bubble_outline),
+          label: Text(l10n.chatButton),
+        ),
+      if (canEdit)
+        OutlinedButton.icon(
+          onPressed: () => context.push(_paths.editPatient(patient.patientId)),
+          icon: const Icon(Icons.edit_outlined),
+          label: Text(l10n.patientEdit),
+        ),
+    ];
 
     return Card(
       child: Padding(
@@ -357,29 +431,19 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
             ),
             const SizedBox(height: 14),
             _PhoneRow(phone: patient.phone),
-            if (canSession || canEdit) ...[
+            if (actions.isNotEmpty) ...[
               const SizedBox(height: 14),
-              Row(
-                children: [
-                  if (canSession)
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: () => context.push(_paths.newSession(patient.patientId)),
-                        icon: const Icon(Icons.add_circle_outline),
-                        label: Text(l10n.sessionNew),
-                      ),
-                    ),
-                  if (canSession && canEdit) const SizedBox(width: 10),
-                  if (canEdit)
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => context.push(_paths.editPatient(patient.patientId)),
-                        icon: const Icon(Icons.edit_outlined),
-                        label: Text(l10n.patientEdit),
-                      ),
-                    ),
-                ],
-              ),
+              // Two to a row, so four actions still fit a phone.
+              for (var i = 0; i < actions.length; i += 2) ...[
+                if (i > 0) const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(child: actions[i]),
+                    const SizedBox(width: 10),
+                    Expanded(child: i + 1 < actions.length ? actions[i + 1] : const SizedBox.shrink()),
+                  ],
+                ),
+              ],
             ],
           ],
         ),
@@ -471,6 +535,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                         _Tab.sessions => l10n.patientTabSessions,
                         _Tab.files => l10n.patientTabFiles,
                         _Tab.prescriptions => l10n.patientTabPrescriptions,
+                        _Tab.appointments => l10n.patientTabAppointments,
                       },
                     ),
                 ],
@@ -495,6 +560,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
                   _Tab.sessions => _SessionsTimeline(patient: _patient, clinic: _clinic),
                   _Tab.files => FilesTab(patientId: _patient.patientId, clinic: _clinic),
                   _Tab.prescriptions => PatientPrescriptionsTab(patientId: _patient.patientId, clinic: _clinic),
+                  _Tab.appointments => _AppointmentsTab(patient: _patient, onBook: _canBook ? _book : null),
                 },
               ),
             ),
@@ -582,11 +648,42 @@ class _Summary extends StatelessWidget {
           ],
         );
 
+    // Bookings, files and prescriptions show for a patient who hasn't visited yet too.
+    final extras = <Widget>[
+      if (patient.nextBooking case final next?)
+        tile(
+          l10n.patientColumnNextBooking,
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TypeBadge(next.visitType),
+              Text(ClinicFormat.dayAuto(context, next.date), style: theme.textTheme.bodyLarge),
+            ],
+          ),
+        ),
+      if (patient.noShowCount > 0)
+        tile(l10n.patientColumnNoShows, Text(l10n.patientCardNoShows(patient.noShowCount), style: theme.textTheme.bodyLarge?.copyWith(color: scheme.error))),
+      if (patient.filesTotal > 0) tile(l10n.patientSortFiles, Text(l10n.patientCardFiles(patient.filesTotal), style: theme.textTheme.bodyLarge)),
+      if (patient.prescriptionCount > 0)
+        tile(l10n.patientTabPrescriptions, Text('${patient.prescriptionCount}', style: theme.textTheme.bodyLarge)),
+    ];
+
     return SectionCard(
       title: l10n.patientFileSummary,
       icon: Icons.folder_open_outlined,
       child: visits.total == 0
-          ? Text(l10n.patientNoVisits, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant))
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.patientNoVisits, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                if (extras.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  ResponsiveGrid(minColumnWidth: 140, runSpacing: 16, children: extras),
+                ],
+              ],
+            )
           : ResponsiveGrid(
               minColumnWidth: 140,
               runSpacing: 16,
@@ -631,8 +728,174 @@ class _Summary extends StatelessWidget {
                 ),
                 if (patient.totalPaidPiasters != null)
                   tile(l10n.patientTotalPaid, Text(AppFormat.egp(context, patient.totalPaidPiasters!), style: theme.textTheme.titleMedium)),
+                ...extras,
               ],
             ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Appointments
+
+/// The Appointments tab (`appointmentsView`): upcoming bookings soonest first, then the past ones
+/// newest first, each with its status (no-shows in red). A row opens D31.
+class _AppointmentsTab extends ConsumerWidget {
+  const _AppointmentsTab({required this.patient, required this.onBook});
+
+  final PatientView patient;
+
+  /// Null when the caller may not book (no `appointmentsManage`, suspended, archived patient).
+  final VoidCallback? onBook;
+
+  static const _active = {
+    AppointmentStatus.pending,
+    AppointmentStatus.confirmed,
+    AppointmentStatus.checkedIn,
+    AppointmentStatus.withDoctor,
+  };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final paths = ref.watch(clinicPathsProvider);
+    final provider = patientAppointmentsProvider(patient.patientId);
+    final today = DateUtils.dateOnly(DateTime.now());
+
+    Widget header(String text) => Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 8),
+          child: Text(text, style: theme.textTheme.labelLarge?.copyWith(color: scheme.onSurfaceVariant)),
+        );
+
+    return AsyncStateSwitcher<List<Appointment>>(
+      value: ref.watch(provider),
+      loading: (context) => SkeletonLoading(
+        loading: true,
+        child: Column(children: [for (var i = 0; i < 3; i++) _AppointmentRow.placeholder()]),
+      ),
+      error: (context, error) => Semantics(
+        liveRegion: true,
+        child: Row(
+          children: [
+            Icon(Icons.error_outline, color: scheme.error),
+            const SizedBox(width: 8),
+            Expanded(child: Text(l10n.apiErrorMessage(error), style: theme.textTheme.bodyMedium)),
+            TextButton(onPressed: () => ref.invalidate(provider), child: Text(l10n.retryButton)),
+          ],
+        ),
+      ),
+      isEmpty: (list) => list.isEmpty,
+      empty: (context) => EmptyState(
+        title: l10n.patientAppointmentsEmptyTitle,
+        message: onBook == null ? null : l10n.patientAppointmentsEmptyBody,
+        actionLabel: onBook == null ? null : l10n.bookButton,
+        onAction: onBook,
+      ),
+      data: (context, list) {
+        final upcoming = list.where((a) => _active.contains(a.status) && !a.date.isBefore(today)).toList().reversed.toList();
+        final past = list.where((a) => !upcoming.contains(a)).toList();
+        var index = 0;
+        Widget row(Appointment a) => StaggeredEntrance(
+              index: index++,
+              child: _AppointmentRow(appointment: a, onTap: () => context.push('${paths.base}/appointments/${a.id}')),
+            );
+        return StaggerGroup(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (onBook != null)
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: TextButton.icon(onPressed: onBook, icon: const Icon(Icons.add), label: Text(l10n.bookButton)),
+                ),
+              if (patient.noShowCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: MetaLine(icon: Icons.event_busy_outlined, text: l10n.patientCardNoShows(patient.noShowCount), color: scheme.error),
+                ),
+              if (upcoming.isNotEmpty) ...[header(l10n.patientAppointmentsUpcoming), for (final a in upcoming) row(a)],
+              if (past.isNotEmpty) ...[
+                if (upcoming.isNotEmpty) const SizedBox(height: 8),
+                header(l10n.patientAppointmentsPast),
+                for (final a in past) row(a),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _AppointmentRow extends StatelessWidget {
+  const _AppointmentRow({required this.appointment, required this.onTap});
+
+  static Widget placeholder() => _AppointmentRow(
+        appointment: Appointment(
+          id: '',
+          doctor: const DoctorRef(id: '', fullName: '————', title: ''),
+          branch: const BranchRef(id: '', nameAr: '——————'),
+          displayName: '',
+          isGuest: false,
+          visitType: 'examination',
+          mode: 'queue',
+          date: DateTime.utc(2026),
+          time: '17:00',
+          startUtc: DateTime.utc(2026),
+          status: AppointmentStatus.confirmed,
+          source: 'staff',
+        ),
+        onTap: null,
+      );
+
+  final Appointment appointment;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final a = appointment;
+    final language = Localizations.localeOf(context).languageCode;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Pressable(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(color: scheme.surfaceContainer, borderRadius: BorderRadius.circular(16)),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        TypeBadge(SessionType.fromWire(a.visitType)),
+                        Text('${ClinicFormat.dayAuto(context, a.date)}  ${context.appointmentWhen(a)}', style: theme.textTheme.titleSmall),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    MetaLine(
+                      icon: Icons.store_mall_directory_outlined,
+                      text: language == 'ar' || a.branch.nameEn == null ? a.branch.nameAr : a.branch.nameEn!,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              StatusChip(status: a.status),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

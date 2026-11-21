@@ -15477,6 +15477,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No files in these dates.'**
   String get filesNoneInRange;
+
+  /// No description provided for @bookButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get bookButton;
+
+  /// No description provided for @chatButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get chatButton;
+
+  /// No description provided for @patientExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get patientExportCsv;
+
+  /// No description provided for @patientExportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient list is exported.'**
+  String get patientExportDone;
+
+  /// No description provided for @patientExportTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many patients for one file. Narrow the filters and try again.'**
+  String get patientExportTooLarge;
+
+  /// No description provided for @patientColumnUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get patientColumnUnread;
+
+  /// D4: the unread chat badge, for screen readers.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unread message} other{{count} unread messages}}'**
+  String patientUnreadSemantics(int count);
+
+  /// D4 card: the next booking's day.
+  ///
+  /// In en, this message translates to:
+  /// **'Next booking {date}'**
+  String patientCardNextBooking(String date);
+
+  /// D4 card and D6: missed bookings.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 no-show} other{{count} no-shows}}'**
+  String patientCardNoShows(int count);
+
+  /// D4 card and D6: medical files.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file} other{{count} files}}'**
+  String patientCardFiles(int count);
+
+  /// No description provided for @patientTabAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get patientTabAppointments;
+
+  /// No description provided for @patientAppointmentsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookings yet'**
+  String get patientAppointmentsEmptyTitle;
+
+  /// No description provided for @patientAppointmentsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Book a visit for this patient from here.'**
+  String get patientAppointmentsEmptyBody;
+
+  /// No description provided for @patientAppointmentsUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get patientAppointmentsUpcoming;
+
+  /// No description provided for @patientAppointmentsPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Past'**
+  String get patientAppointmentsPast;
+
+  /// D27: the doctor exported the register as CSV.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Exported the patient list (1 patient)} other{Exported the patient list ({count} patients)}}'**
+  String activityPatientsExported(int count);
+
+  /// No description provided for @activityActionPatientsExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient list exported'**
+  String get activityActionPatientsExported;
 }
 
 class _AppLocalizationsDelegate

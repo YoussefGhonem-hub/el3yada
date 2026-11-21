@@ -29,6 +29,12 @@ abstract final class PatientRoutes {
   static String prescriptionPdf(String id) => '/patient/prescriptions/$id/pdf';
   static String record(String id, {int attachment = 0}) => '/patient/records/$id?attachment=$attachment';
 
+  /// P15 with [doctorId] already chosen.
+  static String book(String doctorId) => '/patient/appointments/book?doctor=$doctorId';
+
+  /// P12, one conversation.
+  static String chat(String chatId) => '/patient/chats/$chatId';
+
   /// Pages shown inside the patient shell (bottom bar or side menu stays visible).
   static final Map<String, GoRouterWidgetBuilder> shellPages = {
     home: (context, state) => const PatientHomeScreen(),

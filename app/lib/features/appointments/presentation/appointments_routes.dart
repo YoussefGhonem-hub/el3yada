@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import '../domain/appointment_models.dart' show PatientLookup;
 import 'live_board_screen.dart';
 import 'patient_appointment_screens.dart';
 import 'schedule_editor_screen.dart';
@@ -30,7 +31,14 @@ abstract final class AppointmentsRoutes {
     for (final base in ['/doctor', '/assistant']) ...[
       GoRoute(
         path: '$base/appointments/book',
-        builder: (context, state) => StaffBookScreen(basePath: base, rescheduleId: state.uri.queryParameters['reschedule']),
+        builder: (context, state) => StaffBookScreen(
+          basePath: base,
+          rescheduleId: state.uri.queryParameters['reschedule'],
+          // D6 Book: the patient as `extra`, or by id and file number from a link.
+          initialPatient: state.extra is PatientLookup ? state.extra! as PatientLookup : null,
+          patientId: state.uri.queryParameters['patient'],
+          patientQuery: state.uri.queryParameters['file'],
+        ),
       ),
       GoRoute(path: '$base/appointments/search', builder: (context, state) => AppointmentsSearchScreen(basePath: base)),
       GoRoute(

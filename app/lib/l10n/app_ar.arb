@@ -2560,5 +2560,22 @@
   "filesAnyDate": "أي تاريخ",
   "filesDateRange": "تصفية بالتاريخ",
   "filesClearDates": "مسح التاريخ",
-  "filesNoneInRange": "لا توجد ملفات في هذه الفترة."
+  "filesNoneInRange": "لا توجد ملفات في هذه الفترة.",
+  "bookButton": "احجز موعد",
+  "chatButton": "محادثة",
+  "patientExportCsv": "تصدير CSV",
+  "patientExportDone": "تم تصدير قائمة المرضى.",
+  "patientExportTooLarge": "عدد المرضى كبير على ملف واحد. ضيّق الفلاتر وحاول مرة أخرى.",
+  "patientColumnUnread": "غير مقروءة",
+  "patientUnreadSemantics": "{count, plural, =1{رسالة واحدة غير مقروءة} =2{رسالتان غير مقروءتين} few{{count} رسائل غير مقروءة} other{{count} رسالة غير مقروءة}}",
+  "patientCardNextBooking": "الحجز القادم {date}",
+  "patientCardNoShows": "{count, plural, =1{غياب مرة واحدة} =2{غياب مرتين} few{غياب {count} مرات} other{غياب {count} مرة}}",
+  "patientCardFiles": "{count, plural, =1{ملف واحد} =2{ملفان} few{{count} ملفات} other{{count} ملف}}",
+  "patientTabAppointments": "الحجوزات",
+  "patientAppointmentsEmptyTitle": "لا توجد حجوزات بعد",
+  "patientAppointmentsEmptyBody": "احجز زيارة للمريض من هنا.",
+  "patientAppointmentsUpcoming": "القادمة",
+  "patientAppointmentsPast": "السابقة",
+  "activityPatientsExported": "{count, plural, =1{صدّر قائمة المرضى (مريض واحد)} =2{صدّر قائمة المرضى (مريضان)} few{صدّر قائمة المرضى ({count} مرضى)} other{صدّر قائمة المرضى ({count} مريض)}}",
+  "activityActionPatientsExported": "تصدير قائمة المرضى"
 }

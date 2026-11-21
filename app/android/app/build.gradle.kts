@@ -6,12 +6,17 @@ plugins {
 
 android {
     namespace = "com.el3yada.app"
-    compileSdk = flutter.compileSdkVersion
+    // 37: flutter_local_notifications and androidx.core 1.19 are compiled against
+    // Android 37. compileSdk only sets the APIs we build against; targetSdk and
+    // minSdk below decide runtime behaviour and supported devices.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // flutter_local_notifications uses java.time on older Android versions.
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -62,4 +67,8 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

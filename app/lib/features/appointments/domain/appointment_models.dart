@@ -74,6 +74,8 @@ class Appointment {
     this.estimatedTime,
     this.history = const [],
     this.branchPhones = const [],
+    this.ahead,
+    this.estimatedWaitMinutes,
   });
 
   final String id;
@@ -92,6 +94,8 @@ class Appointment {
   /// Queue: the period start; timed: the slot start (`HH:mm`, Cairo time).
   final String time;
   final DateTime startUtc;
+
+  /// Queue mode: given at check-in, in order of arrival (BR-AP3). Null before.
   final int? queueNumber;
   final String status;
 
@@ -111,13 +115,61 @@ class Appointment {
 
   /// The patient can still cancel or reschedule (BR-AP5).
   final bool canChange;
+
+  /// Queue mode on the day: the number with the doctor in this period (BR-AP15).
   final int? nowServing;
+
+  /// Queue mode, checked in: about when the patient goes in (`HH:mm`).
   final String? estimatedTime;
   final List<AppointmentHistoryItem> history;
   final List<BranchPhone> branchPhones;
 
+  /// Queue mode, checked in: patients who go in first (BR-AP16).
+  final int? ahead;
+
+  /// Queue mode, checked in: [ahead] × the branch's average visit time.
+  final int? estimatedWaitMinutes;
+
   bool get isQueue => mode == 'queue';
   bool get isUpcoming => status == AppointmentStatus.pending || status == AppointmentStatus.confirmed;
+
+  /// Queue mode, not arrived yet: a place on the period's list, no number. The turn is given at check-in.
+  bool get awaitsCheckIn => isQueue && isUpcoming;
+
+  /// Queue mode, checked in and waiting: has a number, patients ahead and an estimated wait.
+  bool get inLine => isQueue && status == AppointmentStatus.checkedIn && queueNumber != null;
+
+  Appointment copyWith({
+    String? patientId,
+    String? displayName,
+    bool? isGuest,
+    DateTime? date,
+    String? time,
+    DateTime? startUtc,
+    int? Function()? queueNumber,
+    String? status,
+    bool? canChange,
+    DateTime? Function()? checkedInAt,
+    bool? isPriority,
+    int? Function()? nowServing,
+    String? Function()? estimatedTime,
+    int? Function()? ahead,
+    int? Function()? estimatedWaitMinutes,
+    int? rescheduleCount,
+  }) =>
+      Appointment(
+        id: id, doctor: doctor, branch: branch, patientId: patientId ?? this.patientId, displayName: displayName ?? this.displayName,
+        phone: phone, isGuest: isGuest ?? this.isGuest, visitType: visitType, mode: mode, date: date ?? this.date, time: time ?? this.time,
+        startUtc: startUtc ?? this.startUtc, queueNumber: queueNumber != null ? queueNumber() : this.queueNumber,
+        status: status ?? this.status, source: source, bookedByName: bookedByName, reason: reason, staffNotes: staffNotes,
+        overbooked: overbooked, rescheduleCount: rescheduleCount ?? this.rescheduleCount,
+        checkedInAt: checkedInAt != null ? checkedInAt() : this.checkedInAt, sessionId: sessionId, cancelReason: cancelReason,
+        cancelledByRole: cancelledByRole, isPriority: isPriority ?? this.isPriority, flaggedNoSession: flaggedNoSession,
+        canChange: canChange ?? this.canChange, nowServing: nowServing != null ? nowServing() : this.nowServing,
+        estimatedTime: estimatedTime != null ? estimatedTime() : this.estimatedTime, history: history, branchPhones: branchPhones,
+        ahead: ahead != null ? ahead() : this.ahead,
+        estimatedWaitMinutes: estimatedWaitMinutes != null ? estimatedWaitMinutes() : this.estimatedWaitMinutes,
+      );
 
   factory Appointment.fromJson(Json j) => Appointment(
         id: j['id'] as String,
@@ -151,6 +203,8 @@ class Appointment {
         estimatedTime: j['estimatedTime'] == null ? null : _hhmm(j['estimatedTime']),
         history: [for (final h in (j['history'] as List? ?? const [])) AppointmentHistoryItem.fromJson(h as Json)],
         branchPhones: [for (final p in (j['branchPhones'] as List? ?? const [])) BranchPhone.fromJson(p as Json)],
+        ahead: j['ahead'] as int?,
+        estimatedWaitMinutes: j['estimatedWaitMinutes'] as int?,
       );
 }
 

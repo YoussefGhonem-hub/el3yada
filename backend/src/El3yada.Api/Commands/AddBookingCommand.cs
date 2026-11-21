@@ -12,9 +12,10 @@ namespace El3yada.Api.Commands;
 /// <para>
 /// Development only. Bookings get their endpoints in Phase 6, but branches already count them (D28's upcoming
 /// bookings) and refuse to close or be archived while they have some (BR-BR9, <c>BRANCH_HAS_BOOKINGS</c>). This
-/// inserts one open booking so the app's contract test can see those answers: confirmed, in the queue, made by the
-/// doctor at the clinic, at 10:00 Cairo time on <c>--date</c> (default: tomorrow in Cairo), for one of the branch
-/// doctor's patients. It prints the booking's ID. It refuses to run in any environment but Development.
+/// inserts one open booking so the app's contract test can see those answers: confirmed, on the list of the queue
+/// period from 10:00 Cairo time on <c>--date</c> (default: tomorrow in Cairo), made by the doctor at the clinic, for
+/// one of the branch doctor's patients. Like every queue booking it has no number until check-in (BR-AP3). It
+/// prints the booking's ID. It refuses to run in any environment but Development.
 /// </para>
 /// </summary>
 public static class AddBookingCommand
@@ -79,9 +80,7 @@ public static class AddBookingCommand
             return 1;
         }
 
-        var queueNumber = 1 + (await db.Appointments
-            .Where(a => a.BranchId == branchId && a.LocalDate == day && a.PeriodStartLocal == PeriodStart)
-            .MaxAsync(a => a.QueueNumber, cancellationToken) ?? 0);
+        // Like a real booking: a place on the period's list, with no queue number until check-in (BR-AP3).
         var now = time.GetUtcNow().UtcDateTime;
         var booking = new Appointment
         {
@@ -94,7 +93,7 @@ public static class AddBookingCommand
             LocalDate = day,
             PeriodStartLocal = PeriodStart,
             StartUtc = TimeZoneInfo.ConvertTimeToUtc(day.ToDateTime(PeriodStart, DateTimeKind.Unspecified), CairoTime.Zone),
-            QueueNumber = queueNumber,
+            QueueNumber = null,
             Status = "confirmed",
             Source = "staff",
             BookedBy = doctorId.Value,
@@ -105,7 +104,7 @@ public static class AddBookingCommand
         db.Appointments.Add(booking);
         await db.SaveChangesAsync(cancellationToken);
         await output.WriteLineAsync(
-            $"Added booking {booking.Id}: {day:yyyy-MM-dd} at 10:00 Cairo time, queue number {queueNumber}, confirmed.");
+            $"Added booking {booking.Id}: {day:yyyy-MM-dd}, the period from 10:00 Cairo time, confirmed. It gets its queue number at check-in.");
         return 0;
     }
 

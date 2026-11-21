@@ -8963,6 +8963,150 @@ class AppLocalizationsAr extends AppLocalizations {
   String get patientColumnNoShows => 'غياب';
 
   @override
+  String get queueByArrival => 'الدور بأسبقية الحضور في العيادة';
+
+  @override
+  String get queueCheckInOnArrival => 'سجّل حضورك في الاستقبال عند وصولك';
+
+  @override
+  String get queueByArrivalCheckIn =>
+      'الدور بأسبقية الحضور: سجّل حضورك في الاستقبال عند وصولك';
+
+  @override
+  String get queueYourNumber => 'دورك';
+
+  @override
+  String queuePatientsAhead(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'قبلك $count مريض',
+      many: 'قبلك $count مريضاً',
+      few: 'قبلك $count مرضى',
+      two: 'قبلك مريضان',
+      one: 'قبلك مريض واحد',
+      zero: 'أنت التالي',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String queueWaitAbout(int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      minutes,
+      locale: localeName,
+      other: 'الانتظار المتوقع حوالي $minutes دقيقة',
+      few: 'الانتظار المتوقع حوالي $minutes دقائق',
+      two: 'الانتظار المتوقع حوالي دقيقتين',
+      one: 'الانتظار المتوقع حوالي دقيقة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get queueWithDoctorNow => 'أنت عند الطبيب الآن';
+
+  @override
+  String periodMorningFrom(String time) {
+    return 'الفترة الصباحية من $time';
+  }
+
+  @override
+  String periodEveningFrom(String time) {
+    return 'الفترة المسائية من $time';
+  }
+
+  @override
+  String get homeNextAppointment => 'موعدك القادم';
+
+  @override
+  String get homeNoUpcomingAppointment => 'لا يوجد موعد قادم';
+
+  @override
+  String get boardBooked => 'محجوز';
+
+  @override
+  String get boardNextPatient => 'المريض التالي';
+
+  @override
+  String get boardNoOneWaiting => 'لا يوجد أحد في الانتظار';
+
+  @override
+  String get boardStartSession => 'بدء الجلسة';
+
+  @override
+  String get boardFinish => 'إنهاء';
+
+  @override
+  String get boardDragHint => 'اسحب البطاقة إلى العمود التالي أو السابق';
+
+  @override
+  String boardPendingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حجز بانتظار التأكيد',
+      few: '$count حجوزات بانتظار التأكيد',
+      two: 'حجزان بانتظار التأكيد',
+      one: 'حجز واحد بانتظار التأكيد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boardNoSessionCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حضروا بدون جلسة',
+      one: 'حضر واحد بدون جلسة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boardAwaitingDoctorCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count جلسة بانتظار الطبيب',
+      few: '$count جلسات بانتظار الطبيب',
+      two: 'جلستان بانتظار الطبيب',
+      one: 'جلسة واحدة بانتظار الطبيب',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String boardUnreadChatsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count محادثة غير مقروءة',
+      few: '$count محادثات غير مقروءة',
+      two: 'محادثتان غير مقروءتين',
+      one: 'محادثة واحدة غير مقروءة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get boardNoSessionTitle => 'حضر بدون جلسة';
+
+  @override
+  String get boardNoSessionBody =>
+      'سجّل الجلسة، أو سجّل أن المريض غادر قبل الكشف.';
+
+  @override
+  String get waitingRoomScreen => 'شاشة غرفة الانتظار';
+
+  @override
+  String get waitingRoomNext => 'التالي';
+
+  @override
+  String get waitingRoomExit => 'الخروج من ملء الشاشة';
+
+  @override
   String get scheduleSpecialHoursTitle => 'مواعيد خاصة بيوم';
 
   @override

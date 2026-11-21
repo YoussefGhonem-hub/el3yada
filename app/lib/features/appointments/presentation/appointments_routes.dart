@@ -8,10 +8,12 @@ import '../../clinic_admin/presentation/branches/branch_editor_screen.dart';
 import 'live_board_screen.dart';
 import 'patient_appointment_screens.dart';
 import 'staff_appointment_screens.dart';
+import 'waiting_room_screen.dart';
 
-/// Phase 6 pages: the live board, calendar, booking, search and P15–P17 (patient). A branch's
-/// hours, special dates and booking settings are edited in one place, D29's schedule tabs:
-/// AS17 is the assistant's view of it, and `/doctor/schedule` (the old Schedule page) leads there.
+/// Phase 6 pages: the live board, calendar, booking, search, the waiting-room screen D36 (staff) and
+/// P15–P17 (patient). A branch's hours, special dates and booking settings are edited in one place,
+/// D29's schedule tabs: AS17 is the assistant's view of it, and `/doctor/schedule` (the old Schedule
+/// page) leads there.
 abstract final class AppointmentsRoutes {
   static final Map<String, GoRouterWidgetBuilder> shellPages = {
     '/doctor/live': (context, state) => const LiveBoardScreen(basePath: '/doctor'),
@@ -49,6 +51,11 @@ abstract final class AppointmentsRoutes {
         builder: (context, state) => StaffBookScreen(basePath: base, rescheduleId: state.uri.queryParameters['reschedule']),
       ),
       GoRoute(path: '$base/appointments/search', builder: (context, state) => AppointmentsSearchScreen(basePath: base)),
+      // D36 [C]: full screen, over the shell. `?branch=` is the board's branch.
+      GoRoute(
+        path: '$base/waiting-room',
+        builder: (context, state) => WaitingRoomScreen(branchId: state.uri.queryParameters['branch'] ?? '', basePath: base),
+      ),
       GoRoute(
         path: '$base/appointments/:id',
         builder: (context, state) => StaffAppointmentDetailScreen(appointmentId: state.pathParameters['id']!, basePath: base),

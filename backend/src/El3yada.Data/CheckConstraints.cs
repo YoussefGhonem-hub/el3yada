@@ -13,7 +13,8 @@ internal static class CheckConstraints
         ("Appointments", "CK_Appointments_BookedByRole", @"([BookedByRole]='assistant' OR [BookedByRole]='doctor' OR [BookedByRole]='patient')"),
         ("Appointments", "CK_Appointments_CancelledByRole", @"([CancelledByRole] IS NULL OR ([CancelledByRole]='system' OR [CancelledByRole]='clinic' OR [CancelledByRole]='patient'))"),
         ("Appointments", "CK_Appointments_Mode", @"([Mode]='timed' OR [Mode]='queue')"),
-        ("Appointments", "CK_Appointments_Queue", @"([Mode]='timed' OR [QueueNumber] IS NOT NULL OR ([Status]='cancelled' OR [Status]='rejected' OR [Status]='pending'))"),
+        // BR-AP3: a queue booking gets its number at check-in, so only checked-in, with-the-doctor and completed ones must have one.
+        ("Appointments", "CK_Appointments_Queue", @"([Mode]='timed' OR [QueueNumber] IS NOT NULL OR ([Status]='noShow' OR [Status]='confirmed' OR [Status]='cancelled' OR [Status]='rejected' OR [Status]='pending'))"),
         ("Appointments", "CK_Appointments_Reminders", @"(isjson([RemindersSentJson])=(1))"),
         ("Appointments", "CK_Appointments_Source", @"([Source]='walkIn' OR [Source]='staff' OR [Source]='patientApp')"),
         ("Appointments", "CK_Appointments_Status", @"([Status]='rejected' OR [Status]='noShow' OR [Status]='cancelled' OR [Status]='completed' OR [Status]='withDoctor' OR [Status]='checkedIn' OR [Status]='confirmed' OR [Status]='pending')"),

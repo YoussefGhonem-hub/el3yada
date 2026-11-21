@@ -27,10 +27,34 @@ extension AppointmentFormat on BuildContext {
 
   String visitTypeCode(String code) => code == 'consultation' ? l10n.visitTypeConsultation : l10n.visitTypeExamination;
 
-  /// "18:00" or "No. 15 · Evening 17:00".
-  String appointmentWhen(Appointment a) => a.isQueue && a.queueNumber != null
-      ? '${l10n.queueNumber(a.queueNumber!)} · ${clock(a.time)}'
-      : clock(a.time);
+  /// Timed: "18:15". Queue: the period, "Evening period from 18:00", with the number once checked in
+  /// ("No. 7 · Evening period from 18:00"). Before check-in there is no number (BR-AP3).
+  String appointmentWhen(Appointment a) {
+    if (!a.isQueue) return clock(a.time);
+    final period = queuePeriod(a.time);
+    return a.queueNumber != null ? '${l10n.queueNumber(a.queueNumber!)} · $period' : period;
+  }
+
+  /// «الفترة الصباحية من 10:00» before 15:00, «الفترة المسائية من 18:00» after (as the API's texts).
+  String queuePeriod(String start) {
+    final hour = int.tryParse(start.split(':').first) ?? 0;
+    return hour < 15 ? l10n.periodMorningFrom(clock(start)) : l10n.periodEveningFrom(clock(start));
+  }
+
+  /// The queue line under a booking (P1, P16): before check-in «سجّل حضورك في الاستقبال عند وصولك»;
+  /// from check-in, the number, how many are ahead and the estimated wait (BR-AP16). Null otherwise.
+  String? queueLine(Appointment a) {
+    if (a.awaitsCheckIn) return l10n.queueCheckInOnArrival;
+    if (a.inLine) {
+      return [
+        l10n.queueNumber(a.queueNumber!),
+        if (a.ahead != null) l10n.queuePatientsAhead(a.ahead!),
+        if (a.estimatedWaitMinutes != null && a.estimatedWaitMinutes! > 0) l10n.queueWaitAbout(a.estimatedWaitMinutes!),
+      ].join(' · ');
+    }
+    if (a.isQueue && a.status == AppointmentStatus.withDoctor) return l10n.queueWithDoctorNow;
+    return null;
+  }
 
   /// The 6.12.6 messages for booking errors, then the general ones.
   String bookingError(Object error) => switch (ApiError.from(error).code) {

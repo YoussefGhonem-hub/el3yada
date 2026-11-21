@@ -97,6 +97,8 @@ class _NotificationTile extends StatelessWidget {
         'prescriptionSent' || 'prescriptionCancelled' || 'draftReady' => Icons.receipt_long_outlined,
         'fileAdded' => Icons.folder_open_outlined,
         'sessionRecorded' => Icons.medical_services_outlined,
+        // Queue mode: checked in with a number, [S] "your turn is next" (BR-AP16).
+        'checkedIn' || 'nextInLine' || 'turnComing' => Icons.confirmation_number_outlined,
         final t when t.startsWith('booking') || t == 'doctorDelayed' || t == 'staffBookingActivity' => Icons.event_note_outlined,
         final t when t.startsWith('invoice') || t.startsWith('payment') => Icons.payments_outlined,
         _ => Icons.notifications_outlined,

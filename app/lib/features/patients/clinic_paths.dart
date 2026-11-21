@@ -58,6 +58,11 @@ class ClinicPaths {
   /// D8 from the home, with a patient search first.
   String get homeNewSession => '$home/sessions/new';
 
+  /// D8 from the live board (Start session, Finish): the patient of a checked-in booking, which saving
+  /// the session completes (BR-AP10, BR-LB3), at the booking's branch.
+  String boardSession({required String patientId, required String appointmentId, required String branchId}) =>
+      Uri(path: homeNewSession, queryParameters: {'patient': patientId, 'appointment': appointmentId, 'branch': branchId}).toString();
+
   /// D9 from the home's list.
   String homeSession(String sessionId) => '$home/sessions/$sessionId';
 

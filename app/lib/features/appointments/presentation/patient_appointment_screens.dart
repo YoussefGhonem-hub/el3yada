@@ -84,12 +84,99 @@ class AppointmentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final a = appointment;
+    // P16, queue mode: «سجّل حضورك في الاستقبال عند وصولك» until check-in, then the number and who is ahead.
+    final queueLine = staff ? null : context.queueLine(a);
     return ListTile(
       onTap: onTap,
-      leading: CircleAvatar(child: Text(a.queueNumber != null ? '${a.queueNumber}' : a.time)),
+      leading: CircleAvatar(
+        child: a.queueNumber != null
+            ? Text('${a.queueNumber}')
+            : a.isQueue
+                ? Icon(Icons.groups_outlined, semanticLabel: context.l10n.queueByArrival)
+                : Text(a.time),
+      ),
       title: Text(staff ? a.displayName : context.doctorName(a.doctor)),
-      subtitle: Text('${context.date(a.date)} · ${context.appointmentWhen(a)} · ${context.branchName(a.branch)} · ${context.visitTypeCode(a.visitType)}'),
+      subtitle: Text([
+        '${context.date(a.date)} · ${context.appointmentWhen(a)} · ${context.branchName(a.branch)} · ${context.visitTypeCode(a.visitType)}',
+        ?queueLine,
+      ].join('\n')),
+      isThreeLine: queueLine != null,
       trailing: StatusChip(status: a.status),
+    );
+  }
+}
+
+/// P17 and P1, queue mode (BR-AP3, BR-AP15, BR-AP16): before check-in, turns go by arrival and the patient checks
+/// in at reception; from check-in, the number, how many are ahead, the estimated wait and [S] "now serving".
+class QueueStatusCard extends StatelessWidget {
+  const QueueStatusCard({super.key, required this.appointment});
+
+  final Appointment appointment;
+
+  @override
+  Widget build(BuildContext context) {
+    final a = appointment;
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    if (!a.isQueue) return const SizedBox.shrink();
+
+    if (a.awaitsCheckIn) {
+      return Card(
+        margin: EdgeInsets.zero,
+        color: scheme.secondaryContainer,
+        child: ListTile(
+          leading: Icon(Icons.how_to_reg_outlined, color: scheme.onSecondaryContainer),
+          title: Text(l10n.queueByArrivalCheckIn, style: theme.textTheme.bodyLarge?.copyWith(color: scheme.onSecondaryContainer)),
+        ),
+      );
+    }
+    if (a.status == AppointmentStatus.withDoctor) {
+      return Card(
+        margin: EdgeInsets.zero,
+        color: scheme.primaryContainer,
+        child: ListTile(
+          leading: Icon(Icons.medical_services_outlined, color: scheme.onPrimaryContainer),
+          title: Text(l10n.queueWithDoctorNow, style: theme.textTheme.titleMedium?.copyWith(color: scheme.onPrimaryContainer)),
+        ),
+      );
+    }
+    if (!a.inLine) return const SizedBox.shrink();
+
+    final onCard = scheme.onPrimaryContainer;
+    return Card(
+      margin: EdgeInsets.zero,
+      color: scheme.primaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Column(
+              children: [
+                Text(l10n.queueYourNumber, style: theme.textTheme.labelMedium?.copyWith(color: onCard)),
+                Text('${a.queueNumber}', style: theme.textTheme.displaySmall?.copyWith(color: onCard, fontWeight: FontWeight.w700)),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (a.ahead != null) Text(l10n.queuePatientsAhead(a.ahead!), style: theme.textTheme.titleMedium?.copyWith(color: onCard)),
+                  if (a.estimatedWaitMinutes != null && a.estimatedWaitMinutes! > 0)
+                    Text(l10n.queueWaitAbout(a.estimatedWaitMinutes!), style: theme.textTheme.bodyMedium?.copyWith(color: onCard)),
+                  if (a.estimatedTime != null && (a.estimatedWaitMinutes ?? 0) > 0)
+                    Text(l10n.estimatedTime(context.clock(a.estimatedTime!)), style: theme.textTheme.bodySmall?.copyWith(color: onCard)),
+                  if (a.nowServing != null) ...[
+                    const SizedBox(height: 4),
+                    Text(l10n.nowServingYourNumber(a.nowServing!, a.queueNumber!), style: theme.textTheme.bodyMedium?.copyWith(color: onCard)),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -149,18 +236,10 @@ class MyAppointmentDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 8),
                     Text('${context.date(a.date)} · ${context.appointmentWhen(a)}', style: theme.textTheme.titleMedium),
                     Text(context.visitTypeCode(a.visitType)),
-                    if (a.isQueue && a.nowServing != null) ...[
+                    if (a.isQueue && (a.awaitsCheckIn || a.inLine || a.status == AppointmentStatus.withDoctor)) ...[
                       const SizedBox(height: 12),
-                      Card(
-                        color: theme.colorScheme.primaryContainer,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(l10n.nowServingYourNumber(a.nowServing!, a.queueNumber ?? 0),
-                              style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onPrimaryContainer)),
-                        ),
-                      ),
+                      QueueStatusCard(appointment: a),
                     ],
-                    if (a.estimatedTime != null) Text(l10n.estimatedTime(context.clock(a.estimatedTime!))),
                     if (a.status == AppointmentStatus.pending) Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(l10n.waitingForClinic, style: TextStyle(color: theme.colorScheme.tertiary)),
@@ -475,6 +554,11 @@ class _Result extends StatelessWidget {
                 style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
             const SizedBox(height: 8),
             Text('${context.date(appointment.date)} · ${context.appointmentWhen(appointment)}', style: theme.textTheme.titleMedium),
+            // Queue mode: the turn is given on arrival (P15 result, BR-AP3).
+            if (appointment.isQueue) ...[
+              const SizedBox(height: 8),
+              Text(l10n.queueByArrivalCheckIn, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
+            ],
             const SizedBox(height: 24),
             FilledButton(onPressed: () => context.pushReplacement('/patient/appointments/${appointment.id}'), child: Text(l10n.openBooking)),
           ]),

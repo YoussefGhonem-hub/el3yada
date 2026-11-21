@@ -17,15 +17,20 @@ public sealed class AppointmentJobs(AppDbContext db, INotificationWriter notific
 {
     private DateTime Now => clock.GetUtcNow().UtcDateTime;
 
-    /// <summary><c>appointmentReminders</c>: 24 h and 2 h before (BR-AP16), skipping reminders whose time had passed at booking (case 27).</summary>
+    /// <summary>
+    /// <c>appointmentReminders</c>: 24 h before, and on the day 2 h before the period starts (queue mode) or the
+    /// visit time (timed mode), skipping reminders whose time had passed at booking (case 27, AC-21). In queue
+    /// mode the day's reminder says that turns go in order of arrival (BR-AP16).
+    /// </summary>
     public async Task<int> SendRemindersAsync(CancellationToken ct)
     {
         var horizon = Now.AddDays(3);
         var due = await db.Appointments
             .Where(a => a.Status == AppointmentStatuses.Confirmed && a.PatientId != null && a.StartUtc > Now && a.StartUtc < horizon)
-            .Select(a => new { Appointment = a, a.Branch.ReminderMinutesJson, PatientUserId = a.Patient!.UserId })
+            .Select(a => new { Appointment = a, a.Branch.ReminderMinutesJson, a.Branch.NameAr, a.Branch.NameEn, PatientUserId = a.Patient!.UserId })
             .ToListAsync(ct);
 
+        var today = CairoTime.Today(clock);
         var sent = 0;
         foreach (var row in due)
         {
@@ -39,8 +44,8 @@ public sealed class AppointmentJobs(AppDbContext db, INotificationWriter notific
                 already.Add(minutes);
                 changed = true;
                 if (a.CreatedAt > at) continue;   // its time had passed when the booking was made
-                var when = AppointmentService.WhenText(a);
-                notifications.Add(row.PatientUserId, NotificationTemplates.BookingReminder(when.Ar, when.En, a.Id));
+                var text = AppointmentTexts.Reminder(a, row.NameAr, row.NameEn ?? row.NameAr, today);
+                notifications.Add(row.PatientUserId, NotificationTemplates.BookingReminder(text.Ar, text.En, a.Id));
                 sent++;
             }
             if (changed) a.RemindersSentJson = JsonSerializer.Serialize(already.Order());

@@ -357,7 +357,7 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with TickerPro
         FilledButton.tonalIcon(
           onPressed: _book,
           icon: const Icon(Icons.event_available_outlined),
-          label: Text(l10n.bookButton),
+          label: Text(l10n.book),
         ),
       if (canChat)
         OutlinedButton.icon(
@@ -790,7 +790,7 @@ class _AppointmentsTab extends ConsumerWidget {
       empty: (context) => EmptyState(
         title: l10n.patientAppointmentsEmptyTitle,
         message: onBook == null ? null : l10n.patientAppointmentsEmptyBody,
-        actionLabel: onBook == null ? null : l10n.bookButton,
+        actionLabel: onBook == null ? null : l10n.book,
         onAction: onBook,
       ),
       data: (context, list) {
@@ -808,7 +808,7 @@ class _AppointmentsTab extends ConsumerWidget {
               if (onBook != null)
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
-                  child: TextButton.icon(onPressed: onBook, icon: const Icon(Icons.add), label: Text(l10n.bookButton)),
+                  child: TextButton.icon(onPressed: onBook, icon: const Icon(Icons.add), label: Text(l10n.book)),
                 ),
               if (patient.noShowCount > 0)
                 Padding(

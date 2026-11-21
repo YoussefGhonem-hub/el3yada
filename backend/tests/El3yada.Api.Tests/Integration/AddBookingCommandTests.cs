@@ -59,7 +59,7 @@ public sealed partial class AddBookingCommandTests(IntegrationHost host)
         Assert.Equal("confirmed", booking.Status);
         Assert.Equal("examination", booking.VisitType);
         Assert.Equal("queue", booking.Mode);
-        Assert.Equal(1, booking.QueueNumber);
+        Assert.Null(booking.QueueNumber);   // a place on the list; the number comes at check-in (BR-AP3)
         Assert.Equal(doctor.Id, booking.BookedBy);
 
         using var client = await Factory.SignedInClientAsync(doctor);
@@ -87,7 +87,7 @@ public sealed partial class AddBookingCommandTests(IntegrationHost host)
     }
 
     [Fact]
-    public async Task Takes_a_date_and_gives_each_booking_the_next_queue_number()
+    public async Task Takes_a_date_and_puts_each_booking_on_the_period_list_without_a_number()
     {
         var (_, branchId, patientId) = await ClinicWithPatientAsync();
         var day = TestData.CairoToday().AddDays(5).ToString("yyyy-MM-dd");
@@ -97,10 +97,16 @@ public sealed partial class AddBookingCommandTests(IntegrationHost host)
 
         Assert.Equal(0, first.ExitCode);
         Assert.Equal(0, second.ExitCode);
+        Assert.Contains("queue number at check-in", first.Output);
         var bookings = await TestData.WithDbAsync(Factory, db => db.Appointments.AsNoTracking()
-            .Where(a => a.BranchId == branchId).OrderBy(a => a.QueueNumber).ToListAsync());
-        Assert.Equal([1, 2], bookings.Select(a => a.QueueNumber!.Value));
-        Assert.All(bookings, a => Assert.Equal(DateOnly.Parse(day), a.LocalDate));
+            .Where(a => a.BranchId == branchId).ToListAsync());
+        Assert.Equal(2, bookings.Count);
+        Assert.All(bookings, a =>
+        {
+            Assert.Equal(DateOnly.Parse(day), a.LocalDate);
+            Assert.Equal(new TimeOnly(10, 0), a.PeriodStartLocal);
+            Assert.Null(a.QueueNumber);
+        });
     }
 
     [Theory]

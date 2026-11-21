@@ -102,7 +102,7 @@ class _DoctorActions extends ConsumerWidget {
 
     final book = FilledButton.icon(
       icon: const Icon(Icons.event_available_outlined),
-      label: Text(l10n.bookButton),
+      label: Text(l10n.book),
       onPressed: canBook ? () => context.push(PatientRoutes.book(info.doctor.id)) : null,
     );
     final message = FilledButton.tonalIcon(

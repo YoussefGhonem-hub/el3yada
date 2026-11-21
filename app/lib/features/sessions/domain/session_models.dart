@@ -635,6 +635,7 @@ class NewSessionDraft {
     this.followUpDate,
     this.amountChargedPiasters,
     this.paymentMethod,
+    this.appointmentId,
   });
 
   final String patientId;
@@ -650,10 +651,14 @@ class NewSessionDraft {
   final int? amountChargedPiasters;
   final PaymentMethod? paymentMethod;
 
+  /// The checked-in booking this session completes (BR-AP10), when opened from the live board.
+  final String? appointmentId;
+
   Map<String, Object?> toJson() => {
         'patientId': patientId,
         'branchId': branchId,
         'type': type.wire,
+        'appointmentId': ?appointmentId,
         'chiefComplaint': ?_blankToNull(chiefComplaint),
         if (!vitals.isEmpty) 'vitals': vitals.toJson(),
         'findings': ?_blankToNull(findings),

@@ -107,11 +107,16 @@ public sealed record AppointmentDto(
     DateTime CreatedAt,
     /// <summary>Patients: can still cancel or reschedule themselves (BR-AP5).</summary>
     bool CanChange,
-    /// <summary>Queue mode on the day: "now serving" and the estimated time (BR-AP15).</summary>
+    /// <summary>Queue mode on the day: "now serving" for the period (BR-AP15).</summary>
     int? NowServing,
+    /// <summary>Queue mode, checked in: about when the patient goes in (Cairo time).</summary>
     TimeOnly? EstimatedTime,
     IReadOnlyList<AppointmentHistoryDto>? History,
-    IReadOnlyList<BranchPhoneDto>? BranchPhones);
+    IReadOnlyList<BranchPhoneDto>? BranchPhones,
+    /// <summary>Queue mode, checked in: patients who go in first (priority, then lower numbers) (BR-AP16).</summary>
+    int? Ahead = null,
+    /// <summary>Queue mode, checked in: <see cref="Ahead"/> × the branch's average visit time.</summary>
+    int? EstimatedWaitMinutes = null);
 
 public sealed record SearchResultDto(PagedResult<AppointmentDto> Page, IReadOnlyDictionary<string, int> StatusCounts);
 

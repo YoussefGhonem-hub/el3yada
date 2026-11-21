@@ -5,8 +5,10 @@ import 'live_board_screen.dart';
 import 'patient_appointment_screens.dart';
 import 'schedule_editor_screen.dart';
 import 'staff_appointment_screens.dart';
+import 'waiting_room_screen.dart';
 
-/// Phase 6 pages: the live board, calendar, booking, search, schedule (staff) and P15–P17 (patient).
+/// Phase 6 pages: the live board, calendar, booking, search, schedule, the waiting-room screen D36 (staff)
+/// and P15–P17 (patient).
 abstract final class AppointmentsRoutes {
   static final Map<String, GoRouterWidgetBuilder> shellPages = {
     '/doctor/live': (context, state) => const LiveBoardScreen(basePath: '/doctor'),
@@ -41,6 +43,11 @@ abstract final class AppointmentsRoutes {
         ),
       ),
       GoRoute(path: '$base/appointments/search', builder: (context, state) => AppointmentsSearchScreen(basePath: base)),
+      // D36 [C]: full screen, over the shell. `?branch=` is the board's branch.
+      GoRoute(
+        path: '$base/waiting-room',
+        builder: (context, state) => WaitingRoomScreen(branchId: state.uri.queryParameters['branch'] ?? '', basePath: base),
+      ),
       GoRoute(
         path: '$base/appointments/:id',
         builder: (context, state) => StaffAppointmentDetailScreen(appointmentId: state.pathParameters['id']!, basePath: base),

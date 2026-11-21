@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../appointments/presentation/next_appointment_card.dart';
 import '../application/patient_providers.dart';
 import '../domain/patient_models.dart';
 import 'patient_format.dart';
@@ -9,9 +10,9 @@ import 'patient_routes.dart';
 import 'terms_gate.dart';
 import 'widgets/patient_widgets.dart';
 
-/// P1 Home: greeting, doctor selector, and cards for the latest visit, latest prescription,
-/// next follow-up and recent files. The next-appointment card arrives with Phase 6 (P15–P17)
-/// and unread messages with Phase 5 (P12).
+/// P1 Home: greeting, doctor selector, and cards for the next appointment (Phase 6, with the queue
+/// turn on the day), the latest visit, latest prescription, next follow-up and recent files. Unread
+/// messages come with Phase 5 (P12).
 class PatientHomeScreen extends ConsumerWidget {
   const PatientHomeScreen({super.key});
 
@@ -66,6 +67,7 @@ class _HomeCards extends ConsumerWidget {
     final followUp = home.nextFollowUp;
 
     final cards = <Widget>[
+      NextAppointmentCard(doctorId: ref.watch(selectedDoctorProvider)),
       if (visit != null)
         SectionCard(
           title: l10n.homeLatestVisit,

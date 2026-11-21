@@ -208,6 +208,31 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
             .ToPagedAsync(query, ct);
     }
 
+    /// <summary>
+    /// P4 branch filter: the branches the caller has visits in (archived ones too, so old visits stay
+    /// reachable), most visited first. <paramref name="doctorId"/> limits them to one doctor.
+    /// </summary>
+    public async Task<IReadOnlyList<VisitBranchOptionDto>> GetVisitBranchesAsync(Guid? doctorId, CancellationToken ct)
+    {
+        var pid = await patient.GetPatientIdAsync(ct);
+        var rows = await Sessions(pid)
+            .Where(s => doctorId == null || s.DoctorId == doctorId)
+            .GroupBy(s => new
+            {
+                s.BranchId, s.Branch.NameAr, s.Branch.NameEn,
+                s.Doctor.UserId, s.Doctor.FullName, s.Doctor.FullNameEn, s.Doctor.Title, s.Doctor.TitleEn,
+            })
+            .Select(g => new { g.Key, Visits = g.Count() })
+            .ToListAsync(ct);
+        return rows
+            .OrderByDescending(r => r.Visits).ThenBy(r => r.Key.NameAr, StringComparer.Ordinal)
+            .Select(r => new VisitBranchOptionDto(
+                new BranchRef(r.Key.BranchId, r.Key.NameAr, r.Key.NameEn),
+                new DoctorRef(r.Key.UserId, r.Key.FullName, r.Key.FullNameEn, r.Key.Title, r.Key.TitleEn),
+                r.Visits))
+            .ToList();
+    }
+
     public async Task<VisitDetailDto> GetVisitAsync(Guid sessionId, CancellationToken ct)
     {
         var pid = await patient.GetPatientIdAsync(ct);
@@ -315,11 +340,14 @@ public sealed class PatientPortalService(AppDbContext db, PatientContext patient
             .ToPagedAsync(query, ct);
     }
 
-    public async Task<RecordCountsDto> GetRecordCountsAsync(Guid? doctorId, CancellationToken ct)
+    /// <summary>P8 tab counts, for the same doctor and document-date range as the list (<c>kind</c> is ignored).</summary>
+    public async Task<RecordCountsDto> GetRecordCountsAsync(PatientListQuery query, CancellationToken ct)
     {
         var pid = await patient.GetPatientIdAsync(ct);
         var counts = await Records(pid)
-            .Where(r => doctorId == null || r.DoctorId == doctorId)
+            .Where(r => query.DoctorId == null || r.DoctorId == query.DoctorId)
+            .Where(r => query.From == null || r.DocumentDate >= query.From)
+            .Where(r => query.To == null || r.DocumentDate <= query.To)
             .GroupBy(r => r.Category)
             .Select(g => new { Category = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.Category, x => x.Count, ct);

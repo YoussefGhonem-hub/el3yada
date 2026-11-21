@@ -14,4 +14,10 @@ public static partial class AuditActions
 
     /// <summary>The admin extended the free trial (BR-T5). Details: <c>{ before, after, days }</c>.</summary>
     public const string DoctorTrialExtended = "doctorTrialExtended";
+
+    /// <summary>
+    /// AD6: an admin created the doctor's account, active and without a trial. Details:
+    /// <c>{ specialtyId, branchId, serviceActive }</c>. The doctor sets a password from the emailed link.
+    /// </summary>
+    public const string DoctorCreated = "doctorCreated";
 }

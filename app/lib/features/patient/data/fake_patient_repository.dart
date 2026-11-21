@@ -150,6 +150,15 @@ class FakePatientRepository implements PatientRepository {
 
   bool _matches(String? doctorId, DoctorRef doctor) => doctorId == null || doctorId == doctor.id;
 
+  /// Inclusive day range, as the API compares Cairo days.
+  static bool _inRange(PatientListFilter filter, DateTime day) {
+    final d = DateTime(day.year, day.month, day.day);
+    final from = filter.from;
+    final to = filter.to;
+    return (from == null || !d.isBefore(DateTime(from.year, from.month, from.day))) &&
+        (to == null || !d.isAfter(DateTime(to.year, to.month, to.day)));
+  }
+
   @override
   Future<PatientHome> home({String? doctorId}) => _answer(() {
         final visits = _visits.where((v) => _matches(doctorId, v.doctor)).toList();
@@ -225,11 +234,32 @@ class FakePatientRepository implements PatientRepository {
   @override
   Future<Paged<VisitListItem>> visits(PatientListFilter filter, {int page = 1}) => _answer(() => _page(
         _visits
-            .where((v) => _matches(filter.doctorId, v.doctor) && (filter.branchId == null || v.branch.id == filter.branchId))
+            .where((v) =>
+                _matches(filter.doctorId, v.doctor) &&
+                (filter.branchId == null || v.branch.id == filter.branchId) &&
+                _inRange(filter, v.day))
             .map(_visitItem)
             .toList(),
         page,
       ));
+
+  @override
+  Future<List<VisitBranchOption>> visitBranches({String? doctorId}) => _answer(() {
+        final counts = <String, ({VisitDetail visit, int visits})>{};
+        for (final v in _visits.where((v) => _matches(doctorId, v.doctor))) {
+          final seen = counts[v.branch.id];
+          counts[v.branch.id] = (visit: seen?.visit ?? v, visits: (seen?.visits ?? 0) + 1);
+        }
+        final rows = counts.values.toList()..sort((a, b) => b.visits.compareTo(a.visits));
+        return [
+          for (final row in rows)
+            VisitBranchOption(
+              branch: BranchRef(id: row.visit.branch.id, nameAr: row.visit.branch.nameAr, nameEn: row.visit.branch.nameEn),
+              doctor: row.visit.doctor,
+              visits: row.visits,
+            ),
+        ];
+      });
 
   @override
   Future<VisitDetail> visit(String id) => _answer(() => _visits.firstWhere(
@@ -258,15 +288,20 @@ class FakePatientRepository implements PatientRepository {
   @override
   Future<Paged<RecordListItem>> records(PatientListFilter filter, {int page = 1}) => _answer(() => _page(
         _records
-            .where((r) => _matches(filter.doctorId, r.doctor) && (filter.kind == null || r.category.name == filter.kind))
+            .where((r) =>
+                _matches(filter.doctorId, r.doctor) &&
+                (filter.kind == null || r.category.name == filter.kind) &&
+                _inRange(filter, r.documentDate))
             .map(_listItem)
             .toList(),
         page,
       ));
 
   @override
-  Future<RecordCounts> recordCounts({String? doctorId}) => _answer(() {
-        int count(RecordCategory c) => _records.where((r) => r.category == c && _matches(doctorId, r.doctor)).length;
+  Future<RecordCounts> recordCounts(PatientListFilter filter) => _answer(() {
+        int count(RecordCategory c) => _records
+            .where((r) => r.category == c && _matches(filter.doctorId, r.doctor) && _inRange(filter, r.documentDate))
+            .length;
         return RecordCounts(
           prescription: count(RecordCategory.prescription),
           lab: count(RecordCategory.lab),

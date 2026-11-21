@@ -31,9 +31,41 @@ final doctorInfoProvider = FutureProvider.autoDispose.family<DoctorInfo, String>
   (ref, doctorId) => ref.watch(patientRepositoryProvider).doctor(doctorId),
 );
 
-final recordCountsProvider = FutureProvider.autoDispose.family<RecordCounts, String?>(
-  (ref, doctorId) => ref.watch(patientRepositoryProvider).recordCounts(doctorId: doctorId),
+/// P8 tab counts for a doctor and date range (the filter's kind is ignored).
+final recordCountsProvider = FutureProvider.autoDispose.family<RecordCounts, PatientListFilter>(
+  (ref, filter) => ref.watch(patientRepositoryProvider).recordCounts(filter),
 );
+
+/// P4: the branches the patient has visits in, for the selected doctor (null = all).
+final visitBranchesProvider = FutureProvider.autoDispose.family<List<VisitBranchOption>, String?>(
+  (ref, doctorId) => ref.watch(patientRepositoryProvider).visitBranches(doctorId: doctorId),
+);
+
+// ---- List filters (P4 branch, P8 date range) ---------------------------------------------------
+
+/// The P4 branch filter: null = all branches. A branch that the selected doctor has no visits in
+/// is ignored by the tab, so changing the doctor never leaves an empty, unexplained list.
+final visitBranchFilterProvider = NotifierProvider<VisitBranchFilter, String?>(VisitBranchFilter.new);
+
+class VisitBranchFilter extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void select(String? branchId) => state = branchId;
+}
+
+/// An inclusive range of calendar days.
+typedef DayRange = ({DateTime from, DateTime to});
+
+/// The P8 document-date range: null = any date. Days only (the API compares Cairo days).
+final fileDateRangeProvider = NotifierProvider<FileDateRange, DayRange?>(FileDateRange.new);
+
+class FileDateRange extends Notifier<DayRange?> {
+  @override
+  DayRange? build() => null;
+
+  void set(DayRange? range) => state = range;
+}
 
 final medicalProfileProvider = FutureProvider.autoDispose<MedicalProfile>(
   (ref) => ref.watch(patientRepositoryProvider).medicalProfile(),

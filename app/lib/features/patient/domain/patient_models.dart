@@ -386,6 +386,21 @@ class VisitListItem {
       );
 }
 
+/// P4 branch filter (`GET /api/patient/visits/branches`): a branch the patient has visits in.
+class VisitBranchOption {
+  const VisitBranchOption({required this.branch, required this.doctor, required this.visits});
+
+  final BranchRef branch;
+  final DoctorRef doctor;
+  final int visits;
+
+  factory VisitBranchOption.fromJson(Json json) => VisitBranchOption(
+        branch: BranchRef.fromJson(json['branch'] as Json),
+        doctor: DoctorRef.fromJson(json['doctor'] as Json),
+        visits: json['visits'] as int,
+      );
+}
+
 class Vitals {
   const Vitals({this.bpSys, this.bpDia, this.pulse, this.tempC, this.weightKg, this.heightCm, this.glucose});
 

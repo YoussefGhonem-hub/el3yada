@@ -52,6 +52,9 @@ public sealed record SearchAppointmentsQuery : PageQuery
     public string? Source { get; init; }
     public Guid? BookedBy { get; init; }
 
+    /// <summary>One patient's bookings (D6 Appointments tab).</summary>
+    public Guid? PatientId { get; init; }
+
     /// <summary>Patient or guest name, phone or file number.</summary>
     public string? Q { get; init; }
     public bool GuestsOnly { get; init; }
@@ -61,6 +64,8 @@ public sealed record SearchAppointmentsQuery : PageQuery
 
     /// <summary><c>morning</c> (before 15:00) or <c>evening</c>.</summary>
     public string? Period { get; init; }
+
+    /// <summary><c>date</c> (oldest first), <c>dateDesc</c> (newest first), <c>status</c> or <c>patient</c>.</summary>
     public string Sort { get; init; } = "date";
 }
 

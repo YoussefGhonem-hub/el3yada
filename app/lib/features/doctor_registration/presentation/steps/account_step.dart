@@ -34,13 +34,18 @@ class _AccountStepState extends RegistrationStepState<AccountStep> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final resubmit = form.resubmit;
+    // A7 and AD6 have no password: the mobile number is the step's last field.
+    final resubmit = !form.hasPassword;
     return AutofillGroup(
       child: stepBody(
         children: [
           FormSection(
             title: l10n.regAccountSection,
-            subtitle: resubmit ? null : l10n.regAccountIntro,
+            subtitle: form.byAdmin
+                ? l10n.adminAddDoctorAccountIntro
+                : form.resubmit
+                    ? null
+                    : l10n.regAccountIntro,
             children: [
               textField(
                 RegField.fullName,
@@ -74,6 +79,18 @@ class _AccountStepState extends RegistrationStepState<AccountStep> {
                 action: resubmit ? TextInputAction.done : TextInputAction.next,
                 onSubmitted: resubmit ? (_) => widget.onDone?.call() : null,
               ),
+              // AD6: the admin picks the language the doctor reads emails in.
+              if (form.byAdmin) ...[
+                Text(l10n.adminAddDoctorLanguage, style: Theme.of(context).textTheme.labelLarge),
+                SegmentedButton<String>(
+                  segments: [
+                    ButtonSegment(value: 'ar', label: Text(l10n.languageArabic)),
+                    ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
+                  ],
+                  selected: {form.doctorLocale},
+                  onSelectionChanged: widget.enabled ? (value) => form.setDoctorLocale(value.first) : null,
+                ),
+              ],
             ],
           ),
           if (!resubmit)

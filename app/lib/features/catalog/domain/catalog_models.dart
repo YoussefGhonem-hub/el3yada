@@ -30,6 +30,7 @@ class CatalogVersionInfo {
     required this.schemaVersion,
     required this.sha256,
     required this.sizeBytes,
+    this.uncompressedSizeBytes,
     this.counts = const CatalogCounts(),
     this.drugSourceDate,
     this.loincRelease,
@@ -41,6 +42,7 @@ class CatalogVersionInfo {
     schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 0,
     sha256: (json['sha256'] as String? ?? '').trim().toLowerCase(),
     sizeBytes: (json['sizeBytes'] as num?)?.toInt() ?? 0,
+    uncompressedSizeBytes: (json['uncompressedSizeBytes'] as num?)?.toInt(),
     counts: CatalogCounts.fromJson((json['counts'] as Map?)?.cast<String, dynamic>()),
     drugSourceDate: json['drugSourceDate'] as String?,
     loincRelease: json['loincRelease'] as String?,
@@ -56,6 +58,10 @@ class CatalogVersionInfo {
 
   /// Of the `.sqlite.gz` file.
   final int sizeBytes;
+
+  /// The database once unpacked: the space it takes on the device (D0). Null
+  /// from an API that doesn't say.
+  final int? uncompressedSizeBytes;
   final CatalogCounts counts;
 
   /// `2026-06-20`.
@@ -70,6 +76,7 @@ class CatalogVersionInfo {
     'schemaVersion': schemaVersion,
     'sha256': sha256,
     'sizeBytes': sizeBytes,
+    'uncompressedSizeBytes': uncompressedSizeBytes,
     'counts': counts.toJson(),
     'drugSourceDate': drugSourceDate,
     'loincRelease': loincRelease,

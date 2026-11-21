@@ -35,10 +35,15 @@ public sealed class PatientPortalController(
     [HttpGet("doctors/{doctorId:guid}", Name = "getMyDoctor")]
     public Task<DoctorInfoDto> GetDoctor(Guid doctorId, CancellationToken ct) => portal.GetDoctorInfoAsync(doctorId, ct);
 
-    /// <summary>P4 visits, newest first.</summary>
+    /// <summary>P4 visits, newest first. Filters: <c>doctorId</c>, <c>branchId</c>, <c>from</c>, <c>to</c> (Cairo days).</summary>
     [HttpGet("visits", Name = "getMyVisits")]
     public Task<PagedResult<VisitListItemDto>> GetVisits([FromQuery] PatientListQuery query, CancellationToken ct) =>
         portal.GetVisitsAsync(query, ct);
+
+    /// <summary>P4 branch filter: the branches the caller has visits in, most visited first.</summary>
+    [HttpGet("visits/branches", Name = "getMyVisitBranches")]
+    public Task<IReadOnlyList<VisitBranchOptionDto>> GetVisitBranches([FromQuery] Guid? doctorId, CancellationToken ct) =>
+        portal.GetVisitBranchesAsync(doctorId, ct);
 
     /// <summary>P5 visit details. Private notes are never part of the answer.</summary>
     [HttpGet("visits/{sessionId:guid}", Name = "getMyVisit")]
@@ -62,15 +67,18 @@ public sealed class PatientPortalController(
         return await StreamAsync(path, "application/pdf", fileName, ct);
     }
 
-    /// <summary>P8 medical files. <c>kind</c>: prescription, lab, radiology or other.</summary>
+    /// <summary>
+    /// P8 medical files. <c>kind</c>: prescription, lab, radiology or other. <c>from</c> and <c>to</c> filter
+    /// by the document date (inclusive).
+    /// </summary>
     [HttpGet("records", Name = "getMyRecords")]
     public Task<PagedResult<RecordListItemDto>> GetRecords([FromQuery] PatientListQuery query, CancellationToken ct) =>
         portal.GetRecordsAsync(query, ct);
 
-    /// <summary>P8 the count on each category tab.</summary>
+    /// <summary>P8 the count on each category tab, for the same <c>doctorId</c>, <c>from</c> and <c>to</c> as the list.</summary>
     [HttpGet("records/counts", Name = "getMyRecordCounts")]
-    public Task<RecordCountsDto> GetRecordCounts([FromQuery] Guid? doctorId, CancellationToken ct) =>
-        portal.GetRecordCountsAsync(doctorId, ct);
+    public Task<RecordCountsDto> GetRecordCounts([FromQuery] PatientListQuery query, CancellationToken ct) =>
+        portal.GetRecordCountsAsync(query, ct);
 
     /// <summary>P9 one medical file with its attachments.</summary>
     [HttpGet("records/{id:guid}", Name = "getMyRecord")]

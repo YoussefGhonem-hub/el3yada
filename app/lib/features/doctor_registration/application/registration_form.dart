@@ -83,11 +83,13 @@ class PhoneEntry {
 /// Everything typed and chosen in A4, kept while the user moves between the
 /// steps (Back never loses data). [resubmit] is A7 "Edit and resubmit": no
 /// password, no Terms, and the license is optional (kept unless replaced).
+/// [byAdmin] is AD6 "Add doctor": no password and no Terms either (the doctor
+/// chooses a password from the emailed link), and the license is required.
 ///
 /// Errors are kept per field key ([RegField]) as codes; the screen turns
 /// them into ARB messages. Editing a field clears its error.
 class RegistrationForm extends ChangeNotifier {
-  RegistrationForm({this.resubmit = false}) {
+  RegistrationForm({this.resubmit = false, this.byAdmin = false}) {
     for (final (controller, key) in [
       (fullName, RegField.fullName),
       (email, RegField.email),
@@ -110,6 +112,12 @@ class RegistrationForm extends ChangeNotifier {
   }
 
   final bool resubmit;
+
+  /// AD6: an admin fills the form for the doctor.
+  final bool byAdmin;
+
+  /// A4 only: the password, its confirmation and the Terms are part of the form.
+  bool get hasPassword => !resubmit && !byAdmin;
 
   // Step 1, account.
   final fullName = TextEditingController();
@@ -151,6 +159,15 @@ class RegistrationForm extends ChangeNotifier {
 
   // Step 4.
   bool acceptTerms = false;
+
+  /// AD6: the language of the doctor's emails and notifications (`ar` or
+  /// `en`). A4 sends the app's language instead.
+  String doctorLocale = 'ar';
+
+  void setDoctorLocale(String value) {
+    doctorLocale = value;
+    notifyListeners();
+  }
 
   // Fields the form doesn't show, sent back unchanged on resubmit.
   String? _loadedTitle;
@@ -312,7 +329,7 @@ class RegistrationForm extends ChangeNotifier {
           RegField.phone,
           requiredText(phone, valid: (value) => Validators.normalizeEgyptianMobile(value) != null, invalid: 'INVALID_MOBILE'),
         );
-        if (!resubmit) {
+        if (hasPassword) {
           check(
             RegField.password,
             password.text.isEmpty
@@ -389,7 +406,7 @@ class RegistrationForm extends ChangeNotifier {
           }
         }
       case 3:
-        if (!resubmit && !acceptTerms) errors[RegField.acceptTerms] = 'TERMS_NOT_ACCEPTED';
+        if (hasPassword && !acceptTerms) errors[RegField.acceptTerms] = 'TERMS_NOT_ACCEPTED';
     }
     return errors;
   }
@@ -420,7 +437,7 @@ class RegistrationForm extends ChangeNotifier {
       fullName: RegistrationRules.collapseSpaces(fullName.text),
       email: email.text.trim().toLowerCase(),
       phone: Validators.normalizeEgyptianMobile(phone.text) ?? phone.text.trim(),
-      password: resubmit ? null : password.text,
+      password: hasPassword ? password.text : null,
       locale: locale,
       title: titleValue,
       titleEn: titleEnValue,
@@ -449,8 +466,8 @@ class RegistrationForm extends ChangeNotifier {
             ),
         ],
       ),
-      acceptTerms: resubmit ? null : acceptTerms,
-      device: resubmit ? null : device,
+      acceptTerms: hasPassword ? acceptTerms : null,
+      device: hasPassword ? device : null,
     );
   }
 

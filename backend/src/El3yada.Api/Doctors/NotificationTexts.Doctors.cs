@@ -8,6 +8,17 @@ public static partial class NotificationTexts
     public const string DoctorServiceActivated = "doctorServiceActivated";
     public const string DoctorTrialExtended = "doctorTrialExtended";
 
+    /// <summary>
+    /// To a doctor whose account an admin created (AD6): waiting in the notification centre for their first
+    /// sign-in. There is no trial, so no trial length.
+    /// </summary>
+    public static NotificationText AccountCreated() => new(
+        DoctorWelcome,
+        "أهلاً بك في «العيادة»",
+        "Welcome to el3yada",
+        "حسابك جاهز ويمكنك استخدام العيادة الآن.",
+        "Your account is ready and you can use your clinic now.");
+
     /// <summary>To the doctor: the service is on after the free trial (BR-T5).</summary>
     public static NotificationText ServiceActivated() => new(
         DoctorServiceActivated,

@@ -31,11 +31,13 @@ Everyone else is refused:
 The version view:
 
 ```json
-{ "version": 3, "schemaVersion": 1, "sha256": "…64 hex…", "sizeBytes": 6123456,
+{ "version": 3, "schemaVersion": 1, "sha256": "…64 hex…", "sizeBytes": 6123456, "uncompressedSizeBytes": 19400000,
   "counts": { "drugs": 25070, "labs": 6100, "radiology": 1200 },
   "drugSourceDate": "2026-06-30", "loincRelease": "2.83", "publishedAt": "…",
   "downloadPath": "/api/catalog/file/3" }
 ```
+
+- `sizeBytes` is the download (the `.gz`). `uncompressedSizeBytes` is the space the database takes on the device once unpacked, so D0 can check the free space first; it is `null` only when the stored file can't be read. `CatalogVersions` has no column for it (no migration): `publishCatalog` measures it while checking the file (the builder's manifest has the same number as `uncompressed_size_bytes`) and writes it in the `catalogPublished` audit row, and later answers read it from the stored file's gzip trailer (ISIZE), once per version and API instance.
 
 - **`GET /api/settings/public`** (anonymous) has `catalog` with this view, or `null` before the first publish. The app compares `catalog.version` with its local copy at launch (spec 9.5).
 - **`GET /api/catalog/current`** returns the same view. Before the first publish it answers 404 `CATALOG_NOT_PUBLISHED`; the editors then accept free text and the doctor's history only (D0).
@@ -70,7 +72,7 @@ On success:
 - the file is stored at `catalogs/v{n}.sqlite.gz`;
 - a `CatalogVersions` row is written, with the counts, `drug_source_date` and `loinc_release` taken from `meta`;
 - `AppSettings.CurrentCatalogVersionId` points at it;
-- the admin audit log gets `catalogPublished`.
+- the admin audit log gets `catalogPublished` (with `sizeBytes` and `uncompressedSizeBytes`).
 
 **201** returns the version view.
 

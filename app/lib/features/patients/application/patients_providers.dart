@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/paged_controller.dart';
+import '../../appointments/data/appointments_repository.dart' show SearchFilter, appointmentsRepositoryProvider;
+import '../../appointments/domain/appointment_models.dart' show Appointment;
 import '../../sessions/application/sessions_providers.dart';
 import '../../sessions/data/sessions_repository.dart';
 import '../../sessions/domain/session_models.dart';
@@ -78,8 +80,15 @@ class PatientSessionsController extends PagedController<SessionListItem> {
 
 /// After a patient changed (added, edited, archived): the screens that show
 /// them load again, keeping what they show meanwhile.
+/// D6 Appointments tab (`appointmentsView`): the patient's bookings with this clinic, newest first.
+final patientAppointmentsProvider = FutureProvider.autoDispose.family<List<Appointment>, String>((ref, patientId) async {
+  final result = await ref.watch(appointmentsRepositoryProvider).search(SearchFilter(patientId: patientId, newestFirst: true));
+  return result.items;
+});
+
 void patientChanged(WidgetRef ref, String patientId) {
   ref.invalidate(patientProvider(patientId));
+  ref.invalidate(patientAppointmentsProvider(patientId));
   ref.invalidate(medicalProfileProvider(patientId));
   if (ref.read(registerControllerProvider.exists)) ref.read(registerControllerProvider.notifier).refresh();
 }

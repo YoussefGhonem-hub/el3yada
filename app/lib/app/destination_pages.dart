@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../features/admin/admin_routes.dart';
 import '../features/admin/presentation/admins/admin_users_screen.dart';
 import '../features/admin/presentation/audit/audit_log_screen.dart';
+import '../features/admin/presentation/broadcast/broadcast_screen.dart';
+import '../features/admin/presentation/doctors/add_doctor_screen.dart';
 import '../features/admin/presentation/profile/admin_profile_screen.dart';
 import '../features/admin/presentation/settings/admin_settings_screen.dart';
 import '../features/admin/presentation/settings/public_holidays_screen.dart';
@@ -63,6 +65,8 @@ final Map<String, WidgetBuilder> _destinationScreens = {
   AdminRoutes.settings: (_) => const AdminSettingsScreen(),
   AdminRoutes.admins: (_) => const AdminUsersScreen(),
   AdminRoutes.audit: (_) => const AuditLogScreen(),
+  // AD16 broadcast.
+  AdminRoutes.broadcast: (_) => const BroadcastScreen(),
   // AD19 specialty profiles, AD20 catalogs.
   AdminRoutes.specialties: (_) => const SpecialtiesScreen(),
   AdminRoutes.catalogs: (_) => const CatalogsScreen(),
@@ -79,8 +83,12 @@ final Map<String, WidgetBuilder> _destinationScreens = {
 /// Detail routes under a destination, relative to it, for example
 /// `GoRoute(path: ':doctorId', builder: ...)` under `/admin/signups`.
 final Map<String, List<RouteBase>> _destinationRoutes = {
-  // AD5 one doctor, AD8 one payment, AD10 one invoice.
+  // AD6 add doctor, AD5 one doctor, AD8 one payment, AD10 one invoice.
   AdminRoutes.doctors: [
+    GoRoute(
+      path: 'new',
+      builder: (context, state) => const AddDoctorScreen(listPath: AdminRoutes.doctors, detailPath: AdminRoutes.doctor),
+    ),
     GoRoute(path: ':doctorId', builder: (context, state) => AdminDoctorScreen(doctorId: state.pathParameters['doctorId']!)),
   ],
   AdminRoutes.payments: [
@@ -108,8 +116,12 @@ final Map<String, List<RouteBase>> _destinationRoutes = {
       ),
     ],
   },
-  // AD3 by link (the sign-up notification); AD2 opens it in place.
+  // AD6 add doctor; AD3 by link (the sign-up notification), AD2 opens it in place.
   AdminRoutes.signups: [
+    GoRoute(
+      path: 'new',
+      builder: (context, state) => const AddDoctorScreen(listPath: AdminRoutes.signups, detailPath: AdminRoutes.signup),
+    ),
     GoRoute(
       path: ':doctorId',
       builder: (context, state) => SignupReviewPage(doctorId: state.pathParameters['doctorId']!),

@@ -74,6 +74,9 @@ public sealed record VisitListItemDto(
     string? DiagnosisSnippet,
     bool IsNew);
 
+/// <summary>P4 branch filter: a branch the patient has visits in, with its doctor and how many visits.</summary>
+public sealed record VisitBranchOptionDto(BranchRef Branch, DoctorRef Doctor, int Visits);
+
 public sealed record VitalsDto(
     short? BpSys, short? BpDia, short? Pulse, decimal? TempC,
     decimal? WeightKg, decimal? HeightCm, short? Glucose);

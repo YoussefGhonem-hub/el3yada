@@ -194,6 +194,8 @@ public sealed class PatientsAuthorizationTests(IntegrationHost host)
             m => Post("/api/patients/updateMedicalProfile", new { patientId = m.PatientId, allergies = new[] { "Penicillin" } }),
             m => Post("/api/patients/updateMedicalProfile", new { patientId = m.ForeignPatientId, allergies = new[] { "Penicillin" } })),
         ["register"] = new(null, false, _ => Get("/api/patients/register")),
+        // D4 [S]: the whole list with phone numbers, so the doctor only (it answers text/csv).
+        ["exportRegister"] = new(DoctorOnly, false, _ => Get("/api/patients/register/export")),
         ["patientSessions"] = new(ClinicPermissions.SessionsCreate, false,
             m => Get($"/api/patients/{m.PatientId}/sessions"),
             m => Get($"/api/patients/{m.ForeignPatientId}/sessions"),

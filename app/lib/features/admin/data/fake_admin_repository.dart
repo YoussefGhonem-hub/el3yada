@@ -3,6 +3,9 @@ import 'dart:typed_data';
 
 import '../../../core/network/api_exception.dart';
 import '../../../core/validation/validators.dart';
+import '../../doctor_registration/data/registration_repository.dart' as reg show FakeRegistrationRepository;
+import '../../doctor_registration/domain/doctor_registration.dart' as reg show RegistrationData;
+import '../../doctor_registration/domain/license_file.dart' as reg show LicenseFile;
 import '../domain/admin_models.dart';
 import '../domain/setting_fields.dart';
 import 'admin_repository.dart';
@@ -122,24 +125,41 @@ class FakeAdminRepository implements AdminRepository {
   // ---------------------------------------------------------------------------
   // AD2, AD3
 
+  /// The AD2 filters the last [doctorRegistrations] call used (for tests):
+  /// `specialtyId`, `governorate`, `from`, `to`.
+  Map<String, Object?> lastRegistrationFilters = const {};
+
   @override
   Future<Paged<RegistrationSummary>> doctorRegistrations({
     String? search,
     String sort = 'newest',
     TrialFilter? trial,
+    String? specialtyId,
+    String? governorate,
+    DateTime? from,
+    DateTime? to,
+    String status = 'all',
     int page = 1,
     int pageSize = 25,
   }) async {
     await _step('doctorRegistrations');
     lastTrialFilter = trial;
+    lastRegistrationFilters = {'specialtyId': specialtyId, 'governorate': governorate, 'from': from, 'to': to};
     final query = Validators.normalizeDigits(search?.trim() ?? '').toLowerCase();
     final mobile = Validators.normalizeEgyptianMobile(query);
     final rows = _registrations.values.where((r) {
       final reg = r.registration;
+      if (status != 'all' && reg.status != status) return false;
       if (trial != null) {
         final state = _trialOf(r);
         if (state == null || state.ended != (trial == TrialFilter.ended)) return false;
       }
+      // Like the API: the primary specialty, the first branch's governorate,
+      // and the latest submission's time.
+      if (specialtyId != null && reg.specialty.id != specialtyId) return false;
+      if (governorate != null && reg.branch?.governorate != governorate) return false;
+      if (from != null && reg.submittedAt.isBefore(from)) return false;
+      if (to != null && !reg.submittedAt.isBefore(to)) return false;
       if (query.isEmpty) return true;
       return reg.fullName.contains(query) ||
           (reg.fullNameEn?.toLowerCase().contains(query) ?? false) ||
@@ -170,6 +190,78 @@ class FakeAdminRepository implements AdminRepository {
       page,
       pageSize,
     );
+  }
+
+  @override
+  Future<int> pendingSignupsCount() async {
+    await _step('pendingSignupsCount');
+    return _registrations.values.where((r) => r.registration.isPending).length;
+  }
+
+  /// The "set your password" emails [createDoctor] sent, by address (for tests).
+  final invitesSent = <String>[];
+
+  @override
+  Future<DoctorRegistration> createDoctor(reg.RegistrationData data, reg.LicenseFile license) async {
+    await _step('createDoctor');
+    final email = data.email.trim().toLowerCase();
+    final taken = email == reg.FakeRegistrationRepository.takenEmail ||
+        _registrations.values.any((r) => r.registration.email == email) ||
+        _admins.any((a) => a.email == email);
+    if (taken) throw _error(409, 'EMAIL_ALREADY_REGISTERED');
+    final type = reg.LicenseFile.detectType(license.bytes);
+    if (type == null) throw _invalid({'license': 'FILE_TYPE_NOT_ALLOWED'});
+    if (license.size > reg.LicenseFile.maxBytes) throw _invalid({'license': 'FILE_TOO_LARGE'});
+
+    SpecialtyRef specialty(String id) {
+      final known = reg.FakeRegistrationRepository.specialtyList.where((s) => s.id == id).firstOrNull;
+      return known == null ? SpecialtyRef(id: id, nameAr: id, nameEn: id) : SpecialtyRef(id: id, nameAr: known.nameAr, nameEn: known.nameEn);
+    }
+
+    final doctorId = 'doc-new-${_nextId++}';
+    final branch = data.branch;
+    final registration = DoctorRegistration(
+      doctorId: doctorId,
+      status: DoctorStatuses.active,
+      submittedAt: _now,
+      approvedAt: _now,
+      fullName: data.fullName,
+      email: email,
+      emailVerified: false,
+      phone: Validators.normalizeEgyptianMobile(data.phone) ?? data.phone,
+      locale: data.locale,
+      title: data.title,
+      titleEn: data.titleEn,
+      specialty: specialty(data.specialtyId),
+      extraSpecialties: [for (final id in data.extraSpecialtyIds) specialty(id)],
+      licenseNumber: data.licenseNumber,
+      licenseContentType: type,
+      examinationPricePiasters: data.examinationPricePiasters,
+      consultationPricePiasters: data.consultationPricePiasters,
+      branch: RegistrationBranch(
+        nameAr: branch.nameAr,
+        nameEn: branch.nameEn,
+        governorate: branch.governorate,
+        city: branch.city,
+        area: branch.area,
+        addressDetails: branch.addressDetails,
+        landmark: branch.landmark,
+        mapUrl: branch.mapUrl,
+        email: branch.email,
+        phones: [
+          for (final phone in branch.phones)
+            BranchPhone(number: phone.number, label: phone.label, isWhatsapp: phone.isWhatsapp),
+        ],
+      ),
+    );
+    // Active with the service on: no trial (trialEndsAt stays null).
+    _registrations[doctorId] = _FakeRegistration(registration, _now, reviews: [])..license = license.bytes;
+    _addAudit('doctorCreated', 'doctor', targetId: doctorId, doctorId: doctorId, details: {
+      'specialtyId': data.specialtyId,
+      'serviceActive': true,
+    });
+    invitesSent.add(email);
+    return registration;
   }
 
   @override

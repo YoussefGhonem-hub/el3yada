@@ -274,12 +274,14 @@ Items are trimmed and single-spaced; repeats in one list (ignoring case) are dro
 | `minVisits`, `maxVisits` | range on `visits.total` (≥ 0) | `OUT_OF_RANGE` |
 | `newThisMonth=true` | linked to the doctor this Cairo month | |
 | `archived=true` | archived patients only. Absent or `false`: active patients only (BR-P7). | |
+| `hasUpcomingBooking=true` | a pending or confirmed booking from today on | |
+| `hasNoShows=true` | at least one no-show | |
 | `hasChronicDisease=true` | any chronic disease in the profile. **`clinicalView`** | 403 `PERMISSION_DENIED` `clinicalView` |
 | `chronicDisease` | a chronic disease containing this text (≤ 200). **`clinicalView`** | 403 as above |
-| `sort` | `lastVisit` (default), `fileNumber`, `name`, `phone`, `age`, `gender`, `firstVisit`, `visits`, `examinations`, `consultations`, `files`, `linkedAt`, `totalPaid` (**`revenueView`**), `allergies` (**`clinicalView`**) | `INVALID_VALUE`; 403 for a sort the caller may not use |
-| `direction` | `asc` or `desc`. Default `desc` for `lastVisit`, `firstVisit`, `visits`, `examinations`, `consultations`, `files`, `linkedAt`, `totalPaid`, `allergies`; `asc` for the rest. Ties go by file number. | `INVALID_VALUE` |
+| `sort` | `lastVisit` (default), `fileNumber`, `name`, `phone`, `age`, `gender`, `firstVisit`, `visits`, `examinations`, `consultations`, `files`, `linkedAt`, `nextBooking`, `noShows`, `totalPaid` (**`revenueView`**), `allergies` (**`clinicalView`**), `unreadChat` (**`chat`**) | `INVALID_VALUE`; 403 for a sort the caller may not use |
+| `direction` | `asc` or `desc`. Default `desc` for `lastVisit`, `firstVisit`, `visits`, `examinations`, `consultations`, `files`, `linkedAt`, `noShows`, `totalPaid`, `allergies`, `unreadChat`; `asc` for the rest. Ties go by file number. | `INVALID_VALUE` |
 
-With `sort=lastVisit&direction=desc` (the default), never-visited patients come last.
+With `sort=lastVisit&direction=desc` (the default), never-visited patients come last. With `sort=nextBooking`, patients without a booking come last in both directions.
 
 ```json
 {
@@ -292,6 +294,7 @@ With `sort=lastVisit&direction=desc` (the default), never-visited patients come 
       "totalPaidPiasters": 60000,
       "nextBooking": null, "noShowCount": 0,
       "filesCount": 0,
+      "unreadChatCount": 2,
       "hasAllergies": true,
       "chronicDiseases": ["سكر"],
       "archived": false,
@@ -302,7 +305,21 @@ With `sort=lastVisit&direction=desc` (the default), never-visited patients come 
 }
 ```
 
-D4 columns: file number, name, phone, age, gender, first visit, last visit (date, type, branch, "x days ago" from `daysAgo`), visits (examinations / consultations), total paid, next booking, no-shows, files count, allergies flag. `totalPaidPiasters` is `null` without `revenueView`; `hasAllergies` and `chronicDiseases` are `null` without `clinicalView`. Phase 6 fills `nextBooking` and `noShowCount` and adds the `hasUpcomingBooking` and `hasNoShows` filters; Phase 5 adds the unread chat badge. Until then those query parameters are ignored.
+D4 columns: file number, name, phone, age, gender, first visit, last visit (date, type, branch, "x days ago" from `daysAgo`), visits (examinations / consultations), total paid, next booking, no-shows, files count, allergies flag, unread chat badge. `totalPaidPiasters` is `null` without `revenueView`; `hasAllergies` and `chronicDiseases` are `null` without `clinicalView`. `unreadChatCount` is the caller's own unread messages from that patient (the doctor and each assistant read separately); it is `null` without `chat`. `nextBooking` and `noShowCount` are described in api-phase-7.md.
+
+### `GET /api/patients/register/export` (D4 [S] "Export CSV")
+
+**Doctor only** (an assistant gets 403 `PERMISSION_DENIED`): it is the whole patient list with phone numbers. Takes the register's query (filters, `sort`, `direction`; `page` and `pageSize` are ignored) with the same errors, plus `lang`: `ar` (default) or `en` for the headers and values.
+
+- **200** `text/csv; charset=utf-8`, `attachment; filename=patients-2026-11-21.csv`. UTF-8 with a BOM and CRLF rows, so Excel opens Arabic correctly.
+- Columns: file number, name, mobile (`010 1234 5678`, spaced so a spreadsheet keeps the leading zero), gender, age, first visit, last visit (date, type, branch), visits, examinations, consultations, next booking, no-shows, files, then total paid in EGP (`350.00`, with `revenueView`), allergies (yes / no) and chronic diseases (with `clinicalView`), and the date added. Dates are Cairo days (`yyyy-MM-dd`).
+- A cell that starts with `=`, `+`, `-`, `@`, tab or CR gets a leading apostrophe, so a name can never run as a spreadsheet formula.
+- Writes a `patientsExported` audit row (D27) with the row count, the language and the filters used, never names or phones.
+- 400 `EXPORT_TOO_LARGE` with `maxRows` (20000) when the filters match more patients than that.
+
+### D6 Appointments tab
+
+The tab lists one patient's bookings with `GET /api/staff/appointments?patientId={patientId}&sort=dateDesc` (`searchAppointments`, `appointmentsView`; an assistant sees their branches only). `patientId` and `sort=dateDesc` (newest first) are new; the other sorts are `date` (default, oldest first), `status` and `patient`.
 
 ## Sessions
 

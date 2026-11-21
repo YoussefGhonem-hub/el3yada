@@ -5,6 +5,7 @@ import '../../clinic/application/clinic_providers.dart' as clinic;
 import '../../clinic_admin/clinic_admin_routes.dart';
 import '../../clinic_admin/presentation/branches/assistant_schedule_screen.dart';
 import '../../clinic_admin/presentation/branches/branch_editor_screen.dart';
+import '../domain/appointment_models.dart' show PatientLookup;
 import 'live_board_screen.dart';
 import 'patient_appointment_screens.dart';
 import 'staff_appointment_screens.dart';
@@ -48,7 +49,14 @@ abstract final class AppointmentsRoutes {
     for (final base in ['/doctor', '/assistant']) ...[
       GoRoute(
         path: '$base/appointments/book',
-        builder: (context, state) => StaffBookScreen(basePath: base, rescheduleId: state.uri.queryParameters['reschedule']),
+        builder: (context, state) => StaffBookScreen(
+          basePath: base,
+          rescheduleId: state.uri.queryParameters['reschedule'],
+          // D6 Book: the patient as `extra`, or by id and file number from a link.
+          initialPatient: state.extra is PatientLookup ? state.extra! as PatientLookup : null,
+          patientId: state.uri.queryParameters['patient'],
+          patientQuery: state.uri.queryParameters['file'],
+        ),
       ),
       GoRoute(path: '$base/appointments/search', builder: (context, state) => AppointmentsSearchScreen(basePath: base)),
       // D36 [C]: full screen, over the shell. `?branch=` is the board's branch.

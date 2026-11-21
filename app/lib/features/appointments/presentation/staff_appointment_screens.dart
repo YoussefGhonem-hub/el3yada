@@ -225,10 +225,24 @@ class StaffAppointmentDetailScreen extends ConsumerWidget {
 // ---- D32 / AS14 book -----------------------------------------------------------------------------
 
 class StaffBookScreen extends ConsumerStatefulWidget {
-  const StaffBookScreen({super.key, required this.basePath, this.rescheduleId});
+  const StaffBookScreen({
+    super.key,
+    required this.basePath,
+    this.rescheduleId,
+    this.initialPatient,
+    this.patientId,
+    this.patientQuery,
+  });
 
   final String basePath;
   final String? rescheduleId;
+
+  /// D6 Book: the patient already picked.
+  final PatientLookup? initialPatient;
+
+  /// The same from a link (`?patient=…&file=…`): looked up by [patientQuery] and matched by [patientId].
+  final String? patientId;
+  final String? patientQuery;
 
   @override
   ConsumerState<StaffBookScreen> createState() => _StaffBookScreenState();
@@ -236,7 +250,7 @@ class StaffBookScreen extends ConsumerStatefulWidget {
 
 class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
   bool _guest = false;
-  PatientLookup? _patient;
+  late PatientLookup? _patient = widget.initialPatient;
   final _name = TextEditingController();
   final _phone = TextEditingController();
   final _notes = TextEditingController();
@@ -245,6 +259,19 @@ class _StaffBookScreenState extends ConsumerState<StaffBookScreen> {
   bool _saving = false;
 
   bool get _reschedule => widget.rescheduleId != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final id = widget.patientId;
+    final query = widget.patientQuery;
+    if (_patient == null && id != null && query != null) {
+      ref.read(appointmentsRepositoryProvider).lookupPatients(query).then((found) {
+        final match = found.where((p) => p.patientId == id).firstOrNull;
+        if (mounted && match != null && _patient == null) setState(() => _patient = match);
+      }, onError: (Object _) {});
+    }
+  }
 
   @override
   void dispose() {

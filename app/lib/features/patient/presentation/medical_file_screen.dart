@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/widgets/motion_size.dart';
 import '../application/patient_providers.dart';
 import '../data/patient_repository.dart';
 import '../domain/patient_models.dart';
@@ -10,7 +11,8 @@ import 'patient_routes.dart';
 import 'widgets/patient_widgets.dart';
 
 /// The patient's medical file (spec 7.1): tabs Visits (P4), Prescriptions (P6) and Files (P8).
-/// The doctor selector filters all three.
+/// The doctor selector filters all three; Visits also filter by branch and Files by document date,
+/// on the server.
 class MedicalFileScreen extends StatefulWidget {
   const MedicalFileScreen({super.key, this.initialTab = MedicalFileTab.visits});
 
@@ -69,19 +71,29 @@ class VisitsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final filter = PatientListFilter(doctorId: ref.watch(selectedDoctorProvider));
+    final doctorId = ref.watch(selectedDoctorProvider);
+    final branches = ref.watch(visitBranchesProvider(doctorId)).value ?? const <VisitBranchOption>[];
+    final picked = ref.watch(visitBranchFilterProvider);
+    // A branch the selected doctor has no visits in doesn't filter (the doctor changed).
+    final branchId = branches.any((b) => b.branch.id == picked) ? picked : null;
+    final filter = PatientListFilter(doctorId: doctorId, branchId: branchId);
     final provider = visitsProvider(filter);
     final visits = ref.watch(provider);
     final seen = ref.watch(seenItemsProvider).visits;
 
-    return RefreshIndicator(
-      onRefresh: () => ref.refresh(provider.future),
+    final list = RefreshIndicator(
+      onRefresh: () {
+        ref.invalidate(visitBranchesProvider);
+        return ref.refresh(provider.future);
+      },
       child: AsyncValueView(
         value: visits,
         onRetry: () => ref.invalidate(provider),
         data: (state) {
           if (state.items.isEmpty) {
-            return ListView(children: [EmptyState(icon: Icons.event_note_outlined, message: l10n.noVisits)]);
+            return ListView(children: [
+              EmptyState(icon: Icons.event_note_outlined, message: branchId != null ? l10n.visitsNoneInBranch : l10n.noVisits),
+            ]);
           }
           // Timeline grouped by month (P4).
           final rows = <Widget>[];
@@ -105,6 +117,62 @@ class VisitsTab extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+
+    return Column(
+      children: [
+        MotionSize(
+          child: branches.length < 2
+              ? const SizedBox(width: double.infinity)
+              : _BranchFilter(options: branches, selected: branchId),
+        ),
+        Expanded(child: list),
+      ],
+    );
+  }
+}
+
+/// P4: All branches, then each branch the patient has visits in. A branch name that two doctors
+/// share gets the doctor's name too.
+class _BranchFilter extends ConsumerWidget {
+  const _BranchFilter({required this.options, required this.selected});
+
+  final List<VisitBranchOption> options;
+  final String? selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(visitBranchFilterProvider.notifier);
+    final names = [for (final o in options) context.branchName(o.branch)];
+    String label(int i) => names.where((n) => n == names[i]).length > 1
+        ? '${names[i]} · ${context.doctorName(options[i].doctor)}'
+        : names[i];
+
+    return Semantics(
+      container: true,
+      label: context.l10n.visitsFilterBranch,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 4),
+        child: Row(
+          children: [
+            ChoiceChip(
+              avatar: const Icon(Icons.store_mall_directory_outlined, size: 18),
+              label: Text(context.l10n.allBranches),
+              selected: selected == null,
+              onSelected: (_) => controller.select(null),
+            ),
+            for (final (i, option) in options.indexed) ...[
+              const SizedBox(width: 8),
+              ChoiceChip(
+                label: Text(label(i)),
+                selected: selected == option.branch.id,
+                onSelected: (_) => controller.select(option.branch.id),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -267,18 +335,24 @@ class PrescriptionRow extends StatelessWidget {
 
 // ---- P8 Files ---------------------------------------------------------------------------------
 
+/// The P8 list filter: the selected doctor and the document-date range, without a category.
+PatientListFilter _filesFilter(WidgetRef ref, {String? kind}) {
+  final range = ref.watch(fileDateRangeProvider);
+  return PatientListFilter(doctorId: ref.watch(selectedDoctorProvider), kind: kind, from: range?.from, to: range?.to);
+}
+
 class FilesTab extends ConsumerWidget {
   const FilesTab({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final doctorId = ref.watch(selectedDoctorProvider);
-    final counts = ref.watch(recordCountsProvider(doctorId)).value ?? const RecordCounts();
+    final counts = ref.watch(recordCountsProvider(_filesFilter(ref))).value ?? const RecordCounts();
 
     return DefaultTabController(
       length: RecordCategory.values.length,
       child: Column(
         children: [
+          const _DateRangeBar(),
           TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,
@@ -298,6 +372,48 @@ class FilesTab extends ConsumerWidget {
   }
 }
 
+/// P8 "filter by date range": the document dates shown, with a clear button. The picker opens on
+/// the current range and ends today. The tab counts follow the range.
+class _DateRangeBar extends ConsumerWidget {
+  const _DateRangeBar();
+
+  Future<void> _pick(BuildContext context, WidgetRef ref, DayRange? current) async {
+    final today = DateUtils.dateOnly(DateTime.now());
+    final picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(today.year - 30),
+      lastDate: today,
+      initialDateRange: current == null ? null : DateTimeRange(start: current.from, end: current.to),
+      helpText: context.l10n.filesDateRange,
+    );
+    if (picked == null) return;
+    ref.read(fileDateRangeProvider.notifier).set((from: DateUtils.dateOnly(picked.start), to: DateUtils.dateOnly(picked.end)));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final range = ref.watch(fileDateRangeProvider);
+    final label = range == null ? l10n.filesAnyDate : l10n.adminDateRange(context.date(range.from), context.date(range.to));
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 4),
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: InputChip(
+          avatar: const Icon(Icons.date_range_outlined, size: 18),
+          label: Text(label),
+          tooltip: l10n.filesDateRange,
+          selected: range != null,
+          showCheckmark: false,
+          onPressed: () => _pick(context, ref, range),
+          onDeleted: range == null ? null : () => ref.read(fileDateRangeProvider.notifier).set(null),
+          deleteButtonTooltipMessage: l10n.filesClearDates,
+        ),
+      ),
+    );
+  }
+}
+
 class _RecordGrid extends ConsumerWidget {
   const _RecordGrid({required this.category});
 
@@ -306,14 +422,15 @@ class _RecordGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final doctorId = ref.watch(selectedDoctorProvider);
-    final provider = recordsProvider(PatientListFilter(doctorId: doctorId, kind: category.name));
+    final filter = _filesFilter(ref, kind: category.name);
+    final provider = recordsProvider(filter);
     final records = ref.watch(provider);
     final seen = ref.watch(seenItemsProvider).files;
+    final dated = filter.from != null;
 
     return RefreshIndicator(
       onRefresh: () {
-        ref.invalidate(recordCountsProvider(doctorId));
+        ref.invalidate(recordCountsProvider);
         return ref.refresh(provider.future);
       },
       child: AsyncValueView(
@@ -321,7 +438,9 @@ class _RecordGrid extends ConsumerWidget {
         onRetry: () => ref.invalidate(provider),
         data: (state) {
           if (state.items.isEmpty) {
-            return ListView(children: [EmptyState(icon: Icons.folder_open_outlined, message: l10n.noFiles)]);
+            return ListView(children: [
+              EmptyState(icon: Icons.folder_open_outlined, message: dated ? l10n.filesNoneInRange : l10n.noFiles),
+            ]);
           }
           return LoadMoreListener(
             onEnd: () => ref.read(provider.notifier).loadMore(),

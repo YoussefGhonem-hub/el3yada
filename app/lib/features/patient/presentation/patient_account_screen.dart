@@ -1,9 +1,13 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/routes.dart';
 import '../../../core/network/api_error.dart';
 import '../../../core/settings/app_settings.dart';
+import '../../../core/widgets/support_contact.dart';
 import '../../auth/application/auth_controller.dart';
+import '../../auth/presentation/change_password_form.dart';
 import '../application/patient_providers.dart';
 import '../data/patient_repository.dart';
 import '../domain/patient_models.dart';
@@ -11,8 +15,9 @@ import 'patient_format.dart';
 import 'widgets/patient_widgets.dart';
 
 /// P14 Account and settings: name and phone (read-only), language, appearance, notification
-/// toggles, the account deletion request (required by the App Store and Google Play), Logout.
-/// Change password (A9), Terms (A12) and support contact come with Phase 1's public settings.
+/// toggles and the "show message text" switch, change password, the account deletion request
+/// (required by the App Store and Google Play), Logout, then Terms and Privacy (A12) and the
+/// support contact from the public settings.
 class PatientAccountScreen extends ConsumerWidget {
   const PatientAccountScreen({super.key});
 
@@ -127,11 +132,36 @@ class _AccountBody extends ConsumerWidget {
               ),
               const Divider(),
               _Header(l10n.accountTitle),
+              ListTile(
+                leading: const Icon(Icons.lock_outline),
+                title: Text(l10n.adminChangePassword),
+                subtitle: Text(l10n.adminChangePasswordBody),
+                onTap: () => _showChangePassword(context),
+              ),
               _DeletionTile(account: account),
               ListTile(
                 leading: const Icon(Icons.logout),
                 title: Text(l10n.logout),
                 onTap: () => ref.read(authControllerProvider.notifier).logout(),
+              ),
+              const Divider(),
+              _Header(l10n.settingsAbout),
+              ListTile(
+                leading: const Icon(Icons.description_outlined),
+                title: Text(l10n.termsTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.terms),
+              ),
+              ListTile(
+                leading: const Icon(Icons.privacy_tip_outlined),
+                title: Text(l10n.privacyTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.push(AppRoutes.privacy),
+              ),
+              // The admin's WhatsApp, phone and email (AD13); nothing when none is set.
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: SupportContact(),
               ),
             ],
           ),
@@ -140,6 +170,44 @@ class _AccountBody extends ConsumerWidget {
     );
   }
 }
+
+/// Change password (A9's rules) in a sheet that rises with the keyboard. The API signs the other
+/// devices out; the sheet closes after the check has shown.
+Future<void> _showChangePassword(BuildContext context) => showModalBottomSheet<void>(
+      context: context,
+      // Over the whole app, like the D24 dialog: the shell under it may rebuild when the session changes.
+      useRootNavigator: true,
+      isScrollControlled: true,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (context) {
+        final l10n = context.l10n;
+        final theme = Theme.of(context);
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            child: ContentWidth(
+              maxWidth: 480,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Semantics(header: true, child: Text(l10n.adminChangePassword, style: theme.textTheme.headlineSmall)),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.adminChangePasswordBody,
+                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(height: 20),
+                  ChangePasswordForm(onChanged: () => Navigator.of(context).pop()),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
 
 class _Header extends StatelessWidget {
   const _Header(this.text);

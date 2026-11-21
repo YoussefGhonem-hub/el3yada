@@ -15424,6 +15424,426 @@ abstract class AppLocalizations {
   /// **'No-shows'**
   String get patientColumnNoShows;
 
+  /// No description provided for @adminAddDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add doctor'**
+  String get adminAddDoctor;
+
+  /// No description provided for @adminAddDoctorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The account is active at once, with no free trial. The doctor gets an email to choose a password.'**
+  String get adminAddDoctorSubtitle;
+
+  /// No description provided for @adminAddDoctorAccountIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The doctor signs in with this email. We\'ll send a link to it for choosing a password.'**
+  String get adminAddDoctorAccountIntro;
+
+  /// No description provided for @adminAddDoctorLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language of the doctor\'s emails and notifications'**
+  String get adminAddDoctorLanguage;
+
+  /// No description provided for @adminAddDoctorReviewIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the details, then add the doctor. Their clinic opens right away.'**
+  String get adminAddDoctorReviewIntro;
+
+  /// No description provided for @adminAddDoctorDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. {name} is added'**
+  String adminAddDoctorDoneTitle(String name);
+
+  /// No description provided for @adminAddDoctorDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We emailed {email} a link to choose a password. It works for 3 days; if it runs out, send a new one from the doctor\'s page.'**
+  String adminAddDoctorDoneBody(String email);
+
+  /// No description provided for @adminAddDoctorOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the doctor\'s page'**
+  String get adminAddDoctorOpen;
+
+  /// No description provided for @adminBadgeWaitingReview.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 waiting for review} other{{count} waiting for review}}'**
+  String adminBadgeWaitingReview(int count);
+
+  /// No description provided for @adminFilterSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get adminFilterSpecialty;
+
+  /// No description provided for @adminFilterGovernorate.
+  ///
+  /// In en, this message translates to:
+  /// **'Governorate'**
+  String get adminFilterGovernorate;
+
+  /// No description provided for @adminFilterSignupDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-up date'**
+  String get adminFilterSignupDate;
+
+  /// No description provided for @adminFilterSignedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed up {dates}'**
+  String adminFilterSignedUp(String dates);
+
+  /// No description provided for @adminDoctorFiltersNoMatchBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctor matches these filters. Clear one to see more.'**
+  String get adminDoctorFiltersNoMatchBody;
+
+  /// No description provided for @adminAuditDoctorCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'added a doctor (active, no free trial)'**
+  String get adminAuditDoctorCreated;
+
+  /// No description provided for @adminActionDoctorCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor added'**
+  String get adminActionDoctorCreated;
+
+  /// No description provided for @adminFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get adminFilters;
+
+  /// No description provided for @adminFiltersSet.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Filters, 1 set} other{Filters, {count} set}}'**
+  String adminFiltersSet(int count);
+
+  /// No description provided for @adminFilterAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get adminFilterAny;
+
+  /// No description provided for @adminFiltersDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get adminFiltersDone;
+
+  /// No description provided for @navBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast'**
+  String get navBroadcast;
+
+  /// No description provided for @broadcastSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A notification in the app and a push to doctors\' phones, in each doctor\'s language.'**
+  String get broadcastSubtitle;
+
+  /// No description provided for @broadcastAudienceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who gets it'**
+  String get broadcastAudienceTitle;
+
+  /// No description provided for @broadcastAudienceAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All doctors'**
+  String get broadcastAudienceAll;
+
+  /// No description provided for @broadcastAudienceSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Chosen doctors'**
+  String get broadcastAudienceSelected;
+
+  /// No description provided for @broadcastAudienceAllHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Every doctor whose clinic is active or suspended. Doctors still waiting for review, rejected or disabled don\'t get it.'**
+  String get broadcastAudienceAllHint;
+
+  /// No description provided for @broadcastChooseDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose doctors'**
+  String get broadcastChooseDoctors;
+
+  /// No description provided for @broadcastChosenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 doctor chosen} other{{count} doctors chosen}}'**
+  String broadcastChosenCount(int count);
+
+  /// No description provided for @broadcastErrorNoDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one doctor.'**
+  String get broadcastErrorNoDoctors;
+
+  /// No description provided for @broadcastMessageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get broadcastMessageTitle;
+
+  /// No description provided for @broadcastMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write it in both languages, or in one: doctors who use the other language see the same text.'**
+  String get broadcastMessageHint;
+
+  /// No description provided for @broadcastTitleAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (Arabic)'**
+  String get broadcastTitleAr;
+
+  /// No description provided for @broadcastBodyAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Text (Arabic)'**
+  String get broadcastBodyAr;
+
+  /// No description provided for @broadcastTitleEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (English)'**
+  String get broadcastTitleEn;
+
+  /// No description provided for @broadcastBodyEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Text (English)'**
+  String get broadcastBodyEn;
+
+  /// No description provided for @broadcastErrorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the message in Arabic, English or both.'**
+  String get broadcastErrorEmpty;
+
+  /// No description provided for @broadcastErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the title too.'**
+  String get broadcastErrorTitle;
+
+  /// No description provided for @broadcastErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the text too.'**
+  String get broadcastErrorBody;
+
+  /// No description provided for @broadcastPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get broadcastPreview;
+
+  /// No description provided for @broadcastPreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message shows here as doctors will see it.'**
+  String get broadcastPreviewEmpty;
+
+  /// No description provided for @broadcastPreviewNow.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get broadcastPreviewNow;
+
+  /// No description provided for @broadcastSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get broadcastSend;
+
+  /// No description provided for @broadcastConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send this broadcast?'**
+  String get broadcastConfirmTitle;
+
+  /// No description provided for @broadcastConfirmAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Every doctor gets it at once, in the app and as a push. It can\'t be taken back.'**
+  String get broadcastConfirmAll;
+
+  /// No description provided for @broadcastConfirmSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{The chosen doctor gets it at once, in the app and as a push. It can\'t be taken back.} other{The {count} chosen doctors get it at once, in the app and as a push. It can\'t be taken back.}}'**
+  String broadcastConfirmSelected(int count);
+
+  /// No description provided for @broadcastSent.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Sent to 1 doctor} other{Sent to {count} doctors}}'**
+  String broadcastSent(int count);
+
+  /// No description provided for @broadcastErrorNoRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'None of these doctors can get it now: they\'re waiting for review, rejected or disabled.'**
+  String get broadcastErrorNoRecipients;
+
+  /// No description provided for @broadcastHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get broadcastHistoryTitle;
+
+  /// No description provided for @broadcastHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing sent yet'**
+  String get broadcastHistoryEmpty;
+
+  /// No description provided for @broadcastHistoryEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What you send shows here, with who got it.'**
+  String get broadcastHistoryEmptyBody;
+
+  /// No description provided for @broadcastHistoryMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get broadcastHistoryMore;
+
+  /// No description provided for @broadcastRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 doctor} other{{count} doctors}}'**
+  String broadcastRecipients(int count);
+
+  /// No description provided for @broadcastSentBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String broadcastSentBy(String name);
+
+  /// No description provided for @broadcastPickerSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get broadcastPickerSearch;
+
+  /// No description provided for @broadcastPickerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No doctors found'**
+  String get broadcastPickerEmpty;
+
+  /// No description provided for @broadcastPickerDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Done} other{Done ({count})}}'**
+  String broadcastPickerDone(int count);
+
+  /// No description provided for @adminAuditBroadcastSent.
+  ///
+  /// In en, this message translates to:
+  /// **'sent a broadcast to doctors'**
+  String get adminAuditBroadcastSent;
+
+  /// No description provided for @adminActionBroadcastSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast sent'**
+  String get adminActionBroadcastSent;
+
+  /// No description provided for @adminTargetBroadcast.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast'**
+  String get adminTargetBroadcast;
+
+  /// No description provided for @catalogReportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a missing or wrong item'**
+  String get catalogReportAction;
+
+  /// No description provided for @catalogReportItemAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Something wrong with this item? Report it'**
+  String get catalogReportItemAction;
+
+  /// No description provided for @catalogReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report to the admin'**
+  String get catalogReportTitle;
+
+  /// No description provided for @catalogReportIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The admins check it and fix the catalog for every doctor.'**
+  String get catalogReportIntro;
+
+  /// No description provided for @catalogReportType.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the problem?'**
+  String get catalogReportType;
+
+  /// No description provided for @catalogReportText.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get catalogReportText;
+
+  /// No description provided for @catalogReportTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example the name as it\'s written on the box, or what\'s wrong.'**
+  String get catalogReportTextHint;
+
+  /// No description provided for @catalogReportAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About: {name}'**
+  String catalogReportAbout(String name);
+
+  /// No description provided for @catalogReportSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get catalogReportSend;
+
+  /// No description provided for @catalogReportSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the admin. Thank you!'**
+  String get catalogReportSent;
+
+  /// No description provided for @catalogReportErrorText.
+  ///
+  /// In en, this message translates to:
+  /// **'Write what\'s missing or wrong.'**
+  String get catalogReportErrorText;
+
   /// No description provided for @queueByArrival.
   ///
   /// In en, this message translates to:
@@ -15579,6 +15999,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exit full screen'**
   String get waitingRoomExit;
+
+  /// No description provided for @catalogSetupSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs {size} of free space'**
+  String catalogSetupSpace(String size);
+
+  /// No description provided for @adminLicenseOpenOtherApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in another app'**
+  String get adminLicenseOpenOtherApp;
+
+  /// No description provided for @trayOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open {app}'**
+  String trayOpen(String app);
+
+  /// No description provided for @trayStartWithWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with Windows'**
+  String get trayStartWithWindows;
+
+  /// No description provided for @trayQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get trayQuit;
+
+  /// No description provided for @trayTooltipUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} · {count, plural, =1{1 unread} other{{count} unread}}'**
+  String trayTooltipUnread(String app, int count);
+
+  /// No description provided for @trayStillRunningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} is still running'**
+  String trayStillRunningTitle(String app);
+
+  /// No description provided for @trayStillRunningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock.'**
+  String get trayStillRunningBody;
+
+  /// No description provided for @visitsFilterBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get visitsFilterBranch;
+
+  /// No description provided for @visitsNoneInBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'No visits in this branch.'**
+  String get visitsNoneInBranch;
+
+  /// No description provided for @filesAnyDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Any date'**
+  String get filesAnyDate;
+
+  /// No description provided for @filesDateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by date'**
+  String get filesDateRange;
+
+  /// No description provided for @filesClearDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear dates'**
+  String get filesClearDates;
+
+  /// No description provided for @filesNoneInRange.
+  ///
+  /// In en, this message translates to:
+  /// **'No files in these dates.'**
+  String get filesNoneInRange;
+
+  /// No description provided for @chatButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat'**
+  String get chatButton;
+
+  /// No description provided for @patientExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get patientExportCsv;
+
+  /// No description provided for @patientExportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The patient list is exported.'**
+  String get patientExportDone;
+
+  /// No description provided for @patientExportTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many patients for one file. Narrow the filters and try again.'**
+  String get patientExportTooLarge;
+
+  /// No description provided for @patientColumnUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get patientColumnUnread;
+
+  /// D4: the unread chat badge, for screen readers.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unread message} other{{count} unread messages}}'**
+  String patientUnreadSemantics(int count);
+
+  /// D4 card: the next booking's day.
+  ///
+  /// In en, this message translates to:
+  /// **'Next booking {date}'**
+  String patientCardNextBooking(String date);
+
+  /// D4 card and D6: missed bookings.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 no-show} other{{count} no-shows}}'**
+  String patientCardNoShows(int count);
+
+  /// D4 card and D6: medical files.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 file} other{{count} files}}'**
+  String patientCardFiles(int count);
+
+  /// No description provided for @patientTabAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get patientTabAppointments;
+
+  /// No description provided for @patientAppointmentsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookings yet'**
+  String get patientAppointmentsEmptyTitle;
+
+  /// No description provided for @patientAppointmentsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Book a visit for this patient from here.'**
+  String get patientAppointmentsEmptyBody;
+
+  /// No description provided for @patientAppointmentsUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get patientAppointmentsUpcoming;
+
+  /// No description provided for @patientAppointmentsPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Past'**
+  String get patientAppointmentsPast;
+
+  /// D27: the doctor exported the register as CSV.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Exported the patient list (1 patient)} other{Exported the patient list ({count} patients)}}'**
+  String activityPatientsExported(int count);
+
+  /// No description provided for @activityActionPatientsExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Patient list exported'**
+  String get activityActionPatientsExported;
 
   /// No description provided for @scheduleSpecialHoursTitle.
   ///

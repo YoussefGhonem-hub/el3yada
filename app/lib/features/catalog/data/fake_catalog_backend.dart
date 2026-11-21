@@ -333,6 +333,7 @@ class FakeCatalogBackend {
         schemaVersion: info.schema,
         sha256: manifestSha,
         sizeBytes: file.length,
+        uncompressedSizeBytes: info.uncompressedBytes,
         counts: info.counts,
         drugSourceDate: info.drugSourceDate,
         loincRelease: info.loincRelease,
@@ -368,6 +369,7 @@ class FakeCatalogBackend {
         final meta = db.select('SELECT * FROM ${MetaTable.name} LIMIT 1').first;
         return _Inspected(
           schema: schema,
+          uncompressedBytes: raw.length,
           counts: CatalogCounts(
             drugs: count(DrugsTable.name),
             labs: count(LabTestsTable.name),
@@ -495,9 +497,16 @@ class FakeCatalogBackend {
 }
 
 class _Inspected {
-  const _Inspected({required this.schema, required this.counts, this.drugSourceDate, this.loincRelease});
+  const _Inspected({
+    required this.schema,
+    required this.counts,
+    required this.uncompressedBytes,
+    this.drugSourceDate,
+    this.loincRelease,
+  });
 
   final int schema;
+  final int uncompressedBytes;
   final CatalogCounts counts;
   final String? drugSourceDate;
   final String? loincRelease;
@@ -512,13 +521,15 @@ class _Version {
     try {
       final path = '${dir.path}${Platform.pathSeparator}catalog.sqlite';
       catalog.writeTo(path);
-      final gz = Uint8List.fromList(gzip.encode(File(path).readAsBytesSync()));
+      final raw = File(path).readAsBytesSync();
+      final gz = Uint8List.fromList(gzip.encode(raw));
       return _Version(
         CatalogVersionInfo(
           version: number,
           schemaVersion: catalog.schemaVersion,
           sha256: crypto.sha256.convert(gz).toString(),
           sizeBytes: gz.length,
+          uncompressedSizeBytes: raw.length,
           counts: CatalogCounts(
             drugs: catalog.drugs.length,
             labs: catalog.labs.length,

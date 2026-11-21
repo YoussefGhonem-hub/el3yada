@@ -82,6 +82,8 @@ class PatientView {
     this.hasAllergies,
     this.filesTotal = 0,
     this.prescriptionCount = 0,
+    this.nextBooking,
+    this.noShowCount = 0,
   });
 
   factory PatientView.fromJson(Map<String, dynamic> json) => PatientView(
@@ -108,6 +110,8 @@ class PatientView {
     hasAllergies: json['hasAllergies'] as bool?,
     filesTotal: json['files'] is Map ? (_map(json['files'])['total'] as int? ?? 0) : 0,
     prescriptionCount: json['prescriptionCount'] as int? ?? 0,
+    nextBooking: json['nextBooking'] == null ? null : NextBooking.fromJson(_map(json['nextBooking'])),
+    noShowCount: json['noShowCount'] as int? ?? 0,
   );
 
   final String patientId;
@@ -146,6 +150,10 @@ class PatientView {
   final bool? hasAllergies;
   final int filesTotal;
   final int prescriptionCount;
+
+  /// The nearest pending or confirmed booking from today on (D6 summary).
+  final NextBooking? nextBooking;
+  final int noShowCount;
 
   bool get hasDetails =>
       nationalId != null ||
@@ -195,6 +203,7 @@ class PatientRegisterRow {
     this.archived = false,
     this.nextBooking,
     this.noShowCount = 0,
+    this.unreadChatCount,
   });
 
   factory PatientRegisterRow.fromJson(Map<String, dynamic> json) => PatientRegisterRow(
@@ -215,6 +224,7 @@ class PatientRegisterRow {
     archived: json['archived'] as bool? ?? false,
     nextBooking: json['nextBooking'] == null ? null : NextBooking.fromJson(_map(json['nextBooking'])),
     noShowCount: json['noShowCount'] as int? ?? 0,
+    unreadChatCount: json['unreadChatCount'] as int?,
     linkedAt: _time(json['linkedAt']),
   );
 
@@ -235,6 +245,9 @@ class PatientRegisterRow {
   /// The nearest pending or confirmed booking from today on.
   final NextBooking? nextBooking;
   final int noShowCount;
+
+  /// The caller's own unread messages from this patient; null without `chat`.
+  final int? unreadChatCount;
   final DateTime linkedAt;
 }
 
@@ -463,8 +476,13 @@ enum RegisterSort {
   consultations(descending: true),
   files(descending: true),
   linkedAt(descending: true),
+  nextBooking(descending: false),
+  noShows(descending: true),
   totalPaid(descending: true),
-  allergies(descending: true);
+  allergies(descending: true),
+
+  /// `chat` only.
+  unreadChat(descending: true);
 
   const RegisterSort({required this.descending});
 

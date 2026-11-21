@@ -8942,6 +8942,301 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patientColumnNoShows => 'No-shows';
 
   @override
+  String get adminAddDoctor => 'Add doctor';
+
+  @override
+  String get adminAddDoctorSubtitle =>
+      'The account is active at once, with no free trial. The doctor gets an email to choose a password.';
+
+  @override
+  String get adminAddDoctorAccountIntro =>
+      'The doctor signs in with this email. We\'ll send a link to it for choosing a password.';
+
+  @override
+  String get adminAddDoctorLanguage =>
+      'Language of the doctor\'s emails and notifications';
+
+  @override
+  String get adminAddDoctorReviewIntro =>
+      'Check the details, then add the doctor. Their clinic opens right away.';
+
+  @override
+  String adminAddDoctorDoneTitle(String name) {
+    return 'Dr. $name is added';
+  }
+
+  @override
+  String adminAddDoctorDoneBody(String email) {
+    return 'We emailed $email a link to choose a password. It works for 3 days; if it runs out, send a new one from the doctor\'s page.';
+  }
+
+  @override
+  String get adminAddDoctorOpen => 'Open the doctor\'s page';
+
+  @override
+  String adminBadgeWaitingReview(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count waiting for review',
+      one: '1 waiting for review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminFilterSpecialty => 'Specialty';
+
+  @override
+  String get adminFilterGovernorate => 'Governorate';
+
+  @override
+  String get adminFilterSignupDate => 'Sign-up date';
+
+  @override
+  String adminFilterSignedUp(String dates) {
+    return 'Signed up $dates';
+  }
+
+  @override
+  String get adminDoctorFiltersNoMatchBody =>
+      'No doctor matches these filters. Clear one to see more.';
+
+  @override
+  String get adminAuditDoctorCreated =>
+      'added a doctor (active, no free trial)';
+
+  @override
+  String get adminActionDoctorCreated => 'Doctor added';
+
+  @override
+  String get adminFilters => 'Filters';
+
+  @override
+  String adminFiltersSet(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Filters, $count set',
+      one: 'Filters, 1 set',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminFilterAny => 'Any';
+
+  @override
+  String get adminFiltersDone => 'Done';
+
+  @override
+  String get navBroadcast => 'Broadcast';
+
+  @override
+  String get broadcastSubtitle =>
+      'A notification in the app and a push to doctors\' phones, in each doctor\'s language.';
+
+  @override
+  String get broadcastAudienceTitle => 'Who gets it';
+
+  @override
+  String get broadcastAudienceAll => 'All doctors';
+
+  @override
+  String get broadcastAudienceSelected => 'Chosen doctors';
+
+  @override
+  String get broadcastAudienceAllHint =>
+      'Every doctor whose clinic is active or suspended. Doctors still waiting for review, rejected or disabled don\'t get it.';
+
+  @override
+  String get broadcastChooseDoctors => 'Choose doctors';
+
+  @override
+  String broadcastChosenCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors chosen',
+      one: '1 doctor chosen',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get broadcastErrorNoDoctors => 'Choose at least one doctor.';
+
+  @override
+  String get broadcastMessageTitle => 'Message';
+
+  @override
+  String get broadcastMessageHint =>
+      'Write it in both languages, or in one: doctors who use the other language see the same text.';
+
+  @override
+  String get broadcastTitleAr => 'Title (Arabic)';
+
+  @override
+  String get broadcastBodyAr => 'Text (Arabic)';
+
+  @override
+  String get broadcastTitleEn => 'Title (English)';
+
+  @override
+  String get broadcastBodyEn => 'Text (English)';
+
+  @override
+  String get broadcastErrorEmpty =>
+      'Write the message in Arabic, English or both.';
+
+  @override
+  String get broadcastErrorTitle => 'Write the title too.';
+
+  @override
+  String get broadcastErrorBody => 'Write the text too.';
+
+  @override
+  String get broadcastPreview => 'Preview';
+
+  @override
+  String get broadcastPreviewEmpty =>
+      'Your message shows here as doctors will see it.';
+
+  @override
+  String get broadcastPreviewNow => 'now';
+
+  @override
+  String get broadcastSend => 'Send';
+
+  @override
+  String get broadcastConfirmTitle => 'Send this broadcast?';
+
+  @override
+  String get broadcastConfirmAll =>
+      'Every doctor gets it at once, in the app and as a push. It can\'t be taken back.';
+
+  @override
+  String broadcastConfirmSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'The $count chosen doctors get it at once, in the app and as a push. It can\'t be taken back.',
+      one:
+          'The chosen doctor gets it at once, in the app and as a push. It can\'t be taken back.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String broadcastSent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sent to $count doctors',
+      one: 'Sent to 1 doctor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get broadcastErrorNoRecipients =>
+      'None of these doctors can get it now: they\'re waiting for review, rejected or disabled.';
+
+  @override
+  String get broadcastHistoryTitle => 'Sent';
+
+  @override
+  String get broadcastHistoryEmpty => 'Nothing sent yet';
+
+  @override
+  String get broadcastHistoryEmptyBody =>
+      'What you send shows here, with who got it.';
+
+  @override
+  String get broadcastHistoryMore => 'Show more';
+
+  @override
+  String broadcastRecipients(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doctors',
+      one: '1 doctor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String broadcastSentBy(String name) {
+    return 'by $name';
+  }
+
+  @override
+  String get broadcastPickerSearch => 'Search by name';
+
+  @override
+  String get broadcastPickerEmpty => 'No doctors found';
+
+  @override
+  String broadcastPickerDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Done ($count)',
+      zero: 'Done',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get adminAuditBroadcastSent => 'sent a broadcast to doctors';
+
+  @override
+  String get adminActionBroadcastSent => 'Broadcast sent';
+
+  @override
+  String get adminTargetBroadcast => 'Broadcast';
+
+  @override
+  String get catalogReportAction => 'Report a missing or wrong item';
+
+  @override
+  String get catalogReportItemAction =>
+      'Something wrong with this item? Report it';
+
+  @override
+  String get catalogReportTitle => 'Report to the admin';
+
+  @override
+  String get catalogReportIntro =>
+      'The admins check it and fix the catalog for every doctor.';
+
+  @override
+  String get catalogReportType => 'What\'s the problem?';
+
+  @override
+  String get catalogReportText => 'Details';
+
+  @override
+  String get catalogReportTextHint =>
+      'For example the name as it\'s written on the box, or what\'s wrong.';
+
+  @override
+  String catalogReportAbout(String name) {
+    return 'About: $name';
+  }
+
+  @override
+  String get catalogReportSend => 'Send report';
+
+  @override
+  String get catalogReportSent => 'Sent to the admin. Thank you!';
+
+  @override
+  String get catalogReportErrorText => 'Write what\'s missing or wrong.';
+
+  @override
   String get queueByArrival => 'Turns go in order of arrival at the clinic';
 
   @override
@@ -9073,6 +9368,147 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitingRoomExit => 'Exit full screen';
+
+  @override
+  String catalogSetupSpace(String size) {
+    return 'Needs $size of free space';
+  }
+
+  @override
+  String get adminLicenseOpenOtherApp => 'Open in another app';
+
+  @override
+  String trayOpen(String app) {
+    return 'Open $app';
+  }
+
+  @override
+  String get trayStartWithWindows => 'Start with Windows';
+
+  @override
+  String get trayQuit => 'Quit';
+
+  @override
+  String trayTooltipUnread(String app, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread',
+      one: '1 unread',
+    );
+    return '$app · $_temp0';
+  }
+
+  @override
+  String trayStillRunningTitle(String app) {
+    return '$app is still running';
+  }
+
+  @override
+  String get trayStillRunningBody =>
+      'New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock.';
+
+  @override
+  String get visitsFilterBranch => 'Branch';
+
+  @override
+  String get visitsNoneInBranch => 'No visits in this branch.';
+
+  @override
+  String get filesAnyDate => 'Any date';
+
+  @override
+  String get filesDateRange => 'Filter by date';
+
+  @override
+  String get filesClearDates => 'Clear dates';
+
+  @override
+  String get filesNoneInRange => 'No files in these dates.';
+
+  @override
+  String get chatButton => 'Chat';
+
+  @override
+  String get patientExportCsv => 'Export CSV';
+
+  @override
+  String get patientExportDone => 'The patient list is exported.';
+
+  @override
+  String get patientExportTooLarge =>
+      'Too many patients for one file. Narrow the filters and try again.';
+
+  @override
+  String get patientColumnUnread => 'Unread';
+
+  @override
+  String patientUnreadSemantics(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unread messages',
+      one: '1 unread message',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientCardNextBooking(String date) {
+    return 'Next booking $date';
+  }
+
+  @override
+  String patientCardNoShows(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count no-shows',
+      one: '1 no-show',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String patientCardFiles(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count files',
+      one: '1 file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get patientTabAppointments => 'Appointments';
+
+  @override
+  String get patientAppointmentsEmptyTitle => 'No bookings yet';
+
+  @override
+  String get patientAppointmentsEmptyBody =>
+      'Book a visit for this patient from here.';
+
+  @override
+  String get patientAppointmentsUpcoming => 'Upcoming';
+
+  @override
+  String get patientAppointmentsPast => 'Past';
+
+  @override
+  String activityPatientsExported(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Exported the patient list ($count patients)',
+      one: 'Exported the patient list (1 patient)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get activityActionPatientsExported => 'Patient list exported';
 
   @override
   String get scheduleSpecialHoursTitle => 'Special hours';

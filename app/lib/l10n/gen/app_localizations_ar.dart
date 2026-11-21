@@ -9909,4 +9909,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get holidayExists => 'التاريخ ده موجود بالفعل في القائمة.';
+
+  @override
+  String get newPatientPhoneFirst => 'اكتب رقم الموبايل الأول';
+
+  @override
+  String get newPatientNewNumber => 'رقم جديد';
+
+  @override
+  String get newPatientCreate => 'إضافة المريض الآن';
+
+  @override
+  String get newPatientCreateBody =>
+      'إضافة المريض الآن: بيانات المريض، وكلمة سر مؤقتة تديها له.';
+
+  @override
+  String get newPatientGuestBody =>
+      'زائر سريع: الاسم والرقم بس، والحساب بيتعمل لما يسجل حضوره.';
+
+  @override
+  String get newPatientGuestOnly =>
+      'إضافة مريض جديد من هنا محتاجة صلاحية إضافة المرضى. تقدر تحجز له كزائر سريع.';
+
+  @override
+  String get newPatientBookFor => 'احجز للمريض ده';
+
+  @override
+  String get newPatientLink => 'ربط وحجز';
+
+  @override
+  String get newPatientContinue => 'كمّل الحجز';
 }

@@ -5762,5 +5762,14 @@
     }
   },
   "holidayDeleteBody": "Clinics stop seeing it. Closures they already added stay.",
-  "holidayExists": "That date is already on the list."
+  "holidayExists": "That date is already on the list.",
+"newPatientPhoneFirst": "Type the mobile number first",
+  "newPatientNewNumber": "A new number",
+  "newPatientCreate": "Create patient now",
+  "newPatientCreateBody": "Create patient now: the patient's details, and a temporary password to give them.",
+  "newPatientGuestBody": "Quick guest: the name and number only. The account is made when they check in.",
+  "newPatientGuestOnly": "Only staff who add patients can create one here. You can book them as a quick guest.",
+  "newPatientBookFor": "Book for this patient",
+  "newPatientLink": "Link and book",
+  "newPatientContinue": "Continue the booking"
 }

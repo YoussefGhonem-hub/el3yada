@@ -9851,4 +9851,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get holidayExists => 'That date is already on the list.';
+
+  @override
+  String get newPatientPhoneFirst => 'Type the mobile number first';
+
+  @override
+  String get newPatientNewNumber => 'A new number';
+
+  @override
+  String get newPatientCreate => 'Create patient now';
+
+  @override
+  String get newPatientCreateBody =>
+      'Create patient now: the patient\'s details, and a temporary password to give them.';
+
+  @override
+  String get newPatientGuestBody =>
+      'Quick guest: the name and number only. The account is made when they check in.';
+
+  @override
+  String get newPatientGuestOnly =>
+      'Only staff who add patients can create one here. You can book them as a quick guest.';
+
+  @override
+  String get newPatientBookFor => 'Book for this patient';
+
+  @override
+  String get newPatientLink => 'Link and book';
+
+  @override
+  String get newPatientContinue => 'Continue the booking';
 }

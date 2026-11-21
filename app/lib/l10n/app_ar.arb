@@ -2766,5 +2766,14 @@
   "holidaysEmptyBody": "أضف إجازات السنة علشان العيادات تقدر تخطط لها.",
   "holidayDeleteTitle": "حذف {name}؟",
   "holidayDeleteBody": "العيادات مش هتشوفها تاني، والإغلاق اللي ضافوه هيفضل.",
-  "holidayExists": "التاريخ ده موجود بالفعل في القائمة."
+  "holidayExists": "التاريخ ده موجود بالفعل في القائمة.",
+"newPatientPhoneFirst": "اكتب رقم الموبايل الأول",
+  "newPatientNewNumber": "رقم جديد",
+  "newPatientCreate": "إضافة المريض الآن",
+  "newPatientCreateBody": "إضافة المريض الآن: بيانات المريض، وكلمة سر مؤقتة تديها له.",
+  "newPatientGuestBody": "زائر سريع: الاسم والرقم بس، والحساب بيتعمل لما يسجل حضوره.",
+  "newPatientGuestOnly": "إضافة مريض جديد من هنا محتاجة صلاحية إضافة المرضى. تقدر تحجز له كزائر سريع.",
+  "newPatientBookFor": "احجز للمريض ده",
+  "newPatientLink": "ربط وحجز",
+  "newPatientContinue": "كمّل الحجز"
 }

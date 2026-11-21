@@ -166,15 +166,20 @@ void main() {
     await signInDoctorDesktop(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Book'));
     await tester.pumpAndSettle();
+    // D32 New patient: the number first; a new one can be a quick guest.
+    await tester.tap(find.text('New patient'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Mobile number'),
+      '01099887766',
+    );
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Quick guest'));
     await tester.pumpAndSettle();
     await tester.enterText(
       find.widgetWithText(TextField, 'Full name'),
       'زائر جديد تماماً',
-    );
-    await tester.enterText(
-      find.widgetWithText(TextField, 'Mobile number'),
-      '01099887766',
     );
     await tester.pumpAndSettle();
     expect(

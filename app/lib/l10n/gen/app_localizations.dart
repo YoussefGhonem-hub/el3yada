@@ -16713,6 +16713,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That date is already on the list.'**
   String get holidayExists;
+
+  /// No description provided for @newPatientPhoneFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the mobile number first'**
+  String get newPatientPhoneFirst;
+
+  /// No description provided for @newPatientNewNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'A new number'**
+  String get newPatientNewNumber;
+
+  /// No description provided for @newPatientCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create patient now'**
+  String get newPatientCreate;
+
+  /// No description provided for @newPatientCreateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create patient now: the patient\'s details, and a temporary password to give them.'**
+  String get newPatientCreateBody;
+
+  /// No description provided for @newPatientGuestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick guest: the name and number only. The account is made when they check in.'**
+  String get newPatientGuestBody;
+
+  /// No description provided for @newPatientGuestOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only staff who add patients can create one here. You can book them as a quick guest.'**
+  String get newPatientGuestOnly;
+
+  /// No description provided for @newPatientBookFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Book for this patient'**
+  String get newPatientBookFor;
+
+  /// No description provided for @newPatientLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link and book'**
+  String get newPatientLink;
+
+  /// No description provided for @newPatientContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue the booking'**
+  String get newPatientContinue;
 }
 
 class _AppLocalizationsDelegate

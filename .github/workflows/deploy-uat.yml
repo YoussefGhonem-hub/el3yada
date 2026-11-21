@@ -112,8 +112,13 @@ jobs:
           if (-not $module) { throw 'The published web.config has no aspNetCore element.' }
           $vars = $module.SelectSingleNode('environmentVariables')
           if (-not $vars) { $vars = $module.AppendChild($config.CreateElement('environmentVariables')) }
+          # UAT only: IIS writes the API's console output (start-up errors included) to logs\stdout_*.log.
+          $module.SetAttribute('stdoutLogEnabled', 'true')
+          $module.SetAttribute('stdoutLogFile', '.\logs\stdout')
           $settings = [ordered]@{
             ASPNETCORE_ENVIRONMENT     = 'Staging'
+            # UAT only: a start-up failure shows its error on the page instead of a bare 500/503.
+            ASPNETCORE_DETAILEDERRORS  = 'true'
             ConnectionStrings__Default = $env:DB
             Jwt__SigningKey            = $env:JWT
           }
@@ -165,7 +170,12 @@ jobs:
               exit 0
             } catch {
               Write-Host "Attempt ${i}: $($_.Exception.Message)"
+              $body = $_.ErrorDetails.Message
               Start-Sleep -Seconds 10
             }
+          }
+          if ($body) {
+            Write-Host '--- Last error page from the server ---'
+            Write-Host (($body -replace '(?s)<style.*?</style>', '' -replace '<[^>]+>', ' ' -replace '\s+', ' ').Trim())
           }
           throw "$url did not answer after the deploy. Look at the site's logs folder on site4now."

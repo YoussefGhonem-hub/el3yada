@@ -32,6 +32,31 @@ public sealed class EmailTemplates(IOptions<EmailOptions> options)
             link, token, ar, en, "passwordReset", userId);
     }
 
+    /// <summary>
+    /// AD6: an admin created the doctor's account. The link is a password-reset link (Email:ResetPasswordUrl), so the
+    /// doctor chooses their own password in the A8 screen; opening it also confirms the email.
+    /// </summary>
+    public EmailMessage DoctorInvite(string toAddress, string toName, string locale, string token, int validHours, Guid userId)
+    {
+        var link = Link(options.Value.ResetPasswordUrl, token);
+        var ar = new Section(
+            "rtl",
+            $"مرحباً د. {toName}،",
+            "تم إنشاء حسابك في العيادة، وعيادتك جاهزة. اضغط على الرابط لاختيار كلمة المرور، وبعدها سجّل الدخول ببريدك الإلكتروني:",
+            "اختيار كلمة المرور",
+            $"الرابط صالح لمدة {validHours} ساعة ويُستخدم مرة واحدة. إذا لم يفتح الرابط التطبيق، انسخ هذا الرمز في التطبيق من «نسيت كلمة المرور»:",
+            "إذا لم تتوقع هذه الرسالة، تواصل معنا أو تجاهلها.");
+        var en = new Section(
+            "ltr",
+            $"Hello Dr {toName},",
+            "Your el3yada account was created and your clinic is ready. Open the link to choose your password, then sign in with your email:",
+            "Choose your password",
+            $"The link works once, for {validHours} hours. If it doesn't open the app, paste this code into the app under \"Forgot password\":",
+            "If you didn't expect this email, contact us or ignore it.");
+        return Build(toAddress, toName, locale, "حسابك في العيادة جاهز | Your el3yada account is ready",
+            link, token, ar, en, "doctorInvite", userId);
+    }
+
     public EmailMessage VerifyEmail(string toAddress, string toName, string locale, string token, int validHours, Guid userId)
     {
         var link = Link(options.Value.VerifyEmailUrl, token);

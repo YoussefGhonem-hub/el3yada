@@ -139,6 +139,37 @@ Each feature follows the same layers: `domain/` (models), `data/` (API), `applic
 - **flutter_animate:** fine for one-off effects, but its `Animate` widget starts a timer even with no delay, so a widget test that builds it must end with `pumpAndSettle()` or a timed `pump`. The shared widgets above use Flutter's own animations and don't have this catch.
 - **Tests:** `test/support/harness.dart` pumps a widget in the app theme, in Arabic (`rtl: true`) or with reduced motion (`reduced: true`).
 
+## iOS: TestFlight
+
+No Mac is needed. The `iOS TestFlight` workflow (`.github/workflows/ios-testflight.yml`) builds the app on a GitHub Mac, signs it and uploads it to App Store Connect. It runs only when started by hand: Actions tab > iOS TestFlight > Run workflow, or `gh workflow run "iOS TestFlight" --ref dev -f config=demo`.
+
+- `config=demo` builds with `config/dev-offline.json`: the offline test accounts, no server needed. Use it until the API is hosted.
+- `config=prod` builds with `config/prod.json`. It refuses while that file still points at `api.example.com`.
+- The build number is the workflow's run number, so every run uploads a new build. The version comes from `pubspec.yaml`.
+- A run takes about 20 to 30 minutes. GitHub counts Mac minutes at 10 times the Linux rate on the free plan, so run it only when there is something to test.
+
+### One-time setup
+
+1. **App Store Connect API key.** App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys > Generate. Role: **App Manager**. Download `AuthKey_<KEY_ID>.p8`; Apple allows only one download, so keep it safe. Note the **Key ID** and the **Issuer ID** shown above the list.
+2. **Certificate private key.** Make a new RSA key on any computer (Git Bash works on Windows):
+   ```bash
+   ssh-keygen -t rsa -b 2048 -m PEM -f ios_distribution_private_key -q -N ""
+   ```
+   Keep the file safe. The first workflow run makes a distribution certificate from it, and later runs need the same key to reuse that certificate.
+3. **Repository secrets.** GitHub > Settings > Secrets and variables > Actions > New repository secret:
+
+   | Secret | Value |
+   |---|---|
+   | `APP_STORE_CONNECT_ISSUER_ID` | The Issuer ID |
+   | `APP_STORE_CONNECT_KEY_IDENTIFIER` | The Key ID |
+   | `APP_STORE_CONNECT_PRIVATE_KEY` | The whole `.p8` file, including the BEGIN and END lines |
+   | `CERTIFICATE_PRIVATE_KEY` | The whole `ios_distribution_private_key` file, including the BEGIN and END lines |
+
+   Or from Git Bash: `gh secret set APP_STORE_CONNECT_PRIVATE_KEY < AuthKey_XXXX.p8` and `gh secret set CERTIFICATE_PRIVATE_KEY < ios_distribution_private_key`.
+4. **Testers.** App Store Connect > the app > TestFlight > Internal Testing > add a group and its testers. Each new build reaches them after Apple processes it.
+
+Never commit the `.p8` file or the certificate key.
+
 ## Not set up yet
 
 | Item | When | Notes |

@@ -1,0 +1,114 @@
+# Builds the iOS app on a GitHub Mac and uploads it to TestFlight.
+# Manual only: Actions tab > "iOS TestFlight" > Run workflow, or
+#   gh workflow run "iOS TestFlight" --ref dev -f config=demo
+#
+# Needs four repository secrets (Settings > Secrets and variables > Actions).
+# How to get them: app/README.md, "iOS: TestFlight".
+#   APP_STORE_CONNECT_ISSUER_ID       Issuer ID of the App Store Connect API key
+#   APP_STORE_CONNECT_KEY_IDENTIFIER  Key ID of that key
+#   APP_STORE_CONNECT_PRIVATE_KEY     The key's AuthKey_<id>.p8 file, whole
+#   CERTIFICATE_PRIVATE_KEY           RSA key of the distribution certificate
+#
+# The first run creates the distribution certificate and the App Store
+# profile for com.el3yada.app. Later runs find and reuse them.
+name: iOS TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: "demo = offline test accounts, no server needed. prod = config/prod.json (needs the real API URL)."
+        type: choice
+        options: [demo, prod]
+        default: demo
+
+concurrency:
+  group: ios-testflight
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    name: Build and upload
+    runs-on: macos-26
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: app
+    env:
+      BUNDLE_ID: com.el3yada.app
+      CONFIG_CHOICE: ${{ inputs.config }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+      CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+    steps:
+      - name: Secrets are set
+        working-directory: .
+        run: |
+          missing=""
+          for name in APP_STORE_CONNECT_ISSUER_ID APP_STORE_CONNECT_KEY_IDENTIFIER APP_STORE_CONNECT_PRIVATE_KEY CERTIFICATE_PRIVATE_KEY; do
+            [ -n "${!name}" ] || missing="$missing $name"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing. See app/README.md, iOS: TestFlight."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Choose the config
+        run: |
+          if [ "$CONFIG_CHOICE" = prod ]; then
+            if grep -q 'example\.com' config/prod.json; then
+              echo "::error::config/prod.json still points at api.example.com. Put the real API URL there first, or run with config=demo."
+              exit 1
+            fi
+            echo "CONFIG_FILE=config/prod.json" >> "$GITHUB_ENV"
+          else
+            echo "CONFIG_FILE=config/dev-offline.json" >> "$GITHUB_ENV"
+          fi
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.1
+          cache: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Codemagic CLI tools (signing and upload)
+        run: pip install codemagic-cli-tools==0.70.2
+
+      - run: flutter pub get
+
+      - name: Signing (certificate and App Store profile)
+        run: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --strict-match-identifier \
+            --create
+          keychain add-certificates
+          xcode-project use-profiles --project ios/Runner.xcodeproj
+
+      - name: Build the IPA
+        run: |
+          flutter build ipa --release \
+            --dart-define-from-file="$CONFIG_FILE" \
+            --build-number="$GITHUB_RUN_NUMBER" \
+            --export-options-plist="$HOME/export_options.plist"
+
+      - name: Upload to App Store Connect
+        run: app-store-connect publish --path "build/ios/ipa/*.ipa"
+
+      - name: Summary
+        run: |
+          version=$(grep '^version:' pubspec.yaml | sed 's/version: *//; s/+.*//')
+          {
+            echo "### Uploaded to TestFlight"
+            echo "- Version $version, build $GITHUB_RUN_NUMBER"
+            echo "- Config: $CONFIG_FILE"
+            echo "- Apple processes the build for 5 to 30 minutes, then internal testers get it in the TestFlight app."
+          } >> "$GITHUB_STEP_SUMMARY"

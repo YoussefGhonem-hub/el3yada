@@ -9336,4 +9336,73 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get conflictsDismiss => 'رجوع للتعديل';
+
+  @override
+  String get branchPhotosTitle => 'الصور';
+
+  @override
+  String branchPhotosBody(int count) {
+    return 'حتى $count صور. المرضى بيشوفوها في كارت الفرع، وأول صورة هي الغلاف.';
+  }
+
+  @override
+  String branchPhotosCount(int count, int max) {
+    return '$count من $max';
+  }
+
+  @override
+  String get branchPhotosNone => 'لا توجد صور.';
+
+  @override
+  String get branchPhotosAdd => 'إضافة صور';
+
+  @override
+  String branchPhotosAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تمت إضافة $count صورة',
+      few: 'تمت إضافة $count صور',
+      two: 'تمت إضافة صورتين',
+      one: 'تمت إضافة الصورة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchPhotosLimit(int max) {
+    return 'الفرع له $max صور بحد أقصى. احذف صورة الأول.';
+  }
+
+  @override
+  String get branchPhotosNotImage => 'استخدم صورة JPEG أو PNG أو WebP.';
+
+  @override
+  String get branchPhotosTooLarge => 'الصورة أكبر من 10 ميجا.';
+
+  @override
+  String get branchPhotosDeleteTitle => 'حذف الصورة دي؟';
+
+  @override
+  String get branchPhotosDeleteBody => 'المرضى مش هيشوفوها تاني.';
+
+  @override
+  String get branchPhotoLabel => 'صورة الفرع';
+
+  @override
+  String get branchPhotoCover => 'الغلاف';
+
+  @override
+  String get branchPhotoEarlier => 'تقديم';
+
+  @override
+  String get branchPhotoLater => 'تأخير';
+
+  @override
+  String activityBranchPhotosUpdated(String branch) {
+    return 'غيّر صور $branch';
+  }
+
+  @override
+  String get activityActionBranchPhotosUpdated => 'تغيير الصور';
 }

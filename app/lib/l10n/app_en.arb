@@ -5429,5 +5429,60 @@
   "activityActionBranchScheduleUpdated": "Schedule changed",
 "branchNoWorkBranch": "No branch yet",
   "branchNoWorkBranchBody": "You are not assigned to a branch. Ask the doctor to add you to one.",
-  "conflictsDismiss": "Back to editing"
+  "conflictsDismiss": "Back to editing",
+"branchPhotosTitle": "Photos",
+  "branchPhotosBody": "Up to {count}. Patients see them on the branch card; the first is the cover.",
+  "@branchPhotosBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "branchPhotosCount": "{count} of {max}",
+  "@branchPhotosCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "branchPhotosNone": "No photos.",
+  "branchPhotosAdd": "Add photos",
+  "branchPhotosAdded": "{count, plural, =1{Photo added} other{{count} photos added}}",
+  "@branchPhotosAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "branchPhotosLimit": "A branch has at most {max} photos. Remove one first.",
+  "@branchPhotosLimit": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "branchPhotosNotImage": "Use a JPEG, PNG or WebP photo.",
+  "branchPhotosTooLarge": "The photo is larger than 10 MB.",
+  "branchPhotosDeleteTitle": "Remove this photo?",
+  "branchPhotosDeleteBody": "Patients won't see it any more.",
+  "branchPhotoLabel": "Branch photo",
+  "branchPhotoCover": "Cover",
+  "branchPhotoEarlier": "Move earlier",
+  "branchPhotoLater": "Move later",
+"activityBranchPhotosUpdated": "Changed the photos of {branch}",
+  "@activityBranchPhotosUpdated": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
+  "activityActionBranchPhotosUpdated": "Photos changed"
 }

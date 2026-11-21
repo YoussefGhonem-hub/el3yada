@@ -2634,5 +2634,22 @@
   "activityActionBranchScheduleUpdated": "تغيير المواعيد",
 "branchNoWorkBranch": "لا يوجد فرع",
   "branchNoWorkBranchBody": "أنت غير مسجل في أي فرع. اطلب من الدكتور يضيفك لفرع.",
-  "conflictsDismiss": "رجوع للتعديل"
+  "conflictsDismiss": "رجوع للتعديل",
+"branchPhotosTitle": "الصور",
+  "branchPhotosBody": "حتى {count} صور. المرضى بيشوفوها في كارت الفرع، وأول صورة هي الغلاف.",
+  "branchPhotosCount": "{count} من {max}",
+  "branchPhotosNone": "لا توجد صور.",
+  "branchPhotosAdd": "إضافة صور",
+  "branchPhotosAdded": "{count, plural, =1{تمت إضافة الصورة} =2{تمت إضافة صورتين} few{تمت إضافة {count} صور} other{تمت إضافة {count} صورة}}",
+  "branchPhotosLimit": "الفرع له {max} صور بحد أقصى. احذف صورة الأول.",
+  "branchPhotosNotImage": "استخدم صورة JPEG أو PNG أو WebP.",
+  "branchPhotosTooLarge": "الصورة أكبر من 10 ميجا.",
+  "branchPhotosDeleteTitle": "حذف الصورة دي؟",
+  "branchPhotosDeleteBody": "المرضى مش هيشوفوها تاني.",
+  "branchPhotoLabel": "صورة الفرع",
+  "branchPhotoCover": "الغلاف",
+  "branchPhotoEarlier": "تقديم",
+  "branchPhotoLater": "تأخير",
+"activityBranchPhotosUpdated": "غيّر صور {branch}",
+  "activityActionBranchPhotosUpdated": "تغيير الصور"
 }

@@ -31,6 +31,7 @@ import '../prices/price_editor.dart';
 import '../widgets/clinic_admin_widgets.dart';
 import 'branch_drafts.dart';
 import 'branch_fields.dart';
+import 'branch_photos.dart';
 import 'branch_read_only.dart';
 import 'branch_text.dart';
 import 'schedule_conflicts_sheet.dart';
@@ -556,6 +557,7 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
               BranchTab.contact => BranchContactReadOnly(contact: widget.details.contact),
               _ => BranchInfoReadOnly(details: widget.details),
             },
+            if (tab == BranchTab.info) ...[const SizedBox(height: 16), BranchPhotosCard(details: widget.details, editable: false)],
           ],
         ),
       );
@@ -626,6 +628,7 @@ class _BranchEditorState extends ConsumerState<_BranchEditor> with SingleTickerP
         title: l10n.branchTabInfo,
         child: InfoFields(draft: _info, errors: _errors(BranchTab.info, _info.check()), enabled: !_busy(BranchTab.info)),
       ),
+      BranchPhotosCard(details: widget.details),
       _StatusCard(details: widget.details),
     ];
   }

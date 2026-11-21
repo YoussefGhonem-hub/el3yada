@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import '../../../core/data/paged.dart';
 import '../../../core/network/api_exception.dart';
@@ -212,6 +213,7 @@ class FakeClinicAdminRepository implements ClinicAdminRepository, OfflineBranchH
         clinicInfo: BranchClinicInfo(prices: _pricesOf(b), paymentMethods: b.paymentMethods, amenities: b.amenities),
         createdAt: b.createdAt,
         updatedAt: b.updatedAt,
+        photos: _photosOf(b.id),
       );
 
   static List<BranchPeriod> _sortedPeriods(List<BranchPeriod> periods) => [...periods]
@@ -416,6 +418,74 @@ class FakeClinicAdminRepository implements ClinicAdminRepository, OfflineBranchH
     if (!_callerPermissions.contains(ClinicPermission.scheduleManage)) return _error(403, ApiCodes.permissionDenied);
     if (!_callerCanUse(branchId)) return _error(403, ApiCodes.permissionDenied);
     return null;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Branch photos [S], like BranchPhotosController: doctor only, images
+  // only (by their first bytes), at most BranchPhoto.max a branch.
+
+  final _photos = <String, List<({String id, Uint8List bytes})>>{};
+  int _photoId = 0;
+
+  static bool _isImage(Uint8List b) =>
+      (b.length > 3 && b[0] == 0xFF && b[1] == 0xD8 && b[2] == 0xFF) ||
+      (b.length > 8 && b[0] == 0x89 && b[1] == 0x50 && b[2] == 0x4E && b[3] == 0x47) ||
+      (b.length > 12 && b[0] == 0x52 && b[1] == 0x49 && b[2] == 0x46 && b[3] == 0x46 && b[8] == 0x57 && b[9] == 0x45 && b[10] == 0x42 && b[11] == 0x50);
+
+  /// The photos of [branchId], in order (for tests).
+  List<String> photoIdsOf(String branchId) => [for (final p in _photos[branchId] ?? const <({String id, Uint8List bytes})>[]) p.id];
+
+  /// Adds a photo straight away, as the doctor would have (for tests).
+  void seedPhoto(String branchId, Uint8List bytes) =>
+      _photos.putIfAbsent(branchId, () => []).add((id: 'dev-photo-${++_photoId}', bytes: bytes));
+
+  List<BranchPhoto> _photosOf(String branchId) => [
+        for (final (i, p) in (_photos[branchId] ?? const <({String id, Uint8List bytes})>[]).indexed) BranchPhoto(id: p.id, sortOrder: i),
+      ];
+
+  @override
+  Future<BranchDetails> uploadBranchPhoto(String branchId, Uint8List bytes, String fileName) async {
+    await _enter('uploadBranchPhoto', doctorOnly: true);
+    final branch = _branch(branchId);
+    if (!_isImage(bytes)) throw _fields({'file': 'FILE_TYPE_NOT_ALLOWED'});
+    final list = _photos.putIfAbsent(branchId, () => []);
+    if (list.length >= BranchPhoto.max) throw _error(409, ClinicAdminCodes.branchPhotoLimit);
+    final id = 'dev-photo-${++_photoId}';
+    list.add((id: id, bytes: bytes));
+    _log('branchPhotosUpdated', 'branch', branchId, details: {'added': id, 'count': list.length});
+    return _details(branch);
+  }
+
+  @override
+  Future<BranchDetails> reorderBranchPhotos(String branchId, List<String> photoIds) async {
+    await _enter('reorderBranchPhotos', doctorOnly: true);
+    final branch = _branch(branchId);
+    final list = _photos[branchId] ?? [];
+    if (photoIds.length != list.length || photoIds.toSet().length != list.length || !photoIds.every((id) => list.any((p) => p.id == id))) {
+      throw _fields({'photoIds': 'INVALID_VALUE'});
+    }
+    _photos[branchId] = [for (final id in photoIds) list.firstWhere((p) => p.id == id)];
+    _log('branchPhotosUpdated', 'branch', branchId, details: {'reordered': photoIds.length});
+    return _details(branch);
+  }
+
+  @override
+  Future<BranchDetails> deleteBranchPhoto(String branchId, String photoId) async {
+    await _enter('deleteBranchPhoto', doctorOnly: true);
+    final branch = _branch(branchId);
+    final list = _photos[branchId] ?? [];
+    if (!list.any((p) => p.id == photoId)) throw _error(404, ApiCodes.notFound);
+    list.removeWhere((p) => p.id == photoId);
+    _log('branchPhotosUpdated', 'branch', branchId, details: {'removed': photoId});
+    return _details(branch);
+  }
+
+  @override
+  Future<Uint8List> branchPhoto(String branchId, String photoId, {bool thumbnail = false}) async {
+    await _enter('branchPhoto');
+    final photo = (_photos[branchId] ?? []).where((p) => p.id == photoId).firstOrNull;
+    if (photo == null) throw _error(404, ApiCodes.notFound);
+    return photo.bytes;
   }
 
   @override

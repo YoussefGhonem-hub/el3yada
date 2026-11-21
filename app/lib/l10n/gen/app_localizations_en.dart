@@ -9297,4 +9297,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get conflictsDismiss => 'Back to editing';
+
+  @override
+  String get branchPhotosTitle => 'Photos';
+
+  @override
+  String branchPhotosBody(int count) {
+    return 'Up to $count. Patients see them on the branch card; the first is the cover.';
+  }
+
+  @override
+  String branchPhotosCount(int count, int max) {
+    return '$count of $max';
+  }
+
+  @override
+  String get branchPhotosNone => 'No photos.';
+
+  @override
+  String get branchPhotosAdd => 'Add photos';
+
+  @override
+  String branchPhotosAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count photos added',
+      one: 'Photo added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String branchPhotosLimit(int max) {
+    return 'A branch has at most $max photos. Remove one first.';
+  }
+
+  @override
+  String get branchPhotosNotImage => 'Use a JPEG, PNG or WebP photo.';
+
+  @override
+  String get branchPhotosTooLarge => 'The photo is larger than 10 MB.';
+
+  @override
+  String get branchPhotosDeleteTitle => 'Remove this photo?';
+
+  @override
+  String get branchPhotosDeleteBody => 'Patients won\'t see it any more.';
+
+  @override
+  String get branchPhotoLabel => 'Branch photo';
+
+  @override
+  String get branchPhotoCover => 'Cover';
+
+  @override
+  String get branchPhotoEarlier => 'Move earlier';
+
+  @override
+  String get branchPhotoLater => 'Move later';
+
+  @override
+  String activityBranchPhotosUpdated(String branch) {
+    return 'Changed the photos of $branch';
+  }
+
+  @override
+  String get activityActionBranchPhotosUpdated => 'Photos changed';
 }

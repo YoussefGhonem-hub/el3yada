@@ -15921,6 +15921,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back to editing'**
   String get conflictsDismiss;
+
+  /// No description provided for @branchPhotosTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get branchPhotosTitle;
+
+  /// No description provided for @branchPhotosBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {count}. Patients see them on the branch card; the first is the cover.'**
+  String branchPhotosBody(int count);
+
+  /// No description provided for @branchPhotosCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {max}'**
+  String branchPhotosCount(int count, int max);
+
+  /// No description provided for @branchPhotosNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No photos.'**
+  String get branchPhotosNone;
+
+  /// No description provided for @branchPhotosAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos'**
+  String get branchPhotosAdd;
+
+  /// No description provided for @branchPhotosAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Photo added} other{{count} photos added}}'**
+  String branchPhotosAdded(int count);
+
+  /// No description provided for @branchPhotosLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'A branch has at most {max} photos. Remove one first.'**
+  String branchPhotosLimit(int max);
+
+  /// No description provided for @branchPhotosNotImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a JPEG, PNG or WebP photo.'**
+  String get branchPhotosNotImage;
+
+  /// No description provided for @branchPhotosTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo is larger than 10 MB.'**
+  String get branchPhotosTooLarge;
+
+  /// No description provided for @branchPhotosDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this photo?'**
+  String get branchPhotosDeleteTitle;
+
+  /// No description provided for @branchPhotosDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patients won\'t see it any more.'**
+  String get branchPhotosDeleteBody;
+
+  /// No description provided for @branchPhotoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch photo'**
+  String get branchPhotoLabel;
+
+  /// No description provided for @branchPhotoCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover'**
+  String get branchPhotoCover;
+
+  /// No description provided for @branchPhotoEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Move earlier'**
+  String get branchPhotoEarlier;
+
+  /// No description provided for @branchPhotoLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Move later'**
+  String get branchPhotoLater;
+
+  /// No description provided for @activityBranchPhotosUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed the photos of {branch}'**
+  String activityBranchPhotosUpdated(String branch);
+
+  /// No description provided for @activityActionBranchPhotosUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos changed'**
+  String get activityActionBranchPhotosUpdated;
 }
 
 class _AppLocalizationsDelegate

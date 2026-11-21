@@ -68,6 +68,9 @@ abstract interface class PatientRepository {
   Future<RecordDetail> record(String id);
   Future<Uint8List> attachment(String recordId, String attachmentId, {bool thumbnail = false});
 
+  /// P3: a branch photo [S] of a linked doctor (a JPEG, or its [thumbnail]).
+  Future<Uint8List> branchPhoto(String doctorId, String branchId, String photoId, {bool thumbnail = false});
+
   Future<MedicalProfile> medicalProfile();
 
   /// Clears "New" badges. Unknown ids are ignored by the API.
@@ -180,6 +183,12 @@ class ApiPatientRepository implements PatientRepository {
   Future<Uint8List> attachment(String recordId, String attachmentId, {bool thumbnail = false}) => _bytes(
         '/api/patient/records/$recordId/attachments/$attachmentId',
         query: {if (thumbnail) 'thumbnail': true},
+      );
+
+  @override
+  Future<Uint8List> branchPhoto(String doctorId, String branchId, String photoId, {bool thumbnail = false}) => _bytes(
+        '/api/patient/doctors/$doctorId/branches/$branchId/photos/$photoId',
+        query: {if (thumbnail) 'thumb': true},
       );
 
   @override

@@ -7,6 +7,7 @@ import '../application/patient_providers.dart';
 import '../domain/patient_models.dart';
 import 'patient_format.dart';
 import 'patient_routes.dart';
+import 'widgets/branch_photo_strip.dart';
 import 'widgets/patient_widgets.dart';
 
 /// P3 Doctor info: name, title, specialty, and one card per branch with address (maps),
@@ -73,7 +74,7 @@ class _DoctorInfoBody extends ConsumerWidget {
               const SizedBox(height: 8),
               if (info.branches.isEmpty) EmptyState(icon: Icons.store_mall_directory_outlined, message: l10n.noBranches),
               for (final branch in info.branches) ...[
-                _BranchCard(branch: branch),
+                _BranchCard(branch: branch, doctorId: info.doctor.id),
                 const SizedBox(height: 12),
               ],
             ],
@@ -85,9 +86,10 @@ class _DoctorInfoBody extends ConsumerWidget {
 }
 
 class _BranchCard extends StatelessWidget {
-  const _BranchCard({required this.branch});
+  const _BranchCard({required this.branch, required this.doctorId});
 
   final BranchInfo branch;
+  final String doctorId;
 
   Future<void> _open(BuildContext context, Future<bool> Function() action) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -135,6 +137,8 @@ class _BranchCard extends StatelessWidget {
                 ),
               ),
             ],
+            // The branch's photos (D29 [S]).
+            if (branch.photoIds.isNotEmpty) ...[const SizedBox(height: 12), BranchPhotoStrip(doctorId: doctorId, branch: branch)],
             const SizedBox(height: 12),
             // Address → maps.
             ListTile(

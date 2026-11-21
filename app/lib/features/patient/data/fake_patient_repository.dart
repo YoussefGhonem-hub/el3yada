@@ -286,6 +286,9 @@ class FakePatientRepository implements PatientRepository {
       _answer(() => attachmentId == 'att-2' && !thumbnail ? _pdf : _png);
 
   @override
+  Future<Uint8List> branchPhoto(String doctorId, String branchId, String photoId, {bool thumbnail = false}) => _answer(() => _png);
+
+  @override
   Future<MedicalProfile> medicalProfile() => _answer(() => MedicalProfile(
         personal: _personal,
         doctors: const [

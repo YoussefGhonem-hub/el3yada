@@ -122,3 +122,27 @@ public sealed partial class SecuritySweepTests(IntegrationHost host)
     }
 }
 
+
+/// <summary>Phase 8 monitoring: a failed billing job turns <c>/api/health/jobs</c> to 503 until the next success.</summary>
+[Collection(IntegrationCollection.Name)]
+public sealed class JobHealthTests(IntegrationHost host)
+{
+    [Fact]
+    public async Task A_failed_job_shows_on_the_health_check_until_it_succeeds()
+    {
+        var client = host.Factory.Client();
+        using var response = await client.GetAsync("/api/health/jobs");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        using var scope = host.Factory.Services.CreateScope();
+        var jobs = scope.ServiceProvider.GetRequiredService<El3yada.Api.Billing.BillingJobs>();
+        await jobs.RunAsync("monthlyClose", _ => throw new InvalidOperationException("boom"), CancellationToken.None);
+        using var failing = await client.GetAsync("/api/health/jobs");
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, failing.StatusCode);
+        Assert.Contains("monthlyClose", await failing.Content.ReadAsStringAsync());
+
+        await jobs.RunAsync("monthlyClose", _ => Task.FromResult(0), CancellationToken.None);
+        using var healed = await client.GetAsync("/api/health/jobs");
+        Assert.Equal(HttpStatusCode.OK, healed.StatusCode);
+    }
+}

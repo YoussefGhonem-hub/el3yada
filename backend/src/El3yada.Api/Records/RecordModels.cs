@@ -192,7 +192,7 @@ public sealed class RecordListQuery : IPagedQuery
 
     public int Page { get; init; } = 1;
 
-    public int PageSize { get; init; } = 30;
+    public int PageSize { get; init; } = 25;
 }
 
 public sealed class RecordListQueryValidator : AbstractValidator<RecordListQuery>

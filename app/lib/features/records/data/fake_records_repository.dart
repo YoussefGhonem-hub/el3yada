@@ -149,7 +149,7 @@ class FakeRecordsRepository implements RecordsRepository {
   }
 
   @override
-  Future<RecordPage> records(String patientId, {RecordCategory? category, int page = 1, int pageSize = 30}) async {
+  Future<RecordPage> records(String patientId, {RecordCategory? category, int page = 1, int pageSize = 25}) async {
     await _wait();
     _require();
     if (!clinic.hasPatient(patientId)) _notFound();

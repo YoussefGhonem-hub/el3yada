@@ -9,7 +9,7 @@ namespace El3yada.Api.Billing;
 /// Each is idempotent, so a restart, a second server or a run missed during downtime changes nothing it should not.
 /// </summary>
 public sealed class BillingJobs(
-    BillingService billing, DailyMetricsBuilder metrics, TimeProvider time, ILogger<BillingJobs> logger)
+    BillingService billing, DailyMetricsBuilder metrics, TimeProvider time, JobStatus status, ILogger<BillingJobs> logger)
 {
     private DateOnly Today => CairoTime.Today(time);
 
@@ -40,13 +40,30 @@ public sealed class BillingJobs(
         try
         {
             var count = await job(cancellationToken);
+            status.Succeeded(name, time.GetUtcNow().UtcDateTime);
             logger.LogInformation("Job {Job} done: {Count}", name, count);
         }
         catch (Exception error) when (error is not OperationCanceledException)
         {
-            logger.LogError(error, "Billing job {Job} failed", name);
+            status.Failed(name, time.GetUtcNow().UtcDateTime);
+            // One stable line to alert on (Phase 8): "ALERT billing-job".
+            logger.LogError(error, "ALERT billing-job {Job} failed", name);
         }
     }
+}
+
+/// <summary>The last outcome of each scheduled job, read by <c>GET /api/health/jobs</c> so an uptime monitor can alert.</summary>
+public sealed class JobStatus
+{
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, (DateTime At, bool Ok)> _last = new();
+
+    public void Succeeded(string job, DateTime at) => _last[job] = (at, true);
+
+    public void Failed(string job, DateTime at) => _last[job] = (at, false);
+
+    public IReadOnlyList<string> Failing => [.. _last.Where(x => !x.Value.Ok).Select(x => x.Key).Order()];
+
+    public IReadOnlyDictionary<string, (DateTime At, bool Ok)> Snapshot => _last;
 }
 
 /// <summary>

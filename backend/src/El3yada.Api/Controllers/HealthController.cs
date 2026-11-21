@@ -9,8 +9,21 @@ namespace El3yada.Api.Controllers;
 [ApiController]
 [AllowAnonymous]
 [Route("api/health")]
-public class HealthController(AppDbContext db) : ControllerBase
+public class HealthController(AppDbContext db, El3yada.Api.Billing.JobStatus jobs) : ControllerBase
 {
+    /// <summary>
+    /// 200 while every scheduled billing job's last run succeeded (or none has run yet), 503 with the failing job names
+    /// after a failed run, until the next success. Point an uptime monitor here to be alerted (no patient data in it).
+    /// </summary>
+    [HttpGet("jobs")]
+    public IActionResult Jobs()
+    {
+        var failing = jobs.Failing;
+        return failing.Count == 0
+            ? Ok(new { status = "ok", ran = jobs.Snapshot.Count })
+            : StatusCode(StatusCodes.Status503ServiceUnavailable, new { status = "failing", failing });
+    }
+
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {

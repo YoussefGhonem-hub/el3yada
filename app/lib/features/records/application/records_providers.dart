@@ -39,7 +39,7 @@ class RecordListController extends Notifier<RecordListState> {
   RecordListController(this.filter);
 
   final RecordFilter filter;
-  static const pageSize = 30;
+  static const pageSize = 25;
   int _request = 0;
 
   @override

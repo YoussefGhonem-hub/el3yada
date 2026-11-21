@@ -119,6 +119,7 @@ try
     builder.Services.AddScoped<El3yada.Api.Analytics.AnalyticsData>();
     builder.Services.AddScoped<El3yada.Api.Analytics.DashboardService>();
     builder.Services.AddScoped<El3yada.Api.Analytics.RevenueService>();
+    builder.Services.AddSingleton<El3yada.Api.Billing.JobStatus>();
     builder.Services.AddScoped<El3yada.Api.Billing.BillingJobs>();
     builder.Services.AddHostedService<El3yada.Api.Billing.BillingJobsHost>();
 

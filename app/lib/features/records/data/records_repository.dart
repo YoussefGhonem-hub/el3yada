@@ -28,7 +28,7 @@ abstract interface class RecordsRepository {
   });
 
   /// D6 Files tab and AS6: newest first, with the category counts.
-  Future<RecordPage> records(String patientId, {RecordCategory? category, int page = 1, int pageSize = 30});
+  Future<RecordPage> records(String patientId, {RecordCategory? category, int page = 1, int pageSize = 25});
 
   /// D12.
   Future<MedicalRecordView> record(String recordId);
@@ -88,7 +88,7 @@ class ApiRecordsRepository implements RecordsRepository {
           })));
 
   @override
-  Future<RecordPage> records(String patientId, {RecordCategory? category, int page = 1, int pageSize = 30}) =>
+  Future<RecordPage> records(String patientId, {RecordCategory? category, int page = 1, int pageSize = 25}) =>
       _call(() async {
         final response = await _dio.get<Map<String, dynamic>>(
           '/patients/$patientId/records',

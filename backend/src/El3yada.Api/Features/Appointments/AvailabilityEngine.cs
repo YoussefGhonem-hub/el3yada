@@ -60,12 +60,12 @@ public sealed record ClosureWindow(DateTime FromLocal, DateTime ToLocal);
 public sealed record ExistingBooking(Guid Id, DateOnly LocalDate, TimeOnly PeriodStartLocal, DateTime StartUtc, DateTime? EndUtc, string Status, bool Overbooked);
 
 /// <param name="Unavailable">Null when bookable; otherwise BRANCH_CLOSED, TOO_SOON, PERIOD_FULL, or the day's reason.</param>
-/// <param name="EstimatedTime">Queue mode: the estimated time for the next place (spec 6.12.1).</param>
+/// <remarks>Queue mode has no time estimate: a period is a waiting list, and the turn (with its estimate) comes at check-in (BR-AP3).</remarks>
 public sealed record PeriodAvailability(
     TimeOnly Start, TimeOnly End, bool EndsNextDay, string? Label,
     int Capacity, int Booked, int Remaining,
     DateTime StartUtc, DateTime EndUtc,
-    bool Closed, TimeOnly? EstimatedTime, string? Unavailable);
+    bool Closed, string? Unavailable);
 
 /// <param name="Unavailable">Null when free; otherwise SLOT_TAKEN, BRANCH_CLOSED, TOO_SOON, or the day's reason.</param>
 public sealed record SlotAvailability(
@@ -133,9 +133,8 @@ public static class AvailabilityEngine
                 var tooLate = request.ForPatient ? startLocal < minStartLocal : endLocal <= nowLocal;
                 var remaining = Math.Max(0, capacity - booked);
                 var why = dayReason ?? (closed ? "BRANCH_CLOSED" : tooLate ? "TOO_SOON" : remaining == 0 ? "PERIOD_FULL" : null);
-                var estimate = TimeOnly.FromDateTime(startLocal.AddMinutes(booked * settings.AvgVisitMinutes));
                 periods.Add(new PeriodAvailability(p.Start, p.End, p.EndsNextDay, p.Label, capacity, booked,
-                    why is null ? remaining : 0, startUtc, endUtc, closed, estimate, why));
+                    why is null ? remaining : 0, startUtc, endUtc, closed, why));
                 continue;
             }
 
@@ -158,7 +157,7 @@ public static class AvailabilityEngine
             var total = slots.Count(x => x.PeriodStart == p.Start);
             var free = slots.Count(x => x.PeriodStart == p.Start && x.Available);
             periods.Add(new PeriodAvailability(p.Start, p.End, p.EndsNextDay, p.Label, total, total - free, free,
-                startUtc, endUtc, fullyClosed, null, dayReason ?? (fullyClosed ? "BRANCH_CLOSED" : free == 0 ? "PERIOD_FULL" : null)));
+                startUtc, endUtc, fullyClosed, dayReason ?? (fullyClosed ? "BRANCH_CLOSED" : free == 0 ? "PERIOD_FULL" : null)));
         }
 
         if (dayReason is null && periods.Count == 0) dayReason = "OUTSIDE_HOURS";

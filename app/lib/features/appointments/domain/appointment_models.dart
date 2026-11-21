@@ -218,7 +218,6 @@ class PeriodSlot {
     required this.capacity,
     required this.booked,
     required this.remaining,
-    this.estimatedTime,
     this.unavailable,
   });
 
@@ -228,7 +227,6 @@ class PeriodSlot {
   final int capacity;
   final int booked;
   final int remaining;
-  final String? estimatedTime;
 
   /// Null when bookable; otherwise a 6.12.6 code.
   final String? unavailable;
@@ -242,7 +240,6 @@ class PeriodSlot {
         capacity: j['capacity'] as int,
         booked: j['booked'] as int,
         remaining: j['remaining'] as int,
-        estimatedTime: j['estimatedTime'] == null ? null : _hhmm(j['estimatedTime']),
         unavailable: j['unavailable'] as String?,
       );
 }

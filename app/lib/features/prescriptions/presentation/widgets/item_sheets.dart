@@ -6,7 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/search/search_normalizer.dart' show parseStrength;
 import '../../../../core/theme/motion.dart';
 import '../../../../l10n/gen/app_localizations.dart';
+import '../../../auth/application/auth_controller.dart';
+import '../../../auth/domain/user_role.dart';
 import '../../../catalog/application/catalog_search_provider.dart';
+import '../../../catalog/domain/catalog_models.dart' show CatalogReportType;
+import '../../../catalog/presentation/catalog_report_sheet.dart';
 import '../../../catalog/data/local_catalog_search.dart' show mayBeUnavailable;
 import '../../../catalog/presentation/catalog_text.dart';
 import '../../../catalog/domain/catalog_search.dart';
@@ -135,6 +139,19 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
         if (_strength.text.trim().isEmpty) _strength.text = parseStrength(text) ?? '';
       });
 
+  /// BR-CAT8 [S]: a name the catalog doesn't have…
+  void _reportMissing(String typed) =>
+      showCatalogReportSheet(context, type: CatalogReportType.missing, text: typed, itemRef: catalogSearchRef(typed));
+
+  /// …or something wrong in the item picked.
+  void _reportPicked() => showCatalogReportSheet(
+        context,
+        type: CatalogReportType.wrong,
+        // Already in the API's form: `drug:123`, or a custom item's id.
+        itemRef: _catalogId,
+        itemName: _name.text.trim(),
+      );
+
   String? _duration(AppLocalizations l10n) {
     final unit = _durationUnit;
     if (unit == RxDurationUnit.continuous) return l10n.rxDurationContinuous;
@@ -169,6 +186,7 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final canReport = canReportCatalogItems(ref);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -199,6 +217,7 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
                 onPick: _pick,
                 onTypeFree: _typeFree,
                 collapsed: _picked,
+                onReport: canReport ? _reportMissing : null,
               ),
               AnimatedSwitcher(
                 duration: Motion.normal,
@@ -221,6 +240,8 @@ class _MedicationItemSheetState extends ConsumerState<MedicationItemSheet> {
                               _catalogId = null;
                             }),
                           ),
+                          if (canReport && _catalogId != null)
+                            _ReportPickedButton(onPressed: _reportPicked),
                           TextField(
                             controller: _ingredient,
                             textDirection: TextDirection.ltr,
@@ -408,6 +429,16 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
         _code = null;
       });
 
+  void _reportMissing(String typed) =>
+      showCatalogReportSheet(context, type: CatalogReportType.missing, text: typed, itemRef: catalogSearchRef(typed));
+
+  void _reportPicked() => showCatalogReportSheet(
+        context,
+        type: CatalogReportType.wrong,
+        itemRef: 'loinc:$_code',
+        itemName: _name.text.trim(),
+      );
+
   void _save() {
     if (_name.text.trim().isEmpty) {
       setState(() => _nameError = AppLocalizations.of(context).errorRequired);
@@ -420,6 +451,7 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final canReport = canReportCatalogItems(ref);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -465,6 +497,7 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
                 onPick: _pick,
                 onTypeFree: _typeFree,
                 collapsed: _picked,
+                onReport: canReport ? _reportMissing : null,
               ),
               if (_picked) ...[
                 const SizedBox(height: 16),
@@ -477,6 +510,7 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
                     _code = null;
                   }),
                 ),
+                if (canReport && _code != null) _ReportPickedButton(onPressed: _reportPicked),
                 TextField(
                   controller: _notes,
                   minLines: 1,
@@ -492,6 +526,35 @@ class _InvestigationItemSheetState extends ConsumerState<InvestigationItemSheet>
       ],
     );
   }
+}
+
+/// Only doctors report catalog items (`reportCatalogItem` is doctor only);
+/// an assistant drafting in AS7 doesn't see the option.
+bool canReportCatalogItems(WidgetRef ref) =>
+    ref.watch(authControllerProvider.select((session) => session.value?.role)) == UserRole.doctor;
+
+/// The API's `itemRef` for a name typed in the search: `search:…`, at most
+/// 100 characters.
+String catalogSearchRef(String typed) {
+  final ref = 'search:${typed.trim()}';
+  return ref.length <= 100 ? ref : ref.substring(0, 100);
+}
+
+/// "Something wrong with this item?" under the name of a picked item.
+class _ReportPickedButton extends StatelessWidget {
+  const _ReportPickedButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: TextButton.icon(
+          onPressed: onPressed,
+          icon: const Icon(Icons.flag_outlined, size: 18),
+          label: Text(AppLocalizations.of(context).catalogReportItemAction),
+        ),
+      );
 }
 
 /// A field's text, or null when it's blank.
@@ -542,6 +605,7 @@ class CatalogSearchBox<T> extends StatefulWidget {
     required this.onPick,
     required this.onTypeFree,
     this.collapsed = false,
+    this.onReport,
   });
 
   final TextEditingController controller;
@@ -556,6 +620,10 @@ class CatalogSearchBox<T> extends StatefulWidget {
 
   /// After a pick the results fold away until the doctor types again.
   final bool collapsed;
+
+  /// "Report a missing or wrong item" [S] (BR-CAT8) with what was typed;
+  /// null hides it (assistants can't report).
+  final ValueChanged<String>? onReport;
 
   @override
   State<CatalogSearchBox<T>> createState() => _CatalogSearchBoxState<T>();
@@ -699,6 +767,15 @@ class _CatalogSearchBoxState<T> extends State<CatalogSearchBox<T>> {
                             setState(() => _showResults = false);
                             widget.onTypeFree(typed);
                           },
+                        ),
+                      ),
+                    if (typed.isNotEmpty && widget.onReport != null)
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: TextButton.icon(
+                          onPressed: () => widget.onReport!(typed),
+                          icon: const Icon(Icons.flag_outlined, size: 18),
+                          label: Text(l10n.catalogReportAction),
                         ),
                       ),
                   ],

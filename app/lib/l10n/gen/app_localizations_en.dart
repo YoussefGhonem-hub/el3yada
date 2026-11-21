@@ -9206,4 +9206,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminTargetBroadcast => 'Broadcast';
+
+  @override
+  String get catalogReportAction => 'Report a missing or wrong item';
+
+  @override
+  String get catalogReportItemAction =>
+      'Something wrong with this item? Report it';
+
+  @override
+  String get catalogReportTitle => 'Report to the admin';
+
+  @override
+  String get catalogReportIntro =>
+      'The admins check it and fix the catalog for every doctor.';
+
+  @override
+  String get catalogReportType => 'What\'s the problem?';
+
+  @override
+  String get catalogReportText => 'Details';
+
+  @override
+  String get catalogReportTextHint =>
+      'For example the name as it\'s written on the box, or what\'s wrong.';
+
+  @override
+  String catalogReportAbout(String name) {
+    return 'About: $name';
+  }
+
+  @override
+  String get catalogReportSend => 'Send report';
+
+  @override
+  String get catalogReportSent => 'Sent to the admin. Thank you!';
+
+  @override
+  String get catalogReportErrorText => 'Write what\'s missing or wrong.';
 }

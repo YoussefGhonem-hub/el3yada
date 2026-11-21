@@ -9236,4 +9236,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminTargetBroadcast => 'إشعار جماعي';
+
+  @override
+  String get catalogReportAction => 'بلّغ عن صنف ناقص أو غلط';
+
+  @override
+  String get catalogReportItemAction => 'في حاجة غلط في الصنف ده؟ بلّغ عنها';
+
+  @override
+  String get catalogReportTitle => 'بلاغ للإدارة';
+
+  @override
+  String get catalogReportIntro =>
+      'الإدارة هتراجعه وتصلّح الكتالوج لكل الأطباء.';
+
+  @override
+  String get catalogReportType => 'إيه المشكلة؟';
+
+  @override
+  String get catalogReportText => 'التفاصيل';
+
+  @override
+  String get catalogReportTextHint =>
+      'مثلاً الاسم زي ما هو مكتوب على العلبة، أو إيه الغلط.';
+
+  @override
+  String catalogReportAbout(String name) {
+    return 'عن: $name';
+  }
+
+  @override
+  String get catalogReportSend => 'إرسال البلاغ';
+
+  @override
+  String get catalogReportSent => 'البلاغ وصل للإدارة. شكراً ليك!';
+
+  @override
+  String get catalogReportErrorText => 'اكتب إيه الناقص أو الغلط.';
 }

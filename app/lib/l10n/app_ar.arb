@@ -2613,5 +2613,16 @@
   "broadcastPickerDone": "{count, plural, =0{تم} other{تم ({count})}}",
   "adminAuditBroadcastSent": "بعت إشعار جماعي للأطباء",
   "adminActionBroadcastSent": "إرسال إشعار جماعي",
-  "adminTargetBroadcast": "إشعار جماعي"
+  "adminTargetBroadcast": "إشعار جماعي",
+  "catalogReportAction": "بلّغ عن صنف ناقص أو غلط",
+  "catalogReportItemAction": "في حاجة غلط في الصنف ده؟ بلّغ عنها",
+  "catalogReportTitle": "بلاغ للإدارة",
+  "catalogReportIntro": "الإدارة هتراجعه وتصلّح الكتالوج لكل الأطباء.",
+  "catalogReportType": "إيه المشكلة؟",
+  "catalogReportText": "التفاصيل",
+  "catalogReportTextHint": "مثلاً الاسم زي ما هو مكتوب على العلبة، أو إيه الغلط.",
+  "catalogReportAbout": "عن: {name}",
+  "catalogReportSend": "إرسال البلاغ",
+  "catalogReportSent": "البلاغ وصل للإدارة. شكراً ليك!",
+  "catalogReportErrorText": "اكتب إيه الناقص أو الغلط."
 }

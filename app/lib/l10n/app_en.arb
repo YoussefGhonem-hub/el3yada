@@ -5370,5 +5370,23 @@
   },
   "adminAuditBroadcastSent": "sent a broadcast to doctors",
   "adminActionBroadcastSent": "Broadcast sent",
-  "adminTargetBroadcast": "Broadcast"
+  "adminTargetBroadcast": "Broadcast",
+  "catalogReportAction": "Report a missing or wrong item",
+  "catalogReportItemAction": "Something wrong with this item? Report it",
+  "catalogReportTitle": "Report to the admin",
+  "catalogReportIntro": "The admins check it and fix the catalog for every doctor.",
+  "catalogReportType": "What's the problem?",
+  "catalogReportText": "Details",
+  "catalogReportTextHint": "For example the name as it's written on the box, or what's wrong.",
+  "catalogReportAbout": "About: {name}",
+  "@catalogReportAbout": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogReportSend": "Send report",
+  "catalogReportSent": "Sent to the admin. Thank you!",
+  "catalogReportErrorText": "Write what's missing or wrong."
 }

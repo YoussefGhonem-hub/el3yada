@@ -15795,6 +15795,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Broadcast'**
   String get adminTargetBroadcast;
+
+  /// No description provided for @catalogReportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a missing or wrong item'**
+  String get catalogReportAction;
+
+  /// No description provided for @catalogReportItemAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Something wrong with this item? Report it'**
+  String get catalogReportItemAction;
+
+  /// No description provided for @catalogReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report to the admin'**
+  String get catalogReportTitle;
+
+  /// No description provided for @catalogReportIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The admins check it and fix the catalog for every doctor.'**
+  String get catalogReportIntro;
+
+  /// No description provided for @catalogReportType.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the problem?'**
+  String get catalogReportType;
+
+  /// No description provided for @catalogReportText.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get catalogReportText;
+
+  /// No description provided for @catalogReportTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example the name as it\'s written on the box, or what\'s wrong.'**
+  String get catalogReportTextHint;
+
+  /// No description provided for @catalogReportAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About: {name}'**
+  String catalogReportAbout(String name);
+
+  /// No description provided for @catalogReportSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send report'**
+  String get catalogReportSend;
+
+  /// No description provided for @catalogReportSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the admin. Thank you!'**
+  String get catalogReportSent;
+
+  /// No description provided for @catalogReportErrorText.
+  ///
+  /// In en, this message translates to:
+  /// **'Write what\'s missing or wrong.'**
+  String get catalogReportErrorText;
 }
 
 class _AppLocalizationsDelegate

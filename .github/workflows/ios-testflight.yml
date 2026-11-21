@@ -1,6 +1,13 @@
 # Builds the iOS app on a GitHub Mac and uploads it to TestFlight.
-# Manual only: Actions tab > "iOS TestFlight" > Run workflow, or
+#
+# Runs by itself on every push to the `uat` branch that changes the app
+# (app/, packages/ or this file). To deploy: merge dev into uat and push.
+# It can also be started by hand: Actions tab > "iOS TestFlight" > Run
+# workflow (GitHub shows that button only once this file is on main), or
 #   gh workflow run "iOS TestFlight" --ref dev -f config=demo
+#
+# The app's analyze and tests run first on Linux; the Mac build starts only
+# if they pass.
 #
 # Needs four repository secrets (Settings > Secrets and variables > Actions).
 # How to get them: app/README.md, "iOS: TestFlight".
@@ -14,6 +21,12 @@
 name: iOS TestFlight
 
 on:
+  push:
+    branches: [uat]
+    paths:
+      - "app/**"
+      - "packages/**"
+      - ".github/workflows/ios-testflight.yml"
   workflow_dispatch:
     inputs:
       config:
@@ -27,8 +40,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    name: App (analyze and test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.1
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
   testflight:
     name: Build and upload
+    needs: test
     runs-on: macos-26
     timeout-minutes: 60
     defaults:
@@ -36,7 +68,9 @@ jobs:
         working-directory: app
     env:
       BUNDLE_ID: com.el3yada.app
-      CONFIG_CHOICE: ${{ inputs.config }}
+      # A push to uat has no inputs, so it builds the demo until the API is
+      # hosted. Then change 'demo' here to 'prod'.
+      CONFIG_CHOICE: ${{ inputs.config || 'demo' }}
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
       APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
@@ -109,6 +143,7 @@ jobs:
           {
             echo "### Uploaded to TestFlight"
             echo "- Version $version, build $GITHUB_RUN_NUMBER"
+            echo "- Branch $GITHUB_REF_NAME, commit ${GITHUB_SHA:0:7}"
             echo "- Config: $CONFIG_FILE"
             echo "- Apple processes the build for 5 to 30 minutes, then internal testers get it in the TestFlight app."
           } >> "$GITHUB_STEP_SUMMARY"

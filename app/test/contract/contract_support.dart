@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
-import 'package:el3yada/core/network/api_client.dart' show ApiPathPrefix;
 import 'package:el3yada/core/network/api_exception.dart';
 import 'package:el3yada/features/appointments/data/appointments_repository.dart';
 import 'package:el3yada/features/admin/data/admin_repository.dart';
@@ -43,7 +42,7 @@ Map<String, dynamic> contractDevice(String who, String run) => {
 
 Dio contractClient(String? baseUrl) => Dio(
   BaseOptions(baseUrl: '$baseUrl/api', headers: {'Accept': 'application/json'}),
-)..interceptors.add(const ApiPathPrefix());
+);
 
 /// One signed-in person: their own client, token and repositories.
 class ContractAccount {

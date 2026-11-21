@@ -101,7 +101,7 @@ class ApiNotificationsRepository implements NotificationsRepository {
 
   @override
   Future<NotificationPage> list({int page = 1}) => _wrap(() async {
-        final response = await _dio.get<Map<String, dynamic>>('/api/me/notifications', queryParameters: {'page': page, 'pageSize': 25});
+        final response = await _dio.get<Map<String, dynamic>>('/me/notifications', queryParameters: {'page': page, 'pageSize': 25});
         final data = response.data!;
         final p = data['page'] as Map<String, dynamic>;
         final items = [for (final i in p['items'] as List) AppNotification.fromJson(i as Map<String, dynamic>)];
@@ -114,22 +114,22 @@ class ApiNotificationsRepository implements NotificationsRepository {
 
   @override
   Future<int> unreadCount() => _wrap(() async =>
-      (await _dio.get<Map<String, dynamic>>('/api/me/notifications/unread-count')).data!['count'] as int);
+      (await _dio.get<Map<String, dynamic>>('/me/notifications/unread-count')).data!['count'] as int);
 
   @override
-  Future<void> markRead(String id) => _wrap(() => _dio.post<void>('/api/me/notifications/$id/read'));
+  Future<void> markRead(String id) => _wrap(() => _dio.post<void>('/me/notifications/$id/read'));
 
   @override
-  Future<void> markAllRead() => _wrap(() => _dio.post<void>('/api/me/notifications/read-all'));
+  Future<void> markAllRead() => _wrap(() => _dio.post<void>('/me/notifications/read-all'));
 
   @override
   Future<void> registerDevice({required String deviceId, required String platform, String? pushToken, required String appVersion}) =>
-      _wrap(() => _dio.put<void>('/api/me/devices', data: {
+      _wrap(() => _dio.put<void>('/me/devices', data: {
             'deviceId': deviceId, 'platform': platform, 'fcmToken': pushToken, 'appVersion': appVersion,
           }));
 
   @override
-  Future<void> unregisterDevice(String deviceId) => _wrap(() => _dio.delete<void>('/api/me/devices/$deviceId'));
+  Future<void> unregisterDevice(String deviceId) => _wrap(() => _dio.delete<void>('/me/devices/$deviceId'));
 }
 
 class FakeNotificationsRepository implements NotificationsRepository {

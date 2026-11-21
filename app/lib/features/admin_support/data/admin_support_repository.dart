@@ -37,21 +37,21 @@ class ApiAdminSupportRepository implements AdminSupportRepository {
 
   @override
   Future<Paged<AdminDeletionRequest>> deletionRequests({String status = 'pending', int page = 1}) async => Paged.fromJson(
-        await _call('GET', '/api/admin/deletion-requests', query: {'status': status, 'page': page, 'pageSize': 25}) as Json,
+        await _call('GET', '/admin/deletion-requests', query: {'status': status, 'page': page, 'pageSize': 25}) as Json,
         AdminDeletionRequest.fromJson,
       );
 
   @override
   Future<void> reviewDeletionRequest(String id, {required bool approve, String? note}) =>
-      _call('POST', '/api/admin/deletion-requests/$id/review', body: {'decision': approve ? 'approve' : 'reject', 'note': note});
+      _call('POST', '/admin/deletion-requests/$id/review', body: {'decision': approve ? 'approve' : 'reject', 'note': note});
 
   @override
   Future<AccountSearchResult> searchAccounts(String phone) async =>
-      AccountSearchResult.fromJson(await _call('GET', '/api/admin/accounts', query: {'phone': phone}) as Json);
+      AccountSearchResult.fromJson(await _call('GET', '/admin/accounts', query: {'phone': phone}) as Json);
 
   @override
   Future<void> setLoginStatus(String userId, {required bool active, String? reason}) =>
-      _call('POST', '/api/admin/accounts/$userId/status', body: {'status': active ? 'active' : 'disabled', 'reason': reason});
+      _call('POST', '/admin/accounts/$userId/status', body: {'status': active ? 'active' : 'disabled', 'reason': reason});
 }
 
 /// Offline data for dev builds with the test accounts.

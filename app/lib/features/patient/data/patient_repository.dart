@@ -128,62 +128,62 @@ class ApiPatientRepository implements PatientRepository {
 
   @override
   Future<PatientHome> home({String? doctorId}) => _get(
-        '/api/patient/home',
+        '/patient/home',
         (d) => PatientHome.fromJson(d as Json),
         query: {'doctorId': ?doctorId},
       );
 
   @override
   Future<List<MyDoctor>> myDoctors() => _get(
-        '/api/patient/doctors',
+        '/patient/doctors',
         (d) => [for (final item in d as List<dynamic>) MyDoctor.fromJson(item as Json)],
       );
 
   @override
   Future<DoctorInfo> doctor(String doctorId) =>
-      _get('/api/patient/doctors/$doctorId', (d) => DoctorInfo.fromJson(d as Json));
+      _get('/patient/doctors/$doctorId', (d) => DoctorInfo.fromJson(d as Json));
 
   @override
   Future<Paged<VisitListItem>> visits(PatientListFilter filter, {int page = 1}) => _get(
-        '/api/patient/visits',
+        '/patient/visits',
         (d) => Paged.fromJson(d as Json, VisitListItem.fromJson),
         query: filter.toQuery(page, PatientRepository.pageSize),
       );
 
   @override
   Future<List<VisitBranchOption>> visitBranches({String? doctorId}) => _get(
-        '/api/patient/visits/branches',
+        '/patient/visits/branches',
         (d) => [for (final item in d as List<dynamic>) VisitBranchOption.fromJson(item as Json)],
         query: {'doctorId': ?doctorId},
       );
 
   @override
-  Future<VisitDetail> visit(String id) => _get('/api/patient/visits/$id', (d) => VisitDetail.fromJson(d as Json));
+  Future<VisitDetail> visit(String id) => _get('/patient/visits/$id', (d) => VisitDetail.fromJson(d as Json));
 
   @override
   Future<Paged<PrescriptionListItem>> prescriptions(PatientListFilter filter, {int page = 1}) => _get(
-        '/api/patient/prescriptions',
+        '/patient/prescriptions',
         (d) => Paged.fromJson(d as Json, PrescriptionListItem.fromJson),
         query: filter.toQuery(page, PatientRepository.pageSize),
       );
 
   @override
   Future<PrescriptionDetail> prescription(String id) =>
-      _get('/api/patient/prescriptions/$id', (d) => PrescriptionDetail.fromJson(d as Json));
+      _get('/patient/prescriptions/$id', (d) => PrescriptionDetail.fromJson(d as Json));
 
   @override
-  Future<Uint8List> prescriptionPdf(String id) => _bytes('/api/patient/prescriptions/$id/pdf');
+  Future<Uint8List> prescriptionPdf(String id) => _bytes('/patient/prescriptions/$id/pdf');
 
   @override
   Future<Paged<RecordListItem>> records(PatientListFilter filter, {int page = 1}) => _get(
-        '/api/patient/records',
+        '/patient/records',
         (d) => Paged.fromJson(d as Json, RecordListItem.fromJson),
         query: filter.toQuery(page, PatientRepository.pageSize),
       );
 
   @override
   Future<RecordCounts> recordCounts(PatientListFilter filter) => _get(
-        '/api/patient/records/counts',
+        '/patient/records/counts',
         (d) => RecordCounts.fromJson(d as Json),
         query: {
           'doctorId': ?filter.doctorId,
@@ -193,52 +193,52 @@ class ApiPatientRepository implements PatientRepository {
       );
 
   @override
-  Future<RecordDetail> record(String id) => _get('/api/patient/records/$id', (d) => RecordDetail.fromJson(d as Json));
+  Future<RecordDetail> record(String id) => _get('/patient/records/$id', (d) => RecordDetail.fromJson(d as Json));
 
   @override
   Future<Uint8List> attachment(String recordId, String attachmentId, {bool thumbnail = false}) => _bytes(
-        '/api/patient/records/$recordId/attachments/$attachmentId',
+        '/patient/records/$recordId/attachments/$attachmentId',
         query: {if (thumbnail) 'thumbnail': true},
       );
 
   @override
   Future<Uint8List> branchPhoto(String doctorId, String branchId, String photoId, {bool thumbnail = false}) => _bytes(
-        '/api/patient/doctors/$doctorId/branches/$branchId/photos/$photoId',
+        '/patient/doctors/$doctorId/branches/$branchId/photos/$photoId',
         query: {if (thumbnail) 'thumb': true},
       );
 
   @override
   Future<MedicalProfile> medicalProfile() =>
-      _get('/api/patient/medical-profile', (d) => MedicalProfile.fromJson(d as Json));
+      _get('/patient/medical-profile', (d) => MedicalProfile.fromJson(d as Json));
 
   @override
   Future<void> markSeen({List<String> visits = const [], List<String> prescriptions = const [], List<String> files = const []}) async {
     if (visits.isEmpty && prescriptions.isEmpty && files.isEmpty) return;
-    await _send('POST', '/api/patient/seen', {'visits': visits, 'prescriptions': prescriptions, 'files': files});
+    await _send('POST', '/patient/seen', {'visits': visits, 'prescriptions': prescriptions, 'files': files});
   }
 
   @override
-  Future<PatientAccount> account() => _get('/api/patient/account', (d) => PatientAccount.fromJson(d as Json));
+  Future<PatientAccount> account() => _get('/patient/account', (d) => PatientAccount.fromJson(d as Json));
 
   @override
-  Future<void> updateNotificationPrefs(NotificationPrefs prefs) => _send('PATCH', '/api/me/preferences', {
+  Future<void> updateNotificationPrefs(NotificationPrefs prefs) => _send('PATCH', '/me/preferences', {
         'notifyChat': prefs.chat,
         'notifyReminders': prefs.reminders,
         'notifyShowPreview': prefs.showPreview,
       });
 
   @override
-  Future<void> updateAppearance({String? locale, String? themeMode}) => _send('PATCH', '/api/me/preferences', {
+  Future<void> updateAppearance({String? locale, String? themeMode}) => _send('PATCH', '/me/preferences', {
         'locale': ?locale,
         'themeMode': ?themeMode,
       });
 
   @override
-  Future<void> acceptTerms() => _send('POST', '/api/me/accept-terms', null);
+  Future<void> acceptTerms() => _send('POST', '/me/accept-terms', null);
 
   @override
   Future<DeletionRequest> requestAccountDeletion(String? reason) async =>
-      DeletionRequest.fromJson(await _send('POST', '/api/patient/deletion-request', {'reason': reason}) as Json);
+      DeletionRequest.fromJson(await _send('POST', '/patient/deletion-request', {'reason': reason}) as Json);
 }
 
 final patientRepositoryProvider = Provider<PatientRepository>((ref) {

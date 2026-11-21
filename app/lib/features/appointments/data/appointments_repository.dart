@@ -177,20 +177,20 @@ class ApiAppointmentsRepository implements AppointmentsRepository {
   Future<Json> _get(String path, [Map<String, dynamic>? q]) async => (await _dio.get<Json>(path, queryParameters: q)).data!;
   Future<Json> _post(String path, [Object? body]) async => (await _dio.post<Json>(path, data: body ?? const {})).data!;
 
-  String _side(bool staff) => staff ? '/api/staff' : '/api/patient';
+  String _side(bool staff) => staff ? '/staff' : '/patient';
 
   @override
   Future<BookingOptions> bookingOptions(String doctorId) =>
-      _wrap(() async => BookingOptions.fromJson(await _get('/api/patient/doctors/$doctorId/booking-options')));
+      _wrap(() async => BookingOptions.fromJson(await _get('/patient/doctors/$doctorId/booking-options')));
 
   @override
   Future<List<Appointment>> myAppointments(String tab) => _wrap(() async {
-        final r = await _dio.get<List<dynamic>>('/api/patient/appointments', queryParameters: {'tab': tab});
+        final r = await _dio.get<List<dynamic>>('/patient/appointments', queryParameters: {'tab': tab});
         return [for (final a in r.data!) Appointment.fromJson(a as Json)];
       });
 
   @override
-  Future<Appointment> myAppointment(String id) => _wrap(() async => Appointment.fromJson(await _get('/api/patient/appointments/$id')));
+  Future<Appointment> myAppointment(String id) => _wrap(() async => Appointment.fromJson(await _get('/patient/appointments/$id')));
 
   @override
   Future<Availability> availability({required String branchId, required String visitType, required DateTime from, DateTime? to, required bool staff}) =>
@@ -213,53 +213,53 @@ class ApiAppointmentsRepository implements AppointmentsRepository {
 
   @override
   Future<List<StaffBranch>> branches() => _wrap(() async {
-        final r = await _dio.get<List<dynamic>>('/api/staff/branches');
+        final r = await _dio.get<List<dynamic>>('/staff/branches');
         return [for (final b in r.data!) StaffBranch.fromJson(b as Json)];
       });
 
   @override
-  Future<Appointment> appointment(String id) => _wrap(() async => Appointment.fromJson(await _get('/api/staff/appointments/$id')));
+  Future<Appointment> appointment(String id) => _wrap(() async => Appointment.fromJson(await _get('/staff/appointments/$id')));
 
   @override
-  Future<SearchResult> search(SearchFilter filter) => _wrap(() async => SearchResult.fromJson(await _get('/api/staff/appointments', filter.toQuery())));
+  Future<SearchResult> search(SearchFilter filter) => _wrap(() async => SearchResult.fromJson(await _get('/staff/appointments', filter.toQuery())));
 
   @override
   Future<List<PatientLookup>> lookupPatients(String query) => _wrap(() async {
-        final r = await _dio.get<List<dynamic>>('/api/staff/patients/lookup', queryParameters: {'q': query});
+        final r = await _dio.get<List<dynamic>>('/staff/patients/lookup', queryParameters: {'q': query});
         return [for (final p in r.data!) PatientLookup.fromJson(p as Json)];
       });
 
   @override
   Future<BoardSnapshot> board(String branchId, {DateTime? date}) =>
-      _wrap(() async => BoardSnapshot.fromJson(await _get('/api/staff/board', {'branchId': branchId, if (date != null) 'date': dayKey(date)})));
+      _wrap(() async => BoardSnapshot.fromJson(await _get('/staff/board', {'branchId': branchId, if (date != null) 'date': dayKey(date)})));
 
   @override
   Future<BoardPatientSummary> boardSummary(String appointmentId) =>
-      _wrap(() async => BoardPatientSummary.fromJson(await _get('/api/staff/board/$appointmentId/summary')));
+      _wrap(() async => BoardPatientSummary.fromJson(await _get('/staff/board/$appointmentId/summary')));
 
   @override
   Future<Appointment> act(String id, String action, {String? reason}) =>
-      _wrap(() async => Appointment.fromJson(await _post('/api/staff/appointments/$id/$action', {'reason': reason})));
+      _wrap(() async => Appointment.fromJson(await _post('/staff/appointments/$id/$action', {'reason': reason})));
 
   @override
   Future<Appointment> walkIn({required String branchId, String? patientId, String? guestName, String? guestPhone, required String visitType}) =>
-      _wrap(() async => Appointment.fromJson(await _post('/api/staff/board/walk-in', {
+      _wrap(() async => Appointment.fromJson(await _post('/staff/board/walk-in', {
             'branchId': branchId, 'patientId': patientId, 'visitType': visitType,
             'guest': guestName == null ? null : {'name': guestName, 'phone': guestPhone},
           })));
 
   @override
   Future<int> cancelRestOfDay(String branchId, {String? reason}) =>
-      _wrap(() async => (await _post('/api/staff/board/cancel-rest-of-day', {'branchId': branchId, 'reason': reason}))['cancelled'] as int);
+      _wrap(() async => (await _post('/staff/board/cancel-rest-of-day', {'branchId': branchId, 'reason': reason}))['cancelled'] as int);
 
   @override
   Future<int> sendDelay(String branchId, int minutes) =>
-      _wrap(() async => (await _post('/api/staff/board/delay', {'branchId': branchId, 'minutes': minutes}))['notified'] as int);
+      _wrap(() async => (await _post('/staff/board/delay', {'branchId': branchId, 'minutes': minutes}))['notified'] as int);
 
   @override
   Future<BranchScheduleData> schedule(String branchId) async {
     try {
-      return BranchScheduleData.fromJson(await _get('/api/staff/branches/$branchId/schedule'));
+      return BranchScheduleData.fromJson(await _get('/staff/branches/$branchId/schedule'));
     } on DioException catch (error) {
       throw ApiException.fromDio(error);
     }
@@ -269,7 +269,7 @@ class ApiAppointmentsRepository implements AppointmentsRepository {
   Future<({bool applied, List<ScheduleConflict> conflicts})> saveSchedule(BranchScheduleData data,
       {required bool dryRun, Map<String, ConflictDecision> decisions = const {}}) async {
     try {
-      final r = (await _dio.put<Json>('/api/staff/branches/${data.branchId}/schedule', data: {
+      final r = (await _dio.put<Json>('/staff/branches/${data.branchId}/schedule', data: {
         'weekly': [for (final p in data.weekly) p.toJson()],
         'dateOverrides': [for (final o in data.overrides) o.toJson()],
         'closures': [for (final c in data.closures) c.toJson()],

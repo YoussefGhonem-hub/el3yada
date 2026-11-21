@@ -471,6 +471,58 @@ public sealed class PatientsController(
     public async Task<IActionResult> Register([FromQuery] PatientsRegisterQuery query, CancellationToken cancellationToken)
     {
         var caller = HttpContext.Clinic();
+        if (await RefuseRegisterQueryAsync(caller, query, cancellationToken) is { } refused)
+        {
+            return refused;
+        }
+
+        return Ok(await PatientsRegister.PageAsync(db, caller, query, Today, cancellationToken));
+    }
+
+    /// <summary>
+    /// D4 [S] "Export CSV": every patient the register's filters and sort select (paging is ignored), as a CSV
+    /// file with Arabic (<c>lang=ar</c>, the default) or English (<c>lang=en</c>) headers and values. Money and
+    /// clinical columns follow the same permissions as the rows. Doctor only, because it is the whole patient
+    /// list with phone numbers; audited as <c>patientsExported</c>. 400 <c>EXPORT_TOO_LARGE</c> over 20,000 rows.
+    /// </summary>
+    [HttpGet("register/export")]
+    [Clinic(DoctorOnly = true)]
+    public async Task<IActionResult> ExportRegister(
+        [FromQuery] PatientsRegisterQuery query, [FromQuery] string? lang, CancellationToken cancellationToken)
+    {
+        var caller = HttpContext.Clinic();
+        if (await RefuseRegisterQueryAsync(caller, query, cancellationToken) is { } refused)
+        {
+            return refused;
+        }
+
+        var arabic = lang != "en";
+        if (await PatientsRegisterCsv.BuildAsync(db, caller, query, Today, arabic, cancellationToken) is not { } file)
+        {
+            return this.Problem(StatusCodes.Status400BadRequest, ErrorCodes.ExportTooLarge, "Too many patients for one file; narrow the filters.")
+                .WithFields(("maxRows", PatientsRegisterCsv.MaxRows));
+        }
+
+        auditor.AddClinic(caller, AuditActions.PatientsExported, AuditTargets.Patient, null, new
+        {
+            rows = file.Rows,
+            lang = arabic ? "ar" : "en",
+            filters = new
+            {
+                search = Text.TrimToNull(query.Search) is not null,
+                query.LastVisit, query.BranchId, query.MinVisits, query.MaxVisits, query.NewThisMonth,
+                query.HasUpcomingBooking, query.HasNoShows, query.Archived, query.HasChronicDisease,
+            },
+        });
+        await db.SaveChangesAsync(cancellationToken);
+
+        Response.Headers.CacheControl = "no-store";
+        return File(file.Content, "text/csv; charset=utf-8", PatientsRegisterCsv.FileName(Today));
+    }
+
+    /// <summary>The register's permission and branch checks, shared by the list and the export (null: allowed).</summary>
+    private async Task<IActionResult?> RefuseRegisterQueryAsync(ClinicCaller caller, PatientsRegisterQuery query, CancellationToken cancellationToken)
+    {
         var clinicalFilter = query.HasChronicDisease == true || Text.TrimToNull(query.ChronicDisease) is not null
             || query.Sort == RegisterSort.Allergies;
         if (clinicalFilter && !caller.Has(ClinicPermissions.ClinicalView))
@@ -483,13 +535,18 @@ public sealed class PatientsController(
             return this.PermissionDenied(ClinicPermissions.RevenueView);
         }
 
+        if (query.Sort == RegisterSort.UnreadChat && !caller.Has(ClinicPermissions.Chat))
+        {
+            return this.PermissionDenied(ClinicPermissions.Chat);
+        }
+
         if (query.BranchId is { } branchId
             && !await db.Branches.AnyAsync(b => b.Id == branchId && b.DoctorId == caller.DoctorId, cancellationToken))
         {
             return this.NotFoundProblem();
         }
 
-        return Ok(await PatientsRegister.PageAsync(db, caller, query, Today, cancellationToken));
+        return null;
     }
 
     /// <summary>

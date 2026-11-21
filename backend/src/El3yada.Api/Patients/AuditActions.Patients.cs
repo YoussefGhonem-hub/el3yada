@@ -27,6 +27,9 @@ public static partial class AuditActions
     /// <summary>The medical profile changed. Details: fields (list names), added, removed (item counts).</summary>
     public const string PatientMedicalProfileUpdated = "patientMedicalProfileUpdated";
 
+    /// <summary>D4 "Export CSV". Details: rows, language and the filters used (never names or phones).</summary>
+    public const string PatientsExported = "patientsExported";
+
     /// <summary>Details: type, branchId, feePiasters, awaitingDoctor.</summary>
     public const string SessionCreated = "sessionCreated";
 

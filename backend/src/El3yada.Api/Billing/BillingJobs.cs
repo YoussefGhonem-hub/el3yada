@@ -5,11 +5,13 @@ namespace El3yada.Api.Billing;
 
 /// <summary>
 /// The scheduled jobs of spec 9.3 that run once a day (Africa/Cairo): <c>monthlyClose</c> (1st, 00:05),
-/// <c>dailyBillingCheck</c> (00:10), <c>buildDailyMetrics</c> (02:30) and <c>statsReconcile</c> [S] (03:00).
+/// <c>dailyBillingCheck</c> (00:10), <c>buildDailyMetrics</c> (02:30), <c>statsReconcile</c> [S] (03:00) and
+/// <c>trialReminders</c> [S] (10:00, so the push arrives in the day; spec 6.16 BR-T6).
 /// Each is idempotent, so a restart, a second server or a run missed during downtime changes nothing it should not.
 /// </summary>
 public sealed class BillingJobs(
-    BillingService billing, DailyMetricsBuilder metrics, TimeProvider time, JobStatus status, ILogger<BillingJobs> logger)
+    BillingService billing, DailyMetricsBuilder metrics, Doctors.TrialReminders trialReminders, TimeProvider time, JobStatus status,
+    ILogger<BillingJobs> logger)
 {
     private DateOnly Today => CairoTime.Today(time);
 
@@ -33,6 +35,9 @@ public sealed class BillingJobs(
     /// <summary><c>statsReconcile</c> [S]: yesterday's counters against the sessions.</summary>
     public Task<int> StatsReconcileAsync(CancellationToken cancellationToken) =>
         billing.ReconcileStatsAsync(Today.AddDays(-1), cancellationToken);
+
+    /// <summary><c>trialReminders</c>: 3 days before the free trial ends and on its last day. Returns the notifications added.</summary>
+    public Task<int> TrialRemindersAsync(CancellationToken cancellationToken) => trialReminders.SendAsync(cancellationToken);
 
     /// <summary>Runs one job and logs a failure without stopping the others (alerts watch for the error line, Phase 8).</summary>
     public async Task RunAsync(string name, Func<CancellationToken, Task<int>> job, CancellationToken cancellationToken)
@@ -78,6 +83,7 @@ public sealed class BillingJobsHost(IServiceScopeFactory scopes, IConfiguration 
         ("dailyBillingCheck", new TimeOnly(0, 10)),
         ("buildDailyMetrics", new TimeOnly(2, 30)),
         ("statsReconcile", new TimeOnly(3, 0)),
+        ("trialReminders", new TimeOnly(10, 0)),
     ];
 
     private readonly Dictionary<string, DateOnly> _lastRun = [];
@@ -112,6 +118,7 @@ public sealed class BillingJobsHost(IServiceScopeFactory scopes, IConfiguration 
                         "monthlyClose" => jobs.MonthlyCloseAsync,
                         "dailyBillingCheck" => jobs.DailyBillingCheckAsync,
                         "buildDailyMetrics" => jobs.BuildDailyMetricsAsync,
+                        "trialReminders" => jobs.TrialRemindersAsync,
                         _ => jobs.StatsReconcileAsync,
                     },
                     stoppingToken);

@@ -57,6 +57,9 @@ abstract interface class PatientRepository {
   Future<DoctorInfo> doctor(String doctorId);
 
   Future<Paged<VisitListItem>> visits(PatientListFilter filter, {int page = 1});
+
+  /// The branches the patient has visits in, most visited first (P4 branch filter).
+  Future<List<VisitBranchOption>> visitBranches({String? doctorId});
   Future<VisitDetail> visit(String id);
 
   Future<Paged<PrescriptionListItem>> prescriptions(PatientListFilter filter, {int page = 1});
@@ -64,7 +67,9 @@ abstract interface class PatientRepository {
   Future<Uint8List> prescriptionPdf(String id);
 
   Future<Paged<RecordListItem>> records(PatientListFilter filter, {int page = 1});
-  Future<RecordCounts> recordCounts({String? doctorId});
+
+  /// The P8 tab counts for [filter]'s doctor and date range (its kind is ignored).
+  Future<RecordCounts> recordCounts(PatientListFilter filter);
   Future<RecordDetail> record(String id);
   Future<Uint8List> attachment(String recordId, String attachmentId, {bool thumbnail = false});
 
@@ -143,6 +148,13 @@ class ApiPatientRepository implements PatientRepository {
       );
 
   @override
+  Future<List<VisitBranchOption>> visitBranches({String? doctorId}) => _get(
+        '/api/patient/visits/branches',
+        (d) => [for (final item in d as List<dynamic>) VisitBranchOption.fromJson(item as Json)],
+        query: {'doctorId': ?doctorId},
+      );
+
+  @override
   Future<VisitDetail> visit(String id) => _get('/api/patient/visits/$id', (d) => VisitDetail.fromJson(d as Json));
 
   @override
@@ -167,10 +179,14 @@ class ApiPatientRepository implements PatientRepository {
       );
 
   @override
-  Future<RecordCounts> recordCounts({String? doctorId}) => _get(
+  Future<RecordCounts> recordCounts(PatientListFilter filter) => _get(
         '/api/patient/records/counts',
         (d) => RecordCounts.fromJson(d as Json),
-        query: {'doctorId': ?doctorId},
+        query: {
+          'doctorId': ?filter.doctorId,
+          if (filter.from != null) 'from': PatientListFilter._day(filter.from!),
+          if (filter.to != null) 'to': PatientListFilter._day(filter.to!),
+        },
       );
 
   @override

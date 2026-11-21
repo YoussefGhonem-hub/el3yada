@@ -5509,5 +5509,68 @@
       }
     }
   },
-  "trayStillRunningBody": "New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock."
+  "trayStillRunningBody": "New messages and bookings keep coming here. To close it completely, choose Quit from its icon by the clock.",
+  "visitsFilterBranch": "Branch",
+  "visitsNoneInBranch": "No visits in this branch.",
+  "filesAnyDate": "Any date",
+  "filesDateRange": "Filter by date",
+  "filesClearDates": "Clear dates",
+  "filesNoneInRange": "No files in these dates.",
+  "chatButton": "Chat",
+  "patientExportCsv": "Export CSV",
+  "patientExportDone": "The patient list is exported.",
+  "patientExportTooLarge": "Too many patients for one file. Narrow the filters and try again.",
+  "patientColumnUnread": "Unread",
+  "patientUnreadSemantics": "{count, plural, =1{1 unread message} other{{count} unread messages}}",
+  "@patientUnreadSemantics": {
+    "description": "D4: the unread chat badge, for screen readers.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "patientCardNextBooking": "Next booking {date}",
+  "@patientCardNextBooking": {
+    "description": "D4 card: the next booking's day.",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Tomorrow"
+      }
+    }
+  },
+  "patientCardNoShows": "{count, plural, =1{1 no-show} other{{count} no-shows}}",
+  "@patientCardNoShows": {
+    "description": "D4 card and D6: missed bookings.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "patientCardFiles": "{count, plural, =1{1 file} other{{count} files}}",
+  "@patientCardFiles": {
+    "description": "D4 card and D6: medical files.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "patientTabAppointments": "Appointments",
+  "patientAppointmentsEmptyTitle": "No bookings yet",
+  "patientAppointmentsEmptyBody": "Book a visit for this patient from here.",
+  "patientAppointmentsUpcoming": "Upcoming",
+  "patientAppointmentsPast": "Past",
+  "activityPatientsExported": "{count, plural, =1{Exported the patient list (1 patient)} other{Exported the patient list ({count} patients)}}",
+  "@activityPatientsExported": {
+    "description": "D27: the doctor exported the register as CSV.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityActionPatientsExported": "Patient list exported"
 }

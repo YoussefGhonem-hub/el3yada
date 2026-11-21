@@ -3,15 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/platform/contact_launcher.dart';
+import '../../../core/widgets/motion_size.dart';
+import '../../chat/chat_providers.dart';
 import '../application/patient_providers.dart';
 import '../domain/patient_models.dart';
 import 'patient_format.dart';
 import 'patient_routes.dart';
 import 'widgets/patient_widgets.dart';
 
-/// P3 Doctor info: name, title, specialty, and one card per branch with address (maps),
-/// phones (call, WhatsApp), working hours, prices, payment methods and amenities.
-/// Book (P15) arrives with Phase 6 and Chat (P12) with Phase 5.
+/// P3 Doctor info: name, title, specialty, the Book (P15), Chat (P12) and records buttons, and one
+/// card per branch with address (maps), phones (call, WhatsApp), working hours, prices, payment
+/// methods and amenities.
 class DoctorInfoScreen extends ConsumerWidget {
   const DoctorInfoScreen({super.key, required this.doctorId});
 
@@ -60,14 +62,7 @@ class _DoctorInfoBody extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(l10n.fileNumber(info.fileNumber), style: theme.textTheme.bodySmall),
               const SizedBox(height: 16),
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.folder_shared_outlined),
-                label: Text(l10n.thisDoctorsRecords),
-                onPressed: () {
-                  ref.read(selectedDoctorProvider.notifier).select(info.doctor.id);
-                  context.go(PatientRoutes.file());
-                },
-              ),
+              _DoctorActions(info: info),
               const SizedBox(height: 24),
               Text(l10n.branchesTitle, style: theme.textTheme.titleMedium),
               const SizedBox(height: 8),
@@ -78,6 +73,86 @@ class _DoctorInfoBody extends ConsumerWidget {
               ],
             ],
           ),
+        ),
+      ],
+    );
+  }
+}
+
+/// P3 buttons: Book (P15 with this doctor chosen), Chat (P12) and this doctor's records (the file, filtered).
+/// Book is off while the doctor isn't active (the API answers `BOOKING_UNAVAILABLE`), and Chat while the
+/// conversation can't take messages (the doctor is suspended or switched chat off, P12); each says why.
+class _DoctorActions extends ConsumerWidget {
+  const _DoctorActions({required this.info});
+
+  final DoctorInfo info;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final canBook = info.doctorStatus == 'active';
+    final inbox = ref.watch(chatInboxProvider);
+    final chat = inbox.value?.where((c) => c.doctorId == info.doctor.id).firstOrNull;
+    final canChat = chat != null && chat.canSend;
+    final notes = [
+      if (!canBook) l10n.errBookingUnavailable,
+      if (inbox.hasValue && !canChat) l10n.chatDoctorUnavailable,
+    ];
+
+    final book = FilledButton.icon(
+      icon: const Icon(Icons.event_available_outlined),
+      label: Text(l10n.book),
+      onPressed: canBook ? () => context.push(PatientRoutes.book(info.doctor.id)) : null,
+    );
+    final message = FilledButton.tonalIcon(
+      icon: const Icon(Icons.chat_bubble_outline),
+      label: Text(l10n.chatButton),
+      onPressed: canChat ? () => context.push(PatientRoutes.chat(chat.id)) : null,
+    );
+    final records = OutlinedButton.icon(
+      icon: const Icon(Icons.folder_shared_outlined),
+      label: Text(l10n.thisDoctorsRecords),
+      onPressed: () {
+        ref.read(selectedDoctorProvider.notifier).select(info.doctor.id);
+        context.go(PatientRoutes.file());
+      },
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(child: book),
+            const SizedBox(width: 12),
+            Expanded(child: message),
+          ],
+        ),
+        const SizedBox(height: 8),
+        records,
+        MotionSize(
+          child: notes.isEmpty
+              ? const SizedBox(width: double.infinity)
+              : Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.info_outline, size: 18, color: theme.colorScheme.onSurfaceVariant),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            notes.join('\n'),
+                            style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
         ),
       ],
     );

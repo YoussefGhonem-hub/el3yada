@@ -23,6 +23,12 @@ public static partial class ErrorCodes
     /// <summary>Field: national ID is not 14 digits («الرقم القومي يجب أن يكون 14 رقم»).</summary>
     public const string InvalidNationalId = "INVALID_NATIONAL_ID";
 
+    /// <summary>
+    /// 400: the register export (D4) matches more patients than one file holds. The answer has <c>maxRows</c>;
+    /// narrow the filters.
+    /// </summary>
+    public const string ExportTooLarge = "EXPORT_TOO_LARGE";
+
     // ---- Sessions -------------------------------------------------------------------------------------
 
     /// <summary>404: createSession for a patient who is not linked to this doctor (spec 9.1).</summary>

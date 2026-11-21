@@ -47,6 +47,67 @@ public sealed class PatientReadTests(FeaturesApiFactory api) : IClassFixture<Fea
     }
 
     [Fact]
+    public async Task Visits_filter_by_branch_and_the_branch_list_counts_visible_visits_only()
+    {
+        var client = await Patient();
+        var branches = await client.GetFromJsonAsync<List<VisitBranchOptionDto>>("/api/patient/visits/branches");
+
+        // Doctor A's Maadi branch (the deleted consultation there doesn't count) and doctor B's Zamalek clinic.
+        Assert.NotNull(branches);
+        Assert.Equal(2, branches.Count);
+        Assert.All(branches, b => Assert.Equal(1, b.Visits));
+        var maadi = branches.Single(b => b.Doctor.Id == api.Demo.DoctorAUserId);
+        var zamalek = branches.Single(b => b.Doctor.Id == api.Demo.DoctorBUserId);
+        Assert.Equal("فرع المعادي", maadi.Branch.NameAr);
+        Assert.Equal("Zamalek clinic", zamalek.Branch.NameEn);
+
+        var onlyB = await client.GetFromJsonAsync<List<VisitBranchOptionDto>>($"/api/patient/visits/branches?doctorId={api.Demo.DoctorBUserId}");
+        Assert.Equal([zamalek.Branch.Id], onlyB!.Select(b => b.Branch.Id));
+
+        var inMaadi = await client.GetFromJsonAsync<PagedResult<VisitListItemDto>>($"/api/patient/visits?branchId={maadi.Branch.Id}");
+        Assert.Equal([api.Demo.VisibleSessionId], inMaadi!.Items.Select(v => v.Id));
+        var inZamalek = await client.GetFromJsonAsync<PagedResult<VisitListItemDto>>($"/api/patient/visits?branchId={zamalek.Branch.Id}");
+        Assert.Equal([api.Demo.OtherDoctorSessionId], inZamalek!.Items.Select(v => v.Id));
+        // Another doctor's branch with this doctor selected: nothing, never an error.
+        var mismatch = await client.GetFromJsonAsync<PagedResult<VisitListItemDto>>(
+            $"/api/patient/visits?doctorId={api.Demo.DoctorAUserId}&branchId={zamalek.Branch.Id}");
+        Assert.Empty(mismatch!.Items);
+    }
+
+    [Fact]
+    public async Task Files_filter_by_document_date_and_the_tab_counts_follow_the_range()
+    {
+        var client = await Patient();
+        // The demo lab test is dated 9 days ago and doctor B's report yesterday (DemoDataSeeder, UTC dates).
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        string Day(int offset) => today.AddDays(offset).ToString("yyyy-MM-dd");
+
+        var recent = await client.GetFromJsonAsync<PagedResult<RecordListItemDto>>($"/api/patient/records?from={Day(-5)}");
+        Assert.Equal(["تقرير طبي"], recent!.Items.Select(r => r.Title));
+        Assert.Equal(new RecordCountsDto(0, 0, 0, 1), await client.GetFromJsonAsync<RecordCountsDto>($"/api/patient/records/counts?from={Day(-5)}"));
+
+        var older = await client.GetFromJsonAsync<PagedResult<RecordListItemDto>>($"/api/patient/records?from={Day(-30)}&to={Day(-5)}");
+        Assert.Equal(["تحليل صورة دم"], older!.Items.Select(r => r.Title));
+        Assert.Equal(
+            new RecordCountsDto(0, 1, 0, 0),
+            await client.GetFromJsonAsync<RecordCountsDto>($"/api/patient/records/counts?from={Day(-30)}&to={Day(-5)}"));
+
+        // The bounds are inclusive.
+        var exact = await client.GetFromJsonAsync<PagedResult<RecordListItemDto>>($"/api/patient/records?from={Day(-9)}&to={Day(-9)}");
+        Assert.Equal(["تحليل صورة دم"], exact!.Items.Select(r => r.Title));
+
+        var withDoctor = await client.GetFromJsonAsync<RecordCountsDto>($"/api/patient/records/counts?doctorId={api.Demo.DoctorAUserId}&from={Day(-5)}");
+        Assert.Equal(new RecordCountsDto(0, 0, 0, 0), withDoctor);
+
+        foreach (var url in new[] { $"/api/patient/records?from={Day(0)}&to={Day(-1)}", $"/api/patient/records/counts?from={Day(0)}&to={Day(-1)}" })
+        {
+            var response = await client.GetAsync(url);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Contains("INVALID_RANGE", await response.Content.ReadAsStringAsync());
+        }
+    }
+
+    [Fact]
     public async Task Visit_details_never_contain_private_notes()
     {
         var client = await Patient();

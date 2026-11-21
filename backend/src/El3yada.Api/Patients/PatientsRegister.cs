@@ -83,21 +83,29 @@ public static class RegisterSort
     public const string Files = "files";
     public const string LinkedAt = "linkedAt";
 
+    /// <summary>The next pending or confirmed booking: soonest first; patients without one come last either way.</summary>
+    public const string NextBooking = "nextBooking";
+
+    public const string NoShows = "noShows";
+
     /// <summary>revenueView only.</summary>
     public const string TotalPaid = "totalPaid";
 
     /// <summary>clinicalView only.</summary>
     public const string Allergies = "allergies";
 
+    /// <summary>chat only: the caller's unread messages.</summary>
+    public const string UnreadChat = "unreadChat";
+
     public static readonly string[] All =
     [
         FileNumber, Name, Phone, Age, Gender, FirstVisit, LastVisit, Visits, Examinations, Consultations, Files,
-        LinkedAt, TotalPaid, Allergies,
+        LinkedAt, NextBooking, NoShows, TotalPaid, Allergies, UnreadChat,
     ];
 
     /// <summary>Sorts that list the largest or newest first unless <c>direction</c> says otherwise.</summary>
     public static readonly string[] DescendingByDefault =
-        [FirstVisit, LastVisit, Visits, Examinations, Consultations, Files, LinkedAt, TotalPaid, Allergies];
+        [FirstVisit, LastVisit, Visits, Examinations, Consultations, Files, LinkedAt, NoShows, TotalPaid, Allergies, UnreadChat];
 }
 
 public sealed class PatientsRegisterQueryValidator : AbstractValidator<PatientsRegisterQuery>
@@ -122,8 +130,16 @@ public sealed class PatientsRegisterQueryValidator : AbstractValidator<PatientsR
 /// </summary>
 public static class PatientsRegister
 {
+    public static Task<PagedResult<PatientRegisterRow>> PageAsync(
+        AppDbContext db, ClinicCaller caller, PatientsRegisterQuery query, DateOnly today, CancellationToken cancellationToken) =>
+        PageAsync(db, caller, query, query, today, cancellationToken);
+
+    /// <summary>
+    /// One page of the register for <paramref name="query"/>'s filters and sort, at <paramref name="paging"/>
+    /// (the export reads every page this way, larger than a screen's).
+    /// </summary>
     public static async Task<PagedResult<PatientRegisterRow>> PageAsync(
-        AppDbContext db, ClinicCaller caller, PatientsRegisterQuery query, DateOnly today, CancellationToken cancellationToken)
+        AppDbContext db, ClinicCaller caller, PatientsRegisterQuery query, IPagedQuery paging, DateOnly today, CancellationToken cancellationToken)
     {
         var doctorId = caller.DoctorId;
         var links = db.DoctorPatients.AsNoTracking().Where(l => l.DoctorId == doctorId);
@@ -174,7 +190,7 @@ public static class PatientsRegister
             links = links.Where(l => l.PatientMedicalProfileItems.Any(i => i.Kind == ProfileKinds.ChronicDisease && i.Text.Contains(disease)));
         }
 
-        var page = await Sort(db, links, doctorId, query)
+        var page = await Sort(db, links, caller, query, today)
             .Select(l => new
             {
                 LinkId = l.Id,
@@ -194,7 +210,7 @@ public static class PatientsRegister
                 l.Archived,
                 l.LinkedAt,
             })
-            .ToPageAsync(query, cancellationToken);
+            .ToPageAsync(paging, cancellationToken);
 
         var patientIds = page.Items.Select(r => r.PatientId).ToList();
         var linkIds = page.Items.Select(r => r.LinkId).ToList();
@@ -210,6 +226,17 @@ public static class PatientsRegister
 
         var nextBookings = await PatientBookings.NextAsync(db, doctorId, patientIds, today, cancellationToken);
         var noShows = await PatientBookings.NoShowsAsync(db, doctorId, patientIds, cancellationToken);
+
+        // The unread badge is the caller's own count: the doctor and each assistant with `chat` read separately.
+        Dictionary<Guid, int>? unread = null;
+        if (caller.Has(ClinicPermissions.Chat))
+        {
+            unread = await db.ChatReadStates.AsNoTracking()
+                .Where(s => s.UserId == caller.UserId && s.UnreadCount > 0 && linkIds.Contains(s.Chat.LinkId))
+                .Select(s => new { s.Chat.LinkId, s.UnreadCount })
+                .ToDictionaryAsync(s => s.LinkId, s => s.UnreadCount, cancellationToken);
+        }
+
         ILookup<Guid, (string Kind, string Text)>? profile = null;
         if (caller.Has(ClinicPermissions.ClinicalView))
         {
@@ -235,6 +262,7 @@ public static class PatientsRegister
             nextBookings.GetValueOrDefault(r.PatientId),
             noShows.GetValueOrDefault(r.PatientId),
             r.FilesCount,
+            unread is null ? null : unread.GetValueOrDefault(r.LinkId),
             profile is null ? null : profile[r.LinkId].Any(i => i.Kind == ProfileKinds.Allergy),
             profile?[r.LinkId].Where(i => i.Kind == ProfileKinds.ChronicDisease).Select(i => i.Text).ToList(),
             r.Archived,
@@ -305,12 +333,32 @@ public static class PatientsRegister
     }
 
     private static IOrderedQueryable<DoctorPatient> Sort(
-        AppDbContext db, IQueryable<DoctorPatient> links, Guid doctorId, PatientsRegisterQuery query)
+        AppDbContext db, IQueryable<DoctorPatient> links, ClinicCaller caller, PatientsRegisterQuery query, DateOnly today)
     {
+        var doctorId = caller.DoctorId;
+        var userId = caller.UserId;
         var sort = query.Sort ?? RegisterSort.LastVisit;
         var descending = query.Direction is null ? RegisterSort.DescendingByDefault.Contains(sort) : query.Direction == "desc";
         var ordered = sort switch
         {
+            // Same rule as PatientBookings.NextAsync. Patients without a booking stay last in both directions.
+            RegisterSort.NextBooking => Order(
+                    links,
+                    l => db.Appointments.Any(a => a.DoctorId == doctorId && a.PatientId == l.PatientId && a.LocalDate >= today
+                        && (a.Status == "pending" || a.Status == "confirmed")) ? 0 : 1,
+                    descending: false)
+                .ThenOrder(
+                    l => db.Appointments
+                        .Where(a => a.DoctorId == doctorId && a.PatientId == l.PatientId && a.LocalDate >= today
+                            && (a.Status == "pending" || a.Status == "confirmed"))
+                        .Min(a => (DateOnly?)a.LocalDate),
+                    descending),
+            RegisterSort.NoShows => Order(
+                links, l => db.Appointments.Count(a => a.DoctorId == doctorId && a.PatientId == l.PatientId && a.Status == "noShow"), descending),
+            RegisterSort.UnreadChat => Order(
+                links,
+                l => db.ChatReadStates.Where(s => s.UserId == userId && s.Chat.LinkId == l.Id).Sum(s => (int?)s.UnreadCount) ?? 0,
+                descending),
             RegisterSort.FileNumber => Order(links, l => l.FileNumber, descending),
             RegisterSort.Name => Order(links, l => l.SearchName, descending),
             RegisterSort.Phone => Order(links, l => l.PatientPhone, descending),
@@ -338,4 +386,8 @@ public static class PatientsRegister
     private static IOrderedQueryable<DoctorPatient> Order<TKey>(
         IQueryable<DoctorPatient> links, Expression<Func<DoctorPatient, TKey>> key, bool descending) =>
         descending ? links.OrderByDescending(key) : links.OrderBy(key);
+
+    private static IOrderedQueryable<DoctorPatient> ThenOrder<TKey>(
+        this IOrderedQueryable<DoctorPatient> links, Expression<Func<DoctorPatient, TKey>> key, bool descending) =>
+        descending ? links.ThenByDescending(key) : links.ThenBy(key);
 }

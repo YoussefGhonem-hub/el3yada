@@ -292,6 +292,12 @@ public static class Http
 
     public static async Task<JsonElement> BodyAsync(HttpResponseMessage response)
     {
+        // A file (the register's CSV export, a PDF) has no JSON body to read.
+        if (response.Content.Headers.ContentType?.MediaType is { } type && !type.Contains("json", StringComparison.Ordinal))
+        {
+            return default;
+        }
+
         var text = await response.Content.ReadAsStringAsync();
         return string.IsNullOrEmpty(text) ? default : JsonDocument.Parse(text).RootElement.Clone();
     }

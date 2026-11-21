@@ -56,7 +56,17 @@ class BookingRequest {
 }
 
 class SearchFilter {
-  const SearchFilter({this.from, this.to, this.statuses = const [], this.q, this.guestsOnly = false, this.branchId, this.checkedInNoSession = false});
+  const SearchFilter({
+    this.from,
+    this.to,
+    this.statuses = const [],
+    this.q,
+    this.guestsOnly = false,
+    this.branchId,
+    this.checkedInNoSession = false,
+    this.patientId,
+    this.newestFirst = false,
+  });
 
   final DateTime? from;
   final DateTime? to;
@@ -68,6 +78,12 @@ class SearchFilter {
   /// BR-AP11: checked in on an earlier day, but no session was recorded.
   final bool checkedInNoSession;
 
+  /// One patient's bookings (D6 Appointments tab).
+  final String? patientId;
+
+  /// Newest first (`sort=dateDesc`); oldest first otherwise.
+  final bool newestFirst;
+
   Map<String, dynamic> toQuery() => {
         if (from != null) 'from': dayKey(from!),
         if (to != null) 'to': dayKey(to!),
@@ -76,16 +92,20 @@ class SearchFilter {
         if (guestsOnly) 'guestsOnly': true,
         if (branchId != null) 'branchIds': [branchId],
         if (checkedInNoSession) 'checkedInNoSession': true,
+        'patientId': ?patientId,
+        if (newestFirst) 'sort': 'dateDesc',
         'pageSize': 100,
       };
 
   @override
   bool operator ==(Object other) =>
       other is SearchFilter && other.from == from && other.to == to && other.q == q && other.guestsOnly == guestsOnly &&
-      other.branchId == branchId && other.statuses.join(',') == statuses.join(',') && other.checkedInNoSession == checkedInNoSession;
+      other.branchId == branchId && other.statuses.join(',') == statuses.join(',') &&
+      other.checkedInNoSession == checkedInNoSession && other.patientId == patientId && other.newestFirst == newestFirst;
 
   @override
-  int get hashCode => Object.hash(from, to, q, guestsOnly, branchId, statuses.join(','), checkedInNoSession);
+  int get hashCode =>
+      Object.hash(from, to, q, guestsOnly, branchId, statuses.join(','), checkedInNoSession, patientId, newestFirst);
 }
 
 /// Bookings for both sides: `/api/patient/...` (P15–P17) and `/api/staff/...` (D29–D34, AS13–AS17).
@@ -437,8 +457,10 @@ class FakeAppointmentsRepository implements AppointmentsRepository {
     final items = _list.where((a) =>
         (filter.statuses.isEmpty || filter.statuses.contains(a.status)) &&
         (filter.q == null || filter.q!.isEmpty || a.displayName.contains(filter.q!)) &&
+        (filter.patientId == null || a.patientId == filter.patientId) &&
         (!filter.guestsOnly || a.isGuest) &&
-        (!filter.checkedInNoSession || a.flaggedNoSession)).toList();
+        (!filter.checkedInNoSession || a.flaggedNoSession)).toList()
+      ..sort((a, b) => filter.newestFirst ? b.startUtc.compareTo(a.startUtc) : a.startUtc.compareTo(b.startUtc));
     final counts = <String, int>{};
     for (final a in _list) {
       counts[a.status] = (counts[a.status] ?? 0) + 1;

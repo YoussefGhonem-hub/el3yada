@@ -430,6 +430,15 @@ Timed mode (exact times) keeps its order by time.
 
 **Goal:** the app is ready for the stores and for real clinics.
 
+**Status (21 Nov 2026).** Done in code, committed on `dev` and not pushed:
+- Security sweep (`SecuritySweepTests`): every route needs a sign-in unless it is public on purpose; an admin gets 403 on clinic, patient and money routes; a patient gets 403 on staff and admin routes. All pass. Rate limits already existed (login, reset, sign-up, refresh).
+- Monitoring: a failed billing job writes one log line starting `ALERT billing-job` and turns `GET /api/health/jobs` to 503 until the next success (`JobHealthTests`). Crashlytics or Sentry is still open: it needs an account and a choice.
+- Performance: lists are 25 per page (records were 30); payment screenshots are compressed before upload; the dashboard answers in about 0.02 to 0.3 s on the demo data (441 sessions). Not measured on 4G or on a large clinic.
+- Reduced motion and large text: `phase7_accessibility_test.dart` opens the Phase 7 screens at 360 dp, text 1.3x, in Arabic and English, light and dark. It found and fixed four phone overflows.
+- Icons for Android, iOS, Windows and macOS come from `brand/el3yada-icon.png`. No native splash yet; the app draws its own (A1).
+- Open and needing you: real-device QA, the 60 fps check, golden baselines, backups and restore, the legal review, name and trademark checks, store listings and accounts, the signed Windows installer.
+- Known: the API test project uses `Microsoft.AspNetCore.SignalR.Client` 10.0.11, whose dependency has a high-severity advisory (test-only; bump when a patched version is out).
+
 - [ ] Full QA on Android, iOS and Windows (macOS if in scope), in all four combinations: Arabic/English × light/dark. Golden tests for the main screens. AC-16 and AC-17 pass.
 - [ ] Motion review on a mid-range Android phone in profile mode: 60 fps on the live board, the bottom bar and the screen transitions. Every screen still works with reduced motion on, and no animation blocks a tap.
 - [ ] Performance: dashboard under 2 seconds on 4G, lists paginated at 25, image compression on upload.

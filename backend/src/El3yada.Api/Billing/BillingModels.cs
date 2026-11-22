@@ -31,6 +31,27 @@ public static class PaymentStatuses
     public const string Rejected = "rejected";
 }
 
+/// <summary>
+/// An invoice to issue: month close (one month, BR-B5) or a doctor's deletion (BR-DEL8: past months not invoiced yet and
+/// the final invoice). <c>Groups</c> are the session totals per branch and type; <c>Carries</c> the fees of sessions saved
+/// after an earlier final invoice, per month (BR-DEL10), added as adjustment lines.
+/// </summary>
+public sealed record PlannedInvoice(
+    string MonthKey,
+    DateOnly PeriodStart,
+    DateOnly PeriodEnd,
+    DateOnly DueDate,
+    bool IsFinal,
+    List<(Guid BranchId, string Type, int Count, int Fees)> Groups,
+    List<(string MonthKey, int Amount)> Carries)
+{
+    public int SessionFeesPiasters => Groups.Sum(g => g.Fees);
+
+    public int CarriedPiasters => Carries.Sum(c => c.Amount);
+
+    public int TotalPiasters => SessionFeesPiasters + CarriedPiasters;
+}
+
 /// <summary>How an admin recorded a manual payment (BR-PAY4). Invoices.PaidMethod holds one of these (or <c>instapay</c>).</summary>
 public static class PaidMethods
 {

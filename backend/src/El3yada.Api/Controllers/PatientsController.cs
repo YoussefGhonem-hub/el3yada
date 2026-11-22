@@ -206,6 +206,12 @@ public sealed class PatientsController(
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         var patient = await db.Patients.Include(p => p.User).SingleAsync(p => p.Id == patientId, cancellationToken);
+        if (patient.Status == "deleted")
+        {
+            // The identity was erased (spec 6.17): the clinic keeps the record under «مريض محذوف».
+            return this.ConflictProblem(ErrorCodes.AccountDeleted, "This patient's account was deleted.");
+        }
+
         var before = IdentityFields(patient);
         // BR-P3: only the clinic that created the account keeps its optional details; others leave them as they are.
         ApplyIdentity(patient, request, Today, details: patient.CreatedByDoctorId == caller.DoctorId);
@@ -253,6 +259,11 @@ public sealed class PatientsController(
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         var patient = await PatientLinks.LockPatientAsync(db, patientId, cancellationToken);
+        if (await DeletionRefusalAsync(patient.UserId, cancellationToken) is { } refusal)
+        {
+            return refusal;
+        }
+
         if (patient.Phone != phone)
         {
             if (await db.Patients.AnyAsync(p => p.Phone == phone && p.Id != patientId, cancellationToken))
@@ -305,6 +316,11 @@ public sealed class PatientsController(
 
         await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
         var user = await db.Users.SingleAsync(u => u.Patient != null && u.Patient.Id == patientId, cancellationToken);
+        if (await DeletionRefusalAsync(user.Id, cancellationToken) is { } refusal)
+        {
+            return refusal;
+        }
+
         var temporaryPassword = Passwords.GenerateTemporary();
         user.PasswordHash = passwords.Hash(user, temporaryPassword);
         user.MustChangePassword = true;
@@ -518,6 +534,22 @@ public sealed class PatientsController(
 
         Response.Headers.CacheControl = "no-store";
         return File(file.Content, "text/csv; charset=utf-8", PatientsRegisterCsv.FileName(Today));
+    }
+
+    /// <summary>
+    /// The account's login can't change while it is being deleted (409 <c>ACCOUNT_DELETION_SCHEDULED</c>) or after it was
+    /// erased (409 <c>ACCOUNT_DELETED</c>, spec 6.17). Null: allowed.
+    /// </summary>
+    private async Task<IActionResult?> DeletionRefusalAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var status = await db.Users.Where(u => u.Id == userId).Select(u => u.Status).SingleAsync(cancellationToken);
+        return status switch
+        {
+            AccountStatuses.Deleted => this.ConflictProblem(ErrorCodes.AccountDeleted, "This patient's account was deleted."),
+            AccountStatuses.PendingDeletion => this.ConflictProblem(
+                ErrorCodes.AccountDeletionScheduled, "This patient's account is scheduled for deletion."),
+            _ => null,
+        };
     }
 
     /// <summary>The register's permission and branch checks, shared by the list and the export (null: allowed).</summary>

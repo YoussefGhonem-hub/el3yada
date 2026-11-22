@@ -13,6 +13,7 @@ extension SettingLabels on AppLocalizations {
         'gracePeriodDays' => adminSettingGracePeriod,
         'maxConsecutiveConsultations' => adminSettingMaxConsultations,
         'trialDays' => adminSettingTrialDays,
+        'accountDeletionGraceDays' => adminSettingDeletionGrace,
         'instapayAddress' => adminSettingInstapayAddress,
         'instapayAccountName' => adminSettingInstapayName,
         'instapayInstructionsAr' => adminSettingInstapayInstructionsAr,
@@ -62,7 +63,7 @@ extension SettingLabels on AppLocalizations {
   /// The unit after the number, if any.
   String? settingUnit(SettingFieldSpec field) => switch (field.name) {
         'examFeePiasters' || 'consultationFeePiasters' => adminCurrency,
-        'gracePeriodDays' || 'trialDays' => adminUnitDays,
+        'gracePeriodDays' || 'trialDays' || 'accountDeletionGraceDays' => adminUnitDays,
         'maxUploadMb' => adminUnitMb,
         _ => null,
       };
@@ -82,6 +83,7 @@ extension SettingLabels on AppLocalizations {
         : switch (field.name) {
             'gracePeriodDays' => adminAppliesToNewInvoices,
             'trialDays' => adminAppliesToNewDoctors,
+            'accountDeletionGraceDays' => adminAppliesToNewDeletions,
             _ => adminAppliesToNewSessions,
           };
     return [?range, ?note].join(' · ').ifEmpty;

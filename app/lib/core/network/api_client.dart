@@ -106,6 +106,11 @@ class AuthInterceptor extends Interceptor {
       if (code == ApiCodes.doctorPendingApproval || code == ApiCodes.doctorRejected || code == ApiCodes.trialEnded) {
         _auth.reloadAccount().ignore();
       }
+      // The account entered its deletion grace period (another device): the
+      // router follows the session to A16.
+      if (code == ApiCodes.accountPendingDeletion && !(_ref.read(authControllerProvider).value?.isPendingDeletion ?? false)) {
+        _auth.reloadAccount().ignore();
+      }
       // Disabled while signed in, or the clinic closed: sign out and show A10.
       if (AuthBlock.codes.contains(code)) _auth.signOutBlocked(code!).ignore();
       return handler.next(error);

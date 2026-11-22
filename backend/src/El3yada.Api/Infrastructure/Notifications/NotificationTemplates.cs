@@ -37,7 +37,11 @@ public static class NotificationTypes
     public const string StaffBookingActivity = "staffBookingActivity";
     public const string NewSignup = "newSignup";
     public const string NewPayment = "newPayment";
+    /// <summary>AD17: a doctor started deleting their account (spec 6.17).</summary>
     public const string DeletionRequest = "deletionRequest";
+
+    /// <summary>To the doctor: one of their assistants started deleting their account.</summary>
+    public const string AssistantDeletionRequest = "assistantDeletionRequest";
     public const string Broadcast = "broadcast";
     public const string TrialEndingSoon = "trialEndingSoon";
     public const string TrialLastDay = "trialLastDay";
@@ -212,6 +216,43 @@ public static class NotificationTemplates
         NotificationTypes.TrialLastDay, "آخر يوم في الفترة التجريبية للعيادة", "Last day of the clinic's free trial",
         $"تنتهي الفترة التجريبية لعيادة د. {doctorName} خلال 24 ساعة. {AskDoctorAr}", $"Dr {doctorName}'s clinic's free trial ends within 24 hours. {AskDoctorEn}",
         "/assistant/settings", new { doctorId, trialEndsAt = endsAt, daysLeft = 1 });
+
+    // ---- Account deletion (spec 6.17) ----------------------------------------------------------
+
+    /// <summary>To every active admin (AD17) when a doctor starts deleting their account (or an admin does it for them).</summary>
+    public static NotificationMessage DoctorDeletionRequested(string doctorName, Guid doctorId, DateTime scheduledFor, Guid requestId) => new(
+        NotificationTypes.DeletionRequest, "طبيب طلب حذف حسابه", "A doctor asked to delete their account",
+        $"د. {doctorName} — الحذف النهائي يوم {NotificationDates.DayAr(scheduledFor)} بعد سداد الفواتير",
+        $"Dr {doctorName}: erased on {NotificationDates.DayEn(scheduledFor)}, once every invoice is paid",
+        "/admin/account-deletions", new { requestId, doctorId, scheduledFor });
+
+    /// <summary>To the doctor when one of their assistants starts deleting their account (BR-DEL5).</summary>
+    public static NotificationMessage AssistantDeletionRequested(string assistantName, Guid assistantId) => new(
+        NotificationTypes.AssistantDeletionRequest, "طلب حذف حساب", "Account deletion",
+        $"المساعد {assistantName} طلب حذف حسابه", $"Your assistant {assistantName} asked to delete their account",
+        "/doctor/assistants", new { assistantId });
+
+    /// <summary>To a patient whose booking was cancelled because the doctor is deleting their account (BR-DEL5).</summary>
+    public static NotificationMessage BookingCancelledClinicClosed(Guid appointmentId) => new(
+        NotificationTypes.BookingCancelled, "تم إلغاء موعدك", "Your appointment was cancelled",
+        "تم إلغاء موعدك لأن العيادة أوقفت الخدمة", "Your appointment was cancelled because the clinic stopped its service",
+        "/patient/appointments", new { appointmentId });
+}
+
+/// <summary>Cairo dates for notification texts («٢١ ديسمبر» is written with Western digits, like the other texts).</summary>
+internal static class NotificationDates
+{
+    private static readonly string[] MonthsAr =
+        ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+
+    public static string DayAr(DateTime utc)
+    {
+        var day = El3yada.Api.Common.CairoTime.DayOf(utc);
+        return $"{day.Day} {MonthsAr[day.Month - 1]} {day.Year}";
+    }
+
+    public static string DayEn(DateTime utc) =>
+        El3yada.Api.Common.CairoTime.DayOf(utc).ToString("d MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
 }
 
 /// <summary>Who receives clinic events (spec 10.1): the doctor and the assistants with a permission.</summary>
@@ -221,7 +262,8 @@ public sealed class NotificationRecipients(AppDbContext db)
     /// <param name="branchId">Only assistants assigned to this branch (or to all branches).</param>
     public async Task<IReadOnlyList<Guid>> StaffAsync(Guid doctorId, StaffPermission permission, Guid? branchId = null, bool includeDoctor = true, CancellationToken ct = default)
     {
-        var query = db.Assistants.AsNoTracking().Where(a => a.DoctorId == doctorId && a.Status == "active");
+        // An assistant whose account is being deleted is no longer one of the clinic's active assistants (BR-DEL5).
+        var query = db.Assistants.AsNoTracking().Where(a => a.DoctorId == doctorId && a.Status == "active" && a.User.Status == "active");
         query = permission switch
         {
             StaffPermission.Chat => query.Where(a => a.Chat),

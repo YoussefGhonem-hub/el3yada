@@ -6,6 +6,9 @@
 # workflow (GitHub shows that button only once this file is on main), or
 #   gh workflow run "iOS TestFlight" --ref dev -f config=demo
 #
+# A push to uat builds against the UAT API (config/uat.json), which the
+# "Deploy UAT" workflow publishes from the same push.
+#
 # The app's analyze and tests run first on Linux; the Mac build starts only
 # if they pass.
 #
@@ -30,10 +33,10 @@ on:
   workflow_dispatch:
     inputs:
       config:
-        description: "demo = offline test accounts, no server needed. prod = config/prod.json (needs the real API URL)."
+        description: "uat = the UAT API (config/uat.json). demo = offline test accounts, no server needed. prod = config/prod.json (needs the real API URL)."
         type: choice
-        options: [demo, prod]
-        default: demo
+        options: [uat, demo, prod]
+        default: uat
 
 concurrency:
   group: ios-testflight
@@ -72,9 +75,8 @@ jobs:
         working-directory: app
     env:
       BUNDLE_ID: com.el3yada.app
-      # A push to uat has no inputs, so it builds the demo until the API is
-      # hosted. Then change 'demo' here to 'prod'.
-      CONFIG_CHOICE: ${{ inputs.config || 'demo' }}
+      # A push to uat has no inputs, so it builds against the UAT API.
+      CONFIG_CHOICE: ${{ inputs.config || 'uat' }}
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
       APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APP_STORE_CONNECT_KEY_IDENTIFIER }}
       APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
@@ -102,6 +104,8 @@ jobs:
               exit 1
             fi
             echo "CONFIG_FILE=config/prod.json" >> "$GITHUB_ENV"
+          elif [ "$CONFIG_CHOICE" = uat ]; then
+            echo "CONFIG_FILE=config/uat.json" >> "$GITHUB_ENV"
           else
             echo "CONFIG_FILE=config/dev-offline.json" >> "$GITHUB_ENV"
           fi

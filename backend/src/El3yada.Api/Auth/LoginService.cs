@@ -242,7 +242,8 @@ public sealed class LoginService(
             .Select(s => new AccountChoice(
                 s.Role,
                 s.DisplayName,
-                s.Role == Roles.Assistant && s.DoctorId is { } d ? doctorNames.GetValueOrDefault(d) : null))
+                s.Role == Roles.Assistant && s.DoctorId is { } d ? doctorNames.GetValueOrDefault(d) : null,
+                s.IsPendingDeletion))
             .ToList();
         return new ChooseAccountResponse(token, expires, choices);
     }

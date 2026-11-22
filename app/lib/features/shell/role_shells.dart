@@ -171,7 +171,7 @@ class RoleShell {
       NavDestinationSpec(path: '/admin/invoices', icon: Icons.receipt_long_outlined, selectedIcon: Icons.receipt_long, label: (l) => l.navInvoices, screenId: 'AD9', primary: true),
       NavDestinationSpec(path: '/admin/signups', icon: Icons.medical_information_outlined, selectedIcon: Icons.medical_information, label: (l) => l.navSignups, screenId: 'AD2'),
       NavDestinationSpec(path: '/admin/accounts', icon: Icons.manage_search, selectedIcon: Icons.manage_search, label: (l) => l.navAccounts, screenId: 'AD11'),
-      NavDestinationSpec(path: '/admin/deletion-requests', icon: Icons.person_remove_outlined, selectedIcon: Icons.person_remove, label: (l) => l.navDeletionRequests, screenId: 'AD12'),
+      NavDestinationSpec(path: '/admin/account-deletions', icon: Icons.person_remove_outlined, selectedIcon: Icons.person_remove, label: (l) => l.navAccountDeletions, screenId: 'AD12'),
       NavDestinationSpec(path: '/admin/specialties', icon: Icons.category_outlined, selectedIcon: Icons.category, label: (l) => l.navSpecialties, screenId: 'AD19'),
       NavDestinationSpec(path: '/admin/catalogs', icon: Icons.library_books_outlined, selectedIcon: Icons.library_books, label: (l) => l.navCatalogs, screenId: 'AD20'),
       NavDestinationSpec(path: '/admin/admins', icon: Icons.admin_panel_settings_outlined, selectedIcon: Icons.admin_panel_settings, label: (l) => l.navAdmins, screenId: 'AD14', visibleTo: (s) => s.isSuperAdmin),

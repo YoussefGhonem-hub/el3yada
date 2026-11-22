@@ -126,6 +126,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ExamFeePiasters).HasDefaultValue(3000);
             entity.Property(e => e.GracePeriodDays).HasDefaultValue(7);
             entity.Property(e => e.TrialDays).HasDefaultValue(14);
+            entity.Property(e => e.AccountDeletionGraceDays).HasDefaultValue(30);
             entity.Property(e => e.InstapayAccountName).HasMaxLength(100);
             entity.Property(e => e.InstapayAddress).HasMaxLength(200);
             entity.Property(e => e.InstapayInstructionsAr).HasMaxLength(2000);
@@ -796,28 +797,62 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<DeletionRequest>(entity =>
         {
-            entity.HasIndex(e => new { e.Status, e.CreatedAt }, "IX_DeletionRequests_Status");
+            // The daily erasure job (status, then due date) and AD12's newest first.
+            entity.HasIndex(e => new { e.Status, e.ScheduledFor }, "IX_DeletionRequests_Status");
+
+            entity.HasIndex(e => new { e.UserId, e.RequestedAt }, "IX_DeletionRequests_User").IsDescending(false, true);
+
+            // One deletion in progress per account (BR-DEL1).
+            entity.HasIndex(e => e.UserId, "UQ_DeletionRequests_User_Open")
+                .IsUnique()
+                .HasFilter("([Status] IN ('scheduled', 'waitingPayment'))");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newsequentialid())");
-            entity.Property(e => e.CreatedAt)
+            entity.Property(e => e.CompletedAt).HasPrecision(3);
+            entity.Property(e => e.Reason).HasMaxLength(500);
+            entity.Property(e => e.RequestedAt)
                 .HasPrecision(3)
                 .HasDefaultValueSql("(sysutcdatetime())");
-            entity.Property(e => e.Reason).HasMaxLength(500);
-            entity.Property(e => e.ReviewNote).HasMaxLength(500);
-            entity.Property(e => e.ReviewedAt).HasPrecision(3);
+            entity.Property(e => e.RestoreReason).HasMaxLength(500);
+            entity.Property(e => e.RestoredAt).HasPrecision(3);
+            entity.Property(e => e.Role)
+                .HasMaxLength(10)
+                .IsUnicode(false);
+            entity.Property(e => e.ScheduledFor).HasPrecision(3);
             entity.Property(e => e.Status)
-                .HasMaxLength(8)
+                .HasMaxLength(14)
                 .IsUnicode(false)
-                .HasDefaultValue("pending");
+                .HasDefaultValue("scheduled");
+
+            entity.HasOne(d => d.User).WithMany(p => p.DeletionRequests)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DeletionRequests_UserId");
+
+            entity.HasOne(d => d.RequestedByNavigation).WithMany()
+                .HasForeignKey(d => d.RequestedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DeletionRequests_RequestedBy");
+
+            entity.HasOne(d => d.RestoredByNavigation).WithMany()
+                .HasForeignKey(d => d.RestoredBy)
+                .HasConstraintName("FK_DeletionRequests_RestoredBy");
 
             entity.HasOne(d => d.Patient).WithMany(p => p.DeletionRequests)
                 .HasForeignKey(d => d.PatientId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DeletionRequests_PatientId");
 
-            entity.HasOne(d => d.ReviewedByNavigation).WithMany(p => p.DeletionRequests)
-                .HasForeignKey(d => d.ReviewedBy)
-                .HasConstraintName("FK_DeletionRequests_ReviewedBy");
+            entity.HasOne(d => d.Doctor).WithMany()
+                .HasForeignKey(d => d.DoctorId)
+                .HasConstraintName("FK_DeletionRequests_DoctorId");
+
+            entity.HasOne(d => d.Assistant).WithMany()
+                .HasForeignKey(d => d.AssistantId)
+                .HasConstraintName("FK_DeletionRequests_AssistantId");
+
+            entity.HasOne(d => d.FinalInvoice).WithMany()
+                .HasForeignKey(d => d.FinalInvoiceId)
+                .HasConstraintName("FK_DeletionRequests_FinalInvoiceId");
         });
 
         modelBuilder.Entity<Doctor>(entity =>
@@ -1092,10 +1127,13 @@ public partial class AppDbContext : DbContext
                 .HasPrecision(3)
                 .HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.Reason).HasMaxLength(500);
+            entity.Property(e => e.CarriedMonthKey)
+                .HasMaxLength(7)
+                .IsUnicode(false)
+                .IsFixedLength();
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.InvoiceAdjustments)
                 .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_InvoiceAdjustments_CreatedBy");
 
             entity.HasOne(d => d.Invoice).WithMany(p => p.InvoiceAdjustments)
@@ -1781,7 +1819,7 @@ public partial class AppDbContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.SecurityStamp).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Status)
-                .HasMaxLength(10)
+                .HasMaxLength(16)
                 .IsUnicode(false)
                 .HasDefaultValue("active");
             entity.Property(e => e.ThemeMode)

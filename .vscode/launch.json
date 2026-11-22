@@ -27,6 +27,23 @@
       "args": ["--dart-define-from-file=config/dev.json"]
     },
     {
+      "name": "el3yada (UAT server, Android)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "app",
+      "program": "lib/main.dart",
+      "args": ["--flavor", "dev", "--dart-define-from-file=config/uat.json"]
+    },
+    {
+      "name": "el3yada (UAT server, Windows)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "app",
+      "program": "lib/main.dart",
+      "deviceId": "windows",
+      "args": ["--dart-define-from-file=config/uat.json"]
+    },
+    {
       "name": "el3yada (prod, Android)",
       "type": "dart",
       "request": "launch",

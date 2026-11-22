@@ -54,9 +54,17 @@ class InvoiceStatusPill extends StatelessWidget {
   );
 }
 
-/// «أكتوبر 2026» / "October 2026" for an invoice's month.
-String invoiceMonthLabel(BuildContext context, InvoiceItem invoice) =>
-    ClinicFormat.month(context, invoice.month);
+/// «أكتوبر 2026» / "October 2026" for an invoice's month; a final invoice
+/// (spec 6.17) says so.
+String invoiceMonthLabel(BuildContext context, InvoiceItem invoice) {
+  final month = ClinicFormat.month(context, invoice.month);
+  return invoice.isFinal ? AppLocalizations.of(context).billFinalInvoiceOf(month) : month;
+}
+
+DateTime _monthOf(String monthKey) {
+  final parts = monthKey.split('-').map(int.parse).toList();
+  return DateTime.utc(parts[0], parts[1]);
+}
 
 /// «اليوم», «غداً», «بعد 3 أيام», «متأخرة 5 أيام» for the days until [InvoiceItem.dueDate].
 String dueCountdown(AppLocalizations l10n, int daysLeft) {
@@ -217,7 +225,9 @@ class InvoiceDetailBody extends StatelessWidget {
               ),
               for (final adjustment in detail.adjustments) ...[
                 amountRow(
-                  l10n.billAdjustmentLine(adjustment.reason),
+                  adjustment.carriedMonthKey != null
+                      ? l10n.billCarriedAdjustment(ClinicFormat.month(context, _monthOf(adjustment.carriedMonthKey!)))
+                      : l10n.billAdjustmentLine(adjustment.reason),
                   adjustment.amountPiasters,
                 ),
               ],

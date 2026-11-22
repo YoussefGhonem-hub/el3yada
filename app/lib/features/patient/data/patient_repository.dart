@@ -48,7 +48,7 @@ class PatientListFilter {
 }
 
 /// The patient app's API (spec 9.1, `/api/patient`). Read-only except the "New" badges,
-/// preferences and the deletion request.
+/// and preferences. Deleting the account is features/account_deletion, as for every role.
 abstract interface class PatientRepository {
   static const pageSize = 25;
 
@@ -87,7 +87,6 @@ abstract interface class PatientRepository {
   /// Saves the language and appearance on the account (used for pushes, spec 10.1).
   Future<void> updateAppearance({String? locale, String? themeMode});
   Future<void> acceptTerms();
-  Future<DeletionRequest> requestAccountDeletion(String? reason);
 }
 
 class ApiPatientRepository implements PatientRepository {
@@ -235,10 +234,6 @@ class ApiPatientRepository implements PatientRepository {
 
   @override
   Future<void> acceptTerms() => _send('POST', '/me/accept-terms', null);
-
-  @override
-  Future<DeletionRequest> requestAccountDeletion(String? reason) async =>
-      DeletionRequest.fromJson(await _send('POST', '/patient/deletion-request', {'reason': reason}) as Json);
 }
 
 final patientRepositoryProvider = Provider<PatientRepository>((ref) {

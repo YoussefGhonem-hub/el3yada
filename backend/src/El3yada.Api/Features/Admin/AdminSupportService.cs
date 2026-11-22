@@ -1,4 +1,4 @@
-using El3yada.Api.Features.PatientPortal;
+using El3yada.Api.Features.AccountDeletion;
 using El3yada.Api.Infrastructure.Auditing;
 using El3yada.Api.Infrastructure.Auth;
 using El3yada.Api.Infrastructure.Errors;
@@ -11,82 +11,22 @@ using Microsoft.EntityFrameworkCore;
 namespace El3yada.Api.Features.Admin;
 
 /// <summary>
-/// AD11 accounts support and AD12 deletion requests. Admins see account data only, never
-/// medical content (spec D9, 9.4).
+/// AD11 accounts support. Admins see account data only, never medical content (spec D9, 9.4). Deleting an account
+/// (AD12) is Features/AccountDeletion.
 /// </summary>
 public sealed class AdminSupportService(
     AppDbContext db,
-    ICurrentUser admin,
     IAuditLogger audit,
     SessionRevoker revoker,
     AccountStateCache stateCache,
     TimeProvider clock)
 {
-    // ---- AD12 --------------------------------------------------------------------------------
-
-    public Task<PagedResult<AdminDeletionRequestDto>> GetDeletionRequestsAsync(DeletionRequestsQuery query, CancellationToken ct)
-    {
-        var requests = db.DeletionRequests.AsNoTracking();
-        if (query.Status != "all") requests = requests.Where(r => r.Status == query.Status);
-
-        // Oldest first while waiting (a queue); newest first for the history.
-        requests = query.Status == "pending"
-            ? requests.OrderBy(r => r.CreatedAt)
-            : requests.OrderByDescending(r => r.CreatedAt);
-
-        return requests
-            .Select(r => new AdminDeletionRequestDto(
-                r.Id, r.PatientId, r.Patient.FullName, r.Patient.Phone, r.Reason, r.Status,
-                r.CreatedAt, r.ReviewedAt,
-                r.ReviewedByNavigation == null ? null : r.ReviewedByNavigation.DisplayName,
-                r.ReviewNote))
-            .ToPagedAsync(query, ct);
-    }
-
-    /// <summary>
-    /// <c>reviewDeletionRequest</c>. Approve: the patient can no longer sign in (login disabled,
-    /// every session revoked) and the patient row is marked <c>deleted</c>. Medical records are kept:
-    /// how long they are retained and when personal data is erased is open question Q16, so nothing
-    /// is erased here. Reject: needs a note, which the patient sees in P14.
-    /// </summary>
-    public async Task<DeletionRequestDto> ReviewDeletionRequestAsync(Guid id, ReviewDeletionRequest request, CancellationToken ct)
-    {
-        await using var tx = await db.Database.BeginTransactionAsync(ct);
-
-        var entity = await db.DeletionRequests.Include(r => r.Patient).FirstOrDefaultAsync(r => r.Id == id, ct)
-            ?? throw ApiException.NotFound();
-        if (entity.Status != "pending") throw ApiException.Conflict(ErrorCodes.DeletionAlreadyReviewed);
-
-        var now = clock.GetUtcNow().UtcDateTime;
-        var approve = request.Decision == "approve";
-        entity.Status = approve ? "approved" : "rejected";
-        entity.ReviewedBy = admin.UserId;
-        entity.ReviewedAt = now;
-        entity.ReviewNote = string.IsNullOrWhiteSpace(request.Note) ? null : request.Note.Trim();
-
-        if (approve)
-        {
-            var patient = entity.Patient;
-            patient.Status = "deleted";
-            patient.DeletedAt = now;
-            patient.UpdatedAt = now;
-            await db.Users.Where(u => u.Id == patient.UserId)
-                .ExecuteUpdateAsync(u => u.SetProperty(x => x.Status, "disabled"), ct);
-            await revoker.RevokeAllAsync(patient.UserId, ct);
-        }
-
-        audit.Add(approve ? "deletionRequest.approved" : "deletionRequest.rejected",
-            nameof(DeletionRequest), entity.Id, patientId: entity.PatientId,
-            details: new { note = entity.ReviewNote });
-
-        await db.SaveChangesAsync(ct);
-        await tx.CommitAsync(ct);
-        return PatientAccountService.ToDto(entity);
-    }
-
     // ---- AD11 --------------------------------------------------------------------------------
 
-    /// <summary>Finds patient and assistant accounts by phone (one number can be both, A3).</summary>
+    /// <summary>
+    /// Finds patient and assistant accounts by phone (one number can be both, A3). Each carries its deletion in progress,
+    /// if any, for AD11's "Delete account" and "Cancel and restore".
+    /// </summary>
     public async Task<AccountSearchResultDto> SearchAccountsAsync(AccountSearchQuery query, CancellationToken ct)
     {
         if (!EgyptianPhone.TryNormalize(query.Phone, out var phone))
@@ -97,7 +37,11 @@ public sealed class AdminSupportService(
             .Select(p => new SupportPatientDto(
                 p.UserId, p.Id, p.FullName, p.Phone, p.User.Status, p.Status, p.CreatedAt,
                 p.DoctorPatients.OrderBy(l => l.LinkedAt)
-                    .Select(l => new LinkedDoctorDto(l.DoctorId, l.Doctor.FullName)).ToList()))
+                    .Select(l => new LinkedDoctorDto(l.DoctorId, l.Doctor.FullName)).ToList(),
+                db.DeletionRequests
+                    .Where(r => r.UserId == p.UserId && DeletionStatuses.Open.Contains(r.Status))
+                    .Select(r => new SupportDeletionDto(r.Id, r.Status, r.ScheduledFor))
+                    .FirstOrDefault()))
             .ToListAsync(ct);
 
         var assistants = await db.Assistants.AsNoTracking()
@@ -105,7 +49,11 @@ public sealed class AdminSupportService(
             .OrderBy(a => a.CreatedAt)
             .Select(a => new SupportAssistantDto(
                 a.UserId, a.FullName, a.Phone, a.User.Status, a.Status,
-                a.DoctorId, a.Doctor.FullName, a.Preset, a.LastActiveAt))
+                a.DoctorId, a.Doctor.FullName, a.Preset, a.LastActiveAt,
+                db.DeletionRequests
+                    .Where(r => r.UserId == a.UserId && DeletionStatuses.Open.Contains(r.Status))
+                    .Select(r => new SupportDeletionDto(r.Id, r.Status, r.ScheduledFor))
+                    .FirstOrDefault()))
             .ToListAsync(ct);
 
         audit.Add("accounts.searched", "User", null, details: new { phone });
@@ -122,6 +70,10 @@ public sealed class AdminSupportService(
         var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userId, ct) ?? throw ApiException.NotFound();
         if (user.Role is not (Roles.Patient or Roles.Assistant))
             throw ApiException.BadRequest(ErrorCodes.AccountRoleNotSupported);
+
+        // An account being deleted is restored or erased through AD12, never switched on here (spec 6.17).
+        if (user.Status == AccountStatuses.Deleted) throw ApiException.Conflict(ErrorCodes.AccountDeleted);
+        if (user.Status == AccountStatuses.PendingDeletion) throw ApiException.Conflict(ErrorCodes.AccountDeletionScheduled);
 
         if (request.Status == "active")
         {

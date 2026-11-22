@@ -55,6 +55,7 @@ public sealed class ClinicController(AppDbContext db, TimeProvider time) : Contr
     /// <summary>Also after the free trial ended (BR-T4): <c>trial.ended</c> is what A15 shows.</summary>
     [HttpGet("me")]
     [AllowedAfterTrial]
+    [AllowWhilePendingDeletion]
     public async Task<IActionResult> Me(CancellationToken cancellationToken)
     {
         var caller = HttpContext.Clinic();

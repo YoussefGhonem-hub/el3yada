@@ -31,30 +31,6 @@ Future<void> pumpAdmin(WidgetTester tester) async {
 
 void main() {
   testWidgets(
-    'AD12: rejecting needs a reason, then the request leaves the queue',
-    (tester) async {
-      await pumpAdmin(tester);
-      await tester.tap(find.text('Deletion requests'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('خالد يوسف'), findsOneWidget);
-      await tester.tap(find.widgetWithText(OutlinedButton, 'Reject'));
-      await tester.pumpAndSettle();
-      final confirm = find.descendant(
-        of: find.byType(AlertDialog),
-        matching: find.widgetWithText(FilledButton, 'Reject'),
-      );
-      expect(tester.widget<FilledButton>(confirm).onPressed, isNull);
-
-      await tester.enterText(find.byType(TextField), 'Duplicate request');
-      await tester.pump();
-      await tester.tap(confirm);
-      await tester.pumpAndSettle();
-      expect(find.text('No requests here.'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
     'AD11: search by phone shows linked doctors and validates the number',
     (tester) async {
       await pumpAdmin(tester);

@@ -1,7 +1,9 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
 using El3yada.Api.Doctors;
+using El3yada.Api.Features.AccountDeletion;
 using El3yada.Api.Validation;
+using El3yada.Data;
 
 namespace El3yada.Api.Auth;
 
@@ -54,6 +56,7 @@ public class SessionView
         Phone = other.Phone;
         Locale = other.Locale;
         ThemeMode = other.ThemeMode;
+        PendingDeletion = other.PendingDeletion;
     }
 
     public Guid UserId { get; init; }
@@ -69,8 +72,17 @@ public class SessionView
     /// <summary>A doctor's own user ID, or an assistant's doctor. Null for patients and admins.</summary>
     public Guid? DoctorId { get; init; }
 
-    /// <summary>Always <c>active</c> here: a disabled account gets 403 ACCOUNT_DISABLED instead.</summary>
+    /// <summary>
+    /// <c>active</c>, or <c>pendingDeletion</c> during an account's deletion grace period (then
+    /// <see cref="PendingDeletion"/> is set and the app shows only A16). A disabled account gets 403 ACCOUNT_DISABLED instead.
+    /// </summary>
     public string AccountStatus { get; init; } = AccountStatuses.Active;
+
+    /// <summary>
+    /// The account's deletion in progress (BR-DEL3), or null. The session may only restore, sign out, read its own
+    /// state and, for a doctor, pay invoices; everything else answers 403 ACCOUNT_PENDING_DELETION.
+    /// </summary>
+    public PendingDeletionView? PendingDeletion { get; init; }
 
     /// <summary>
     /// For a doctor, their status; for an assistant, their doctor's (<c>active</c> or <c>suspended</c>; any other
@@ -104,15 +116,29 @@ public class SessionView
 
     public string ThemeMode { get; init; } = "system";
 
-    /// <summary>The session as of <paramref name="now"/> (the trial's state depends on it).</summary>
-    public static SessionView Of(AccountState account, DateTime now) => new()
+    /// <summary>
+    /// The session as of <paramref name="now"/> (the trial's state depends on it), with the deletion in progress read
+    /// from the database when the account is in its grace period.
+    /// </summary>
+    public static async Task<SessionView> OfAsync(AppDbContext db, AccountState account, DateTime now, CancellationToken cancellationToken)
+    {
+        var view = Of(account, now);
+        return account.IsPendingDeletion
+            ? new SessionView(view) { PendingDeletion = await PendingDeletionView.LoadAsync(db, account.UserId, account.Role, cancellationToken) }
+            : view;
+    }
+
+    /// <summary>The session as of <paramref name="now"/>, without <see cref="PendingDeletion"/>: use <see cref="OfAsync"/>.</summary>
+    private static SessionView Of(AccountState account, DateTime now) => new()
     {
         UserId = account.UserId,
         DisplayName = account.DisplayName,
         Role = account.Role,
         AdminRole = account.AdminRole,
         DoctorId = account.DoctorId,
-        AccountStatus = account.BlockCode is null ? AccountStatuses.Active : AccountStatuses.Disabled,
+        AccountStatus = account.IsPendingDeletion
+            ? AccountStatuses.PendingDeletion
+            : account.BlockCode is null ? AccountStatuses.Active : AccountStatuses.Disabled,
         DoctorStatus = account.DoctorStatus,
         DoctorStatusReason = account.DoctorStatusReason,
         Trial = account.Role is Roles.Doctor or Roles.Assistant ? TrialView.Of(account.TrialEndsAt, now) : null,
@@ -154,5 +180,8 @@ public sealed record ChooseAccountResponse(
     public string Result => "chooseAccount";
 }
 
-/// <summary>One account to choose. <c>DoctorName</c> is the assistant's doctor («عيادة د. …»).</summary>
-public sealed record AccountChoice(string Role, string DisplayName, string? DoctorName);
+/// <summary>
+/// One account to choose. <c>DoctorName</c> is the assistant's doctor («عيادة د. …»). <c>PendingDeletion</c>: this
+/// account is in its deletion grace period, so choosing it opens the restore screen (A16).
+/// </summary>
+public sealed record AccountChoice(string Role, string DisplayName, string? DoctorName, bool PendingDeletion = false);

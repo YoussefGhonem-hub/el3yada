@@ -318,11 +318,4 @@ class PatientAccountController extends AsyncNotifier<PatientAccount> {
     final current = state.value;
     if (current != null) state = AsyncData(current.copyWith(acceptedTermsAt: DateTime.now()));
   }
-
-  Future<void> requestDeletion(String? reason) async {
-    final trimmed = reason?.trim();
-    final request = await _repository.requestAccountDeletion(trimmed == null || trimmed.isEmpty ? null : trimmed);
-    final current = state.value;
-    if (current != null) state = AsyncData(current.copyWith(deletionRequest: request));
-  }
 }

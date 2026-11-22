@@ -36,6 +36,11 @@ public sealed class BillingService(
     /// <c>monthClose</c>: one invoice per doctor with sessions in <paramref name="monthKey"/>. A month whose fees
     /// are all 0 (the free trial, BR-T3) closes as <c>noCharge</c>. Doctors who already have the month's invoice are
     /// skipped, so running it again changes nothing. Returns the number of invoices created.
+    /// <para>
+    /// Fees of sessions saved after an earlier final invoice (a doctor who restored their account after paying it,
+    /// BR-DEL10) are added to the new invoice as adjustment lines (<see cref="CarriesAsync"/>). A doctor with such fees
+    /// and no session this month still gets the invoice. Each line names its month, so it is carried once.
+    /// </para>
     /// </summary>
     public async Task<int> MonthlyCloseAsync(string monthKey, CancellationToken cancellationToken)
     {
@@ -49,24 +54,45 @@ public sealed class BillingService(
             .GroupBy(s => new { s.DoctorId, s.BranchId, s.Type })
             .Select(g => new { g.Key.DoctorId, g.Key.BranchId, g.Key.Type, Count = g.Count(), Fees = g.Sum(s => s.FeePiasters) })
             .ToListAsync(cancellationToken);
+        var carries = await CarriesAsync(null, monthKey, cancellationToken);
+        var carryDoctors = carries.Keys.ToList();
+        var invoiced = await db.Invoices.AsNoTracking()
+            .Where(i => i.MonthKey == monthKey && carryDoctors.Contains(i.DoctorId))
+            .Select(i => i.DoctorId)
+            .ToListAsync(cancellationToken);
 
+        var doctors = groups.Select(g => g.DoctorId).Concat(carryDoctors.Except(invoiced)).Distinct().ToList();
         var created = 0;
-        foreach (var doctor in groups.GroupBy(g => g.DoctorId))
+        foreach (var doctorId in doctors)
         {
-            if (await CreateInvoiceAsync(doctor.Key, monthKey, first, last, last.AddDays(grace), doctor.Select(g => (g.BranchId, g.Type, g.Count, g.Fees)).ToList(), cancellationToken))
+            var plan = new PlannedInvoice(
+                monthKey, first, last, last.AddDays(grace), IsFinal: false,
+                groups.Where(g => g.DoctorId == doctorId).Select(g => (g.BranchId, g.Type, g.Count, g.Fees)).ToList(),
+                carries.GetValueOrDefault(doctorId) ?? []);
+            AddInvoice(doctorId, plan);
+            try
             {
+                await db.SaveChangesAsync(cancellationToken);
                 created++;
+            }
+            catch (DbUpdateException ex) when (ex.IsUniqueViolation())
+            {
+                // Another run closed this doctor's month first (UQ_Invoices_Doctor_Month): nothing to do.
+                db.ChangeTracker.Clear();
             }
         }
 
         return created;
     }
 
-    private async Task<bool> CreateInvoiceAsync(
-        Guid doctorId, string monthKey, DateOnly first, DateOnly last, DateOnly due,
-        List<(Guid BranchId, string Type, int Count, int Fees)> groups, CancellationToken cancellationToken)
+    /// <summary>
+    /// Adds the invoice of <paramref name="plan"/> to the context, with its branch totals, its carried lines, its first
+    /// status, the audit rows and the doctor's notification. Saves nothing.
+    /// </summary>
+    private Invoice AddInvoice(Guid doctorId, PlannedInvoice plan)
     {
         var now = Now;
+        var groups = plan.Groups;
         int Count(string type) => groups.Where(g => g.Type == type).Sum(g => g.Count);
         int Fees(string type) => groups.Where(g => g.Type == type).Sum(g => g.Fees);
 
@@ -74,18 +100,20 @@ public sealed class BillingService(
         {
             Id = Guid.NewGuid(),
             DoctorId = doctorId,
-            MonthKey = monthKey,
-            PeriodStart = first,
-            PeriodEnd = last,
+            MonthKey = plan.MonthKey,
+            PeriodStart = plan.PeriodStart,
+            PeriodEnd = plan.PeriodEnd,
             ExamCount = Count(SessionTypes.Examination),
             ConsultationCount = Count(SessionTypes.Consultation),
             ExamAmountPiasters = Fees(SessionTypes.Examination),
             ConsultationAmountPiasters = Fees(SessionTypes.Consultation),
-            DueDate = due,
+            AdjustmentsPiasters = plan.CarriedPiasters,
+            DueDate = plan.DueDate,
+            IsFinal = plan.IsFinal,
             CreatedAt = now,
             UpdatedAt = now,
         };
-        invoice.TotalDuePiasters = invoice.ExamAmountPiasters + invoice.ConsultationAmountPiasters;
+        invoice.TotalDuePiasters = invoice.ExamAmountPiasters + invoice.ConsultationAmountPiasters + invoice.AdjustmentsPiasters;
         invoice.Status = invoice.TotalDuePiasters > 0 ? InvoiceStatuses.Unpaid : InvoiceStatuses.NoCharge;
         foreach (var branch in groups.GroupBy(g => g.BranchId))
         {
@@ -99,30 +127,190 @@ public sealed class BillingService(
             });
         }
 
+        foreach (var (month, amount) in plan.Carries)
+        {
+            invoice.InvoiceAdjustments.Add(new InvoiceAdjustment
+            {
+                Id = Guid.NewGuid(),
+                InvoiceId = invoice.Id,
+                AmountPiasters = amount,
+                // The app shows its own text for a carried line (carriedMonthKey); this is for the audit and exports.
+                Reason = $"Sessions saved after the final invoice of {month}",
+                CarriedMonthKey = month,
+                CreatedBy = null,
+                CreatedAt = now,
+            });
+            auditor.Add(
+                AuditActions.InvoiceFeesCarried, AuditTargets.Invoice, invoice.Id,
+                new { fromMonthKey = month, toMonthKey = plan.MonthKey, amountPiasters = amount },
+                doctorId: doctorId, actor: AuditActor.System);
+        }
+
         db.Invoices.Add(invoice);
         AddHistory(invoice, invoice.Status, null, null);
         auditor.Add(
             AuditActions.InvoiceCreated, AuditTargets.Invoice, invoice.Id,
-            new { monthKey, status = invoice.Status, totalDuePiasters = invoice.TotalDuePiasters },
+            new { monthKey = plan.MonthKey, status = invoice.Status, totalDuePiasters = invoice.TotalDuePiasters, isFinal = plan.IsFinal },
             doctorId: doctorId, actor: AuditActor.System);
         if (invoice.TotalDuePiasters > 0)
         {
             notifications.Add(
-                doctorId, BillingNotifications.Created(monthKey, invoice.TotalDuePiasters, due),
+                doctorId, BillingNotifications.Created(plan.MonthKey, invoice.TotalDuePiasters, plan.DueDate),
                 "/billing", new { invoiceId = invoice.Id });
         }
 
-        try
+        return invoice;
+    }
+
+    // ---- Final invoices and carried fees (spec 6.17, BR-DEL8, BR-DEL10) -------------------------------------
+
+    /// <summary>
+    /// Fees of sessions saved after a final invoice and not billed yet, per doctor and month, for the months before
+    /// <paramref name="beforeMonthKey"/>: the month's session fees now, minus what its final invoice billed and what
+    /// earlier carried lines for that month billed. Only positive amounts. <paramref name="doctorId"/> null: every doctor.
+    /// </summary>
+    public async Task<Dictionary<Guid, List<(string MonthKey, int Amount)>>> CarriesAsync(
+        Guid? doctorId, string beforeMonthKey, CancellationToken cancellationToken)
+    {
+        var rows = await db.Invoices.AsNoTracking()
+            .Where(i => i.IsFinal && string.Compare(i.MonthKey, beforeMonthKey) < 0 && (doctorId == null || i.DoctorId == doctorId))
+            .Select(i => new
+            {
+                i.DoctorId,
+                i.MonthKey,
+                Billed = i.ExamAmountPiasters + i.ConsultationAmountPiasters
+                    + (db.InvoiceAdjustments
+                        .Where(a => a.CarriedMonthKey == i.MonthKey && a.Invoice.DoctorId == i.DoctorId)
+                        .Sum(a => (int?)a.AmountPiasters) ?? 0),
+                Actual = db.Sessions
+                    .Where(s => s.DoctorId == i.DoctorId && s.MonthKey == i.MonthKey && !s.Deleted)
+                    .Sum(s => (int?)s.FeePiasters) ?? 0,
+            })
+            .ToListAsync(cancellationToken);
+        return rows
+            .Where(r => r.Actual > r.Billed)
+            .GroupBy(r => r.DoctorId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderBy(r => r.MonthKey, StringComparer.Ordinal).Select(r => (r.MonthKey, r.Actual - r.Billed)).ToList());
+    }
+
+    /// <summary>
+    /// What deleting the doctor's account bills today (BR-DEL8): every past month with sessions and no invoice yet
+    /// (closed as month close would), then the final invoice of the current month, closed early (<c>PeriodEnd</c> =
+    /// today in Cairo) with the fees carried from earlier final invoices. When the current month already has an invoice
+    /// (a final invoice the doctor paid before restoring), the fees since are billed in a final invoice under the next
+    /// month's key, dated today. Invoices with nothing to bill are left out.
+    /// </summary>
+    public async Task<List<PlannedInvoice>> PlanFinalInvoicesAsync(Guid doctorId, CancellationToken cancellationToken)
+    {
+        var today = Today;
+        var current = CairoTime.MonthKey(today);
+        var currentFirst = new DateOnly(today.Year, today.Month, 1);
+        var next = CairoTime.MonthKey(currentFirst.AddMonths(1));
+        var grace = await db.AppSettings.AsNoTracking().Select(s => s.GracePeriodDays).SingleAsync(cancellationToken);
+
+        var groups = await db.Sessions.AsNoTracking()
+            .Where(s => s.DoctorId == doctorId && !s.Deleted && string.Compare(s.MonthKey, current) <= 0
+                && !db.Invoices.Any(i => i.DoctorId == doctorId && i.MonthKey == s.MonthKey))
+            .GroupBy(s => new { s.MonthKey, s.BranchId, s.Type })
+            .Select(g => new { g.Key.MonthKey, g.Key.BranchId, g.Key.Type, Count = g.Count(), Fees = g.Sum(s => s.FeePiasters) })
+            .ToListAsync(cancellationToken);
+        List<(Guid BranchId, string Type, int Count, int Fees)> Of(string month) =>
+            groups.Where(g => g.MonthKey == month).Select(g => (g.BranchId, g.Type, g.Count, g.Fees)).ToList();
+
+        var plans = new List<PlannedInvoice>();
+        foreach (var month in groups.Select(g => g.MonthKey).Where(m => m != current).Distinct().Order(StringComparer.Ordinal))
         {
-            await db.SaveChangesAsync(cancellationToken);
-            return true;
+            var first = CairoTime.ParseMonthKey(month)!.Value;
+            var last = first.AddMonths(1).AddDays(-1);
+            plans.Add(new PlannedInvoice(month, first, last, last.AddDays(grace), IsFinal: false, Of(month), []));
         }
-        catch (DbUpdateException ex) when (ex.IsUniqueViolation())
+
+        var carries = (await CarriesAsync(doctorId, next, cancellationToken)).GetValueOrDefault(doctorId) ?? [];
+        PlannedInvoice? final;
+        if (!await db.Invoices.AnyAsync(i => i.DoctorId == doctorId && i.MonthKey == current, cancellationToken))
         {
-            // Another run closed this doctor's month first (UQ_Invoices_Doctor_Month): nothing to do.
-            db.ChangeTracker.Clear();
+            final = new PlannedInvoice(current, currentFirst, today, today.AddDays(grace), IsFinal: true, Of(current), carries);
+        }
+        else
+        {
+            final = await db.Invoices.AnyAsync(i => i.DoctorId == doctorId && i.MonthKey == next, cancellationToken)
+                ? null
+                : new PlannedInvoice(next, today, today, today.AddDays(grace), IsFinal: true, [], carries);
+        }
+
+        if (final is not null)
+        {
+            plans.Add(final);
+        }
+
+        return plans.Where(p => p.TotalPiasters > 0).ToList();
+    }
+
+    /// <summary>
+    /// Issues the invoices of <see cref="PlanFinalInvoicesAsync"/> in the caller's transaction (saves nothing) and returns
+    /// them. The final one has <see cref="Invoice.IsFinal"/>.
+    /// </summary>
+    public async Task<List<Invoice>> IssueFinalInvoicesAsync(Guid doctorId, CancellationToken cancellationToken)
+    {
+        var issued = new List<Invoice>();
+        foreach (var plan in await PlanFinalInvoicesAsync(doctorId, cancellationToken))
+        {
+            var invoice = AddInvoice(doctorId, plan);
+            if (plan.IsFinal)
+            {
+                auditor.Add(
+                    AuditActions.FinalInvoiceIssued, AuditTargets.Invoice, invoice.Id,
+                    new { monthKey = plan.MonthKey, periodEnd = plan.PeriodEnd, totalDuePiasters = invoice.TotalDuePiasters },
+                    doctorId: doctorId);
+            }
+
+            issued.Add(invoice);
+        }
+
+        return issued;
+    }
+
+    /// <summary>
+    /// A doctor restored their account (BR-DEL10): their final invoice is removed while nothing was paid or sent for it
+    /// (unpaid or overdue, no payment), so the month is invoiced at month close as usual. Otherwise it stays, and the
+    /// fees of sessions saved after it are carried into the next invoice. Saves in the caller's transaction. Returns
+    /// true when the invoice was removed.
+    /// </summary>
+    public async Task<bool> RemoveFinalInvoiceIfUnpaidAsync(Guid invoiceId, CancellationToken cancellationToken)
+    {
+        var invoice = await LockInvoiceAsync(invoiceId, cancellationToken);
+        if (invoice is null || !invoice.IsFinal
+            || invoice.Status is not (InvoiceStatuses.Unpaid or InvoiceStatuses.Overdue)
+            || await db.Payments.AnyAsync(p => p.InvoiceId == invoiceId, cancellationToken))
+        {
             return false;
         }
+
+        var marker = invoiceId.ToString();
+        await db.DeletionRequests.Where(r => r.FinalInvoiceId == invoiceId)
+            .ExecuteUpdateAsync(set => set.SetProperty(r => r.FinalInvoiceId, (Guid?)null), cancellationToken);
+        await db.InvoiceStatusHistories.Where(h => h.InvoiceId == invoiceId).ExecuteDeleteAsync(cancellationToken);
+        await db.InvoiceBranchBreakdowns.Where(b => b.InvoiceId == invoiceId).ExecuteDeleteAsync(cancellationToken);
+        await db.InvoiceAdjustments.Where(a => a.InvoiceId == invoiceId).ExecuteDeleteAsync(cancellationToken);
+        await db.Notifications
+            .Where(n => n.RecipientUserId == invoice.DoctorId && n.DataJson != null && n.DataJson.Contains(marker))
+            .ExecuteDeleteAsync(cancellationToken);
+        db.Invoices.Remove(invoice);
+        auditor.Add(
+            AuditActions.FinalInvoiceRemoved, AuditTargets.Invoice, invoiceId,
+            new
+            {
+                monthKey = invoice.MonthKey, status = invoice.Status, totalDuePiasters = invoice.TotalDuePiasters,
+                periodStart = invoice.PeriodStart, periodEnd = invoice.PeriodEnd,
+            },
+            doctorId: invoice.DoctorId);
+        await db.SaveChangesAsync(cancellationToken);
+
+        // An overdue final invoice suspended the doctor (BR-G1): without it they may be clear again.
+        await ReactivateIfClearAsync(invoice.DoctorId, cancellationToken);
+        return true;
     }
 
     // ---- Daily check (BR-G1, BR-G2, BR-G7) ---------------------------------------------------------------

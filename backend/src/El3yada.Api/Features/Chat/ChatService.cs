@@ -148,6 +148,13 @@ public sealed class ChatService(
         var chat = await ChatsOf(actor).Include(c => c.Doctor).FirstOrDefaultAsync(c => c.Id == chatId, ct)
             ?? throw ApiException.NotFound();
 
+        // Spec 6.17: a chat whose patient or doctor account is being deleted (or was erased) is closed for both sides.
+        var accounts = await db.Chats.AsNoTracking().Where(c => c.Id == chat.Id)
+            .Select(c => new { Patient = c.Patient.User.Status, Doctor = c.Doctor.User.Status })
+            .FirstAsync(ct);
+        if (accounts.Patient != "active" || accounts.Doctor != "active")
+            throw ApiException.Forbidden(ErrorCodes.ChatClosed);
+
         // BR-G5 / P12: a suspended doctor's clinic can't send, and patients see "the doctor isn't available".
         if (chat.Doctor.Status == "suspended")
             throw ApiException.Forbidden(actor.IsPatient ? ErrorCodes.ChatUnavailable : ErrorCodes.DoctorSuspended);
@@ -333,7 +340,7 @@ public sealed class ChatService(
         Guid Id, Guid DoctorId, Guid PatientId, bool Enabled, DateTime CreatedAt, DateTime? LastMessageAt,
         string? LastMessageType, string? LastMessageText, Guid? LastMessageSenderId, string? LastSenderRole,
         string DoctorName, string? DoctorNameEn, string DoctorTitle, string? DoctorTitleEn, string DoctorStatus,
-        string PatientName, int FileNumber, int Unread);
+        string PatientName, int FileNumber, int Unread, string PatientUserStatus, string DoctorUserStatus);
 
     private IQueryable<ChatRow> Project(IQueryable<ChatEntity> chats, Guid userId) => chats.Select(c => new ChatRow(
         c.Id, c.DoctorId, c.PatientId, c.Enabled, c.CreatedAt, c.LastMessageAt, c.LastMessageType, c.LastMessageText,
@@ -341,7 +348,8 @@ public sealed class ChatService(
         c.ChatMessages.OrderByDescending(m => m.CreatedAt).Select(m => m.SenderRole).FirstOrDefault(),
         c.Doctor.FullName, c.Doctor.FullNameEn, c.Doctor.Title, c.Doctor.TitleEn, c.Doctor.Status,
         c.Link.PatientName, c.Link.FileNumber,
-        db.ChatReadStates.Where(s => s.ChatId == c.Id && s.UserId == userId).Select(s => s.UnreadCount).FirstOrDefault()));
+        db.ChatReadStates.Where(s => s.ChatId == c.Id && s.UserId == userId).Select(s => s.UnreadCount).FirstOrDefault(),
+        c.Patient.User.Status, c.Doctor.User.Status));
 
     private async Task<ChatSummaryDto> SummaryAsync(ChatActor actor, Guid chatId, CancellationToken ct)
     {
@@ -352,12 +360,15 @@ public sealed class ChatService(
 
     private static ChatSummaryDto ToSummary(ChatRow r, ChatActor actor)
     {
-        string? unavailable = r.DoctorStatus switch
-        {
-            "suspended" => actor.IsPatient ? ErrorCodes.ChatUnavailable : ErrorCodes.DoctorSuspended,
-            "active" => actor.IsPatient && !r.Enabled ? ErrorCodes.ChatUnavailable : null,
-            _ => ErrorCodes.ChatUnavailable,
-        };
+        // Spec 6.17: closed while either account is being deleted, and for good once it is erased.
+        string? unavailable = r.PatientUserStatus != "active" || r.DoctorUserStatus != "active"
+            ? ErrorCodes.ChatClosed
+            : r.DoctorStatus switch
+            {
+                "suspended" => actor.IsPatient ? ErrorCodes.ChatUnavailable : ErrorCodes.DoctorSuspended,
+                "active" => actor.IsPatient && !r.Enabled ? ErrorCodes.ChatUnavailable : null,
+                _ => ErrorCodes.ChatUnavailable,
+            };
         var counterpart = actor.IsPatient
             ? new ChatCounterpartDto(r.DoctorId, r.DoctorName, r.DoctorNameEn, r.DoctorTitle, r.DoctorTitleEn)
             : new ChatCounterpartDto(r.PatientId, r.PatientName, null, null, null);

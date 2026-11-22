@@ -107,18 +107,22 @@ public sealed record AssistantBranchView(Guid Id, string NameAr, string? NameEn,
 /// One assistant (D25 row, D26 form). <c>branches</c> is empty when <c>allBranches</c> is true.
 /// <c>mustChangePassword</c>: they have not replaced the temporary password yet.
 /// </summary>
+/// <summary>
+/// D25 / D26. <c>accountStatus</c> is the assistant's login (Users.Status): <c>pendingDeletion</c> while they are deleting
+/// their account (D25 shows «طلب حذف حسابه»; they no longer act for the clinic), otherwise <c>active</c> or <c>disabled</c>.
+/// </summary>
 public sealed record AssistantView(
     Guid UserId, string FullName, string Phone, string Preset, string Status, bool AllBranches,
     IReadOnlyList<AssistantBranchView> Branches, IReadOnlyDictionary<string, bool> Permissions, bool MustChangePassword,
-    DateTime? LastActiveAt, DateTime CreatedAt, DateTime UpdatedAt, DateTime? RemovedAt)
+    DateTime? LastActiveAt, DateTime CreatedAt, DateTime UpdatedAt, DateTime? RemovedAt, string AccountStatus = "active")
 {
     public IEnumerable<Guid> BranchIds => Branches.Select(b => b.Id);
 
-    public static AssistantView Of(Assistant a, bool mustChangePassword) => new(
-        a.UserId, a.FullName, a.Phone, a.Preset, a.Status, a.AllBranches,
+    public static AssistantView Of(Assistant a, bool mustChangePassword, string? accountStatus = null) => new(
+        a.UserId, a.FullName, Features.AccountDeletion.Tombstones.IsPhone(a.Phone) ? "" : a.Phone, a.Preset, a.Status, a.AllBranches,
         a.AllBranches ? [] : a.Branches.OrderBy(b => b.CreatedAt).Select(b => new AssistantBranchView(b.Id, b.NameAr, b.NameEn, b.Status)).ToList(),
         ClinicPermissions.ToMap(ClinicPermissions.Of(a)), mustChangePassword,
-        a.LastActiveAt, a.CreatedAt, a.UpdatedAt, a.RemovedAt);
+        a.LastActiveAt, a.CreatedAt, a.UpdatedAt, a.RemovedAt, accountStatus ?? a.User?.Status ?? "active");
 }
 
 /// <summary>D25: <c>count</c> is the active and disabled assistants (what maxAssistantsPerDoctor counts).</summary>

@@ -351,12 +351,4 @@ class FakePatientRepository implements PatientRepository {
 
   @override
   Future<void> acceptTerms() => _answer(() => _account = _account!.copyWith(acceptedTermsAt: _now));
-
-  @override
-  Future<DeletionRequest> requestAccountDeletion(String? reason) => _answer(() {
-        if (_account!.hasPendingDeletion) throw const ApiError(ApiError.deletionAlreadyRequested, status: 409);
-        final request = DeletionRequest(id: 'del-1', status: DeletionRequestStatus.pending, reason: reason, createdAt: _now);
-        _account = _account!.copyWith(deletionRequest: request);
-        return request;
-      });
 }

@@ -132,6 +132,15 @@ abstract final class ApiCodes {
 
   // Free trial (backend/docs/api-free-trial.md).
   static const trialEnded = 'TRIAL_ENDED';
+
+  // Account deletion (backend/docs/api-account-deletion.md).
+  static const accountPendingDeletion = 'ACCOUNT_PENDING_DELETION';
+  static const accountDeletionScheduled = 'ACCOUNT_DELETION_SCHEDULED';
+  static const accountNotPendingDeletion = 'ACCOUNT_NOT_PENDING_DELETION';
+  static const unpaidInvoices = 'UNPAID_INVOICES';
+  static const lastSuperAdmin = 'LAST_SUPER_ADMIN';
+  static const accountDeleted = 'ACCOUNT_DELETED';
+  static const chatClosed = 'CHAT_CLOSED';
   // Medical files (backend/docs/api-phase-3-files.md).
   static const uploadNotFound = 'UPLOAD_NOT_FOUND';
   static const invalidSession = 'INVALID_SESSION';

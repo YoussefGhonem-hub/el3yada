@@ -91,7 +91,7 @@ void main() {
 
     final account = PatientAccount.fromJson(fixture('account') as Json);
     expect(account.personal.phone, '+201000000002');
-    expect(account.hasPendingDeletion, isFalse);
+    expect(account.notifications.chat, isTrue);
   });
 
   test('age is computed from the date of birth', () {

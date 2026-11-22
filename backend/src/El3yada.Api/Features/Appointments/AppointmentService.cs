@@ -70,7 +70,14 @@ public sealed class AppointmentService(
         if (!actor.IsPatient && r.PatientId is null && r.Guest is null) throw ApiException.BadRequest(ErrorCodes.ValidationFailed);
 
         var branchInfo = await db.Branches.AsNoTracking().Where(b => b.Id == r.BranchId)
-            .Select(b => new { b.DoctorId, DoctorStatus = b.Doctor.Status, b.Doctor.FullName, b.Doctor.FullNameEn })
+            // A doctor whose account is being deleted takes no bookings (spec 6.17): the same as a disabled one.
+            .Select(b => new
+            {
+                b.DoctorId,
+                DoctorStatus = b.Doctor.User.Status == AccountStatuses.Active ? b.Doctor.Status : DoctorStatuses.Disabled,
+                b.Doctor.FullName,
+                b.Doctor.FullNameEn,
+            })
             .FirstOrDefaultAsync(ct) ?? throw ApiException.NotFound();
 
         if (actor.IsPatient)
@@ -360,7 +367,8 @@ public sealed class AppointmentService(
             .Select(l => new
             {
                 Doctor = new DoctorRef(l.Doctor.UserId, l.Doctor.FullName, l.Doctor.FullNameEn, l.Doctor.Title, l.Doctor.TitleEn),
-                l.Doctor.Status, l.SessionCount, l.ConsultationsSinceExam, l.SelfBookingBlocked,
+                Status = l.Doctor.User.Status == AccountStatuses.Active ? l.Doctor.Status : DoctorStatuses.Disabled,
+                l.SessionCount, l.ConsultationsSinceExam, l.SelfBookingBlocked,
                 l.Doctor.ExaminationPricePiasters, l.Doctor.ConsultationPricePiasters,
             })
             .FirstOrDefaultAsync(ct) ?? throw ApiException.NotFound(ErrorCodes.NotLinked);

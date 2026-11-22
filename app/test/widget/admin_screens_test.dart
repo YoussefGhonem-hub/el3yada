@@ -431,7 +431,11 @@ void main() {
         await tester.tap(_inAlert(find.text('Discard')));
         await tester.pumpAndSettle();
         expect(find.text('1 change not saved'), findsNothing);
-        expect(find.widgetWithText(TextFormField, '30'), findsOneWidget);
+        // The fee is back to EGP 30 (the deletion grace period is 30 days too).
+        expect(
+          find.descendant(of: find.widgetWithText(TextFormField, 'Examination fee'), matching: find.text('30')),
+          findsOneWidget,
+        );
 
         await tester.tap(find.byTooltip('Change history: Examination fee'));
         await _settle(tester);

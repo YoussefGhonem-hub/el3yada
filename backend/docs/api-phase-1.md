@@ -82,6 +82,7 @@ You can also refresh shortly before `accessTokenExpiresAt` to avoid the 401 roun
 | Field | Value | Screen |
 |---|---|---|
 | `mustChangePassword` | `true` | **A9** (with the terms checkbox when `mustAcceptTerms`) |
+| `pendingDeletion` | not `null` | **A16**, the restore screen (any role; [api-account-deletion.md](api-account-deletion.md)) |
 | `role` = `doctor`, `doctorStatus` | `pendingApproval` | **A6** (data from `GET /api/doctors/myRegistration`) |
 | | `rejected` | **A7**, showing `doctorStatusReason` |
 | | `suspended` | Doctor home with the suspension banner (Phase 7 rules) |
@@ -91,7 +92,7 @@ You can also refresh shortly before `accessTokenExpiresAt` to avoid the 401 roun
 | `role` = `admin`, `adminRole` | `superAdmin` / `admin` | Admin home. AD14 only for `superAdmin`. |
 | `emailVerified` | `false` | Optional A5 banner. It doesn't block anything in Phase 1. |
 
-`accountStatus` is always `active` in a session: a disabled account gets 403 `ACCOUNT_DISABLED` instead (A10). A doctor whose account the admin disabled (`doctorStatus = disabled`) is also refused with `ACCOUNT_DISABLED`.
+`accountStatus` is `active` in a session, or `pendingDeletion` during a deletion's grace period (A16): a disabled account gets 403 `ACCOUNT_DISABLED` instead (A10). A doctor whose account the admin disabled (`doctorStatus = disabled`) is also refused with `ACCOUNT_DISABLED`.
 
 ## Same number, two accounts (A3)
 
@@ -146,7 +147,7 @@ Returned by `GET /api/auth/me` and `updatePreferences`. Every sign-in call retur
 }
 ```
 
-`doctorId` is the doctor's own ID for a doctor and their doctor's ID for an assistant. `doctorStatusReason` is sent only to the doctor. `emailVerified` is `true` when the account has no email. `trial` is the clinic's free trial (`{ endsAt, ended, daysLeft }`, or `null` when there is none): see [api-free-trial.md](api-free-trial.md). `trial.ended` routes to A15.
+`accountStatus` is `pendingDeletion` during an account's deletion grace period, and `pendingDeletion` then describes it (otherwise `null`): that session may only restore, sign out, read its own state and, for a doctor, pay invoices. See [api-account-deletion.md](api-account-deletion.md). `doctorId` is the doctor's own ID for a doctor and their doctor's ID for an assistant. `doctorStatusReason` is sent only to the doctor. `emailVerified` is `true` when the account has no email. `trial` is the clinic's free trial (`{ endsAt, ended, daysLeft }`, or `null` when there is none): see [api-free-trial.md](api-free-trial.md). `trial.ended` routes to A15.
 
 | Method and route | Auth | Request | Success | Errors |
 |---|---|---|---|---|
@@ -450,6 +451,7 @@ Arabic texts in quotes are from the spec. The app owns the final wording in its 
 | `REFRESH_TOKEN_REUSED` | 401 | The session was revoked for safety: sign in again |
 | `SELECTION_TOKEN_INVALID` | 401 | "Log in as" expired or was used: sign in again |
 | `ACCOUNT_DISABLED` | 403 | A10 "Your account has been disabled. Contact support." |
+| `ACCOUNT_PENDING_DELETION` | 403 | The account is in its deletion grace period: reload the session and show A16 ([api-account-deletion.md](api-account-deletion.md)) |
 | `CLINIC_NOT_ACTIVE` | 403 | A10 «حساب العيادة غير مفعّل، تواصل مع الطبيب» |
 | `PATIENT_DESKTOP_NOT_SUPPORTED` | 403 | A14 «حساب المريض على تطبيق الموبايل فقط» |
 | `PASSWORD_CHANGE_REQUIRED` | 403 | Go to A9 |

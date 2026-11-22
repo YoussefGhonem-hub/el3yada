@@ -75,6 +75,13 @@ public static class SeedAdminCommand
             existing.LockoutEndAt = null;
             existing.SecurityStamp = Guid.NewGuid();
             existing.UpdatedAt = now;
+            // Recovery also ends a deletion in progress, so the daily job doesn't erase the account just brought back.
+            await db.DeletionRequests
+                .Where(r => r.UserId == existing.Id && (r.Status == "scheduled" || r.Status == "waitingPayment"))
+                .ExecuteUpdateAsync(
+                    set => set.SetProperty(r => r.Status, "restored").SetProperty(r => r.RestoredAt, (DateTime?)now)
+                        .SetProperty(r => r.RestoredBy, (Guid?)existing.Id).SetProperty(r => r.RestoreReason, "seed-admin --reset"),
+                    cancellationToken);
             db.AuditLogs.Add(AuditRow(existing.Id, "reset", now));
             await db.SaveChangesAsync(cancellationToken);
             await db.RefreshTokens.Where(t => t.UserId == existing.Id && t.RevokedAt == null)

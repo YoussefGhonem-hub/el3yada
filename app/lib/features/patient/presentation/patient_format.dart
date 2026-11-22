@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../../l10n/gen/app_localizations.dart';
+import '../../account_deletion/presentation/account_deletion_text.dart';
 import '../domain/dose_text.dart';
 import '../domain/patient_models.dart';
 
@@ -38,7 +39,8 @@ extension PatientFormat on BuildContext {
     return l10n.moneyEgp(pattern.format(pounds));
   }
 
-  String doctorName(DoctorRef doctor) => doctor.displayName(arabic: isArabic);
+  /// An erased doctor reads «طبيب محذوف» / "Deleted doctor" (spec 6.17).
+  String doctorName(DoctorRef doctor) => l10n.personName(doctor.displayName(arabic: isArabic));
 
   String branchName(BranchRef branch) => branch.displayName(arabic: isArabic);
 

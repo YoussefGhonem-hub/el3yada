@@ -57,7 +57,7 @@ public sealed class PatientAuthorizationTests(FeaturesApiFactory api) : IClassFi
     }
 
     [Theory]
-    [InlineData("/api/admin/deletion-requests")]
+    [InlineData("/api/admin/accountDeletions")]
     [InlineData("/api/admin/accounts?phone=01000000002")]
     public async Task Admin_routes_refuse_other_roles(string route)
     {

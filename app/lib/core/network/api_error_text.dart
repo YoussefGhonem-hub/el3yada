@@ -26,6 +26,13 @@ extension ApiErrorText on AppLocalizations {
       ApiCodes.branchNotAllowed => errorBranchNotAllowed,
       // Free trial (backend/docs/api-free-trial.md).
       ApiCodes.trialEnded => errorTrialEnded,
+      // Account deletion (backend/docs/api-account-deletion.md).
+      ApiCodes.accountPendingDeletion => errorAccountPendingDeletion,
+      ApiCodes.accountDeletionScheduled => errorAccountDeletionScheduled,
+      ApiCodes.accountNotPendingDeletion => errorAccountNotPendingDeletion,
+      ApiCodes.unpaidInvoices => accountDeletionUnpaidTitle,
+      ApiCodes.accountDeleted => errorAccountDeleted,
+      ApiCodes.chatClosed => errorChatClosed,
       ApiCodes.serviceAlreadyActive => adminErrorServiceAlreadyActive,
       ApiCodes.doctorStatusNotChangeable => adminErrorDoctorStatusNotChangeable,
       // Billing (backend/docs/api-phase-7.md).

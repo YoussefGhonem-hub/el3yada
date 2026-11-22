@@ -87,6 +87,7 @@ void main() {
         'gracePeriodDays',
         'maxConsecutiveConsultations', //
         'trialDays',
+        'accountDeletionGraceDays',
         'maxUploadMb',
         'maxAssistantsPerDoctor',
         'maxBranchesPerDoctor',
@@ -109,7 +110,7 @@ void main() {
         'privacyAr',
         'privacyEn',
       });
-      expect(SettingFields.all, hasLength(26));
+      expect(SettingFields.all, hasLength(27));
     });
 
     test('fees: 0 to 10,000 EGP, sent in piasters', () {

@@ -104,22 +104,12 @@ public sealed class PatientPortalController(
         return NoContent();
     }
 
-    /// <summary>P14 account: personal info, preferences and the latest deletion request.</summary>
+    /// <summary>
+    /// P14 account: personal info and preferences. Deleting the account is <c>requestAccountDeletion</c> for every role
+    /// (api-account-deletion.md).
+    /// </summary>
     [HttpGet("account", Name = "getPatientAccount")]
     public Task<PatientAccountDto> GetAccount(CancellationToken ct) => account.GetAccountAsync(ct);
-
-    /// <summary>The latest deletion request, or 204 when there is none.</summary>
-    [HttpGet("deletion-request", Name = "getAccountDeletionRequest")]
-    public async Task<ActionResult<DeletionRequestDto>> GetDeletionRequest(CancellationToken ct) =>
-        await account.GetDeletionRequestAsync(ct) is { } request ? request : NoContent();
-
-    /// <summary><c>requestAccountDeletion</c> (P14 → AD12). 409 <c>DELETION_ALREADY_REQUESTED</c> while one is pending.</summary>
-    [HttpPost("deletion-request", Name = "requestAccountDeletion")]
-    public async Task<ActionResult<DeletionRequestDto>> RequestDeletion(RequestAccountDeletionRequest request, CancellationToken ct)
-    {
-        var created = await account.RequestDeletionAsync(request, ct);
-        return CreatedAtRoute("getAccountDeletionRequest", null, created);
-    }
 
     private async Task<IActionResult> StreamAsync(string path, string mimeType, string fileName, CancellationToken ct)
     {

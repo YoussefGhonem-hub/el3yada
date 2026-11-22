@@ -33,16 +33,20 @@ class ChooseAccount extends LoginResult {
 }
 
 /// One account to choose. [doctorName] is an assistant's doctor («عيادة د. …»).
+/// [pendingDeletion]: this account is in its deletion grace period, so
+/// choosing it opens the restore screen (A16).
 class AccountChoice {
-  const AccountChoice({required this.role, required this.displayName, this.doctorName});
+  const AccountChoice({required this.role, required this.displayName, this.doctorName, this.pendingDeletion = false});
 
   factory AccountChoice.fromJson(Map<String, dynamic> json) => AccountChoice(
         role: UserRole.fromJson(json['role'] as String),
         displayName: json['displayName'] as String? ?? '',
         doctorName: json['doctorName'] as String?,
+        pendingDeletion: json['pendingDeletion'] as bool? ?? false,
       );
 
   final UserRole role;
   final String displayName;
   final String? doctorName;
+  final bool pendingDeletion;
 }

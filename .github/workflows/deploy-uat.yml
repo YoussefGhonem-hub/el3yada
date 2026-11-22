@@ -1,0 +1,181 @@
+# Publishes the API to the UAT server (site4now, IIS) on every push to `uat`
+# that changes the backend. It can also be run by hand from the Actions tab.
+#
+# Repository secrets (Settings > Secrets and variables > Actions):
+#   UAT_DB_CONNECTION    the UAT SQL Server connection string
+#   UAT_DEPLOY_PASSWORD  the site4now Web Deploy password
+#   UAT_JWT_SIGNING_KEY  a random value of 32 bytes or more, used only on UAT
+#
+# Steps: publish the API, apply pending EF migrations to the UAT database,
+# write the secrets into the published web.config as environment variables,
+# deploy with Web Deploy, then check /api/health.
+#
+# The server runs as ASPNETCORE_ENVIRONMENT=Staging (appsettings.Staging.json):
+# emails are written as .eml files to App_Data/mail on the server, not sent.
+# App_Data (stored files, emails) and logs are never deleted by a deploy.
+name: Deploy UAT
+
+on:
+  push:
+    branches: [uat]
+    paths:
+      - backend/**
+      - .github/workflows/deploy-uat.yml
+  workflow_dispatch:
+
+# One deploy at a time; a newer push waits for the running one instead of cutting it off mid-copy.
+concurrency:
+  group: deploy-uat
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  # The server does not need the .NET 10 runtime installed: the publish carries its own.
+  # The site4now app pool is 32-bit: a win-x64 build fails there with HTTP 500.32.
+  # If the pool is switched to 64-bit in the control panel, this can go back to win-x64.
+  RUNTIME_ID: win-x86
+  SITE_NAME: amrsherif-002-site5
+  DEPLOY_URL: https://win6054.site4now.net:8172/msdeploy.axd?site=amrsherif-002-site5
+  DEPLOY_USER: amrsherif-002
+  SITE_URL: http://amrsherif-002-site5.atempurl.com
+
+jobs:
+  deploy:
+    name: Publish and deploy the API
+    runs-on: windows-latest
+    environment:
+      name: uat
+      url: ${{ env.SITE_URL }}
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Check the secrets are set
+        env:
+          DB: ${{ secrets.UAT_DB_CONNECTION }}
+          PW: ${{ secrets.UAT_DEPLOY_PASSWORD }}
+          JWT: ${{ secrets.UAT_JWT_SIGNING_KEY }}
+        run: |
+          $missing = @()
+          if (-not $env:DB)  { $missing += 'UAT_DB_CONNECTION' }
+          if (-not $env:PW)  { $missing += 'UAT_DEPLOY_PASSWORD' }
+          if (-not $env:JWT) { $missing += 'UAT_JWT_SIGNING_KEY' }
+          if ($missing) { throw "Missing repository secrets: $($missing -join ', ')" }
+
+      - run: dotnet tool restore
+
+      - name: Publish the API
+        run: >
+          dotnet publish src/El3yada.Api/El3yada.Api.csproj
+          --configuration Release
+          --runtime $env:RUNTIME_ID
+          --self-contained true
+          --output "$env:GITHUB_WORKSPACE/publish"
+
+      # Runs here on the build machine, not on the server, so no runtime ID
+      # (with one, the bundle build locks its own El3yada.Api.dll and fails).
+      - name: Build the migrations bundle
+        run: >
+          dotnet ef migrations bundle
+          --project src/El3yada.Data
+          --startup-project src/El3yada.Api
+          --configuration Release
+          --output "$env:GITHUB_WORKSPACE/efbundle.exe"
+          --force
+
+      # Applies only the migrations the UAT database does not have yet.
+      - name: Migrate the UAT database
+        env:
+          ASPNETCORE_ENVIRONMENT: Staging
+          ConnectionStrings__Default: ${{ secrets.UAT_DB_CONNECTION }}
+        run: |
+          & "$env:GITHUB_WORKSPACE/efbundle.exe" --connection "$env:ConnectionStrings__Default"
+          if ($LASTEXITCODE -ne 0) { throw "Migration failed (exit code $LASTEXITCODE). Nothing was deployed." }
+
+      # IIS hands these to the API as environment variables. web.config is never served to browsers.
+      - name: Put the UAT settings in web.config
+        env:
+          DB: ${{ secrets.UAT_DB_CONNECTION }}
+          JWT: ${{ secrets.UAT_JWT_SIGNING_KEY }}
+        run: |
+          $path = Join-Path $env:GITHUB_WORKSPACE 'publish/web.config'
+          [xml]$config = Get-Content $path -Raw
+          $module = $config.SelectSingleNode('//aspNetCore')
+          if (-not $module) { throw 'The published web.config has no aspNetCore element.' }
+          $vars = $module.SelectSingleNode('environmentVariables')
+          if (-not $vars) { $vars = $module.AppendChild($config.CreateElement('environmentVariables')) }
+          # UAT only: IIS writes the API's console output (start-up errors included) to logs\stdout_*.log.
+          $module.SetAttribute('stdoutLogEnabled', 'true')
+          $module.SetAttribute('stdoutLogFile', '.\logs\stdout')
+          $settings = [ordered]@{
+            ASPNETCORE_ENVIRONMENT     = 'Staging'
+            # UAT only: a start-up failure shows its error on the page instead of a bare 500/503.
+            ASPNETCORE_DETAILEDERRORS  = 'true'
+            ConnectionStrings__Default = $env:DB
+            Jwt__SigningKey            = $env:JWT
+          }
+          foreach ($name in $settings.Keys) {
+            $var = $config.CreateElement('environmentVariable')
+            $var.SetAttribute('name', $name)
+            $var.SetAttribute('value', $settings[$name])
+            [void]$vars.AppendChild($var)
+          }
+          $config.Save($path)
+
+      - name: Find or install Web Deploy
+        run: |
+          $exe = 'C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe'
+          if (-not (Test-Path $exe)) {
+            choco install webdeploy --no-progress -y
+            if (-not (Test-Path $exe)) { throw "Web Deploy was not installed at $exe" }
+          }
+          "MSDEPLOY=$exe" >> $env:GITHUB_ENV
+
+      # AppOffline stops the site while files are copied, so IIS releases the DLLs.
+      - name: Deploy to the UAT server
+        env:
+          PW: ${{ secrets.UAT_DEPLOY_PASSWORD }}
+        run: |
+          $source = (Resolve-Path "$env:GITHUB_WORKSPACE/publish").Path
+          $msdeployArgs = @(
+            '-verb:sync'
+            "-source:contentPath=$source"
+            "-dest:contentPath=$env:SITE_NAME,computerName=$env:DEPLOY_URL,userName=$env:DEPLOY_USER,password=$env:PW,authType=Basic"
+            '-enableRule:AppOffline'
+            '-skip:objectName=dirPath,absolutePath=\\App_Data$'
+            '-skip:objectName=dirPath,absolutePath=\\logs$'
+            '-allowUntrusted'
+            '-retryAttempts:3'
+            '-retryInterval:5000'
+          )
+          & $env:MSDEPLOY @msdeployArgs
+          if ($LASTEXITCODE -ne 0) { throw "Web Deploy failed (exit code $LASTEXITCODE)." }
+
+      - name: Check the API answers
+        run: |
+          $url = "$env:SITE_URL/api/health"
+          for ($i = 1; $i -le 10; $i++) {
+            try {
+              $response = Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 30
+              Write-Host "Attempt ${i}: HTTP $($response.StatusCode)"
+              Write-Host $response.Content
+              exit 0
+            } catch {
+              Write-Host "Attempt ${i}: $($_.Exception.Message)"
+              $body = $_.ErrorDetails.Message
+              Start-Sleep -Seconds 10
+            }
+          }
+          if ($body) {
+            Write-Host '--- Last error page from the server ---'
+            Write-Host (($body -replace '(?s)<style.*?</style>', '' -replace '<[^>]+>', ' ' -replace '\s+', ' ').Trim())
+          }
+          throw "$url did not answer after the deploy. Look at the site's logs folder on site4now."

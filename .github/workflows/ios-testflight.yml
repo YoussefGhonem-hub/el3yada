@@ -33,9 +33,9 @@ on:
   workflow_dispatch:
     inputs:
       config:
-        description: "uat = the UAT API (config/uat.json). demo = offline test accounts, no server needed. prod = config/prod.json (needs the real API URL)."
+        description: "uat = the UAT API (config/uat.json). prod = config/prod.json (needs the real API URL). TestFlight never gets the offline test accounts."
         type: choice
-        options: [uat, demo, prod]
+        options: [uat, prod]
         default: uat
 
 concurrency:
@@ -98,17 +98,22 @@ jobs:
 
       - name: Choose the config
         run: |
-          if [ "$CONFIG_CHOICE" = prod ]; then
-            if grep -q 'example\.com' config/prod.json; then
-              echo "::error::config/prod.json still points at api.example.com. Put the real API URL there first, or run with config=demo."
-              exit 1
-            fi
-            echo "CONFIG_FILE=config/prod.json" >> "$GITHUB_ENV"
-          elif [ "$CONFIG_CHOICE" = uat ]; then
-            echo "CONFIG_FILE=config/uat.json" >> "$GITHUB_ENV"
-          else
-            echo "CONFIG_FILE=config/dev-offline.json" >> "$GITHUB_ENV"
+          case "$CONFIG_CHOICE" in
+            uat|prod) file="config/$CONFIG_CHOICE.json" ;;
+            *) echo "::error::Unknown config '$CONFIG_CHOICE'. Use uat or prod."; exit 1 ;;
+          esac
+          # Testers and reviewers must never see the offline test accounts on
+          # the login screen. A missing key counts as on (APP_ENV dev turns
+          # them on by default), so the file has to say false.
+          if [ "$(jq -r '.USE_FAKE_AUTH' "$file")" != false ]; then
+            echo "::error::$file must set \"USE_FAKE_AUTH\": false. A TestFlight build never shows the test accounts."
+            exit 1
           fi
+          if grep -q 'example\.com' "$file"; then
+            echo "::error::$file still points at api.example.com. Put the real API URL there first."
+            exit 1
+          fi
+          echo "CONFIG_FILE=$file" >> "$GITHUB_ENV"
 
       - uses: subosito/flutter-action@v2
         with:

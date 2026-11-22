@@ -26,12 +26,18 @@ There are two environments, `dev` and `prod`. Each has a config file in `config/
 flutter run --flavor dev --dart-define-from-file=config/dev.json   # Android
 flutter run -d windows --dart-define-from-file=config/dev.json     # Windows
 
+# UAT: the API that the "Deploy UAT" workflow publishes (http://amrsherif-002-site5.atempurl.com)
+flutter run --flavor dev --dart-define-from-file=config/uat.json   # Android
+flutter run -d windows --dart-define-from-file=config/uat.json     # Windows
+
 # Prod builds (real API)
 flutter build apk --flavor prod --dart-define-from-file=config/prod.json
 flutter build windows --dart-define-from-file=config/prod.json
 ```
 
 VS Code: the root `.vscode/launch.json` has a launch configuration for each environment on Android and Windows.
+
+The UAT server has no HTTPS yet, so plain HTTP is allowed for that one host: on Android in the `dev` flavor only (`android/app/src/dev/res/xml/network_security_config.xml`), and on iOS in `ios/Runner/Info.plist` (`NSAppTransportSecurity`). Every other host still needs HTTPS. Remove both once UAT has a certificate, and the iOS one before the App Store.
 
 iOS and macOS flavors need Xcode schemes (`dev`, `prod`), which can only be made on a Mac. Until then, run iOS and macOS without `--flavor`.
 
@@ -155,8 +161,9 @@ git push origin uat
 
 It can also be started by hand: Actions tab > iOS TestFlight > Run workflow, or `gh workflow run "iOS TestFlight" --ref dev -f config=demo`. GitHub shows that button only once the workflow file is on `main`.
 
-- A push to `uat` builds the demo (`config/dev-offline.json`) until the API is hosted. Then change `'demo'` to `'prod'` in the workflow's `CONFIG_CHOICE`.
-- `config=demo` builds with `config/dev-offline.json`: the offline test accounts, no server needed. Use it until the API is hosted.
+- A push to `uat` builds against the UAT API (`config/uat.json`). The same push runs "Deploy UAT" when `backend/` changed, so the API and the app go out together.
+- `config=uat` (the default by hand too) builds with `config/uat.json`.
+- `config=demo` builds with `config/dev-offline.json`: the offline test accounts, no server needed.
 - `config=prod` builds with `config/prod.json`. It refuses while that file still points at `api.example.com`.
 - The build number is the workflow's run number, so every run uploads a new build. The version comes from `pubspec.yaml`.
 - A run takes about 20 to 30 minutes. GitHub counts Mac minutes at 10 times the Linux rate on the free plan, so push to `uat` only when there is something to test, not after every commit.

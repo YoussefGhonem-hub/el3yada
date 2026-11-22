@@ -159,10 +159,12 @@ jobs:
           & $env:MSDEPLOY @msdeployArgs
           if ($LASTEXITCODE -ne 0) { throw "Web Deploy failed (exit code $LASTEXITCODE)." }
 
+      # After the copy, IIS first stops the old version: for a minute or two it answers
+      # "503 Application Shutting Down", then the new version starts. So wait up to 5 minutes.
       - name: Check the API answers
         run: |
           $url = "$env:SITE_URL/api/health"
-          for ($i = 1; $i -le 10; $i++) {
+          for ($i = 1; $i -le 30; $i++) {
             try {
               $response = Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 30
               Write-Host "Attempt ${i}: HTTP $($response.StatusCode)"

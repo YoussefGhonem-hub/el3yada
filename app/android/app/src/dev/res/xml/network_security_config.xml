@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The dev flavor only. The UAT API (config/uat.json) has no HTTPS yet, so plain HTTP is allowed for that host
+     alone; every other host still needs HTTPS. Remove the domain once UAT has a certificate. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">amrsherif-002-site5.atempurl.com</domain>
+    </domain-config>
+</network-security-config>

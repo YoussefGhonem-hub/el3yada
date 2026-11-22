@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The dev flavor only: lets the app reach the UAT API over plain HTTP (see res/xml). The prod flavor keeps
+         Android's default, HTTPS only. -->
+    <application android:networkSecurityConfig="@xml/network_security_config" />
+</manifest>

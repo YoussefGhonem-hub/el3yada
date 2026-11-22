@@ -1,0 +1,5 @@
+{
+  "APP_ENV": "dev",
+  "API_BASE_URL": "http://amrsherif-002-site5.atempurl.com",
+  "USE_FAKE_AUTH": false
+}

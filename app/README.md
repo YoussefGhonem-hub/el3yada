@@ -159,12 +159,12 @@ git merge --no-ff dev
 git push origin uat
 ```
 
-It can also be started by hand: Actions tab > iOS TestFlight > Run workflow, or `gh workflow run "iOS TestFlight" --ref dev -f config=demo`. GitHub shows that button only once the workflow file is on `main`.
+It can also be started by hand: Actions tab > iOS TestFlight > Run workflow, or `gh workflow run "iOS TestFlight" --ref uat -f config=uat`. GitHub shows that button only once the workflow file is on `main`.
 
 - A push to `uat` builds against the UAT API (`config/uat.json`). The same push runs "Deploy UAT" when `backend/` changed, so the API and the app go out together.
 - `config=uat` (the default by hand too) builds with `config/uat.json`.
-- `config=demo` builds with `config/dev-offline.json`: the offline test accounts, no server needed.
 - `config=prod` builds with `config/prod.json`. It refuses while that file still points at `api.example.com`.
+- A TestFlight build never shows the offline test accounts: there is no demo option, and the workflow stops unless the config says `"USE_FAKE_AUTH": false`. `env_test.dart` checks `uat.json` and `prod.json` too.
 - The build number is the workflow's run number, so every run uploads a new build. The version comes from `pubspec.yaml`.
 - A run takes about 20 to 30 minutes. GitHub counts Mac minutes at 10 times the Linux rate on the free plan, so push to `uat` only when there is something to test, not after every commit.
 
